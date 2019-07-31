@@ -1,0 +1,109 @@
+[{'id': 'bn:03328519n', 'pos': 'NOUN', 'source': 'BABELNET'}, {'id': 'bn:08090784n', 'pos': 'NOUN', 'source': 'BABELNET'}, {'id': ' bn:03864854n', 'pos': 'NOUN', 'source': 'BABELNET'}, {'id': 'bn:00089620v', 'pos': 'VERB', 'source': 'BABELNET'}, {'id': ' bn:00570329n', 'pos': 'NOUN', 'source': 'BABELNET'}, {'id': ' bn:00091694v', 'pos': 'VERB', 'source': 'BABELNET'}, {'id': 'bn:16262198n', 'pos': 'NOUN', 'source': 'BABELNET'}, {'id': 'bn:00085671v', 'pos': 'VERB', 'source': 'BABELNET'}, {'id': 'bn:16359676n', 'pos': 'NOUN', 'source': 'BABELNET'}, {'id': 'bn:00035324n', 'pos': 'NOUN', 'source': 'BABELNET'}, {'id': 'bn:00062801n', 'pos': 'NOUN', 'source': 'BABELNET'}, {'id': 'bn:00087554v', 'pos': 'VERB', 'source': 'BABELNET'}, {'id': 'bn:00091693v', 'pos': 'VERB', 'source': 'BABELNET'}, {'id': 'bn:00091692v', 'pos': 'VERB', 'source': 'BABELNET'}, {'id': 'bn:00087732v', 'pos': 'VERB', 'source': 'BABELNET'}, {'id': 'bn:00046568n', 'pos': 'NOUN', 'source': 'BABELNET'}, {'id': 'bn:00062800n', 'pos': 'NOUN', 'source': 'BABELNET'}, {'id': 'bn:00006491n', 'pos': 'NOUN', 'source': 'BABELNET'}, {'id': 'bn:02476200n', 'pos': 'NOUN', 'source': 'BABELNET'}, {'id': 'bn:00032675n', 'pos': 'NOUN', 'source': 'BABELNET'}, {'id': 'bn:00071073n', 'pos': 'NOUN', 'source': 'BABELNET'}, {'id': 'bn:11393020n', 'pos': 'NOUN', 'source': 'BABELNET'}]
+
+
+bn:03328519n
+EN Creature type (Dungeons & Dragons) • Plant (Dungeons & Dragons)
+No WordNet senses. Ignoring.
+[]
+
+bn:08090784n
+PLANT
+No WordNet senses. Ignoring.
+[]
+
+bn:03864854n
+factory (trading post) • factorij • manufactory • plant
+No WordNet senses. Ignoring.
+[]
+
+bn:00089620v
+implant • plant
+['plant', 'implant']
+[('Put firmly in the mind', 'WN')]
+
+bn:00570329n
+Control System • Plant (control theory)
+No WordNet senses. Ignoring.
+[]
+
+bn:00091694v
+plant
+['plant']
+[('Place something or someone in a certain position in order to secretly observe or deceive', 'WN')]
+
+bn:16262198n
+Glossary of professional wrestling terms • Plant (professional wrestling)
+No WordNet senses. Ignoring.
+[]
+
+bn:00085671v
+found • constitute • establish • plant
+['establish', 'found', 'plant', 'constitute', 'institute', 'constitute', 'establish', 'found', 'institute', 'plant', 'found']
+[('Set up or lay the groundwork for', 'WN')]
+
+bn:16359676n
+Glossary of cue sports terms • Plant (snooker)
+No WordNet senses. Ignoring.
+[]
+
+bn:00035324n
+flora • plant • plant life
+['plant', 'flora', 'plant_life', 'flora', 'plant', 'flora', 'green_plant', 'green_plant', 'green_plants', 'plant', 'Plantae', 'plants', 'flora', 'flora', 'plant', 'plant_life', 'plant_species', 'vegetation', 'flora', 'plant', 'vegetable_kingdom', 'vegetation', 'Plants', 'Antigens,_plant', 'External_factors_plant', 'Florae', 'Floras', 'Floræ', 'Green_plant', 'Green_plants', 'Kingdom_Vegetable', 'Mazonipterus', 'Metaphyta', 'Phyto', 'plant', 'Plant_life', 'Plant_species', 'Planted', 'Planter', 'Planters', 'Plantes', 'planting', 'Plants', 'Plantæ', 'Platn', 'Reed', 'Simple_plants', 'Vegetabilia', 'Vegetable_kingdom', 'Flora_(plants)', 'Plant_(biology)', 'Plant_(botanical)']
+[('(botany) a living organism lacking the power of locomotion', 'WN'), ('Plants are mainly multicellular, predominantly photosynthetic eukaryotes of the kingdom Plantae.', 'WIKI'), ('Flora is the plant life occurring in a particular region or time, generally the naturally occurring or indigenous—native plant life.', 'WIKI')]
+
+bn:00062801n
+plant
+['plant']
+[('Something planted secretly for discovery by another', 'WN')]
+
+bn:00087554v
+implant • embed • engraft • plant
+['implant', 'engraft', 'embed', 'imbed', 'plant', 'embed', 'engraft', 'imbed', 'implant', 'plant', 'implant', 'embed', 'implant']
+[('Fix or set securely or deeply', 'WN')]
+
+bn:00091693v
+plant
+['plant']
+[('Place into a river', 'WN')]
+
+bn:00091692v
+ENset • plant
+['plant', 'set', 'set']
+[('Put or set (seeds, seedlings, or plants) into the ground', 'WN')]
+
+bn:00087732v
+set up • establish • found • plant
+['establish', 'set_up', 'found', 'launch', 'constitute', 'establish', 'found', 'institute', 'plant', 'set_up', 'launch', 'set_up']
+[('Set up or found', 'WN')]
+
+bn:00046568n
+industrial plant • plant • works
+['plant', 'works', 'industrial_plant', 'physical_plant', 'physical_plant', 'industrial_plant', 'industrial_plant', 'plant', 'whole', 'Industrial_plant', 'industrial_plant', 'Mechanical_plant', 'Plant_operations', 'Plant_ops', 'Transmitter_plant']
+[('Buildings for carrying on industrial labor', 'WN'), ('Physical plant, mechanical plant or industrial plant refers to the necessary infrastructure used in operation and maintenance of a given facility.', 'WIKI')]
+
+bn:00062800n
+plant
+['plant']
+[('An actor situated in the audience whose acting is rehearsed but seems spontaneous to the audience', 'WN')]
+
+bn:00006491n
+ENassembly line • production line • line • plant
+['production_line', 'assembly_line', 'line', 'assembly_line', 'production_line', 'assembly_line', 'plant', 'processing_line', 'processing_plant', 'production_line', 'production_line', 'assembly_line', 'Assembly-line', 'Assembly_Line', 'Assembly_lines', 'Assembly_process', 'Detailed_division_of_labor', 'History_of_assembly_lines', 'History_of_the_assembly_line', 'Production-line', 'Production_Line', 'Production_lines']
+[('Mechanical system in a factory whereby an article is conveyed through sites at which successive operations are performed on it', 'WN'), ('A production line is a set of sequential operations established in a factory where materials are put through a refining process to produce an end-product that is suitable for onward consumption; or components are assembled to make a finished article.', 'WIKI'), ('An assembly line is a manufacturing process in which parts are added as the semi-finished assembly moves from workstation to workstation where the parts are added in sequence until the final assembly is produced.', 'WIKI')]
+
+bn:02476200n
+Named Entity. Ignoring.
+[]
+
+bn:00032675n
+['factory', 'mill', 'manufacturing_plant', 'manufactory', 'factory', 'factory', 'manufactory', 'manufacturing_plant', 'factory', 'factory', 'manufactory', 'manufacturing_plant', 'mill', 'plant', 'factory', 'mill', 'Factories', 'Factory_employment', 'Factory_mills', 'Factory_worker', 'Factory_workers', 'Manufactories', 'Manufactory', 'Manufacturing_plant', 'Manufacturing_plants', '⛭', '🏭', '👨\u200d🏭', '👨🏻\u200d🏭', '👨🏼\u200d🏭', '👨🏽\u200d🏭', '👨🏾\u200d🏭', '👨🏿\u200d🏭', '👩\u200d🏭', '👩🏻\u200d🏭', '👩🏼\u200d🏭', '👩🏽\u200d🏭', '👩🏾\u200d🏭', '👩🏿\u200d🏭', 'Factory_(manufacturing)']
+[('A plant consisting of one or more buildings with facilities for manufacturing', 'WN'), ('A factory or manufacturing plant is an industrial site, usually consisting of buildings and machinery, or more commonly a complex having several buildings, where workers manufacture goods or operate machines processing one product into another.', 'WIKI')]
+
+bn:00071073n
+['shill', 'shill', 'Shill', 'shill', 'shill', 'House_player', 'Paid_basher', 'Secretly_paid', 'Shill_bidding', 'Shills', 'Will_the_Shill', 'Plant_(person)']
+Target word not found inside lemmas. Ignoring.
+[]
+
+bn:11393020n
+Named Entity. Ignoring.
+[]
