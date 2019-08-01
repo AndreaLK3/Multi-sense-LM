@@ -2,10 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="60da2a51-ddc5-4875-9104-07acb177fce2" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/Wiktionary.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/StartingWithSPARQL.py" beforeDir="false" afterPath="$PROJECT_DIR$/DBpedia.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Task1_NotesDocument.docx" beforeDir="false" afterPath="$PROJECT_DIR$/../Task1_NotesDocument.docx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Wiktionary.log" beforeDir="false" afterPath="$PROJECT_DIR$/Wiktionary.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Wiktionary.py" beforeDir="false" afterPath="$PROJECT_DIR$/Wiktionary.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../~$sk1_NotesDocument.docx" beforeDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -30,8 +29,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Wiktionary.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="304">
-              <caret line="33" column="2" selection-start-line="33" selection-start-column="2" selection-end-line="33" selection-end-column="2" />
+            <state relative-caret-position="321">
+              <caret line="23" column="68" selection-start-line="23" selection-start-column="68" selection-end-line="23" selection-end-column="68" />
               <folding>
                 <element signature="e#0#15#0" expanded="true" />
               </folding>
@@ -274,8 +273,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Wiktionary.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="304">
-          <caret line="33" column="2" selection-start-line="33" selection-start-column="2" selection-end-line="33" selection-end-column="2" />
+        <state relative-caret-position="321">
+          <caret line="23" column="68" selection-start-line="23" selection-start-column="68" selection-end-line="23" selection-end-column="68" />
           <folding>
             <element signature="e#0#15#0" expanded="true" />
           </folding>
