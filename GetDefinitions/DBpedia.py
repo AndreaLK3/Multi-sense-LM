@@ -1,8 +1,11 @@
 import SPARQLWrapper as SW
+import logging
+import Utils
 
 
 
-
+# Note: all the resources at dbres must start with upper case. e.g. Sea, Plant.
+# Space == underscore, e.g. New_York
 def get_dbpedia_def_of_word(target_word):
 
     sparql = SW.SPARQLWrapper("http://dbpedia.org/sparql")
@@ -22,8 +25,13 @@ def get_dbpedia_def_of_word(target_word):
     answer = sparql.query().convert()
 
     result = answer['results']['bindings'][0]['encyclopedia_def']['value']
+    return result
 
-    print(result)
 
+def main():
+    Utils.init_logging("DBpedia.log", logging.INFO)
 
-get_dbpedia_def_of_word('Plant')
+    ency_def = get_dbpedia_def_of_word('Plant')
+    logging.info(ency_def)
+
+main()
