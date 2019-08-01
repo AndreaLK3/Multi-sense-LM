@@ -2,7 +2,6 @@ import Utils
 import urllib.request
 import logging
 import json
-import requests
 
 
 def get_BabelNet_version(key):
@@ -73,14 +72,14 @@ def main():
 
     #get_BabelNet_version(key)
     syns_intro_dicts = get_syns_intros_for_word(key, target_word)
-    logging.info(syns_intro_dicts)
+    logging.debug(syns_intro_dicts)
 
     synset_ids = list( map( lambda syns_intro_dict : syns_intro_dict["id"], syns_intro_dicts))
 
     for s_id in synset_ids:
-        logging.info(s_id)
+
         synset_data = get_synset_data(key, s_id)
         def_source_lts = extract_definitions_and_sources(synset_data, target_word)
         logging.info(def_source_lts)
 
-main()
+#main()

@@ -34,4 +34,4 @@ def main():
     ency_def = get_dbpedia_def_of_word('Plant')
     logging.info(ency_def)
 
-main()
+#main()

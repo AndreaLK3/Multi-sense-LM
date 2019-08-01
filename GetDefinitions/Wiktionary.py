@@ -25,20 +25,24 @@ def clean_definitions(defs_ls):
     return new_defs
 
 
+def get_defs_and_examples(parser, target_word):
+    word_data = parser.fetch(target_word)
+
+    defs_structure = word_data[0]['definitions']
+    (raw_definitions, examples) = process_defs_subdicts(defs_structure)
+    definitions = clean_definitions(raw_definitions)
+
+    return definitions, examples
+
+
 def main():
     Utils.init_logging('Wiktionary.log', logging.INFO)
 
     target_word = "plant"
 
     parser = WP.WiktionaryParser()
-    word_data = parser.fetch(target_word)
-    logging.debug(word_data)
-
-    defs_structure = word_data[0]['definitions']
-    (raw_definitions, _examples) = process_defs_subdicts(defs_structure)
-    definitions = clean_definitions(raw_definitions)
-
+    definitions, _examples = get_defs_and_examples(parser, target_word)
     logging.info(definitions)
 
 
-main()
+#main()
