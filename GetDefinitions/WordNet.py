@@ -20,7 +20,7 @@ def process_synset(synset):
 
 # n: POS-tagging and the different roles and meanings of a word are not addressed in this task. The purpose is to obtain
 # graph-based, dictionary-enhanced word embeddings, not multi-sense
-def process_all_synsets_of_word(target_word =):
+def process_all_synsets_of_word(target_word):
     Utils.init_logging("defs_WordNet.log", logging.INFO)
 
     defs_WN = []
