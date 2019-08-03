@@ -5,32 +5,51 @@ import logging
 
 # We examine here one synset, that was found by searching for the target word.
 # Objectives:
-# - Definitions, to use for the target word.
+# - Definitions; examples; synonyms (from the lemmas in the same synset)
 # - Possibly, the frequency count and word position in the lemmas,
 #   to distinguish between relevant and distant/synonym definitions.  To do in version > 1.0
 def process_synset(synset):
     lemmas = synset.lemmas()
 
+    all_synonyms = list(map( lambda l: l.name(),lemmas))
+
+    all_antonyms = []
+    for l in lemmas:
+        ants = l.antonyms()
+        for a in ants:
+            all_antonyms.append(a.name())
+
     #name_count_lts = list(map( lambda lm: (lm.name(), lm.count()),lemmas))
-    definition_WN = synset.definition()
+    definition = synset.definition()
+    examples = synset.examples()
     #total_count = sum([tpl[1] for tpl in name_count_lts])
 
-    return definition_WN
+    return definition, examples, all_synonyms, all_antonyms
 
 
 # n: POS-tagging and the different roles and meanings of a word are not addressed in this task. The purpose is to obtain
 # graph-based, dictionary-enhanced word embeddings, not multi-sense
 def process_all_synsets_of_word(target_word):
-    Utils.init_logging("defs_WordNet.log", logging.INFO)
 
-    defs_WN = []
+    logging.info("*** WordNet : "+ target_word)
+
+    defs = []
+    examples = []
+    synonyms = []
+    antonyms = []
     syns_ls = wn.synsets(target_word)
     logging.info(syns_ls)
 
     for syn in syns_ls:
-        defs_WN.append(process_synset(syn))
+        def_exs_syns_ants = process_synset(syn)
+        defs.append(def_exs_syns_ants[0])
+        examples.extend(def_exs_syns_ants[1])
+        synonyms.extend(list(filter (lambda s: s != target_word, def_exs_syns_ants[2])) )
+        antonyms.extend(list(filter(lambda s: s != target_word, def_exs_syns_ants[3])))
 
-    return defs_WN
+    #eliminate duplicates coming from different senses and synsets
+    synonyms = list(dict.fromkeys(synonyms))
+    antonyms = list(dict.fromkeys(antonyms))
 
-#defs_WN = process_all_synsets_of_word('plant')
-#logging.info("\n".join(defs_WN))
+    return (defs, examples, synonyms, antonyms)
+

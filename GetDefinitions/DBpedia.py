@@ -4,9 +4,11 @@ import Utils
 
 
 
-# Note: all the resources at dbres must start with upper case. e.g. Sea, Plant.
+# Note: all the resources at dbres start with upper case. e.g. Sea, Plant. We modify the target word accordingly
 # Space == underscore, e.g. New_York
 def get_dbpedia_def_of_word(target_word):
+
+    upcaseStart_target_word = target_word[0].upper() + target_word[1:]
 
     sparql = SW.SPARQLWrapper("http://dbpedia.org/sparql")
     query_string = """
@@ -15,7 +17,7 @@ def get_dbpedia_def_of_word(target_word):
         PREFIX dbo: <http://dbpedia.org/ontology/>
         
         SELECT DISTINCT ?encyclopedia_def
-        WHERE { dbres:""" + target_word + \
+        WHERE { dbres:""" + upcaseStart_target_word + \
         """ rdfs:comment ?encyclopedia_def 
                 FILTER (LANG(?encyclopedia_def)='en')}
         """

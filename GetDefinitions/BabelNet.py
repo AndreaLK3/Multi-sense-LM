@@ -4,20 +4,8 @@ import logging
 import json
 
 
-def get_BabelNet_version(key):
-    # If you do not pass the data argument, urllib uses a GET request.
-    # Data can also be passed in an HTTP GET request by encoding it in the URL itself.
-    req_url = 'https://babelnet.io/v5/getVersion?key={' + key +  '}'
-    with urllib.request.urlopen(req_url) as response:
-        logging.info(response)
-        logging.info(response.status)
 
-        version = json.load(response)
-        logging.info(version)
-    return version
-
-
-def get_syns_intros_for_word(key, target_word, searchLang='EN'):
+def get_syns_intros_word(key, target_word, searchLang='EN'):
     req_url = 'https://babelnet.io/v5/getSynsetIds?lemma='+target_word+'&searchLang='+searchLang+'&key='+key
     with urllib.request.urlopen(req_url) as response:
         synsets_intros = json.load(response)
@@ -64,22 +52,29 @@ def extract_definitions_and_sources(synset_data, target_word):
     return defs_and_sources
 
 
+def get_word_data(key, target_word):
+    def_source_lts = []
+    examples = []
+    synonyms = []
+    syns_intros = get_syns_intros_word(key, target_word)
+    synset_ids = list(map(lambda syns_intro_dict: syns_intro_dict["id"], syns_intros))
+
+    for s_id in synset_ids:
+        synset_data = get_synset_data(key, s_id)
+        def_source_lts.append(extract_definitions_and_sources(synset_data, target_word))
+
+    return def_source_lts
+
+
+
+
 def main():
     Utils.init_logging("defs_BabelNet.log", logging.INFO)
     key = '7ba5e9a1-1f42-4d9a-97a7-c888975a60a1'
 
-    target_word = 'plant'
+    target_word = 'sea'
+    logging.info(get_defs_sources_word(key, target_word))
 
-    #get_BabelNet_version(key)
-    syns_intro_dicts = get_syns_intros_for_word(key, target_word)
-    logging.debug(syns_intro_dicts)
 
-    synset_ids = list( map( lambda syns_intro_dict : syns_intro_dict["id"], syns_intro_dicts))
-
-    for s_id in synset_ids:
-
-        synset_data = get_synset_data(key, s_id)
-        def_source_lts = extract_definitions_and_sources(synset_data, target_word)
-        logging.info(def_source_lts)
 
 #main()

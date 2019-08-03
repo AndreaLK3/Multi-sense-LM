@@ -1,11 +1,29 @@
-07/31/2019 01:28:52 PM -INFO : [Synset('plant.n.01'), Synset('plant.n.02'), Synset('plant.n.03'), Synset('plant.n.04'), Synset('plant.v.01'), Synset('implant.v.01'), Synset('establish.v.02'), Synset('plant.v.04'), Synset('plant.v.05'), Synset('plant.v.06')]
-07/31/2019 01:28:52 PM -INFO : buildings for carrying on industrial labor
-(botany) a living organism lacking the power of locomotion
-an actor situated in the audience whose acting is rehearsed but seems spontaneous to the audience
-something planted secretly for discovery by another
-put or set (seeds, seedlings, or plants) into the ground
-fix or set securely or deeply
-set up or lay the groundwork for
-place into a river
-place something or someone in a certain position in order to secretly observe or deceive
-put firmly in the mind
+08/03/2019 01:33:48 PM -INFO : [Synset('sea.n.01'), Synset('ocean.n.02'), Synset('sea.n.03')]
+08/03/2019 01:33:48 PM -INFO : a division of an ocean or a large body of salt water partially enclosed by land
+08/03/2019 01:33:48 PM -INFO : []
+08/03/2019 01:33:48 PM -INFO : anything apparently limitless in quantity or volume
+08/03/2019 01:33:48 PM -INFO : []
+08/03/2019 01:33:48 PM -INFO : turbulent water with swells of considerable size
+08/03/2019 01:33:48 PM -INFO : ['heavy seas']
+08/03/2019 01:35:08 PM -INFO : *** WordNet : plant
+08/03/2019 01:35:08 PM -INFO : [Synset('plant.n.01'), Synset('plant.n.02'), Synset('plant.n.03'), Synset('plant.n.04'), Synset('plant.v.01'), Synset('implant.v.01'), Synset('establish.v.02'), Synset('plant.v.04'), Synset('plant.v.05'), Synset('plant.v.06')]
+08/03/2019 01:35:08 PM -INFO : buildings for carrying on industrial labor
+08/03/2019 01:35:08 PM -INFO : ['they built a large plant to manufacture automobiles']
+08/03/2019 01:35:08 PM -INFO : (botany) a living organism lacking the power of locomotion
+08/03/2019 01:35:08 PM -INFO : []
+08/03/2019 01:35:08 PM -INFO : an actor situated in the audience whose acting is rehearsed but seems spontaneous to the audience
+08/03/2019 01:35:08 PM -INFO : []
+08/03/2019 01:35:08 PM -INFO : something planted secretly for discovery by another
+08/03/2019 01:35:08 PM -INFO : ['the police used a plant to trick the thieves', 'he claimed that the evidence against him was a plant']
+08/03/2019 01:35:08 PM -INFO : put or set (seeds, seedlings, or plants) into the ground
+08/03/2019 01:35:08 PM -INFO : ["Let's plant flowers in the garden"]
+08/03/2019 01:35:08 PM -INFO : fix or set securely or deeply
+08/03/2019 01:35:08 PM -INFO : ['He planted a knee in the back of his opponent', 'The dentist implanted a tooth in the gum']
+08/03/2019 01:35:08 PM -INFO : set up or lay the groundwork for
+08/03/2019 01:35:08 PM -INFO : ['establish a new department']
+08/03/2019 01:35:08 PM -INFO : place into a river
+08/03/2019 01:35:08 PM -INFO : ['plant fish']
+08/03/2019 01:35:08 PM -INFO : place something or someone in a certain position in order to secretly observe or deceive
+08/03/2019 01:35:08 PM -INFO : ['Plant a spy in Moscow', "plant bugs in the dissident's apartment"]
+08/03/2019 01:35:08 PM -INFO : put firmly in the mind
+08/03/2019 01:35:08 PM -INFO : ["Plant a thought in the students' minds"]
