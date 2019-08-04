@@ -3,67 +3,89 @@ import urllib.request
 import logging
 import json
 
-
-
+########## HTTP Requests
 def get_syns_intros_word(key, target_word, searchLang='EN'):
     req_url = 'https://babelnet.io/v5/getSynsetIds?lemma='+target_word+'&searchLang='+searchLang+'&key='+key
     with urllib.request.urlopen(req_url) as response:
         synsets_intros = json.load(response)
     return synsets_intros
 
-
 def get_synset_data(key, synset_ID):
     req_url = 'https://babelnet.io/v5/getSynset?id='+synset_ID+'&key='+key
     with urllib.request.urlopen(req_url) as response:
-        synset_info = json.load(response)
-        #logging.info(synset_info)
-    return synset_info
+        synset_data = json.load(response)
+    return synset_data
+####################
 
+
+
+# Keep only the relevant synsets for the target word.
 # Directives:
 # Exclude the synsets where the synsetType is NAMED_ENTITIES instead of CONCEPTS
 # Policy: Restrict to WordNet. in the list of senses:
 # 	- if there isn’t any WordNetSense, drop
 #   - go into properties > fullLemma. If the original target word is not contained in any of the lemmas, then drop.
-# Collect the definitions: glosses > gloss , and the source must be either WN or WIKI
-def extract_definitions_and_sources(synset_data, target_word):
-
+def check_include_synset(target_word, synset_data):
     if synset_data['synsetType'] != 'CONCEPT':
         logging.info("Named Entity. Ignoring.")
-        return [] #we do not deal with Named Entities for now
+        return False #we do not deal with Named Entities here
 
     senses = synset_data['senses']
 
     if not (any([True if (sense['type']=='WordNetSense') else False for sense in senses])):
         logging.info("No WordNet senses. Ignoring.")
-        return []
+        return False
 
     lemmas = [sense['properties']['simpleLemma'] for sense in senses]
-    logging.info(lemmas)
 
     if not(any([True if (target_word.lower() == lemma.lower()) else False for lemma in lemmas])):
         logging.info("Target word not found inside lemmas. Ignoring.")
-        return []
+        return False
 
-    accepted_definition_entries = \
-        list(filter(lambda defDict: (defDict['source'] == 'WN') or (defDict['source'] == 'WIKI'), synset_data['glosses']))
-
-    defs_and_sources = list(map( lambda defDict : (defDict['gloss'],defDict['source']) ,accepted_definition_entries))
-
-    return defs_and_sources
+    return True
 
 
-def get_word_data(key, target_word):
-    def_source_lts = []
+# Get dictionary definitions.
+# Collect the definitions: glosses > gloss
+def extract_definitions(synset_data):
+
+    accepted_definition_entries = list(filter(lambda defDict: defDict['source'] == 'WIKI', synset_data['glosses']))
+
+    defs = list(map( lambda defDict : (defDict['gloss']) ,accepted_definition_entries))
+    return defs
+
+
+def extract_examples(synset_data):
+    return [ex['example'] for ex in synset_data['examples']]
+
+def extract_synonyms(synset_data):
+    synonyms = []
+    senses = synset_data['senses']
+
+    for s in senses:
+        synonyms.append(s['properties']['simpleLemma'])
+    #return in lowercase
+    return list(map(lambda s: s.lower() ,synonyms))
+
+def retrieve_word_data(key, target_word):
+    definitions = []
     examples = []
     synonyms = []
     syns_intros = get_syns_intros_word(key, target_word)
     synset_ids = list(map(lambda syns_intro_dict: syns_intro_dict["id"], syns_intros))
+    logging.info(synset_ids)
 
     for s_id in synset_ids:
         synset_data = get_synset_data(key, s_id)
-        def_source_lts.append(extract_definitions_and_sources(synset_data, target_word))
+        if check_include_synset(target_word, synset_data):
+            definitions.append(extract_definitions(synset_data))
+            examples.extend(extract_examples(synset_data))
+            synonyms.extend(extract_synonyms(synset_data))
 
-    return def_source_lts
+
+    synonyms = list(dict.fromkeys(synonyms))
+
+    return (definitions, examples, synonyms)
 
 
 
@@ -73,7 +95,7 @@ def main():
     key = '7ba5e9a1-1f42-4d9a-97a7-c888975a60a1'
 
     target_word = 'sea'
-    logging.info(get_defs_sources_word(key, target_word))
+    logging.info(retrieve_word_data(key, target_word))
 
 
 
