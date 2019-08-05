@@ -16,6 +16,13 @@ SYNONYMS = 'synonyms'
 ANTONYMS = 'antonyms'
 ENCYCLOPEDIA_DEF = 'encyclopedia_def'
 
+#Filenames
+H5_raw_defs = 'raw_defs.h5'
+H5_examples = 'examples.h5'
+H5_synonyms = 'synonyms.h5'
+H5_antonyms = 'antonyms.h5'
+H5_enc_defs = 'enc_defs.h5'
+
 def init_logging(logfilename, loglevel=logging.INFO):
   for handler in logging.root.handlers[:]:
         logging.root.removeHandler(handler)

@@ -79,7 +79,7 @@ def retrieve_DES(target_word):
     for s_id in synset_ids:
         synset_data = get_synset_data(key, s_id)
         if check_include_synset(target_word, synset_data):
-            definitions.append(extract_definitions(synset_data))
+            definitions.extend(extract_definitions(synset_data))
             examples.extend(extract_examples(synset_data))
             synonyms.extend(extract_synonyms(synset_data))
 

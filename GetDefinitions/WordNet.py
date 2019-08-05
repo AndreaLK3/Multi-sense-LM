@@ -31,8 +31,6 @@ def process_synset(synset):
 # graph-based, dictionary-enhanced word embeddings, not multi-sense
 def retrieve_DESA(target_word):
 
-    logging.info("*** WordNet : "+ target_word + ' ...')
-
     defs = []
     examples = []
     synonyms = []
