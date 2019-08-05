@@ -18,7 +18,8 @@ def get_definitions(structure):
     defs_keys = list(filter(lambda key: key.startswith('ow_define'), def_dict_keys))
 
     for key in defs_keys:
-        definitions.append(structure['ow_express'][key]['definition']['text'])
+        if (structure['ow_express'][key]['lang'] == 'English'):
+            definitions.append(structure['ow_express'][key]['definition']['text'])
 
     return definitions
 
@@ -29,14 +30,10 @@ def get_synonyms(structure):
 
     def_dict_keys = (structure['ow_express']).keys()
     defs_keys = list(filter(lambda key: key.startswith('ow_define'), def_dict_keys))
-    logging.info("**********")
-    logging.info(defs_keys)
 
-    defs_keys_EN = list(filter( lambda key: structure['ow_express'][key]['langid']=='English', defs_keys))
-    logging.info(defs_keys_EN)
+    defs_keys_EN = list(filter( lambda key: structure['ow_express'][key]['lang']=='English', defs_keys))
 
     dm_ids = list(map(lambda key: structure['ow_express'][key]['dmid'] ,defs_keys_EN))
-    logging.info(dm_ids)
 
     #n: with English, lang=85
     for dm_id in dm_ids:
@@ -51,17 +48,16 @@ def get_synonyms(structure):
     return synonyms
 
 
-def main():
-    Utils.init_logging("OmegaWiki.log", logging.INFO)
+def retrieve_DS(target_word):
+    #Utils.init_logging("OmegaWiki.log", logging.INFO)
 
-    target_word = 'sea'
     st = get_data_structure(target_word)
     defs = get_definitions(st)
-    logging.info("******** Definitions:")
-    logging.info(defs)
-    logging.info("******** Synonyms:")
+
     synonyms = get_synonyms(st)
-    logging.info(synonyms)
+    synonyms = list(dict.fromkeys(synonyms))
+
+    return defs, synonyms
 
 
 

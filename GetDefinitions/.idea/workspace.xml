@@ -4,7 +4,14 @@
     <list default="true" id="60da2a51-ddc5-4875-9104-07acb177fce2" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/BabelNet.py" beforeDir="false" afterPath="$PROJECT_DIR$/BabelNet.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DBpedia.py" beforeDir="false" afterPath="$PROJECT_DIR$/DBpedia.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/OmegaWiki.log" beforeDir="false" afterPath="$PROJECT_DIR$/OmegaWiki.log" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/OmegaWiki.py" beforeDir="false" afterPath="$PROJECT_DIR$/OmegaWiki.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/RetrieveDefinitions.log" beforeDir="false" afterPath="$PROJECT_DIR$/RetrieveDefinitions.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/RetrieveDefinitions.py" beforeDir="false" afterPath="$PROJECT_DIR$/RetrieveDefinitions.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/Utils.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Wiktionary.py" beforeDir="false" afterPath="$PROJECT_DIR$/Wiktionary.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WordNet.py" beforeDir="false" afterPath="$PROJECT_DIR$/WordNet.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Task1_NotesDocument.docx" beforeDir="false" afterPath="$PROJECT_DIR$/../Task1_NotesDocument.docx" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -18,8 +25,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/BabelNet.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1455">
-              <caret line="100" selection-start-line="100" selection-end-line="100" />
+            <state relative-caret-position="427">
+              <caret line="88" column="43" selection-start-line="88" selection-start-column="43" selection-end-line="88" selection-end-column="43" />
               <folding>
                 <element signature="e#0#12#0" expanded="true" />
               </folding>
@@ -30,8 +37,11 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Wiktionary.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="405">
-              <caret line="30" column="55" selection-start-line="30" selection-start-column="34" selection-end-line="30" selection-end-column="55" />
+            <state relative-caret-position="266">
+              <caret line="26" column="20" lean-forward="true" selection-start-line="26" selection-start-column="20" selection-end-line="26" selection-end-column="20" />
+              <folding>
+                <element signature="e#0#12#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -39,8 +49,32 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/RetrieveDefinitions.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="285">
-              <caret line="26" selection-start-line="26" selection-end-line="26" />
+            <state relative-caret-position="290">
+              <caret line="44" column="53" selection-start-line="44" selection-start-column="53" selection-end-line="44" selection-end-column="53" />
+              <folding>
+                <element signature="e#0#12#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Utils.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="150">
+              <caret line="10" column="26" selection-start-line="10" selection-start-column="26" selection-end-line="10" selection-end-column="26" />
+              <folding>
+                <element signature="e#0#14#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/OmegaWiki.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="477">
+              <caret line="59" column="25" lean-forward="true" selection-start-line="59" selection-start-column="25" selection-end-line="59" selection-end-column="25" />
               <folding>
                 <element signature="e#0#12#0" expanded="true" />
               </folding>
@@ -49,22 +83,10 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/OmegaWiki.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="76">
-              <caret line="31" column="28" selection-start-line="31" selection-start-column="28" selection-end-line="31" selection-end-column="28" />
-              <folding>
-                <element signature="e#0#12#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/DBpedia.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="495">
-              <caret line="35" column="47" selection-start-line="35" selection-start-column="47" selection-end-line="35" selection-end-column="47" />
+            <state relative-caret-position="322">
+              <caret line="28" column="23" selection-start-line="28" selection-start-column="23" selection-end-line="28" selection-end-column="23" />
               <folding>
                 <element signature="e#0#26#0" expanded="true" />
               </folding>
@@ -75,8 +97,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/WordNet.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="435">
-              <caret line="31" column="13" selection-start-line="31" selection-start-column="13" selection-end-line="31" selection-end-column="13" />
+            <state relative-caret-position="242">
+              <caret line="33" column="4" selection-start-line="33" selection-start-column="4" selection-end-line="33" selection-end-column="56" />
               <folding>
                 <element signature="e#0#37#0" expanded="true" />
               </folding>
@@ -99,7 +121,12 @@
       <find>{'fullLemma': 'flora',</find>
       <find>'senseKey': '1483',</find>
       <find>326</find>
+      <find>logg</find>
+      <find>logging.info</find>
     </findStrings>
+    <replaceStrings>
+      <replace />
+    </replaceStrings>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
@@ -107,14 +134,14 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/Utils.py" />
         <option value="$PROJECT_DIR$/StartingWithSPARQL.py" />
-        <option value="$PROJECT_DIR$/Wiktionary.py" />
-        <option value="$PROJECT_DIR$/DBpedia.py" />
-        <option value="$PROJECT_DIR$/RetrieveDefinitions.py" />
-        <option value="$PROJECT_DIR$/WordNet.py" />
-        <option value="$PROJECT_DIR$/BabelNet.py" />
         <option value="$PROJECT_DIR$/OmegaWiki.py" />
+        <option value="$PROJECT_DIR$/Wiktionary.py" />
+        <option value="$PROJECT_DIR$/BabelNet.py" />
+        <option value="$PROJECT_DIR$/WordNet.py" />
+        <option value="$PROJECT_DIR$/Utils.py" />
+        <option value="$PROJECT_DIR$/RetrieveDefinitions.py" />
+        <option value="$PROJECT_DIR$/DBpedia.py" />
       </list>
     </option>
   </component>
@@ -129,6 +156,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -140,7 +168,6 @@
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -206,7 +233,7 @@
     <frame x="0" y="23" width="1440" height="798" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.15164521" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.15379113" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -274,20 +301,50 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/WordNet.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="242">
+          <caret line="33" column="4" selection-start-line="33" selection-start-column="4" selection-end-line="33" selection-end-column="56" />
+          <folding>
+            <element signature="e#0#37#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/Utils.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="120">
-          <caret line="8" selection-start-line="8" selection-end-line="8" />
+        <state relative-caret-position="150">
+          <caret line="10" column="26" selection-start-line="10" selection-start-column="26" selection-end-line="10" selection-end-column="26" />
           <folding>
             <element signature="e#0#14#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/OmegaWiki.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="477">
+          <caret line="59" column="25" lean-forward="true" selection-start-line="59" selection-start-column="25" selection-end-line="59" selection-end-column="25" />
+          <folding>
+            <element signature="e#0#12#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Wiktionary.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="266">
+          <caret line="26" column="20" lean-forward="true" selection-start-line="26" selection-start-column="20" selection-end-line="26" selection-end-column="20" />
+          <folding>
+            <element signature="e#0#12#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/BabelNet.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1455">
-          <caret line="100" selection-start-line="100" selection-end-line="100" />
+        <state relative-caret-position="427">
+          <caret line="88" column="43" selection-start-line="88" selection-start-column="43" selection-end-line="88" selection-end-column="43" />
           <folding>
             <element signature="e#0#12#0" expanded="true" />
           </folding>
@@ -296,8 +353,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/RetrieveDefinitions.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="285">
-          <caret line="26" selection-start-line="26" selection-end-line="26" />
+        <state relative-caret-position="290">
+          <caret line="44" column="53" selection-start-line="44" selection-start-column="53" selection-end-line="44" selection-end-column="53" />
           <folding>
             <element signature="e#0#12#0" expanded="true" />
           </folding>
@@ -306,37 +363,10 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/DBpedia.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="495">
-          <caret line="35" column="47" selection-start-line="35" selection-start-column="47" selection-end-line="35" selection-end-column="47" />
+        <state relative-caret-position="322">
+          <caret line="28" column="23" selection-start-line="28" selection-start-column="23" selection-end-line="28" selection-end-column="23" />
           <folding>
             <element signature="e#0#26#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/WordNet.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="435">
-          <caret line="31" column="13" selection-start-line="31" selection-start-column="13" selection-end-line="31" selection-end-column="13" />
-          <folding>
-            <element signature="e#0#37#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Wiktionary.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="405">
-          <caret line="30" column="55" selection-start-line="30" selection-start-column="34" selection-end-line="30" selection-end-column="55" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/OmegaWiki.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="76">
-          <caret line="31" column="28" selection-start-line="31" selection-start-column="28" selection-end-line="31" selection-end-column="28" />
-          <folding>
-            <element signature="e#0#12#0" expanded="true" />
           </folding>
         </state>
       </provider>

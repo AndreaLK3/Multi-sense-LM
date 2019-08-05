@@ -29,16 +29,16 @@ def process_synset(synset):
 
 # n: POS-tagging and the different roles and meanings of a word are not addressed in this task. The purpose is to obtain
 # graph-based, dictionary-enhanced word embeddings, not multi-sense
-def process_all_synsets_of_word(target_word):
+def retrieve_DESA(target_word):
 
-    logging.info("*** WordNet : "+ target_word)
+    logging.info("*** WordNet : "+ target_word + ' ...')
 
     defs = []
     examples = []
     synonyms = []
     antonyms = []
     syns_ls = wn.synsets(target_word)
-    logging.info(syns_ls)
+    logging.debug(syns_ls)
 
     for syn in syns_ls:
         def_exs_syns_ants = process_synset(syn)

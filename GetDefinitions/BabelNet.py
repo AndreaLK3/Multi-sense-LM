@@ -27,19 +27,19 @@ def get_synset_data(key, synset_ID):
 #   - go into properties > fullLemma. If the original target word is not contained in any of the lemmas, then drop.
 def check_include_synset(target_word, synset_data):
     if synset_data['synsetType'] != 'CONCEPT':
-        logging.info("Named Entity. Ignoring.")
+        logging.debug("Named Entity. Ignoring.")
         return False #we do not deal with Named Entities here
 
     senses = synset_data['senses']
 
     if not (any([True if (sense['type']=='WordNetSense') else False for sense in senses])):
-        logging.info("No WordNet senses. Ignoring.")
+        logging.debug("No WordNet senses. Ignoring.")
         return False
 
     lemmas = [sense['properties']['simpleLemma'] for sense in senses]
 
     if not(any([True if (target_word.lower() == lemma.lower()) else False for lemma in lemmas])):
-        logging.info("Target word not found inside lemmas. Ignoring.")
+        logging.debug("Target word not found inside lemmas. Ignoring.")
         return False
 
     return True
@@ -67,13 +67,14 @@ def extract_synonyms(synset_data):
     #return in lowercase
     return list(map(lambda s: s.lower() ,synonyms))
 
-def retrieve_word_data(key, target_word):
+def retrieve_DES(target_word):
+    key = Utils.BABELNET_KEY
     definitions = []
     examples = []
     synonyms = []
     syns_intros = get_syns_intros_word(key, target_word)
     synset_ids = list(map(lambda syns_intro_dict: syns_intro_dict["id"], syns_intros))
-    logging.info(synset_ids)
+    logging.debug(synset_ids)
 
     for s_id in synset_ids:
         synset_data = get_synset_data(key, s_id)
@@ -92,10 +93,10 @@ def retrieve_word_data(key, target_word):
 
 def main():
     Utils.init_logging("defs_BabelNet.log", logging.INFO)
-    key = '7ba5e9a1-1f42-4d9a-97a7-c888975a60a1'
+    #key = '7ba5e9a1-1f42-4d9a-97a7-c888975a60a1'
 
     target_word = 'sea'
-    logging.info(retrieve_word_data(key, target_word))
+    logging.info(retrieve_DES(target_word))
 
 
 

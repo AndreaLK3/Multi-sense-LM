@@ -6,9 +6,10 @@ import Utils
 
 # Note: all the resources at dbres start with upper case. e.g. Sea, Plant. We modify the target word accordingly
 # Space == underscore, e.g. New_York
-def get_dbpedia_def_of_word(target_word):
+def retrieve_dbpedia_def(target_word):
 
     upcaseStart_target_word = target_word[0].upper() + target_word[1:]
+    logging.info("*** DBpedia : " + target_word + ' ...')
 
     sparql = SW.SPARQLWrapper("http://dbpedia.org/sparql")
     query_string = """
@@ -25,7 +26,7 @@ def get_dbpedia_def_of_word(target_word):
     sparql.setQuery(query_string)
     sparql.setReturnFormat(SW.JSON)
     answer = sparql.query().convert()
-
+    logging.info(answer)
     result = answer['results']['bindings'][0]['encyclopedia_def']['value']
     return result
 
@@ -33,7 +34,7 @@ def get_dbpedia_def_of_word(target_word):
 def main():
     Utils.init_logging("DBpedia.log", logging.INFO)
 
-    ency_def = get_dbpedia_def_of_word('Plant')
+    ency_def = retrieve_dbpedia_def('Plant')
     logging.info(ency_def)
 
 #main()

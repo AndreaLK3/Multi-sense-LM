@@ -24,7 +24,8 @@ def clean_definitions(defs_ls):
     return new_defs
 
 
-def get_defs_and_examples(parser, target_word):
+def retrieve_DE(target_word):
+    parser = WP.WiktionaryParser()
     word_data = parser.fetch(target_word)
 
     defs_structure = word_data[0]['definitions']
@@ -39,8 +40,7 @@ def main():
 
     target_word = "plant"
 
-    parser = WP.WiktionaryParser()
-    definitions, _examples = get_defs_and_examples(parser, target_word)
+    definitions, _examples = retrieve_DE(target_word)
     logging.info(definitions)
 
 
