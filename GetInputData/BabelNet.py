@@ -49,14 +49,18 @@ def check_include_synset(target_word, synset_data):
 # Collect the definitions: glosses > gloss
 def extract_definitions(synset_data):
 
-    accepted_definition_entries = list(filter(lambda defDict: defDict['source'] == 'WIKI', synset_data['glosses']))
+    accepted_definition_entries = list(filter(lambda defDict: defDict['source'] == 'WIKI' and defDict['language']=='EN',
+                                              synset_data['glosses']))
 
     defs = list(map( lambda defDict : (defDict['gloss']) ,accepted_definition_entries))
     return defs
 
 
 def extract_examples(synset_data):
-    return [ex['example'] for ex in synset_data['examples']]
+    all_examples = [ex['example'] for ex in synset_data['examples']]
+    sources_already_considered = ['WIKT','WN','OMWIKI']
+    original_examples = list(filter(lambda eg: eg['source'] not in sources_already_considered , all_examples))
+    return original_examples
 
 def extract_synonyms(synset_data):
     synonyms = []
@@ -82,7 +86,6 @@ def retrieve_DES(target_word):
             definitions.extend(extract_definitions(synset_data))
             examples.extend(extract_examples(synset_data))
             synonyms.extend(extract_synonyms(synset_data))
-
 
     synonyms = list(dict.fromkeys(synonyms))
 
