@@ -1,0 +1,85 @@
+INFO : Word: high ; source: WordNet ; task runtime = 1.36309
+INFO : definitions
+INFO : examples
+INFO : synonyms
+INFO : antonyms
+INFO : Word: move ; source: WordNet ; task runtime = 0.00279
+INFO : definitions
+INFO : examples
+INFO : synonyms
+INFO : antonyms
+INFO : Word: plant ; source: WordNet ; task runtime = 0.00135
+INFO : definitions
+INFO : examples
+INFO : synonyms
+INFO : antonyms
+INFO : Word: sea ; source: WordNet ; task runtime = 0.00033
+INFO : definitions
+INFO : examples
+INFO : synonyms
+INFO : antonyms
+INFO : Word: wide ; source: WordNet ; task runtime = 0.00214
+INFO : definitions
+INFO : examples
+INFO : synonyms
+INFO : antonyms
+INFO : Word: high ; source: Wiktionary ; task runtime = 0.56788
+INFO : definitions
+INFO : examples
+INFO : Word: move ; source: Wiktionary ; task runtime = 0.49157
+INFO : definitions
+INFO : examples
+INFO : Word: plant ; source: Wiktionary ; task runtime = 0.55565
+INFO : definitions
+INFO : examples
+INFO : Word: sea ; source: Wiktionary ; task runtime = 0.41643
+INFO : definitions
+INFO : examples
+INFO : Word: wide ; source: Wiktionary ; task runtime = 0.24396
+INFO : definitions
+INFO : examples
+INFO : Word: high ; source: OmegaWiki ; task runtime = 0.00958
+INFO : definitions
+INFO : synonyms
+INFO : Word: move ; source: OmegaWiki ; task runtime = 0.01162
+INFO : definitions
+INFO : synonyms
+INFO : Word: plant ; source: OmegaWiki ; task runtime = 0.01495
+INFO : definitions
+INFO : synonyms
+INFO : Word: sea ; source: OmegaWiki ; task runtime = 0.02652
+INFO : definitions
+INFO : synonyms
+INFO : Word: wide ; source: OmegaWiki ; task runtime = 0.00416
+INFO : definitions
+INFO : synonyms
+INFO : Word: high ; source: DBpedia ; task runtime = 0.00214
+INFO : encyclopedia_def
+INFO : Word: move ; source: DBpedia ; task runtime = 0.00168
+INFO : encyclopedia_def
+INFO : Word: plant ; source: DBpedia ; task runtime = 0.00175
+INFO : encyclopedia_def
+INFO : Word: sea ; source: DBpedia ; task runtime = 0.00154
+INFO : encyclopedia_def
+INFO : Word: wide ; source: DBpedia ; task runtime = 0.00145
+INFO : encyclopedia_def
+INFO : Word: high ; source: BabelNet ; task runtime = 0.72285
+INFO : definitions
+INFO : examples
+INFO : synonyms
+INFO : Word: move ; source: BabelNet ; task runtime = 0.79511
+INFO : definitions
+INFO : examples
+INFO : synonyms
+INFO : Word: plant ; source: BabelNet ; task runtime = 0.36352
+INFO : definitions
+INFO : examples
+INFO : synonyms
+INFO : Word: sea ; source: BabelNet ; task runtime = 0.35337
+INFO : definitions
+INFO : examples
+INFO : synonyms
+INFO : Word: wide ; source: BabelNet ; task runtime = 0.21852
+INFO : definitions
+INFO : examples
+INFO : synonyms

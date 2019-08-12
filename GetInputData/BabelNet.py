@@ -52,22 +52,26 @@ def extract_definitions(synset_data):
     accepted_definition_entries = list(filter(lambda defDict: defDict['source'] == 'WIKI' and defDict['language']=='EN',
                                               synset_data['glosses']))
 
-    defs = list(map( lambda defDict : (defDict['gloss']) ,accepted_definition_entries))
+    defs = list(map( lambda defDict : (defDict['gloss']), accepted_definition_entries))
     return defs
 
+### Exclude all elements (examples, synonyms) that are also present on one of the other sources
+def valid_element_notADuplicate(element):
+    sources_already_considered = ['WIKT', 'WN', 'OMWIKI']
+    return element['source'] not in sources_already_considered
 
 def extract_examples(synset_data):
-    all_examples = [ex['example'] for ex in synset_data['examples']]
-    sources_already_considered = ['WIKT','WN','OMWIKI']
-    original_examples = list(filter(lambda eg: eg['source'] not in sources_already_considered , all_examples))
-    return original_examples
+    original_examples = list(filter(valid_element_notADuplicate, synset_data['examples']))
+    examples_text = [ex['example'] for ex in original_examples]
+    return examples_text
 
 def extract_synonyms(synset_data):
     synonyms = []
     senses = synset_data['senses']
 
     for s in senses:
-        synonyms.append(s['properties']['simpleLemma'])
+        if valid_element_notADuplicate(s['properties']):
+            synonyms.append(s['properties']['simpleLemma'])
     #return in lowercase
     return list(map(lambda s: s.lower() ,synonyms))
 
