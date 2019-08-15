@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/GetDefinitions.iml" filepath="$PROJECT_DIR$/.idea/GetDefinitions.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/GetInputData.iml" filepath="$PROJECT_DIR$/.idea/GetInputData.iml" />
     </modules>
   </component>
 </project>

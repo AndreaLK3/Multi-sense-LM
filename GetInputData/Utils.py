@@ -1,5 +1,7 @@
 import logging
 import sys
+import pandas as pd
+import pycld2 as cld2
 
 # Constants
 BABELNET_KEY = '7ba5e9a1-1f42-4d9a-97a7-c888975a60a1' #1000 queries per day. Wrote e-mail to request 5000
@@ -24,7 +26,7 @@ H5_synonyms = 'synonyms.h5'
 H5_antonyms = 'antonyms.h5'
 H5_enc_defs = 'enc_defs.h5'
 
-FOLDER_RAW_INPUT = 'RawInputData'
+FOLDER_INPUT = 'InputData'
 
 def init_logging(logfilename, loglevel=logging.INFO):
   for handler in logging.root.handlers[:]:
@@ -37,3 +39,15 @@ def init_logging(logfilename, loglevel=logging.INFO):
       outlog_h = logging.StreamHandler(sys.stdout)
       outlog_h.setLevel(loglevel)
       logging.getLogger().addHandler(outlog_h)
+
+
+def read_hdf5_storage(filepath):
+    df = pd.read_hdf(filepath)
+    return df
+
+
+
+def check_language(text, lang_id):
+    bytes = text.encode('utf-8')
+    isReliable, textBytesFound, details = cld2.detect(bytes)
+    return lang_id.lower() == details[0][1]
