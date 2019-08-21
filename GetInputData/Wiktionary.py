@@ -8,22 +8,34 @@ import re
 def extract_synonyms_or_antonyms(relatedWords_dict):
     nyms_lls = relatedWords_dict['words']
     nyms_lls = clear_grammar_in_brackets(nyms_lls)
-    nyms_lls_clean = list(map(lambda s: s[2:], nyms_lls))  # skip ' :'
-    nyms_string = ','.join(nyms_lls_clean)
-    nyms = nyms_string.split(sep=',')
-    return nyms
+
+    nyms_lls_clean = list(map(lambda s: s[2:] if s.startswith(':') else s, nyms_lls))  # skip ' :' - only if removed parentheses
+    #nyms_string = ','.join(nyms_lls_clean)
+    #nyms = nyms_string.split(sep=',')
+    return nyms_lls_clean
+
+def remove_synonyms_examples(raw_examples_ls):
+    examples = []
+    for eg in raw_examples_ls:
+        if re.match("Synonym", eg) is None:
+            examples.append(eg)
+    return examples
 
 
 def process_defs_subdicts(structure_ls):
 
     defs = []
+    raw_examples_ls = []
     examples = []
     synonyms = []
     antonyms = []
 
     for pos_dict in structure_ls:
         defs.extend(pos_dict['text'][1:]) # skip [0] as it is grammar, not a definition
-        examples.extend(pos_dict['examples'])
+        defs = clear_grammar_in_brackets(defs)
+
+        raw_examples_ls.extend(pos_dict['examples'])
+        examples.extend(remove_synonyms_examples(raw_examples_ls))
         related_words_dictsls = pos_dict['relatedWords']
         for d in related_words_dictsls:
             if d['relationshipType'] == 'synonyms':
@@ -56,7 +68,7 @@ def retrieve_DESA(target_word):
 def main():
     Utils.init_logging('Wiktionary.log', logging.INFO)
 
-    target_word = "plant"
+    target_word = "move"
 
     definitions, _examples, _synonyms, _antonyms = retrieve_DESA(target_word)
     logging.info(definitions)

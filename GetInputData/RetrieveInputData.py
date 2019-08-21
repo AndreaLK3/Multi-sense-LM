@@ -18,8 +18,8 @@ def refine_nyms(nyms_ls, target_word, exclude_multiword=True):
     oneword_nyms = []
 
     space_characters = ['_', ' ']
+    # exclude the target word itself, that comes from synsets
     nyms_ls = [s for s in nyms_ls if s != target_word]
-
 
     if exclude_multiword:
         for syn in nyms_ls:
@@ -29,10 +29,11 @@ def refine_nyms(nyms_ls, target_word, exclude_multiword=True):
                     oneword_flag = False
             if oneword_flag:
                 oneword_nyms.append(syn)
+        nyms_ls = oneword_nyms
 
-    final_nyms = [oneword_nyms[i] for i in range(len(oneword_nyms)) if oneword_nyms[i] not in oneword_nyms[i+1:]]
+    nyms_noduplicates = list(set(nyms_ls))
 
-    return final_nyms
+    return nyms_noduplicates
 
 
 def getWordData(word, sources, tasks_info_dict, open_storage_files, hdf5_min_itemsizes_dict, lang_id):
@@ -53,9 +54,7 @@ def getWordData(word, sources, tasks_info_dict, open_storage_files, hdf5_min_ite
             if current_column in [Utils.SYNONYMS, Utils.ANTONYMS]:
                 if current_column == Utils.SYNONYMS:
                     source_synonyms = refine_nyms(desa[j], word)
-                    logging.debug("source_synonyms : " + str(source_synonyms))
                     synonyms_to_add = list(set(source_synonyms).difference(synonyms_already_inserted))
-                    logging.debug("synonyms_to_add : " + str(synonyms_to_add))
                     column_data = synonyms_to_add
                     synonyms_already_inserted.extend(synonyms_to_add)
                 else:
@@ -65,7 +64,8 @@ def getWordData(word, sources, tasks_info_dict, open_storage_files, hdf5_min_ite
                     antonyms_already_inserted.extend(antonyms_to_add)
             else:
                 column_data = desa[j]
-            column_data_targetLanguage = list(filter(lambda elem: Utils.check_language(elem, lang_id), column_data))
+            column_data_notrail = list(map(lambda s: s.strip(), column_data))
+            column_data_targetLanguage = list(filter(lambda elem: Utils.check_language(elem, lang_id), column_data_notrail))
             logging.debug("column_data_targetLanguage : " + str(column_data_targetLanguage))
             df_data = zip(cycle([word]), column_data_targetLanguage, cycle([source]))
             df_columns = ['word', current_column, 'source']
@@ -82,17 +82,16 @@ def getAndSave_inputData(vocabulary=[], use_mini_vocabulary=True, lang_id='en'):
         os.mkdir(Utils.FOLDER_INPUT)
 
     if use_mini_vocabulary:
-        vocabulary = ["high"]#,"wide", 'low', "plant",  "move", "sea", 'light', ]
-
+        vocabulary = ["high","wide", 'low', "plant",  "move", "sea", 'light']
     # Note: the words of the vocabulary must be processed in alphabetic order, to guarantee that the data in the
     # tables in the HDF5 storage is sorted.
     vocabulary_sorted = sorted(vocabulary)
 
     tasks = [WordNet.retrieve_DESA, Wiktionary.retrieve_DESA, OmegaWiki.retrieve_DS,
-             DBpedia.retrieve_dbpedia_def, BabelNet.retrieve_DES]
-    sources = [Utils.SOURCE_WORDNET, Utils.SOURCE_WIKTIONARY, Utils.SOURCE_OMEGAWIKI, Utils.SOURCE_DBPEDIA, Utils.SOURCE_BABELNET]
-    categories_returned = [[0,1,2,3],[0,1,2,3],[0,2],[4], [0,1,2]]
-    num_columns = [4,4,2,1,3]
+             DBpedia.retrieve_dbpedia_def]#, BabelNet.retrieve_DES]
+    sources = [Utils.SOURCE_WORDNET, Utils.SOURCE_WIKTIONARY, Utils.SOURCE_OMEGAWIKI, Utils.SOURCE_DBPEDIA]#, Utils.SOURCE_BABELNET]
+    categories_returned = [[0,1,2,3],[0,1,2,3],[0,2],[4]]#, [0,1,2]]
+    num_columns = [4,4,2,1]#,3]
 
     tasks_info_dict = {}
     for i in range(len(sources)):
@@ -110,6 +109,7 @@ def getAndSave_inputData(vocabulary=[], use_mini_vocabulary=True, lang_id='en'):
 
 
     for word in vocabulary_sorted:
+        logging.info("*** Word: " + word)
         getWordData(word, sources, tasks_info_dict, open_storage_files, hdf5_min_itemsizes_dict, lang_id)
 
 

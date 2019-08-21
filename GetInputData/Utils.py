@@ -2,6 +2,8 @@ import logging
 import sys
 import pandas as pd
 import langid
+import nltk
+import string
 
 # Constants
 BABELNET_KEY = '7ba5e9a1-1f42-4d9a-97a7-c888975a60a1' #1000 queries per day. Wrote e-mail to request 5000
@@ -18,7 +20,6 @@ EXAMPLES = 'examples'
 SYNONYMS = 'synonyms'
 ANTONYMS = 'antonyms'
 ENCYCLOPEDIA_DEF = 'encyclopedia_def'
-
 
 FOLDER_INPUT = '../InputData'
 
@@ -40,9 +41,21 @@ def read_hdf5_storage(filepath):
     return df
 
 
+
+### Note: must add the vocabularies of other languages
 def check_language(text, lang_id):
+
     languages_lts = langid.rank(text)
-    possible_match = (lang_id.lower() in [lang_tuple[0] for lang_tuple in languages_lts[0:3]])
+    possible_match = (lang_id.lower() in [lang_tuple[0] for lang_tuple in languages_lts[0:5]])
+
+    text_tokens = nltk.tokenize.word_tokenize(text.lower())
+    text_tokens_nopunct = list(filter(lambda t: t not in string.punctuation, text_tokens))
+
+    if not(possible_match):
+        logging.warning("Examining vocabulary for element : '" + str(text) +"'")
+        if all([t in nltk.corpus.words.words() for t in text_tokens_nopunct]):
+            possible_match = True #all the words can be found in the vocabulary of the target language
+
     if not possible_match:
-        logging.warning("Element : " + str(text) + " not of language : " + lang_id)
+        logging.warning("Not of language : " + lang_id + " Element : '" + str(text) + "'")
     return possible_match
