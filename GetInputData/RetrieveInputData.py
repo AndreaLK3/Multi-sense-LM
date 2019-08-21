@@ -7,9 +7,8 @@ import Wiktionary
 import OmegaWiki
 import pandas as pd
 import os
-import pycld2
 from itertools import cycle
-
+import re
 
 NUM_WORDS_IN_FILE = 5000
 HDF5_BASE_CHARSIZE = 1024
@@ -54,7 +53,9 @@ def getWordData(word, sources, tasks_info_dict, open_storage_files, hdf5_min_ite
             if current_column in [Utils.SYNONYMS, Utils.ANTONYMS]:
                 if current_column == Utils.SYNONYMS:
                     source_synonyms = refine_nyms(desa[j], word)
+                    logging.debug("source_synonyms : " + str(source_synonyms))
                     synonyms_to_add = list(set(source_synonyms).difference(synonyms_already_inserted))
+                    logging.debug("synonyms_to_add : " + str(synonyms_to_add))
                     column_data = synonyms_to_add
                     synonyms_already_inserted.extend(synonyms_to_add)
                 else:
@@ -65,6 +66,7 @@ def getWordData(word, sources, tasks_info_dict, open_storage_files, hdf5_min_ite
             else:
                 column_data = desa[j]
             column_data_targetLanguage = list(filter(lambda elem: Utils.check_language(elem, lang_id), column_data))
+            logging.debug("column_data_targetLanguage : " + str(column_data_targetLanguage))
             df_data = zip(cycle([word]), column_data_targetLanguage, cycle([source]))
             df_columns = ['word', current_column, 'source']
             df = pd.DataFrame(data=df_data, columns=df_columns)
@@ -74,13 +76,13 @@ def getWordData(word, sources, tasks_info_dict, open_storage_files, hdf5_min_ite
 
 
 
-def getAndSave_inputData(vocabulary=[], lang_id='en'):
+def getAndSave_inputData(vocabulary=[], use_mini_vocabulary=True, lang_id='en'):
     Utils.init_logging("RetrieveInputData.log", logging.INFO)
     if not(os.path.exists(Utils.FOLDER_INPUT)):
         os.mkdir(Utils.FOLDER_INPUT)
 
-    toy_vocabulary = ["high", "sea"] #'light', 'low', "wide", "plant",  "move"
-    vocabulary = toy_vocabulary
+    if use_mini_vocabulary:
+        vocabulary = ["high"]#,"wide", 'low', "plant",  "move", "sea", 'light', ]
 
     # Note: the words of the vocabulary must be processed in alphabetic order, to guarantee that the data in the
     # tables in the HDF5 storage is sorted.
@@ -102,7 +104,7 @@ def getAndSave_inputData(vocabulary=[], lang_id='en'):
                                Utils.SYNONYMS:HDF5_BASE_CHARSIZE/2, Utils.ANTONYMS:HDF5_BASE_CHARSIZE/2,
                                Utils.ENCYCLOPEDIA_DEF:4*HDF5_BASE_CHARSIZE}
 
-    storage_filenames = [Utils.H5_raw_defs, Utils.H5_examples, Utils.H5_synonyms, Utils.H5_antonyms, Utils.H5_enc_defs]
+    storage_filenames = [categ + ".h5" for categ in CATEGORIES]
     storage_filepaths = list(map(lambda fn: os.path.join(Utils.FOLDER_INPUT, fn), storage_filenames))
     open_storage_files = [ pd.HDFStore(fname, mode='w') for fname in storage_filepaths] #reset HDF5 archives
 

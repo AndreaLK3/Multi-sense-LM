@@ -1,7 +1,7 @@
 import logging
 import sys
 import pandas as pd
-import pycld2 as cld2
+import langid
 
 # Constants
 BABELNET_KEY = '7ba5e9a1-1f42-4d9a-97a7-c888975a60a1' #1000 queries per day. Wrote e-mail to request 5000
@@ -19,14 +19,8 @@ SYNONYMS = 'synonyms'
 ANTONYMS = 'antonyms'
 ENCYCLOPEDIA_DEF = 'encyclopedia_def'
 
-#Filenames & folders
-H5_raw_defs = 'raw_defs.h5'
-H5_examples = 'examples.h5'
-H5_synonyms = 'synonyms.h5'
-H5_antonyms = 'antonyms.h5'
-H5_enc_defs = 'enc_defs.h5'
 
-FOLDER_INPUT = 'InputData'
+FOLDER_INPUT = '../InputData'
 
 def init_logging(logfilename, loglevel=logging.INFO):
   for handler in logging.root.handlers[:]:
@@ -46,8 +40,9 @@ def read_hdf5_storage(filepath):
     return df
 
 
-
 def check_language(text, lang_id):
-    bytes = text.encode('utf-8')
-    isReliable, textBytesFound, details = cld2.detect(bytes)
-    return lang_id.lower() == details[0][1]
+    languages_lts = langid.rank(text)
+    possible_match = (lang_id.lower() in [lang_tuple[0] for lang_tuple in languages_lts[0:3]])
+    if not possible_match:
+        logging.warning("Element : " + str(text) + " not of language : " + lang_id)
+    return possible_match
