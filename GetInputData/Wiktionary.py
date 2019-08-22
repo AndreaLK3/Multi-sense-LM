@@ -2,6 +2,7 @@ import Utils
 import logging
 import wiktionaryparser as WP
 import re
+import os
 
 #URL = "https://en.wiktionary.org/w/api.php"
 
@@ -25,7 +26,7 @@ def remove_synonyms_examples(raw_examples_ls):
 def process_defs_subdicts(structure_ls):
 
     defs = []
-    raw_examples_ls = []
+
     examples = []
     synonyms = []
     antonyms = []
@@ -34,15 +35,15 @@ def process_defs_subdicts(structure_ls):
         defs.extend(pos_dict['text'][1:]) # skip [0] as it is grammar, not a definition
         defs = clear_grammar_in_brackets(defs)
 
-        raw_examples_ls.extend(pos_dict['examples'])
+        raw_examples_ls = pos_dict['examples']
         examples.extend(remove_synonyms_examples(raw_examples_ls))
+        logging.debug("len(examples) = " + str(len(examples)))
         related_words_dictsls = pos_dict['relatedWords']
         for d in related_words_dictsls:
             if d['relationshipType'] == 'synonyms':
                 synonyms = extract_synonyms_or_antonyms(d)
             if d['relationshipType'] == 'antonyms':
                 antonyms = extract_synonyms_or_antonyms(d)
-
 
     return (defs, examples, synonyms, antonyms)
 
@@ -66,12 +67,11 @@ def retrieve_DESA(target_word):
 
 
 def main():
-    Utils.init_logging('Wiktionary.log', logging.INFO)
+    Utils.init_logging(os.path.join("GetInputData",'Wiktionary.log'), logging.INFO)
 
-    target_word = "move"
-
-    definitions, _examples, _synonyms, _antonyms = retrieve_DESA(target_word)
-    logging.info(definitions)
+    target_word = "high"
+    definitions, examples, _synonyms, _antonyms = retrieve_DESA(target_word)
+    logging.info(examples)
 
 
 #main()

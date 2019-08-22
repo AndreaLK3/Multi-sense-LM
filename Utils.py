@@ -20,8 +20,10 @@ EXAMPLES = 'examples'
 SYNONYMS = 'synonyms'
 ANTONYMS = 'antonyms'
 ENCYCLOPEDIA_DEF = 'encyclopedia_def'
+PREP_DEFINITIONS = 'preprocessed_definitions'
+PREP_EXAMPLES = 'preprocessed_examples'
 
-FOLDER_INPUT = '../InputData'
+FOLDER_INPUT = 'InputData'
 
 def init_logging(logfilename, loglevel=logging.INFO):
   for handler in logging.root.handlers[:]:
@@ -59,3 +61,6 @@ def check_language(text, lang_id):
     if not possible_match:
         logging.warning("Not of language : " + lang_id + " Element : '" + str(text) + "'")
     return possible_match
+
+
+HDF5_BASE_CHARSIZE = 1024

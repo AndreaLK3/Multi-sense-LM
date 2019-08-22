@@ -1,17 +1,16 @@
 import Utils
 import logging
-import WordNet
-import BabelNet
-import DBpedia
-import Wiktionary
-import OmegaWiki
+import GetInputData.WordNet as WordNet
+import GetInputData.DBpedia as DBpedia
+import GetInputData.Wiktionary as Wiktionary
+import GetInputData.OmegaWiki as OmegaWiki
+import GetInputData.BabelNet as BabelNet
 import pandas as pd
 import os
 from itertools import cycle
-import re
+
 
 NUM_WORDS_IN_FILE = 5000
-HDF5_BASE_CHARSIZE = 1024
 CATEGORIES = [Utils.DEFINITIONS, Utils.EXAMPLES, Utils.SYNONYMS, Utils.ANTONYMS, Utils.ENCYCLOPEDIA_DEF]
 
 def refine_nyms(nyms_ls, target_word, exclude_multiword=True):
@@ -77,7 +76,7 @@ def getWordData(word, sources, tasks_info_dict, open_storage_files, hdf5_min_ite
 
 
 def getAndSave_inputData(vocabulary=[], use_mini_vocabulary=True, lang_id='en'):
-    Utils.init_logging("RetrieveInputData.log", logging.INFO)
+    Utils.init_logging(os.path.join("GetInputData","RetrieveInputData.log"), logging.INFO)
     if not(os.path.exists(Utils.FOLDER_INPUT)):
         os.mkdir(Utils.FOLDER_INPUT)
 
@@ -88,20 +87,20 @@ def getAndSave_inputData(vocabulary=[], use_mini_vocabulary=True, lang_id='en'):
     vocabulary_sorted = sorted(vocabulary)
 
     tasks = [WordNet.retrieve_DESA, Wiktionary.retrieve_DESA, OmegaWiki.retrieve_DS,
-             DBpedia.retrieve_dbpedia_def]#, BabelNet.retrieve_DES]
-    sources = [Utils.SOURCE_WORDNET, Utils.SOURCE_WIKTIONARY, Utils.SOURCE_OMEGAWIKI, Utils.SOURCE_DBPEDIA]#, Utils.SOURCE_BABELNET]
-    categories_returned = [[0,1,2,3],[0,1,2,3],[0,2],[4]]#, [0,1,2]]
-    num_columns = [4,4,2,1]#,3]
+             DBpedia.retrieve_dbpedia_def, BabelNet.retrieve_DES]
+    sources = [Utils.SOURCE_WORDNET, Utils.SOURCE_WIKTIONARY, Utils.SOURCE_OMEGAWIKI, Utils.SOURCE_DBPEDIA, Utils.SOURCE_BABELNET]
+    categories_returned = [[0,1,2,3],[0,1,2,3],[0,2],[4], [0,1,2]]
+    num_columns = [4,4,2,1,3]
 
     tasks_info_dict = {}
     for i in range(len(sources)):
         tasks_info_dict[sources[i]]={'task':tasks[i], 'categories':categories_returned[i],'n_cols':num_columns[i]}
 
 
-    hdf5_min_itemsizes_dict = {'word': HDF5_BASE_CHARSIZE/4, 'source':HDF5_BASE_CHARSIZE/4,
-                               Utils.DEFINITIONS:HDF5_BASE_CHARSIZE, Utils.EXAMPLES:HDF5_BASE_CHARSIZE,
-                               Utils.SYNONYMS:HDF5_BASE_CHARSIZE/2, Utils.ANTONYMS:HDF5_BASE_CHARSIZE/2,
-                               Utils.ENCYCLOPEDIA_DEF:4*HDF5_BASE_CHARSIZE}
+    hdf5_min_itemsizes_dict = {'word': Utils.HDF5_BASE_CHARSIZE / 4, 'source': Utils.HDF5_BASE_CHARSIZE / 4,
+                               Utils.DEFINITIONS: Utils.HDF5_BASE_CHARSIZE, Utils.EXAMPLES: Utils.HDF5_BASE_CHARSIZE,
+                               Utils.SYNONYMS: Utils.HDF5_BASE_CHARSIZE / 2, Utils.ANTONYMS: Utils.HDF5_BASE_CHARSIZE / 2,
+                               Utils.ENCYCLOPEDIA_DEF: 4 * Utils.HDF5_BASE_CHARSIZE}
 
     storage_filenames = [categ + ".h5" for categ in CATEGORIES]
     storage_filepaths = list(map(lambda fn: os.path.join(Utils.FOLDER_INPUT, fn), storage_filenames))
