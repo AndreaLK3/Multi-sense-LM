@@ -1,0 +1,5 @@
+INFO : loading projection weights from WordEmbeddings/GoogleNews-vectors-negative300.bin
+INFO : loaded (3000000, 300) matrix from WordEmbeddings/GoogleNews-vectors-negative300.bin
+INFO : (300,)
+INFO : [ 0.30664062  0.06835938 -0.16015625  0.11962891 -0.00656128  0.00439453
+  0.14453125  0.06201172  0.07177734  0.0267334 ]
