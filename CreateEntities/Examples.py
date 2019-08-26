@@ -103,6 +103,7 @@ def SkipGram_graph(embeddings_atstart, vocab_size, hidden_size_d, batch_size):
             return inputs, labels, loss
 
 
+
 def main():
     Utils.init_logging(os.path.join("CreateEntities", "Examples.log"), logging.INFO)
 
@@ -120,7 +121,6 @@ def main():
     # context words, if the sliding window size is 2.
 
     batch_size = 8
-
 
     window_radius = 5
     sentences_tokenized_lls = load_input_examples()

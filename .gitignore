@@ -1,2 +1,4 @@
 *.bin
 *.h5
+WordEmbeddings/
+WikiText-103/
