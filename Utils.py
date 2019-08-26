@@ -24,6 +24,9 @@ PREP_DEFINITIONS = 'preprocessed_definitions'
 PREP_EXAMPLES = 'preprocessed_examples'
 
 FOLDER_INPUT = 'InputData'
+FOLDER_WORD_EMBEDDINGS = 'WordEmbeddings'
+
+WORD2VEC_FILENAME = 'GoogleNews-vectors-negative300.bin'
 
 def init_logging(logfilename, loglevel=logging.INFO):
   for handler in logging.root.handlers[:]:
