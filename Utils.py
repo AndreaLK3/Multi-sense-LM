@@ -25,8 +25,14 @@ PREP_EXAMPLES = 'preprocessed_examples'
 
 FOLDER_INPUT = 'InputData'
 FOLDER_WORD_EMBEDDINGS = 'WordEmbeddings'
+FOLDER_WT103 = 'WikiText-103'
 
 WORD2VEC_FILENAME = 'GoogleNews-vectors-negative300.bin'
+WT103_TRAIN_FILE = 'wiki.train.tokens'
+WT103_VALID_FILE = 'wiki.valid.tokens'
+WT103_TEST_FILE = 'wiki.test.tokens'
+
+UNK_TOKEN = '<unk>'
 
 def init_logging(logfilename, loglevel=logging.INFO):
   for handler in logging.root.handlers[:]:
