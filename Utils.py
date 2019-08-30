@@ -83,19 +83,20 @@ def check_language(text, lang_id):
 # Utility for processing entities, word embeddings & co
 def count_tokens_in_corpus(corpus_txt_filepath):
 
-    file = open(corpus_txt_filepath, "r", encoding="utf-8")
-    num_tokens = 0
+    file = open(corpus_txt_filepath, "r") # encoding="utf-8"
+    tot_tokens = 0
 
     for i, line in enumerate(file):
         if line == '':
             break
+        # tokens_in_line = nltk.tokenize.word_tokenize(line)
         line_noPuncts = re.sub('['+string.punctuation.replace('-', '')+']', ' ', line)
         tokens_in_line = nltk.tokenize.word_tokenize(line_noPuncts)
-        num_tokens = num_tokens + len(tokens_in_line)
+        tot_tokens = tot_tokens + len(tokens_in_line)
 
-        if i % 1000 == 0:
-            print("Reading in line n. : " + str(i) + ' ; number of tokens encountered: ' + str(num_tokens))
+        if i % 2000 == 0:
+            print("Reading in line n. : " + str(i) + ' ; number of tokens encountered: ' + str(tot_tokens))
 
     file.close()
 
-    return num_tokens
+    return tot_tokens

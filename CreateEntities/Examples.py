@@ -75,7 +75,6 @@ class CorpusTokenizerIterator():
     def __init__(self, corpus_filepath, batch_lines):
         self.corpus_filepath = corpus_filepath
         self.batch_lines = batch_lines
-        self.current_tokens = []
         self.puncts_nohyphen_pattern_str = '[' + string.punctuation.replace('-', '') + ']'
         self.file_handler = open(corpus_filepath, "r")
         #self.flag_eof_reached = False
@@ -84,14 +83,15 @@ class CorpusTokenizerIterator():
         return self
 
     def __next__(self): # Python 2: def next(self)
-            for i in range(0,self.batch_lines):
-                self.next_line = self.file_handler.readline()
-                logging.debug('{'+ self.next_line +'}')
-                if self.next_line == '':
-                    raise StopIteration
-                self.next_line_noPuncts = re.sub(self.puncts_nohyphen_pattern_str, ' ', self.next_line)
-                self.current_tokens.append(nltk.tokenize.word_tokenize(self.next_line_noPuncts))
-            return self.current_tokens
+        self.current_tokens = []
+        for i in range(0,self.batch_lines):
+            self.next_line = self.file_handler.readline()
+            logging.debug('{'+ self.next_line +'}')
+            if self.next_line == '':
+                raise StopIteration
+            self.next_line_noPuncts = re.sub(self.puncts_nohyphen_pattern_str, ' ', self.next_line)
+            self.current_tokens.append(nltk.tokenize.word_tokenize(self.next_line_noPuncts))
+        return self.current_tokens
 
 
 def word_to_vocab_index(word, vocabulary_ls):
@@ -120,8 +120,9 @@ def main():
     # Temporary vocabulary from: nltk
     vocabulary = nltk.corpus.words.words()
     vocabulary_h5 = pd.HDFStore(os.path.join(Utils.FOLDER_WORD_EMBEDDINGS, Utils.WT_MYVOCAB_FILE), mode='w')
-    vocab_h5_itemsizes = {'word': Utils.HDF5_BASE_CHARSIZE / 4, 'frequency': Utils.HDF5_BASE_CHARSIZE / 4}
-    vocabulary_h5.append(key='vocabulary', value=vocabulary, min_itemsize=vocab_h5_itemsizes)
+    vocab_h5_itemsizes = {'word': Utils.HDF5_BASE_CHARSIZE / 4, 'frequency': Utils.HDF5_BASE_CHARSIZE / 8}
+    vocab_df = pd.DataFrame(data=list(zip(vocabulary.keys(), vocabulary.values())), columns=['word','frequency'])
+    vocabulary_h5.append(key='vocabulary', value=vocab_df, min_itemsize=vocab_h5_itemsizes)
 
     # In skip gram architecture of word2vec, the input is the center word and the predictions are the context words.
     # Consider an array of words W, if W(i) is the input (center word), then W(i-2), W(i-1), W(i+1), and W(i+2) are the
@@ -176,40 +177,36 @@ def main():
 
 def create_vocabulary_from_corpus(corpus_txt_filepath):
 
-    batch_lines = 4096
-    corpus_tok_iter = CorpusTokenizerIterator(corpus_txt_filepath, batch_lines)
+    #corpus_tok_iter = CorpusTokenizerIterator(corpus_txt_filepath, batch_lines)
     vocab_dict = {}
     tot_tokens = 0
-    w2v_model = gensim.models.Word2Vec(min_count=5)
+    w2v_model = gensim.models.Word2Vec(min_count=1)
 
     i = 0
-    while True:
-        try:
-            time_01 = time.time()
-            corpus_segment_lls = corpus_tok_iter.__next__()
-            logging.info('Tokenizing corpus and creating the vocabulary. Processing batch ' + str(
-                i) + '. Line: ' + str(batch_lines*i) + '. Token: ' + str(tot_tokens))
-            time_02 = time.time()
-            i = i + 1
+    time_prev = time.time()
+    for i, line in enumerate(open(corpus_txt_filepath, "r", encoding="utf-8")):
+        if line == '':
+            break
+        # tokens_in_line = nltk.tokenize.word_tokenize(line)
+        line_noPuncts = re.sub('[' + string.punctuation.replace('-', '') + ']', ' ', line)
+        tokens_in_line = nltk.tokenize.word_tokenize(line_noPuncts)
+        tot_tokens = tot_tokens + len(tokens_in_line)
+
+        if i % 2000 == 0:
+            time_next = time.time()
+            time_elapsed = round( time_next - time_prev, 4)
+            print("Reading in line n. : " + str(i) + ' ; number of tokens encountered: ' + str(tot_tokens) +
+                  " ; time elapsed = " + str(time_elapsed) + " s")
+            time_prev = time.time()
+
+        different_tokens = set(token for token in tokens_in_line)
+
+        update_lts = [(token, line.count(token) ) for token in different_tokens]
+        for word, freq in update_lts:
             try:
-                w2v_model.build_vocab(sentences=corpus_segment_lls, update=True, progress_per=10000,
-                                      keep_raw_vocab=False, trim_rule=None)
-            except RuntimeError: # "You cannot do an online vocabulary-update of a model which has no prior vocabulary."
-                w2v_model.build_vocab(sentences=corpus_segment_lls, update=False, progress_per=10000,
-                                      keep_raw_vocab=False, trim_rule=None)
-            for line in corpus_segment_lls:
-                # update_lts = [(token, line.count(token) ) for token in line]
-                tot_tokens = tot_tokens + len(line)
-                # for word, freq in update_lts:
-                #     try:
-                #         prev_freq = vocab_dict[word]
-                #         vocab_dict[word] = prev_freq + freq
-                #     except KeyError:
-                #         vocab_dict[word] = freq
-            time_03 = time.time()
-            logging.info('Batch : '+ str(i-1) +
-                         '. Extraction from corpus=' + str(round(time_02 - time_01,4))
-                         + 's. Appending to vocabulary=' + str(round(time_03 - time_02,4)) + 's \n'  )
-        except StopIteration:
-            #return vocab_dict
-            return w2v_model.vocabulary
+                prev_freq = vocab_dict[word]
+                vocab_dict[word] = prev_freq + freq
+            except KeyError:
+                vocab_dict[word] = freq
+
+    return vocab_dict
