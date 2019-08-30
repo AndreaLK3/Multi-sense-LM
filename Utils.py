@@ -36,10 +36,12 @@ WT_TRAIN_FILE = 'wiki.train.tokens'
 WT_VALID_FILE = 'wiki.valid.tokens'
 WT_TEST_FILE = 'wiki.test.tokens'
 WT_MYVOCAB_FILE = 'vocabulary_fromWikiText.h5'
+WT_MYVOCAB_MINITEST_FILE = 'vocabulary_miniTest.h5'
 
 SKIPGRAM_INPUTWORDPAIRS_FILENAME = 'SkipGram_inputWordPairs.h5'
 
-UNK_TOKEN = '<unk>'
+UNK_TOKEN = '<UNK>'
+NUM_TOKEN = '<NUM>'
 
 
 def init_logging(logfilename, loglevel=logging.INFO):
