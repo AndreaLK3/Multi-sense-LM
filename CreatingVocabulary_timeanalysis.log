@@ -1,0 +1,1167 @@
+****** Manually creating a dictionary of words & frequences **********
+*******************************************************************
+
+INFO : Tokenizing corpus and creating the vocabulary. Processing batch 0. Line: 0. Token: 0
+INFO : Batch : 0. Extraction from corpus=0.9278s. Appending to vocabulary=0.3968s
+
+INFO : Tokenizing corpus and creating the vocabulary. Processing batch 1. Line: 4096. Token: 198376
+INFO : Batch : 1. Extraction from corpus=0.9153s. Appending to vocabulary=0.7468s
+
+INFO : Tokenizing corpus and creating the vocabulary. Processing batch 2. Line: 8192. Token: 589523
+INFO : Batch : 2. Extraction from corpus=0.9215s. Appending to vocabulary=1.1561s
+
+INFO : Tokenizing corpus and creating the vocabulary. Processing batch 3. Line: 12288. Token: 1182745
+INFO : Batch : 3. Extraction from corpus=0.9156s. Appending to vocabulary=1.5287s
+
+INFO : Tokenizing corpus and creating the vocabulary. Processing batch 4. Line: 16384. Token: 1973495
+INFO : Batch : 4. Extraction from corpus=0.8939s. Appending to vocabulary=1.8849s
+
+INFO : Tokenizing corpus and creating the vocabulary. Processing batch 5. Line: 20480. Token: 2956691
+INFO : Batch : 5. Extraction from corpus=0.8734s. Appending to vocabulary=2.2324s
+
+INFO : Tokenizing corpus and creating the vocabulary. Processing batch 6. Line: 24576. Token: 4125727
+INFO : Batch : 6. Extraction from corpus=0.9249s. Appending to vocabulary=2.6878s
+
+INFO : Tokenizing corpus and creating the vocabulary. Processing batch 7. Line: 28672. Token: 5494963
+INFO : Batch : 7. Extraction from corpus=1.0034s. Appending to vocabulary=3.0805s
+
+INFO : Tokenizing corpus and creating the vocabulary. Processing batch 8. Line: 32768. Token: 7076473
+INFO : Batch : 8. Extraction from corpus=0.9611s. Appending to vocabulary=3.4017s
+
+INFO : Tokenizing corpus and creating the vocabulary. Processing batch 9. Line: 36864. Token: 8859765
+INFO : Batch : 9. Extraction from corpus=1.0694s. Appending to vocabulary=3.7864s
+
+INFO : Tokenizing corpus and creating the vocabulary. Processing batch 10. Line: 40960. Token: 10847408
+INFO : Batch : 10. Extraction from corpus=0.9498s. Appending to vocabulary=4.2113s
+
+INFO : Tokenizing corpus and creating the vocabulary. Processing batch 11. Line: 45056. Token: 13045302
+INFO : Batch : 11. Extraction from corpus=0.8098s. Appending to vocabulary=4.5113s
+
+INFO : Tokenizing corpus and creating the vocabulary. Processing batch 12. Line: 49152. Token: 15405053
+INFO : Batch : 12. Extraction from corpus=0.882s. Appending to vocabulary=4.8723s
+
+INFO : Tokenizing corpus and creating the vocabulary. Processing batch 13. Line: 53248. Token: 17953137
+INFO : Batch : 13. Extraction from corpus=0.9669s. Appending to vocabulary=5.2723s
+
+INFO : Tokenizing corpus and creating the vocabulary. Processing batch 14. Line: 57344. Token: 20711840
+INFO : Batch : 14. Extraction from corpus=0.87s. Appending to vocabulary=5.6036s
+
+INFO : Tokenizing corpus and creating the vocabulary. Processing batch 15. Line: 61440. Token: 23655494
+INFO : Batch : 15. Extraction from corpus=0.9453s. Appending to vocabulary=5.993s
+
+INFO : Tokenizing corpus and creating the vocabulary. Processing batch 16. Line: 65536. Token: 26803447
+INFO : Batch : 16. Extraction from corpus=0.9023s. Appending to vocabulary=6.3525s
+
+INFO : Tokenizing corpus and creating the vocabulary. Processing batch 17. Line: 69632. Token: 30145743
+INFO : Batch : 17. Extraction from corpus=0.8814s. Appending to vocabulary=6.6992s
+
+INFO : Tokenizing corpus and creating the vocabulary. Processing batch 18. Line: 73728. Token: 33672428
+INFO : Batch : 18. Extraction from corpus=0.8719s. Appending to vocabulary=7.1329s
+
+INFO : Tokenizing corpus and creating the vocabulary. Processing batch 19. Line: 77824. Token: 37382609
+INFO : Batch : 19. Extraction from corpus=0.9881s. Appending to vocabulary=7.6615s
+
+INFO : Tokenizing corpus and creating the vocabulary. Processing batch 20. Line: 81920. Token: 41303082
+INFO : Batch : 20. Extraction from corpus=0.9031s. Appending to vocabulary=8.5252s
+
+INFO : Tokenizing corpus and creating the vocabulary. Processing batch 21. Line: 86016. Token: 45414628
+INFO : Batch : 21. Extraction from corpus=1.014s. Appending to vocabulary=8.6476s
+
+INFO : Tokenizing corpus and creating the vocabulary. Processing batch 22. Line: 90112. Token: 49732248
+INFO : Batch : 22. Extraction from corpus=0.9084s. Appending to vocabulary=8.9876s
+
+INFO : Tokenizing corpus and creating the vocabulary. Processing batch 23. Line: 94208. Token: 54242651
+INFO : Batch : 23. Extraction from corpus=0.8706s. Appending to vocabulary=9.1925s
+
+INFO : Tokenizing corpus and creating the vocabulary. Processing batch 24. Line: 98304. Token: 58936299
+INFO : Batch : 24. Extraction from corpus=1.0035s. Appending to vocabulary=10.6142s
+
+INFO : Tokenizing corpus and creating the vocabulary. Processing batch 25. Line: 102400. Token: 63837554
+INFO : Batch : 25. Extraction from corpus=1.1883s. Appending to vocabulary=10.6162s
+
+INFO : Tokenizing corpus and creating the vocabulary. Processing batch 26. Line: 106496. Token: 68940059
+INFO : Batch : 26. Extraction from corpus=0.95s. Appending to vocabulary=10.4955s
+
+INFO : Tokenizing corpus and creating the vocabulary. Processing batch 27. Line: 110592. Token: 74246038
+INFO : Batch : 27. Extraction from corpus=1.2055s. Appending to vocabulary=11.7485s
+
+INFO : Tokenizing corpus and creating the vocabulary. Processing batch 28. Line: 114688. Token: 79751888
+INFO : Batch : 28. Extraction from corpus=0.9539s. Appending to vocabulary=11.1179s
+
+INFO : Tokenizing corpus and creating the vocabulary. Processing batch 29. Line: 118784. Token: 85465333
+INFO : Batch : 29. Extraction from corpus=0.9408s. Appending to vocabulary=11.5903s
+
+INFO : Tokenizing corpus and creating the vocabulary. Processing batch 30. Line: 122880. Token: 91375418
+INFO : Batch : 30. Extraction from corpus=0.9024s. Appending to vocabulary=11.7938s
+
+INFO : Tokenizing corpus and creating the vocabulary. Processing batch 31. Line: 126976. Token: 97479938
+INFO : Batch : 31. Extraction from corpus=1.1384s. Appending to vocabulary=12.1583s
+
+INFO : Tokenizing corpus and creating the vocabulary. Processing batch 32. Line: 131072. Token: 103790355
+INFO : Batch : 32. Extraction from corpus=0.8945s. Appending to vocabulary=12.564s
+
+****** Using and ad-hoc Word2Vec model (build_vocab) **********
+*******************************************************************
+
+INFO : Tokenizing corpus and creating the vocabulary. Processing batch 33. Line: 135168. Token: 110294113
+INFO : Tokenizing corpus and creating the vocabulary. Processing batch 0. Line: 0. Token: 0
+INFO : collecting all words and their counts
+INFO : PROGRESS: at sentence #0, processed 0 words, keeping 0 word types
+INFO : collected 20410 word types from a corpus of 198376 raw words and 4096 sentences
+INFO : Updating model with new vocabulary
+INFO : New added 5229 unique words (20% of original 25639) and increased the count of 5229 pre-existing words (20% of original 25639)
+INFO : deleting the raw counts dictionary of 20410 items
+INFO : sample=0.001 downsamples 68 most-common words
+INFO : downsampling leaves estimated 258703 word corpus (149.3% of prior 173252)
+INFO : estimated required memory for 10458 words and 100 dimensions: 13595400 bytes
+INFO : updating layer weights
+INFO : Tokenizing corpus and creating the vocabulary. Processing batch 0. Line: 0. Token: 0
+INFO : collecting all words and their counts
+INFO : PROGRESS: at sentence #0, processed 0 words, keeping 0 word types
+INFO : collected 20410 word types from a corpus of 198376 raw words and 4096 sentences
+INFO : Updating model with new vocabulary
+INFO : New added 5229 unique words (20% of original 25639) and increased the count of 5229 pre-existing words (20% of original 25639)
+INFO : deleting the raw counts dictionary of 20410 items
+INFO : sample=0.001 downsamples 68 most-common words
+INFO : downsampling leaves estimated 258703 word corpus (149.3% of prior 173252)
+INFO : estimated required memory for 10458 words and 100 dimensions: 13595400 bytes
+INFO : updating layer weights
+INFO : collecting all words and their counts
+INFO : PROGRESS: at sentence #0, processed 0 words, keeping 0 word types
+INFO : collected 20410 word types from a corpus of 198376 raw words and 4096 sentences
+INFO : Loading a fresh vocabulary
+INFO : effective_min_count=5 retains 5229 unique words (25% of original 20410, drops 15181)
+INFO : effective_min_count=5 leaves 173252 word corpus (87% of original 198376, drops 25124)
+INFO : deleting the raw counts dictionary of 20410 items
+INFO : sample=0.001 downsamples 34 most-common words
+INFO : downsampling leaves estimated 129351 word corpus (74.7% of prior 173252)
+INFO : estimated required memory for 5229 words and 100 dimensions: 6797700 bytes
+INFO : resetting layer weights
+INFO : Batch : 0. Extraction from corpus=0.9173s. Appending to vocabulary=0.2325s
+
+INFO : Tokenizing corpus and creating the vocabulary. Processing batch 1. Line: 4096. Token: 198376
+INFO : collecting all words and their counts
+INFO : PROGRESS: at sentence #0, processed 0 words, keeping 0 word types
+INFO : collected 30898 word types from a corpus of 391147 raw words and 8192 sentences
+INFO : Updating model with new vocabulary
+INFO : New added 8611 unique words (21% of original 39509) and increased the count of 8611 pre-existing words (21% of original 39509)
+INFO : deleting the raw counts dictionary of 30898 items
+INFO : sample=0.001 downsamples 62 most-common words
+INFO : downsampling leaves estimated 538753 word corpus (152.4% of prior 353528)
+INFO : estimated required memory for 17222 words and 100 dimensions: 22388600 bytes
+INFO : updating layer weights
+INFO : Batch : 1. Extraction from corpus=0.9375s. Appending to vocabulary=0.1756s
+
+INFO : Tokenizing corpus and creating the vocabulary. Processing batch 2. Line: 8192. Token: 589523
+INFO : collecting all words and their counts
+INFO : PROGRESS: at sentence #0, processed 0 words, keeping 0 word types
+INFO : PROGRESS: at sentence #10000, processed 478016 words, keeping 34329 word types
+INFO : collected 38049 word types from a corpus of 593222 raw words and 12288 sentences
+INFO : Updating model with new vocabulary
+INFO : New added 11405 unique words (23% of original 49454) and increased the count of 11405 pre-existing words (23% of original 49454)
+INFO : deleting the raw counts dictionary of 38049 items
+INFO : sample=0.001 downsamples 60 most-common words
+INFO : downsampling leaves estimated 841067 word corpus (153.6% of prior 547688)
+INFO : estimated required memory for 22810 words and 100 dimensions: 29653000 bytes
+INFO : updating layer weights
+INFO : Batch : 2. Extraction from corpus=0.9245s. Appending to vocabulary=0.2246s
+
+INFO : Tokenizing corpus and creating the vocabulary. Processing batch 3. Line: 12288. Token: 1182745
+INFO : collecting all words and their counts
+INFO : PROGRESS: at sentence #0, processed 0 words, keeping 0 word types
+INFO : PROGRESS: at sentence #10000, processed 478016 words, keeping 34329 word types
+INFO : collected 44452 word types from a corpus of 790750 raw words and 16384 sentences
+INFO : Updating model with new vocabulary
+INFO : New added 13789 unique words (23% of original 58241) and increased the count of 13789 pre-existing words (23% of original 58241)
+INFO : deleting the raw counts dictionary of 44452 items
+INFO : sample=0.001 downsamples 60 most-common words
+INFO : downsampling leaves estimated 1135925 word corpus (154.0% of prior 737743)
+INFO : estimated required memory for 27578 words and 100 dimensions: 35851400 bytes
+INFO : updating layer weights
+INFO : Batch : 3. Extraction from corpus=0.9185s. Appending to vocabulary=0.2592s
+
+INFO : Tokenizing corpus and creating the vocabulary. Processing batch 4. Line: 16384. Token: 1973495
+INFO : collecting all words and their counts
+INFO : PROGRESS: at sentence #0, processed 0 words, keeping 0 word types
+INFO : PROGRESS: at sentence #10000, processed 478016 words, keeping 34329 word types
+INFO : PROGRESS: at sentence #20000, processed 957730 words, keeping 48773 word types
+INFO : collected 49425 word types from a corpus of 983196 raw words and 20480 sentences
+INFO : Updating model with new vocabulary
+INFO : New added 15911 unique words (24% of original 65336) and increased the count of 15911 pre-existing words (24% of original 65336)
+INFO : deleting the raw counts dictionary of 49425 items
+INFO : sample=0.001 downsamples 58 most-common words
+INFO : downsampling leaves estimated 1430674 word corpus (154.7% of prior 924923)
+INFO : estimated required memory for 31822 words and 100 dimensions: 41368600 bytes
+INFO : updating layer weights
+INFO : Batch : 4. Extraction from corpus=0.8984s. Appending to vocabulary=0.3176s
+
+INFO : Tokenizing corpus and creating the vocabulary. Processing batch 5. Line: 20480. Token: 2956691
+INFO : collecting all words and their counts
+INFO : PROGRESS: at sentence #0, processed 0 words, keeping 0 word types
+INFO : PROGRESS: at sentence #10000, processed 478016 words, keeping 34329 word types
+INFO : PROGRESS: at sentence #20000, processed 957730 words, keeping 48773 word types
+INFO : collected 54236 word types from a corpus of 1169036 raw words and 24576 sentences
+INFO : Updating model with new vocabulary
+INFO : New added 17737 unique words (24% of original 71973) and increased the count of 17737 pre-existing words (24% of original 71973)
+INFO : deleting the raw counts dictionary of 54236 items
+INFO : sample=0.001 downsamples 58 most-common words
+INFO : downsampling leaves estimated 1714047 word corpus (155.1% of prior 1105290)
+INFO : estimated required memory for 35474 words and 100 dimensions: 46116200 bytes
+INFO : updating layer weights
+INFO : Batch : 5. Extraction from corpus=0.8783s. Appending to vocabulary=0.3542s
+
+INFO : Tokenizing corpus and creating the vocabulary. Processing batch 6. Line: 24576. Token: 4125727
+INFO : collecting all words and their counts
+INFO : PROGRESS: at sentence #0, processed 0 words, keeping 0 word types
+INFO : PROGRESS: at sentence #10000, processed 478016 words, keeping 34329 word types
+INFO : PROGRESS: at sentence #20000, processed 957730 words, keeping 48773 word types
+INFO : collected 58621 word types from a corpus of 1369236 raw words and 28672 sentences
+INFO : Updating model with new vocabulary
+INFO : New added 19618 unique words (25% of original 78239) and increased the count of 19618 pre-existing words (25% of original 78239)
+INFO : deleting the raw counts dictionary of 58621 items
+INFO : sample=0.001 downsamples 58 most-common words
+INFO : downsampling leaves estimated 2020480 word corpus (155.3% of prior 1300787)
+INFO : estimated required memory for 39236 words and 100 dimensions: 51006800 bytes
+INFO : updating layer weights
+INFO : Batch : 6. Extraction from corpus=0.9266s. Appending to vocabulary=0.4306s
+
+INFO : Tokenizing corpus and creating the vocabulary. Processing batch 7. Line: 28672. Token: 5494963
+INFO : collecting all words and their counts
+INFO : PROGRESS: at sentence #0, processed 0 words, keeping 0 word types
+INFO : PROGRESS: at sentence #10000, processed 478016 words, keeping 34329 word types
+INFO : PROGRESS: at sentence #20000, processed 957730 words, keeping 48773 word types
+INFO : PROGRESS: at sentence #30000, processed 1434097 words, keeping 59992 word types
+INFO : collected 63012 word types from a corpus of 1581510 raw words and 32768 sentences
+INFO : Updating model with new vocabulary
+INFO : New added 21615 unique words (25% of original 84627) and increased the count of 21615 pre-existing words (25% of original 84627)
+INFO : deleting the raw counts dictionary of 63012 items
+INFO : sample=0.001 downsamples 60 most-common words
+INFO : downsampling leaves estimated 2345692 word corpus (155.5% of prior 1508318)
+INFO : estimated required memory for 43230 words and 100 dimensions: 56199000 bytes
+INFO : updating layer weights
+INFO : Batch : 7. Extraction from corpus=1.0059s. Appending to vocabulary=0.523s
+
+INFO : Tokenizing corpus and creating the vocabulary. Processing batch 8. Line: 32768. Token: 7076473
+INFO : collecting all words and their counts
+INFO : PROGRESS: at sentence #0, processed 0 words, keeping 0 word types
+INFO : PROGRESS: at sentence #10000, processed 478016 words, keeping 34329 word types
+INFO : PROGRESS: at sentence #20000, processed 957730 words, keeping 48773 word types
+INFO : PROGRESS: at sentence #30000, processed 1434097 words, keeping 59992 word types
+INFO : collected 67183 word types from a corpus of 1783292 raw words and 36864 sentences
+INFO : Updating model with new vocabulary
+INFO : New added 23328 unique words (25% of original 90511) and increased the count of 23328 pre-existing words (25% of original 90511)
+INFO : deleting the raw counts dictionary of 67183 items
+INFO : sample=0.001 downsamples 60 most-common words
+INFO : downsampling leaves estimated 2653980 word corpus (155.6% of prior 1705454)
+INFO : estimated required memory for 46656 words and 100 dimensions: 60652800 bytes
+INFO : updating layer weights
+INFO : Batch : 8. Extraction from corpus=0.9742s. Appending to vocabulary=0.5378s
+
+INFO : Tokenizing corpus and creating the vocabulary. Processing batch 9. Line: 36864. Token: 8859765
+INFO : collecting all words and their counts
+INFO : PROGRESS: at sentence #0, processed 0 words, keeping 0 word types
+INFO : PROGRESS: at sentence #10000, processed 478016 words, keeping 34329 word types
+INFO : PROGRESS: at sentence #20000, processed 957730 words, keeping 48773 word types
+INFO : PROGRESS: at sentence #30000, processed 1434097 words, keeping 59992 word types
+INFO : PROGRESS: at sentence #40000, processed 1945279 words, keeping 69729 word types
+INFO : collected 70691 word types from a corpus of 1987643 raw words and 40960 sentences
+INFO : Updating model with new vocabulary
+INFO : New added 24863 unique words (26% of original 95554) and increased the count of 24863 pre-existing words (26% of original 95554)
+INFO : deleting the raw counts dictionary of 70691 items
+INFO : sample=0.001 downsamples 60 most-common words
+INFO : downsampling leaves estimated 2970073 word corpus (155.8% of prior 1905915)
+INFO : estimated required memory for 49726 words and 100 dimensions: 64643800 bytes
+INFO : updating layer weights
+INFO : Batch : 9. Extraction from corpus=0.9727s. Appending to vocabulary=1.0264s
+
+INFO : Tokenizing corpus and creating the vocabulary. Processing batch 10. Line: 40960. Token: 10847408
+INFO : collecting all words and their counts
+INFO : PROGRESS: at sentence #0, processed 0 words, keeping 0 word types
+INFO : PROGRESS: at sentence #10000, processed 478016 words, keeping 34329 word types
+INFO : PROGRESS: at sentence #20000, processed 957730 words, keeping 48773 word types
+INFO : PROGRESS: at sentence #30000, processed 1434097 words, keeping 59992 word types
+INFO : PROGRESS: at sentence #40000, processed 1945279 words, keeping 69729 word types
+INFO : collected 74015 word types from a corpus of 2197894 raw words and 45056 sentences
+INFO : Updating model with new vocabulary
+INFO : New added 26505 unique words (26% of original 100520) and increased the count of 26505 pre-existing words (26% of original 100520)
+INFO : deleting the raw counts dictionary of 74015 items
+INFO : sample=0.001 downsamples 60 most-common words
+INFO : downsampling leaves estimated 3294808 word corpus (155.9% of prior 2112892)
+INFO : estimated required memory for 53010 words and 100 dimensions: 68913000 bytes
+INFO : updating layer weights
+INFO : Batch : 10. Extraction from corpus=0.9426s. Appending to vocabulary=0.6446s
+
+INFO : Tokenizing corpus and creating the vocabulary. Processing batch 11. Line: 45056. Token: 13045302
+INFO : collecting all words and their counts
+INFO : PROGRESS: at sentence #0, processed 0 words, keeping 0 word types
+INFO : PROGRESS: at sentence #10000, processed 478016 words, keeping 34329 word types
+INFO : PROGRESS: at sentence #20000, processed 957730 words, keeping 48773 word types
+INFO : PROGRESS: at sentence #30000, processed 1434097 words, keeping 59992 word types
+INFO : PROGRESS: at sentence #40000, processed 1945279 words, keeping 69729 word types
+INFO : collected 76586 word types from a corpus of 2359751 raw words and 49152 sentences
+INFO : Updating model with new vocabulary
+INFO : New added 27736 unique words (26% of original 104322) and increased the count of 27736 pre-existing words (26% of original 104322)
+INFO : deleting the raw counts dictionary of 76586 items
+INFO : sample=0.001 downsamples 60 most-common words
+INFO : downsampling leaves estimated 3544715 word corpus (156.0% of prior 2272164)
+INFO : estimated required memory for 55472 words and 100 dimensions: 72113600 bytes
+INFO : updating layer weights
+INFO : Batch : 11. Extraction from corpus=0.8675s. Appending to vocabulary=0.722s
+
+INFO : Tokenizing corpus and creating the vocabulary. Processing batch 12. Line: 49152. Token: 15405053
+INFO : collecting all words and their counts
+INFO : PROGRESS: at sentence #0, processed 0 words, keeping 0 word types
+INFO : PROGRESS: at sentence #10000, processed 478016 words, keeping 34329 word types
+INFO : PROGRESS: at sentence #20000, processed 957730 words, keeping 48773 word types
+INFO : PROGRESS: at sentence #30000, processed 1434097 words, keeping 59992 word types
+INFO : PROGRESS: at sentence #40000, processed 1945279 words, keeping 69729 word types
+INFO : PROGRESS: at sentence #50000, processed 2398675 words, keeping 77185 word types
+INFO : collected 79649 word types from a corpus of 2548084 raw words and 53248 sentences
+INFO : Updating model with new vocabulary
+INFO : New added 29108 unique words (26% of original 108757) and increased the count of 29108 pre-existing words (26% of original 108757)
+INFO : deleting the raw counts dictionary of 79649 items
+INFO : sample=0.001 downsamples 60 most-common words
+INFO : downsampling leaves estimated 3836428 word corpus (156.1% of prior 2457212)
+INFO : estimated required memory for 58216 words and 100 dimensions: 75680800 bytes
+INFO : updating layer weights
+INFO : Batch : 12. Extraction from corpus=0.9366s. Appending to vocabulary=0.7236s
+
+INFO : Tokenizing corpus and creating the vocabulary. Processing batch 13. Line: 53248. Token: 17953137
+INFO : collecting all words and their counts
+INFO : PROGRESS: at sentence #0, processed 0 words, keeping 0 word types
+INFO : PROGRESS: at sentence #10000, processed 478016 words, keeping 34329 word types
+INFO : PROGRESS: at sentence #20000, processed 957730 words, keeping 48773 word types
+INFO : PROGRESS: at sentence #30000, processed 1434097 words, keeping 59992 word types
+INFO : PROGRESS: at sentence #40000, processed 1945279 words, keeping 69729 word types
+INFO : PROGRESS: at sentence #50000, processed 2398675 words, keeping 77185 word types
+INFO : collected 82592 word types from a corpus of 2758703 raw words and 57344 sentences
+INFO : Updating model with new vocabulary
+INFO : New added 30477 unique words (26% of original 113069) and increased the count of 30477 pre-existing words (26% of original 113069)
+INFO : deleting the raw counts dictionary of 82592 items
+INFO : sample=0.001 downsamples 60 most-common words
+INFO : downsampling leaves estimated 4163780 word corpus (156.2% of prior 2664919)
+INFO : estimated required memory for 60954 words and 100 dimensions: 79240200 bytes
+INFO : updating layer weights
+INFO : Batch : 13. Extraction from corpus=1.0224s. Appending to vocabulary=0.8935s
+
+INFO : Tokenizing corpus and creating the vocabulary. Processing batch 14. Line: 57344. Token: 20711840
+INFO : collecting all words and their counts
+INFO : PROGRESS: at sentence #0, processed 0 words, keeping 0 word types
+INFO : PROGRESS: at sentence #10000, processed 478016 words, keeping 34329 word types
+INFO : PROGRESS: at sentence #20000, processed 957730 words, keeping 48773 word types
+INFO : PROGRESS: at sentence #30000, processed 1434097 words, keeping 59992 word types
+INFO : PROGRESS: at sentence #40000, processed 1945279 words, keeping 69729 word types
+INFO : PROGRESS: at sentence #50000, processed 2398675 words, keeping 77185 word types
+INFO : PROGRESS: at sentence #60000, processed 2883534 words, keeping 84258 word types
+INFO : collected 85073 word types from a corpus of 2943654 raw words and 61440 sentences
+INFO : Updating model with new vocabulary
+INFO : New added 31679 unique words (27% of original 116752) and increased the count of 31679 pre-existing words (27% of original 116752)
+INFO : deleting the raw counts dictionary of 85073 items
+INFO : sample=0.001 downsamples 60 most-common words
+INFO : downsampling leaves estimated 4450895 word corpus (156.3% of prior 2847285)
+INFO : estimated required memory for 63358 words and 100 dimensions: 82365400 bytes
+INFO : updating layer weights
+INFO : Batch : 14. Extraction from corpus=0.9723s. Appending to vocabulary=0.8679s
+
+INFO : Tokenizing corpus and creating the vocabulary. Processing batch 15. Line: 61440. Token: 23655494
+INFO : collecting all words and their counts
+INFO : PROGRESS: at sentence #0, processed 0 words, keeping 0 word types
+INFO : PROGRESS: at sentence #10000, processed 478016 words, keeping 34329 word types
+INFO : PROGRESS: at sentence #20000, processed 957730 words, keeping 48773 word types
+INFO : PROGRESS: at sentence #30000, processed 1434097 words, keeping 59992 word types
+INFO : PROGRESS: at sentence #40000, processed 1945279 words, keeping 69729 word types
+INFO : PROGRESS: at sentence #50000, processed 2398675 words, keeping 77185 word types
+INFO : PROGRESS: at sentence #60000, processed 2883534 words, keeping 84258 word types
+INFO : collected 87881 word types from a corpus of 3147953 raw words and 65536 sentences
+INFO : Updating model with new vocabulary
+INFO : New added 33003 unique words (27% of original 120884) and increased the count of 33003 pre-existing words (27% of original 120884)
+INFO : deleting the raw counts dictionary of 87881 items
+INFO : sample=0.001 downsamples 60 most-common words
+INFO : downsampling leaves estimated 4767717 word corpus (156.4% of prior 3048531)
+INFO : estimated required memory for 66006 words and 100 dimensions: 85807800 bytes
+INFO : updating layer weights
+INFO : Batch : 15. Extraction from corpus=0.9974s. Appending to vocabulary=0.9434s
+
+INFO : Tokenizing corpus and creating the vocabulary. Processing batch 16. Line: 65536. Token: 26803447
+INFO : collecting all words and their counts
+INFO : PROGRESS: at sentence #0, processed 0 words, keeping 0 word types
+INFO : PROGRESS: at sentence #10000, processed 478016 words, keeping 34329 word types
+INFO : PROGRESS: at sentence #20000, processed 957730 words, keeping 48773 word types
+INFO : PROGRESS: at sentence #30000, processed 1434097 words, keeping 59992 word types
+INFO : PROGRESS: at sentence #40000, processed 1945279 words, keeping 69729 word types
+INFO : PROGRESS: at sentence #50000, processed 2398675 words, keeping 77185 word types
+INFO : PROGRESS: at sentence #60000, processed 2883534 words, keeping 84258 word types
+INFO : collected 89921 word types from a corpus of 3342296 raw words and 69632 sentences
+INFO : Updating model with new vocabulary
+INFO : New added 34085 unique words (27% of original 124006) and increased the count of 34085 pre-existing words (27% of original 124006)
+INFO : deleting the raw counts dictionary of 89921 items
+INFO : sample=0.001 downsamples 60 most-common words
+INFO : downsampling leaves estimated 5074296 word corpus (156.6% of prior 3241021)
+INFO : estimated required memory for 68170 words and 100 dimensions: 88621000 bytes
+INFO : updating layer weights
+INFO : Batch : 16. Extraction from corpus=0.9717s. Appending to vocabulary=1.0133s
+
+INFO : Tokenizing corpus and creating the vocabulary. Processing batch 17. Line: 69632. Token: 30145743
+INFO : collecting all words and their counts
+INFO : PROGRESS: at sentence #0, processed 0 words, keeping 0 word types
+INFO : PROGRESS: at sentence #10000, processed 478016 words, keeping 34329 word types
+INFO : PROGRESS: at sentence #20000, processed 957730 words, keeping 48773 word types
+INFO : PROGRESS: at sentence #30000, processed 1434097 words, keeping 59992 word types
+INFO : PROGRESS: at sentence #40000, processed 1945279 words, keeping 69729 word types
+INFO : PROGRESS: at sentence #50000, processed 2398675 words, keeping 77185 word types
+INFO : PROGRESS: at sentence #60000, processed 2883534 words, keeping 84258 word types
+INFO : PROGRESS: at sentence #70000, processed 3356131 words, keeping 90146 word types
+INFO : collected 92231 word types from a corpus of 3526685 raw words and 73728 sentences
+INFO : Updating model with new vocabulary
+INFO : New added 35195 unique words (27% of original 127426) and increased the count of 35195 pre-existing words (27% of original 127426)
+INFO : deleting the raw counts dictionary of 92231 items
+INFO : sample=0.001 downsamples 60 most-common words
+INFO : downsampling leaves estimated 5361723 word corpus (156.6% of prior 3422901)
+INFO : estimated required memory for 70390 words and 100 dimensions: 91507000 bytes
+INFO : updating layer weights
+INFO : Batch : 17. Extraction from corpus=0.9172s. Appending to vocabulary=1.013s
+
+INFO : Tokenizing corpus and creating the vocabulary. Processing batch 18. Line: 73728. Token: 33672428
+INFO : collecting all words and their counts
+INFO : PROGRESS: at sentence #0, processed 0 words, keeping 0 word types
+INFO : PROGRESS: at sentence #10000, processed 478016 words, keeping 34329 word types
+INFO : PROGRESS: at sentence #20000, processed 957730 words, keeping 48773 word types
+INFO : PROGRESS: at sentence #30000, processed 1434097 words, keeping 59992 word types
+INFO : PROGRESS: at sentence #40000, processed 1945279 words, keeping 69729 word types
+INFO : PROGRESS: at sentence #50000, processed 2398675 words, keeping 77185 word types
+INFO : PROGRESS: at sentence #60000, processed 2883534 words, keeping 84258 word types
+INFO : PROGRESS: at sentence #70000, processed 3356131 words, keeping 90146 word types
+INFO : collected 94347 word types from a corpus of 3710181 raw words and 77824 sentences
+INFO : Updating model with new vocabulary
+INFO : New added 36204 unique words (27% of original 130551) and increased the count of 36204 pre-existing words (27% of original 130551)
+INFO : deleting the raw counts dictionary of 94347 items
+INFO : sample=0.001 downsamples 58 most-common words
+INFO : downsampling leaves estimated 5648959 word corpus (156.7% of prior 3604277)
+INFO : estimated required memory for 72408 words and 100 dimensions: 94130400 bytes
+INFO : updating layer weights
+INFO : Batch : 18. Extraction from corpus=0.9339s. Appending to vocabulary=1.1977s
+
+INFO : Tokenizing corpus and creating the vocabulary. Processing batch 19. Line: 77824. Token: 37382609
+INFO : collecting all words and their counts
+INFO : PROGRESS: at sentence #0, processed 0 words, keeping 0 word types
+INFO : PROGRESS: at sentence #10000, processed 478016 words, keeping 34329 word types
+INFO : PROGRESS: at sentence #20000, processed 957730 words, keeping 48773 word types
+INFO : PROGRESS: at sentence #30000, processed 1434097 words, keeping 59992 word types
+INFO : PROGRESS: at sentence #40000, processed 1945279 words, keeping 69729 word types
+INFO : PROGRESS: at sentence #50000, processed 2398675 words, keeping 77185 word types
+INFO : PROGRESS: at sentence #60000, processed 2883534 words, keeping 84258 word types
+INFO : PROGRESS: at sentence #70000, processed 3356131 words, keeping 90146 word types
+INFO : PROGRESS: at sentence #80000, processed 3830327 words, keeping 95719 word types
+INFO : collected 96915 word types from a corpus of 3920473 raw words and 81920 sentences
+INFO : Updating model with new vocabulary
+INFO : New added 37414 unique words (27% of original 134329) and increased the count of 37414 pre-existing words (27% of original 134329)
+INFO : deleting the raw counts dictionary of 96915 items
+INFO : sample=0.001 downsamples 58 most-common words
+INFO : downsampling leaves estimated 5974711 word corpus (156.7% of prior 3811819)
+INFO : estimated required memory for 74828 words and 100 dimensions: 97276400 bytes
+INFO : updating layer weights
+INFO : Batch : 19. Extraction from corpus=1.0463s. Appending to vocabulary=1.1439s
+
+INFO : Tokenizing corpus and creating the vocabulary. Processing batch 20. Line: 81920. Token: 41303082
+INFO : collecting all words and their counts
+INFO : PROGRESS: at sentence #0, processed 0 words, keeping 0 word types
+INFO : PROGRESS: at sentence #10000, processed 478016 words, keeping 34329 word types
+INFO : PROGRESS: at sentence #20000, processed 957730 words, keeping 48773 word types
+INFO : PROGRESS: at sentence #30000, processed 1434097 words, keeping 59992 word types
+INFO : PROGRESS: at sentence #40000, processed 1945279 words, keeping 69729 word types
+INFO : PROGRESS: at sentence #50000, processed 2398675 words, keeping 77185 word types
+INFO : PROGRESS: at sentence #60000, processed 2883534 words, keeping 84258 word types
+INFO : PROGRESS: at sentence #70000, processed 3356131 words, keeping 90146 word types
+INFO : PROGRESS: at sentence #80000, processed 3830327 words, keeping 95719 word types
+INFO : collected 99166 word types from a corpus of 4111546 raw words and 86016 sentences
+INFO : Updating model with new vocabulary
+INFO : New added 38508 unique words (27% of original 137674) and increased the count of 38508 pre-existing words (27% of original 137674)
+INFO : deleting the raw counts dictionary of 99166 items
+INFO : sample=0.001 downsamples 58 most-common words
+INFO : downsampling leaves estimated 6271636 word corpus (156.8% of prior 4000513)
+INFO : estimated required memory for 77016 words and 100 dimensions: 100120800 bytes
+INFO : updating layer weights
+INFO : Batch : 20. Extraction from corpus=1.1995s. Appending to vocabulary=1.2938s
+
+INFO : Tokenizing corpus and creating the vocabulary. Processing batch 21. Line: 86016. Token: 45414628
+INFO : collecting all words and their counts
+INFO : PROGRESS: at sentence #0, processed 0 words, keeping 0 word types
+INFO : PROGRESS: at sentence #10000, processed 478016 words, keeping 34329 word types
+INFO : PROGRESS: at sentence #20000, processed 957730 words, keeping 48773 word types
+INFO : PROGRESS: at sentence #30000, processed 1434097 words, keeping 59992 word types
+INFO : PROGRESS: at sentence #40000, processed 1945279 words, keeping 69729 word types
+INFO : PROGRESS: at sentence #50000, processed 2398675 words, keeping 77185 word types
+INFO : PROGRESS: at sentence #60000, processed 2883534 words, keeping 84258 word types
+INFO : PROGRESS: at sentence #70000, processed 3356131 words, keeping 90146 word types
+INFO : PROGRESS: at sentence #80000, processed 3830327 words, keeping 95719 word types
+INFO : PROGRESS: at sentence #90000, processed 4310046 words, keeping 101159 word types
+INFO : collected 101212 word types from a corpus of 4317620 raw words and 90112 sentences
+INFO : Updating model with new vocabulary
+INFO : New added 39537 unique words (28% of original 140749) and increased the count of 39537 pre-existing words (28% of original 140749)
+INFO : deleting the raw counts dictionary of 101212 items
+INFO : sample=0.001 downsamples 58 most-common words
+INFO : downsampling leaves estimated 6594682 word corpus (156.9% of prior 4204344)
+INFO : estimated required memory for 79074 words and 100 dimensions: 102796200 bytes
+INFO : updating layer weights
+INFO : Batch : 21. Extraction from corpus=0.9937s. Appending to vocabulary=1.4261s
+
+INFO : Tokenizing corpus and creating the vocabulary. Processing batch 22. Line: 90112. Token: 49732248
+INFO : collecting all words and their counts
+INFO : PROGRESS: at sentence #0, processed 0 words, keeping 0 word types
+INFO : PROGRESS: at sentence #10000, processed 478016 words, keeping 34329 word types
+INFO : PROGRESS: at sentence #20000, processed 957730 words, keeping 48773 word types
+INFO : PROGRESS: at sentence #30000, processed 1434097 words, keeping 59992 word types
+INFO : PROGRESS: at sentence #40000, processed 1945279 words, keeping 69729 word types
+INFO : PROGRESS: at sentence #50000, processed 2398675 words, keeping 77185 word types
+INFO : PROGRESS: at sentence #60000, processed 2883534 words, keeping 84258 word types
+INFO : PROGRESS: at sentence #70000, processed 3356131 words, keeping 90146 word types
+INFO : PROGRESS: at sentence #80000, processed 3830327 words, keeping 95719 word types
+INFO : PROGRESS: at sentence #90000, processed 4310046 words, keeping 101159 word types
+INFO : collected 103381 word types from a corpus of 4510403 raw words and 94208 sentences
+INFO : Updating model with new vocabulary
+INFO : New added 40654 unique words (28% of original 144035) and increased the count of 40654 pre-existing words (28% of original 144035)
+INFO : deleting the raw counts dictionary of 103381 items
+INFO : sample=0.001 downsamples 58 most-common words
+INFO : downsampling leaves estimated 6893132 word corpus (156.8% of prior 4395008)
+INFO : estimated required memory for 81308 words and 100 dimensions: 105700400 bytes
+INFO : updating layer weights
+INFO : Batch : 22. Extraction from corpus=1.1214s. Appending to vocabulary=1.3095s
+
+INFO : Tokenizing corpus and creating the vocabulary. Processing batch 23. Line: 94208. Token: 54242651
+INFO : collecting all words and their counts
+INFO : PROGRESS: at sentence #0, processed 0 words, keeping 0 word types
+INFO : PROGRESS: at sentence #10000, processed 478016 words, keeping 34329 word types
+INFO : PROGRESS: at sentence #20000, processed 957730 words, keeping 48773 word types
+INFO : PROGRESS: at sentence #30000, processed 1434097 words, keeping 59992 word types
+INFO : PROGRESS: at sentence #40000, processed 1945279 words, keeping 69729 word types
+INFO : PROGRESS: at sentence #50000, processed 2398675 words, keeping 77185 word types
+INFO : PROGRESS: at sentence #60000, processed 2883534 words, keeping 84258 word types
+INFO : PROGRESS: at sentence #70000, processed 3356131 words, keeping 90146 word types
+INFO : PROGRESS: at sentence #80000, processed 3830327 words, keeping 95719 word types
+INFO : PROGRESS: at sentence #90000, processed 4310046 words, keeping 101159 word types
+INFO : collected 105156 word types from a corpus of 4693648 raw words and 98304 sentences
+INFO : Updating model with new vocabulary
+INFO : New added 41578 unique words (28% of original 146734) and increased the count of 41578 pre-existing words (28% of original 146734)
+INFO : deleting the raw counts dictionary of 105156 items
+INFO : sample=0.001 downsamples 58 most-common words
+INFO : downsampling leaves estimated 7179576 word corpus (156.9% of prior 4576451)
+INFO : estimated required memory for 83156 words and 100 dimensions: 108102800 bytes
+INFO : updating layer weights
+INFO : Batch : 23. Extraction from corpus=0.9321s. Appending to vocabulary=1.2891s
+
+INFO : Tokenizing corpus and creating the vocabulary. Processing batch 24. Line: 98304. Token: 58936299
+INFO : collecting all words and their counts
+INFO : PROGRESS: at sentence #0, processed 0 words, keeping 0 word types
+INFO : PROGRESS: at sentence #10000, processed 478016 words, keeping 34329 word types
+INFO : PROGRESS: at sentence #20000, processed 957730 words, keeping 48773 word types
+INFO : PROGRESS: at sentence #30000, processed 1434097 words, keeping 59992 word types
+INFO : PROGRESS: at sentence #40000, processed 1945279 words, keeping 69729 word types
+INFO : PROGRESS: at sentence #50000, processed 2398675 words, keeping 77185 word types
+INFO : PROGRESS: at sentence #60000, processed 2883534 words, keeping 84258 word types
+INFO : PROGRESS: at sentence #70000, processed 3356131 words, keeping 90146 word types
+INFO : PROGRESS: at sentence #80000, processed 3830327 words, keeping 95719 word types
+INFO : PROGRESS: at sentence #90000, processed 4310046 words, keeping 101159 word types
+INFO : PROGRESS: at sentence #100000, processed 4782559 words, keeping 105950 word types
+INFO : collected 107034 word types from a corpus of 4901255 raw words and 102400 sentences
+INFO : Updating model with new vocabulary
+INFO : New added 42626 unique words (28% of original 149660) and increased the count of 42626 pre-existing words (28% of original 149660)
+INFO : deleting the raw counts dictionary of 107034 items
+INFO : sample=0.001 downsamples 58 most-common words
+INFO : downsampling leaves estimated 7504665 word corpus (156.9% of prior 4782266)
+INFO : estimated required memory for 85252 words and 100 dimensions: 110827600 bytes
+INFO : updating layer weights
+INFO : Batch : 24. Extraction from corpus=1.1764s. Appending to vocabulary=1.3325s
+
+INFO : Tokenizing corpus and creating the vocabulary. Processing batch 25. Line: 102400. Token: 63837554
+INFO : collecting all words and their counts
+INFO : PROGRESS: at sentence #0, processed 0 words, keeping 0 word types
+INFO : PROGRESS: at sentence #10000, processed 478016 words, keeping 34329 word types
+INFO : PROGRESS: at sentence #20000, processed 957730 words, keeping 48773 word types
+INFO : PROGRESS: at sentence #30000, processed 1434097 words, keeping 59992 word types
+INFO : PROGRESS: at sentence #40000, processed 1945279 words, keeping 69729 word types
+INFO : PROGRESS: at sentence #50000, processed 2398675 words, keeping 77185 word types
+INFO : PROGRESS: at sentence #60000, processed 2883534 words, keeping 84258 word types
+INFO : PROGRESS: at sentence #70000, processed 3356131 words, keeping 90146 word types
+INFO : PROGRESS: at sentence #80000, processed 3830327 words, keeping 95719 word types
+INFO : PROGRESS: at sentence #90000, processed 4310046 words, keeping 101159 word types
+INFO : PROGRESS: at sentence #100000, processed 4782559 words, keeping 105950 word types
+INFO : collected 109043 word types from a corpus of 5102505 raw words and 106496 sentences
+INFO : Updating model with new vocabulary
+INFO : New added 43623 unique words (28% of original 152666) and increased the count of 43623 pre-existing words (28% of original 152666)
+INFO : deleting the raw counts dictionary of 109043 items
+INFO : sample=0.001 downsamples 58 most-common words
+INFO : downsampling leaves estimated 7816604 word corpus (156.9% of prior 4981416)
+INFO : estimated required memory for 87246 words and 100 dimensions: 113419800 bytes
+INFO : updating layer weights
+INFO : Batch : 25. Extraction from corpus=0.9671s. Appending to vocabulary=1.4547s
+
+INFO : Tokenizing corpus and creating the vocabulary. Processing batch 26. Line: 106496. Token: 68940059
+INFO : collecting all words and their counts
+INFO : PROGRESS: at sentence #0, processed 0 words, keeping 0 word types
+INFO : PROGRESS: at sentence #10000, processed 478016 words, keeping 34329 word types
+INFO : PROGRESS: at sentence #20000, processed 957730 words, keeping 48773 word types
+INFO : PROGRESS: at sentence #30000, processed 1434097 words, keeping 59992 word types
+INFO : PROGRESS: at sentence #40000, processed 1945279 words, keeping 69729 word types
+INFO : PROGRESS: at sentence #50000, processed 2398675 words, keeping 77185 word types
+INFO : PROGRESS: at sentence #60000, processed 2883534 words, keeping 84258 word types
+INFO : PROGRESS: at sentence #70000, processed 3356131 words, keeping 90146 word types
+INFO : PROGRESS: at sentence #80000, processed 3830327 words, keeping 95719 word types
+INFO : PROGRESS: at sentence #90000, processed 4310046 words, keeping 101159 word types
+INFO : PROGRESS: at sentence #100000, processed 4782559 words, keeping 105950 word types
+INFO : PROGRESS: at sentence #110000, processed 5279574 words, keeping 110579 word types
+INFO : collected 110773 word types from a corpus of 5305979 raw words and 110592 sentences
+INFO : Updating model with new vocabulary
+INFO : New added 44498 unique words (28% of original 155271) and increased the count of 44498 pre-existing words (28% of original 155271)
+INFO : deleting the raw counts dictionary of 110773 items
+INFO : sample=0.001 downsamples 58 most-common words
+INFO : downsampling leaves estimated 8135546 word corpus (157.0% of prior 5182899)
+INFO : estimated required memory for 88996 words and 100 dimensions: 115694800 bytes
+INFO : updating layer weights
+INFO : Batch : 26. Extraction from corpus=0.9837s. Appending to vocabulary=1.4598s
+
+INFO : Tokenizing corpus and creating the vocabulary. Processing batch 27. Line: 110592. Token: 74246038
+INFO : collecting all words and their counts
+INFO : PROGRESS: at sentence #0, processed 0 words, keeping 0 word types
+INFO : PROGRESS: at sentence #10000, processed 478016 words, keeping 34329 word types
+INFO : PROGRESS: at sentence #20000, processed 957730 words, keeping 48773 word types
+INFO : PROGRESS: at sentence #30000, processed 1434097 words, keeping 59992 word types
+INFO : PROGRESS: at sentence #40000, processed 1945279 words, keeping 69729 word types
+INFO : PROGRESS: at sentence #50000, processed 2398675 words, keeping 77185 word types
+INFO : PROGRESS: at sentence #60000, processed 2883534 words, keeping 84258 word types
+INFO : PROGRESS: at sentence #70000, processed 3356131 words, keeping 90146 word types
+INFO : PROGRESS: at sentence #80000, processed 3830327 words, keeping 95719 word types
+INFO : PROGRESS: at sentence #90000, processed 4310046 words, keeping 101159 word types
+INFO : PROGRESS: at sentence #100000, processed 4782559 words, keeping 105950 word types
+INFO : PROGRESS: at sentence #110000, processed 5279574 words, keeping 110579 word types
+INFO : collected 112542 word types from a corpus of 5505850 raw words and 114688 sentences
+INFO : Updating model with new vocabulary
+INFO : New added 45400 unique words (28% of original 157942) and increased the count of 45400 pre-existing words (28% of original 157942)
+INFO : deleting the raw counts dictionary of 112542 items
+INFO : sample=0.001 downsamples 58 most-common words
+INFO : downsampling leaves estimated 8445948 word corpus (157.0% of prior 5380878)
+INFO : estimated required memory for 90800 words and 100 dimensions: 118040000 bytes
+INFO : updating layer weights
+INFO : Batch : 27. Extraction from corpus=1.0392s. Appending to vocabulary=1.5377s
+
+INFO : Tokenizing corpus and creating the vocabulary. Processing batch 28. Line: 114688. Token: 79751888
+INFO : collecting all words and their counts
+INFO : PROGRESS: at sentence #0, processed 0 words, keeping 0 word types
+INFO : PROGRESS: at sentence #10000, processed 478016 words, keeping 34329 word types
+INFO : PROGRESS: at sentence #20000, processed 957730 words, keeping 48773 word types
+INFO : PROGRESS: at sentence #30000, processed 1434097 words, keeping 59992 word types
+INFO : PROGRESS: at sentence #40000, processed 1945279 words, keeping 69729 word types
+INFO : PROGRESS: at sentence #50000, processed 2398675 words, keeping 77185 word types
+INFO : PROGRESS: at sentence #60000, processed 2883534 words, keeping 84258 word types
+INFO : PROGRESS: at sentence #70000, processed 3356131 words, keeping 90146 word types
+INFO : PROGRESS: at sentence #80000, processed 3830327 words, keeping 95719 word types
+INFO : PROGRESS: at sentence #90000, processed 4310046 words, keeping 101159 word types
+INFO : PROGRESS: at sentence #100000, processed 4782559 words, keeping 105950 word types
+INFO : PROGRESS: at sentence #110000, processed 5279574 words, keeping 110579 word types
+INFO : collected 114193 word types from a corpus of 5713445 raw words and 118784 sentences
+INFO : Updating model with new vocabulary
+INFO : New added 46356 unique words (28% of original 160549) and increased the count of 46356 pre-existing words (28% of original 160549)
+INFO : deleting the raw counts dictionary of 114193 items
+INFO : sample=0.001 downsamples 58 most-common words
+INFO : downsampling leaves estimated 8773364 word corpus (157.0% of prior 5587026)
+INFO : estimated required memory for 92712 words and 100 dimensions: 120525600 bytes
+INFO : updating layer weights
+INFO : Batch : 28. Extraction from corpus=0.986s. Appending to vocabulary=1.5487s
+
+INFO : Tokenizing corpus and creating the vocabulary. Processing batch 29. Line: 118784. Token: 85465333
+INFO : collecting all words and their counts
+INFO : PROGRESS: at sentence #0, processed 0 words, keeping 0 word types
+INFO : PROGRESS: at sentence #10000, processed 478016 words, keeping 34329 word types
+INFO : PROGRESS: at sentence #20000, processed 957730 words, keeping 48773 word types
+INFO : PROGRESS: at sentence #30000, processed 1434097 words, keeping 59992 word types
+INFO : PROGRESS: at sentence #40000, processed 1945279 words, keeping 69729 word types
+INFO : PROGRESS: at sentence #50000, processed 2398675 words, keeping 77185 word types
+INFO : PROGRESS: at sentence #60000, processed 2883534 words, keeping 84258 word types
+INFO : PROGRESS: at sentence #70000, processed 3356131 words, keeping 90146 word types
+INFO : PROGRESS: at sentence #80000, processed 3830327 words, keeping 95719 word types
+INFO : PROGRESS: at sentence #90000, processed 4310046 words, keeping 101159 word types
+INFO : PROGRESS: at sentence #100000, processed 4782559 words, keeping 105950 word types
+INFO : PROGRESS: at sentence #110000, processed 5279574 words, keeping 110579 word types
+INFO : PROGRESS: at sentence #120000, processed 5774214 words, keeping 114684 word types
+INFO : collected 115921 word types from a corpus of 5910085 raw words and 122880 sentences
+INFO : Updating model with new vocabulary
+INFO : New added 47281 unique words (28% of original 163202) and increased the count of 47281 pre-existing words (28% of original 163202)
+INFO : deleting the raw counts dictionary of 115921 items
+INFO : sample=0.001 downsamples 58 most-common words
+INFO : downsampling leaves estimated 9081907 word corpus (157.1% of prior 5781906)
+INFO : estimated required memory for 94562 words and 100 dimensions: 122930600 bytes
+INFO : updating layer weights
+INFO : Batch : 29. Extraction from corpus=0.9867s. Appending to vocabulary=1.585s
+
+INFO : Tokenizing corpus and creating the vocabulary. Processing batch 30. Line: 122880. Token: 91375418
+INFO : collecting all words and their counts
+INFO : PROGRESS: at sentence #0, processed 0 words, keeping 0 word types
+INFO : PROGRESS: at sentence #10000, processed 478016 words, keeping 34329 word types
+INFO : PROGRESS: at sentence #20000, processed 957730 words, keeping 48773 word types
+INFO : PROGRESS: at sentence #30000, processed 1434097 words, keeping 59992 word types
+INFO : PROGRESS: at sentence #40000, processed 1945279 words, keeping 69729 word types
+INFO : PROGRESS: at sentence #50000, processed 2398675 words, keeping 77185 word types
+INFO : PROGRESS: at sentence #60000, processed 2883534 words, keeping 84258 word types
+INFO : PROGRESS: at sentence #70000, processed 3356131 words, keeping 90146 word types
+INFO : PROGRESS: at sentence #80000, processed 3830327 words, keeping 95719 word types
+INFO : PROGRESS: at sentence #90000, processed 4310046 words, keeping 101159 word types
+INFO : PROGRESS: at sentence #100000, processed 4782559 words, keeping 105950 word types
+INFO : PROGRESS: at sentence #110000, processed 5279574 words, keeping 110579 word types
+INFO : PROGRESS: at sentence #120000, processed 5774214 words, keeping 114684 word types
+INFO : collected 117505 word types from a corpus of 6104520 raw words and 126976 sentences
+INFO : Updating model with new vocabulary
+INFO : New added 48143 unique words (29% of original 165648) and increased the count of 48143 pre-existing words (29% of original 165648)
+INFO : deleting the raw counts dictionary of 117505 items
+INFO : sample=0.001 downsamples 58 most-common words
+INFO : downsampling leaves estimated 9384949 word corpus (157.1% of prior 5974658)
+INFO : estimated required memory for 96286 words and 100 dimensions: 125171800 bytes
+INFO : updating layer weights
+INFO : Batch : 30. Extraction from corpus=0.9352s. Appending to vocabulary=1.652s
+
+INFO : Tokenizing corpus and creating the vocabulary. Processing batch 31. Line: 126976. Token: 97479938
+INFO : collecting all words and their counts
+INFO : PROGRESS: at sentence #0, processed 0 words, keeping 0 word types
+INFO : PROGRESS: at sentence #10000, processed 478016 words, keeping 34329 word types
+INFO : PROGRESS: at sentence #20000, processed 957730 words, keeping 48773 word types
+INFO : PROGRESS: at sentence #30000, processed 1434097 words, keeping 59992 word types
+INFO : PROGRESS: at sentence #40000, processed 1945279 words, keeping 69729 word types
+INFO : PROGRESS: at sentence #50000, processed 2398675 words, keeping 77185 word types
+INFO : PROGRESS: at sentence #60000, processed 2883534 words, keeping 84258 word types
+INFO : PROGRESS: at sentence #70000, processed 3356131 words, keeping 90146 word types
+INFO : PROGRESS: at sentence #80000, processed 3830327 words, keeping 95719 word types
+INFO : PROGRESS: at sentence #90000, processed 4310046 words, keeping 101159 word types
+INFO : PROGRESS: at sentence #100000, processed 4782559 words, keeping 105950 word types
+INFO : PROGRESS: at sentence #110000, processed 5279574 words, keeping 110579 word types
+INFO : PROGRESS: at sentence #120000, processed 5774214 words, keeping 114684 word types
+INFO : PROGRESS: at sentence #130000, processed 6258209 words, keeping 118756 word types
+INFO : collected 119187 word types from a corpus of 6310417 raw words and 131072 sentences
+INFO : Updating model with new vocabulary
+INFO : New added 49003 unique words (29% of original 168190) and increased the count of 49003 pre-existing words (29% of original 168190)
+INFO : deleting the raw counts dictionary of 119187 items
+INFO : sample=0.001 downsamples 58 most-common words
+INFO : downsampling leaves estimated 9707418 word corpus (157.1% of prior 6178610)
+INFO : estimated required memory for 98006 words and 100 dimensions: 127407800 bytes
+INFO : updating layer weights
+INFO : Batch : 31. Extraction from corpus=0.9884s. Appending to vocabulary=1.6911s
+
+INFO : Tokenizing corpus and creating the vocabulary. Processing batch 32. Line: 131072. Token: 103790355
+INFO : collecting all words and their counts
+INFO : PROGRESS: at sentence #0, processed 0 words, keeping 0 word types
+INFO : PROGRESS: at sentence #10000, processed 478016 words, keeping 34329 word types
+INFO : PROGRESS: at sentence #20000, processed 957730 words, keeping 48773 word types
+INFO : PROGRESS: at sentence #30000, processed 1434097 words, keeping 59992 word types
+INFO : PROGRESS: at sentence #40000, processed 1945279 words, keeping 69729 word types
+INFO : PROGRESS: at sentence #50000, processed 2398675 words, keeping 77185 word types
+INFO : PROGRESS: at sentence #60000, processed 2883534 words, keeping 84258 word types
+INFO : PROGRESS: at sentence #70000, processed 3356131 words, keeping 90146 word types
+INFO : PROGRESS: at sentence #80000, processed 3830327 words, keeping 95719 word types
+INFO : PROGRESS: at sentence #90000, processed 4310046 words, keeping 101159 word types
+INFO : PROGRESS: at sentence #100000, processed 4782559 words, keeping 105950 word types
+INFO : PROGRESS: at sentence #110000, processed 5279574 words, keeping 110579 word types
+INFO : PROGRESS: at sentence #120000, processed 5774214 words, keeping 114684 word types
+INFO : PROGRESS: at sentence #130000, processed 6258209 words, keeping 118756 word types
+INFO : collected 120864 word types from a corpus of 6503758 raw words and 135168 sentences
+INFO : Updating model with new vocabulary
+INFO : New added 49865 unique words (29% of original 170729) and increased the count of 49865 pre-existing words (29% of original 170729)
+INFO : deleting the raw counts dictionary of 120864 items
+INFO : sample=0.001 downsamples 58 most-common words
+INFO : downsampling leaves estimated 10009513 word corpus (157.1% of prior 6370142)
+INFO : estimated required memory for 99730 words and 100 dimensions: 129649000 bytes
+INFO : updating layer weights
+INFO : Batch : 32. Extraction from corpus=0.9518s. Appending to vocabulary=1.6822s
+
+INFO : Tokenizing corpus and creating the vocabulary. Processing batch 33. Line: 135168. Token: 110294113
+INFO : collecting all words and their counts
+INFO : PROGRESS: at sentence #0, processed 0 words, keeping 0 word types
+INFO : PROGRESS: at sentence #10000, processed 478016 words, keeping 34329 word types
+INFO : PROGRESS: at sentence #20000, processed 957730 words, keeping 48773 word types
+INFO : PROGRESS: at sentence #30000, processed 1434097 words, keeping 59992 word types
+INFO : PROGRESS: at sentence #40000, processed 1945279 words, keeping 69729 word types
+INFO : PROGRESS: at sentence #50000, processed 2398675 words, keeping 77185 word types
+INFO : PROGRESS: at sentence #60000, processed 2883534 words, keeping 84258 word types
+INFO : PROGRESS: at sentence #70000, processed 3356131 words, keeping 90146 word types
+INFO : PROGRESS: at sentence #80000, processed 3830327 words, keeping 95719 word types
+INFO : PROGRESS: at sentence #90000, processed 4310046 words, keeping 101159 word types
+INFO : PROGRESS: at sentence #100000, processed 4782559 words, keeping 105950 word types
+INFO : PROGRESS: at sentence #110000, processed 5279574 words, keeping 110579 word types
+INFO : PROGRESS: at sentence #120000, processed 5774214 words, keeping 114684 word types
+INFO : PROGRESS: at sentence #130000, processed 6258209 words, keeping 118756 word types
+INFO : collected 122510 word types from a corpus of 6689022 raw words and 139264 sentences
+INFO : Updating model with new vocabulary
+INFO : New added 50699 unique words (29% of original 173209) and increased the count of 50699 pre-existing words (29% of original 173209)
+INFO : deleting the raw counts dictionary of 122510 items
+INFO : sample=0.001 downsamples 58 most-common words
+INFO : downsampling leaves estimated 10299472 word corpus (157.2% of prior 6553622)
+INFO : estimated required memory for 101398 words and 100 dimensions: 131817400 bytes
+INFO : updating layer weights
+INFO : Batch : 33. Extraction from corpus=0.9065s. Appending to vocabulary=1.7019s
+
+INFO : Tokenizing corpus and creating the vocabulary. Processing batch 34. Line: 139264. Token: 116983135
+INFO : collecting all words and their counts
+INFO : PROGRESS: at sentence #0, processed 0 words, keeping 0 word types
+INFO : PROGRESS: at sentence #10000, processed 478016 words, keeping 34329 word types
+INFO : PROGRESS: at sentence #20000, processed 957730 words, keeping 48773 word types
+INFO : PROGRESS: at sentence #30000, processed 1434097 words, keeping 59992 word types
+INFO : PROGRESS: at sentence #40000, processed 1945279 words, keeping 69729 word types
+INFO : PROGRESS: at sentence #50000, processed 2398675 words, keeping 77185 word types
+INFO : PROGRESS: at sentence #60000, processed 2883534 words, keeping 84258 word types
+INFO : PROGRESS: at sentence #70000, processed 3356131 words, keeping 90146 word types
+INFO : PROGRESS: at sentence #80000, processed 3830327 words, keeping 95719 word types
+INFO : PROGRESS: at sentence #90000, processed 4310046 words, keeping 101159 word types
+INFO : PROGRESS: at sentence #100000, processed 4782559 words, keeping 105950 word types
+INFO : PROGRESS: at sentence #110000, processed 5279574 words, keeping 110579 word types
+INFO : PROGRESS: at sentence #120000, processed 5774214 words, keeping 114684 word types
+INFO : PROGRESS: at sentence #130000, processed 6258209 words, keeping 118756 word types
+INFO : PROGRESS: at sentence #140000, processed 6724500 words, keeping 122826 word types
+INFO : collected 123978 word types from a corpus of 6892559 raw words and 143360 sentences
+INFO : Updating model with new vocabulary
+INFO : New added 51516 unique words (29% of original 175494) and increased the count of 51516 pre-existing words (29% of original 175494)
+INFO : deleting the raw counts dictionary of 123978 items
+INFO : sample=0.001 downsamples 58 most-common words
+INFO : downsampling leaves estimated 10618883 word corpus (157.2% of prior 6755708)
+INFO : estimated required memory for 103032 words and 100 dimensions: 133941600 bytes
+INFO : updating layer weights
+INFO : Batch : 34. Extraction from corpus=0.9783s. Appending to vocabulary=1.8895s
+
+INFO : Tokenizing corpus and creating the vocabulary. Processing batch 35. Line: 143360. Token: 123875694
+INFO : collecting all words and their counts
+INFO : PROGRESS: at sentence #0, processed 0 words, keeping 0 word types
+INFO : PROGRESS: at sentence #10000, processed 478016 words, keeping 34329 word types
+INFO : PROGRESS: at sentence #20000, processed 957730 words, keeping 48773 word types
+INFO : PROGRESS: at sentence #30000, processed 1434097 words, keeping 59992 word types
+INFO : PROGRESS: at sentence #40000, processed 1945279 words, keeping 69729 word types
+INFO : PROGRESS: at sentence #50000, processed 2398675 words, keeping 77185 word types
+INFO : PROGRESS: at sentence #60000, processed 2883534 words, keeping 84258 word types
+INFO : PROGRESS: at sentence #70000, processed 3356131 words, keeping 90146 word types
+INFO : PROGRESS: at sentence #80000, processed 3830327 words, keeping 95719 word types
+INFO : PROGRESS: at sentence #90000, processed 4310046 words, keeping 101159 word types
+INFO : PROGRESS: at sentence #100000, processed 4782559 words, keeping 105950 word types
+INFO : PROGRESS: at sentence #110000, processed 5279574 words, keeping 110579 word types
+INFO : PROGRESS: at sentence #120000, processed 5774214 words, keeping 114684 word types
+INFO : PROGRESS: at sentence #130000, processed 6258209 words, keeping 118756 word types
+INFO : PROGRESS: at sentence #140000, processed 6724500 words, keeping 122826 word types
+INFO : collected 125472 word types from a corpus of 7085078 raw words and 147456 sentences
+INFO : Updating model with new vocabulary
+INFO : New added 52417 unique words (29% of original 177889) and increased the count of 52417 pre-existing words (29% of original 177889)
+INFO : deleting the raw counts dictionary of 125472 items
+INFO : sample=0.001 downsamples 58 most-common words
+INFO : downsampling leaves estimated 10921921 word corpus (157.2% of prior 6946901)
+INFO : estimated required memory for 104834 words and 100 dimensions: 136284200 bytes
+INFO : updating layer weights
+INFO : Batch : 35. Extraction from corpus=0.9775s. Appending to vocabulary=1.8933s
+
+INFO : Tokenizing corpus and creating the vocabulary. Processing batch 36. Line: 147456. Token: 130960772
+INFO : collecting all words and their counts
+INFO : PROGRESS: at sentence #0, processed 0 words, keeping 0 word types
+INFO : PROGRESS: at sentence #10000, processed 478016 words, keeping 34329 word types
+INFO : PROGRESS: at sentence #20000, processed 957730 words, keeping 48773 word types
+INFO : PROGRESS: at sentence #30000, processed 1434097 words, keeping 59992 word types
+INFO : PROGRESS: at sentence #40000, processed 1945279 words, keeping 69729 word types
+INFO : PROGRESS: at sentence #50000, processed 2398675 words, keeping 77185 word types
+INFO : PROGRESS: at sentence #60000, processed 2883534 words, keeping 84258 word types
+INFO : PROGRESS: at sentence #70000, processed 3356131 words, keeping 90146 word types
+INFO : PROGRESS: at sentence #80000, processed 3830327 words, keeping 95719 word types
+INFO : PROGRESS: at sentence #90000, processed 4310046 words, keeping 101159 word types
+INFO : PROGRESS: at sentence #100000, processed 4782559 words, keeping 105950 word types
+INFO : PROGRESS: at sentence #110000, processed 5279574 words, keeping 110579 word types
+INFO : PROGRESS: at sentence #120000, processed 5774214 words, keeping 114684 word types
+INFO : PROGRESS: at sentence #130000, processed 6258209 words, keeping 118756 word types
+INFO : PROGRESS: at sentence #140000, processed 6724500 words, keeping 122826 word types
+INFO : PROGRESS: at sentence #150000, processed 7211655 words, keeping 126278 word types
+INFO : collected 126687 word types from a corpus of 7289820 raw words and 151552 sentences
+INFO : Updating model with new vocabulary
+INFO : New added 53207 unique words (29% of original 179894) and increased the count of 53207 pre-existing words (29% of original 179894)
+INFO : deleting the raw counts dictionary of 126687 items
+INFO : sample=0.001 downsamples 58 most-common words
+INFO : downsampling leaves estimated 11246172 word corpus (157.3% of prior 7150803)
+INFO : estimated required memory for 106414 words and 100 dimensions: 138338200 bytes
+INFO : updating layer weights
+INFO : Batch : 36. Extraction from corpus=1.0644s. Appending to vocabulary=1.9426s
+
+INFO : Tokenizing corpus and creating the vocabulary. Processing batch 37. Line: 151552. Token: 138250592
+INFO : collecting all words and their counts
+INFO : PROGRESS: at sentence #0, processed 0 words, keeping 0 word types
+INFO : PROGRESS: at sentence #10000, processed 478016 words, keeping 34329 word types
+INFO : PROGRESS: at sentence #20000, processed 957730 words, keeping 48773 word types
+INFO : PROGRESS: at sentence #30000, processed 1434097 words, keeping 59992 word types
+INFO : PROGRESS: at sentence #40000, processed 1945279 words, keeping 69729 word types
+INFO : PROGRESS: at sentence #50000, processed 2398675 words, keeping 77185 word types
+INFO : PROGRESS: at sentence #60000, processed 2883534 words, keeping 84258 word types
+INFO : PROGRESS: at sentence #70000, processed 3356131 words, keeping 90146 word types
+INFO : PROGRESS: at sentence #80000, processed 3830327 words, keeping 95719 word types
+INFO : PROGRESS: at sentence #90000, processed 4310046 words, keeping 101159 word types
+INFO : PROGRESS: at sentence #100000, processed 4782559 words, keeping 105950 word types
+INFO : PROGRESS: at sentence #110000, processed 5279574 words, keeping 110579 word types
+INFO : PROGRESS: at sentence #120000, processed 5774214 words, keeping 114684 word types
+INFO : PROGRESS: at sentence #130000, processed 6258209 words, keeping 118756 word types
+INFO : PROGRESS: at sentence #140000, processed 6724500 words, keeping 122826 word types
+INFO : PROGRESS: at sentence #150000, processed 7211655 words, keeping 126278 word types
+INFO : collected 128044 word types from a corpus of 7490292 raw words and 155648 sentences
+INFO : Updating model with new vocabulary
+INFO : New added 53957 unique words (29% of original 182001) and increased the count of 53957 pre-existing words (29% of original 182001)
+INFO : deleting the raw counts dictionary of 128044 items
+INFO : sample=0.001 downsamples 58 most-common words
+INFO : downsampling leaves estimated 11560213 word corpus (157.3% of prior 7349934)
+INFO : estimated required memory for 107914 words and 100 dimensions: 140288200 bytes
+INFO : updating layer weights
+INFO : Batch : 37. Extraction from corpus=0.9418s. Appending to vocabulary=1.9414s
+
+INFO : Tokenizing corpus and creating the vocabulary. Processing batch 38. Line: 155648. Token: 145740884
+INFO : collecting all words and their counts
+INFO : PROGRESS: at sentence #0, processed 0 words, keeping 0 word types
+INFO : PROGRESS: at sentence #10000, processed 478016 words, keeping 34329 word types
+INFO : PROGRESS: at sentence #20000, processed 957730 words, keeping 48773 word types
+INFO : PROGRESS: at sentence #30000, processed 1434097 words, keeping 59992 word types
+INFO : PROGRESS: at sentence #40000, processed 1945279 words, keeping 69729 word types
+INFO : PROGRESS: at sentence #50000, processed 2398675 words, keeping 77185 word types
+INFO : PROGRESS: at sentence #60000, processed 2883534 words, keeping 84258 word types
+INFO : PROGRESS: at sentence #70000, processed 3356131 words, keeping 90146 word types
+INFO : PROGRESS: at sentence #80000, processed 3830327 words, keeping 95719 word types
+INFO : PROGRESS: at sentence #90000, processed 4310046 words, keeping 101159 word types
+INFO : PROGRESS: at sentence #100000, processed 4782559 words, keeping 105950 word types
+INFO : PROGRESS: at sentence #110000, processed 5279574 words, keeping 110579 word types
+INFO : PROGRESS: at sentence #120000, processed 5774214 words, keeping 114684 word types
+INFO : PROGRESS: at sentence #130000, processed 6258209 words, keeping 118756 word types
+INFO : PROGRESS: at sentence #140000, processed 6724500 words, keeping 122826 word types
+INFO : PROGRESS: at sentence #150000, processed 7211655 words, keeping 126278 word types
+INFO : collected 129312 word types from a corpus of 7680599 raw words and 159744 sentences
+INFO : Updating model with new vocabulary
+INFO : New added 54643 unique words (29% of original 183955) and increased the count of 54643 pre-existing words (29% of original 183955)
+INFO : deleting the raw counts dictionary of 129312 items
+INFO : sample=0.001 downsamples 58 most-common words
+INFO : downsampling leaves estimated 11858624 word corpus (157.3% of prior 7538983)
+INFO : estimated required memory for 109286 words and 100 dimensions: 142071800 bytes
+INFO : updating layer weights
+INFO : Batch : 38. Extraction from corpus=0.9244s. Appending to vocabulary=1.9574s
+
+INFO : Tokenizing corpus and creating the vocabulary. Processing batch 39. Line: 159744. Token: 153421483
+INFO : collecting all words and their counts
+INFO : PROGRESS: at sentence #0, processed 0 words, keeping 0 word types
+INFO : PROGRESS: at sentence #10000, processed 478016 words, keeping 34329 word types
+INFO : PROGRESS: at sentence #20000, processed 957730 words, keeping 48773 word types
+INFO : PROGRESS: at sentence #30000, processed 1434097 words, keeping 59992 word types
+INFO : PROGRESS: at sentence #40000, processed 1945279 words, keeping 69729 word types
+INFO : PROGRESS: at sentence #50000, processed 2398675 words, keeping 77185 word types
+INFO : PROGRESS: at sentence #60000, processed 2883534 words, keeping 84258 word types
+INFO : PROGRESS: at sentence #70000, processed 3356131 words, keeping 90146 word types
+INFO : PROGRESS: at sentence #80000, processed 3830327 words, keeping 95719 word types
+INFO : PROGRESS: at sentence #90000, processed 4310046 words, keeping 101159 word types
+INFO : PROGRESS: at sentence #100000, processed 4782559 words, keeping 105950 word types
+INFO : PROGRESS: at sentence #110000, processed 5279574 words, keeping 110579 word types
+INFO : PROGRESS: at sentence #120000, processed 5774214 words, keeping 114684 word types
+INFO : PROGRESS: at sentence #130000, processed 6258209 words, keeping 118756 word types
+INFO : PROGRESS: at sentence #140000, processed 6724500 words, keeping 122826 word types
+INFO : PROGRESS: at sentence #150000, processed 7211655 words, keeping 126278 word types
+INFO : PROGRESS: at sentence #160000, processed 7689992 words, keeping 129462 word types
+INFO : collected 130786 word types from a corpus of 7878324 raw words and 163840 sentences
+INFO : Updating model with new vocabulary
+INFO : New added 55418 unique words (29% of original 186204) and increased the count of 55418 pre-existing words (29% of original 186204)
+INFO : deleting the raw counts dictionary of 130786 items
+INFO : sample=0.001 downsamples 58 most-common words
+INFO : downsampling leaves estimated 12169218 word corpus (157.3% of prior 7735114)
+INFO : estimated required memory for 110836 words and 100 dimensions: 144086800 bytes
+INFO : updating layer weights
+INFO : Batch : 39. Extraction from corpus=0.9387s. Appending to vocabulary=1.9516s
+
+INFO : Tokenizing corpus and creating the vocabulary. Processing batch 40. Line: 163840. Token: 161299807
+INFO : collecting all words and their counts
+INFO : PROGRESS: at sentence #0, processed 0 words, keeping 0 word types
+INFO : PROGRESS: at sentence #10000, processed 478016 words, keeping 34329 word types
+INFO : PROGRESS: at sentence #20000, processed 957730 words, keeping 48773 word types
+INFO : PROGRESS: at sentence #30000, processed 1434097 words, keeping 59992 word types
+INFO : PROGRESS: at sentence #40000, processed 1945279 words, keeping 69729 word types
+INFO : PROGRESS: at sentence #50000, processed 2398675 words, keeping 77185 word types
+INFO : PROGRESS: at sentence #60000, processed 2883534 words, keeping 84258 word types
+INFO : PROGRESS: at sentence #70000, processed 3356131 words, keeping 90146 word types
+INFO : PROGRESS: at sentence #80000, processed 3830327 words, keeping 95719 word types
+INFO : PROGRESS: at sentence #90000, processed 4310046 words, keeping 101159 word types
+INFO : PROGRESS: at sentence #100000, processed 4782559 words, keeping 105950 word types
+INFO : PROGRESS: at sentence #110000, processed 5279574 words, keeping 110579 word types
+INFO : PROGRESS: at sentence #120000, processed 5774214 words, keeping 114684 word types
+INFO : PROGRESS: at sentence #130000, processed 6258209 words, keeping 118756 word types
+INFO : PROGRESS: at sentence #140000, processed 6724500 words, keeping 122826 word types
+INFO : PROGRESS: at sentence #150000, processed 7211655 words, keeping 126278 word types
+INFO : PROGRESS: at sentence #160000, processed 7689992 words, keeping 129462 word types
+INFO : collected 132162 word types from a corpus of 8067015 raw words and 167936 sentences
+INFO : Updating model with new vocabulary
+INFO : New added 56172 unique words (29% of original 188334) and increased the count of 56172 pre-existing words (29% of original 188334)
+INFO : deleting the raw counts dictionary of 132162 items
+INFO : sample=0.001 downsamples 58 most-common words
+INFO : downsampling leaves estimated 12465144 word corpus (157.3% of prior 7922439)
+INFO : estimated required memory for 112344 words and 100 dimensions: 146047200 bytes
+INFO : updating layer weights
+INFO : Batch : 40. Extraction from corpus=0.9016s. Appending to vocabulary=2.0479s
+
+INFO : Tokenizing corpus and creating the vocabulary. Processing batch 41. Line: 167936. Token: 169366822
+INFO : collecting all words and their counts
+INFO : PROGRESS: at sentence #0, processed 0 words, keeping 0 word types
+INFO : PROGRESS: at sentence #10000, processed 478016 words, keeping 34329 word types
+INFO : PROGRESS: at sentence #20000, processed 957730 words, keeping 48773 word types
+INFO : PROGRESS: at sentence #30000, processed 1434097 words, keeping 59992 word types
+INFO : PROGRESS: at sentence #40000, processed 1945279 words, keeping 69729 word types
+INFO : PROGRESS: at sentence #50000, processed 2398675 words, keeping 77185 word types
+INFO : PROGRESS: at sentence #60000, processed 2883534 words, keeping 84258 word types
+INFO : PROGRESS: at sentence #70000, processed 3356131 words, keeping 90146 word types
+INFO : PROGRESS: at sentence #80000, processed 3830327 words, keeping 95719 word types
+INFO : PROGRESS: at sentence #90000, processed 4310046 words, keeping 101159 word types
+INFO : PROGRESS: at sentence #100000, processed 4782559 words, keeping 105950 word types
+INFO : PROGRESS: at sentence #110000, processed 5279574 words, keeping 110579 word types
+INFO : PROGRESS: at sentence #120000, processed 5774214 words, keeping 114684 word types
+INFO : PROGRESS: at sentence #130000, processed 6258209 words, keeping 118756 word types
+INFO : PROGRESS: at sentence #140000, processed 6724500 words, keeping 122826 word types
+INFO : PROGRESS: at sentence #150000, processed 7211655 words, keeping 126278 word types
+INFO : PROGRESS: at sentence #160000, processed 7689992 words, keeping 129462 word types
+INFO : PROGRESS: at sentence #170000, processed 8168618 words, keeping 132988 word types
+INFO : collected 133603 word types from a corpus of 8272006 raw words and 172032 sentences
+INFO : Updating model with new vocabulary
+INFO : New added 56941 unique words (29% of original 190544) and increased the count of 56941 pre-existing words (29% of original 190544)
+INFO : deleting the raw counts dictionary of 133603 items
+INFO : sample=0.001 downsamples 58 most-common words
+INFO : downsampling leaves estimated 12786577 word corpus (157.4% of prior 8125956)
+INFO : estimated required memory for 113882 words and 100 dimensions: 148046600 bytes
+INFO : updating layer weights
+INFO : Batch : 41. Extraction from corpus=0.9814s. Appending to vocabulary=2.05s
+
+INFO : Tokenizing corpus and creating the vocabulary. Processing batch 42. Line: 172032. Token: 177638828
+INFO : collecting all words and their counts
+INFO : PROGRESS: at sentence #0, processed 0 words, keeping 0 word types
+INFO : PROGRESS: at sentence #10000, processed 478016 words, keeping 34329 word types
+INFO : PROGRESS: at sentence #20000, processed 957730 words, keeping 48773 word types
+INFO : PROGRESS: at sentence #30000, processed 1434097 words, keeping 59992 word types
+INFO : PROGRESS: at sentence #40000, processed 1945279 words, keeping 69729 word types
+INFO : PROGRESS: at sentence #50000, processed 2398675 words, keeping 77185 word types
+INFO : PROGRESS: at sentence #60000, processed 2883534 words, keeping 84258 word types
+INFO : PROGRESS: at sentence #70000, processed 3356131 words, keeping 90146 word types
+INFO : PROGRESS: at sentence #80000, processed 3830327 words, keeping 95719 word types
+INFO : PROGRESS: at sentence #90000, processed 4310046 words, keeping 101159 word types
+INFO : PROGRESS: at sentence #100000, processed 4782559 words, keeping 105950 word types
+INFO : PROGRESS: at sentence #110000, processed 5279574 words, keeping 110579 word types
+INFO : PROGRESS: at sentence #120000, processed 5774214 words, keeping 114684 word types
+INFO : PROGRESS: at sentence #130000, processed 6258209 words, keeping 118756 word types
+INFO : PROGRESS: at sentence #140000, processed 6724500 words, keeping 122826 word types
+INFO : PROGRESS: at sentence #150000, processed 7211655 words, keeping 126278 word types
+INFO : PROGRESS: at sentence #160000, processed 7689992 words, keeping 129462 word types
+INFO : PROGRESS: at sentence #170000, processed 8168618 words, keeping 132988 word types
+INFO : collected 135039 word types from a corpus of 8475279 raw words and 176128 sentences
+INFO : Updating model with new vocabulary
+INFO : New added 57712 unique words (29% of original 192751) and increased the count of 57712 pre-existing words (29% of original 192751)
+INFO : deleting the raw counts dictionary of 135039 items
+INFO : sample=0.001 downsamples 58 most-common words
+INFO : downsampling leaves estimated 13105483 word corpus (157.4% of prior 8327513)
+INFO : estimated required memory for 115424 words and 100 dimensions: 150051200 bytes
+INFO : updating layer weights
+INFO : Batch : 42. Extraction from corpus=0.9476s. Appending to vocabulary=2.0923s
+
+INFO : Tokenizing corpus and creating the vocabulary. Processing batch 43. Line: 176128. Token: 186114107
+INFO : collecting all words and their counts
+INFO : PROGRESS: at sentence #0, processed 0 words, keeping 0 word types
+INFO : PROGRESS: at sentence #10000, processed 478016 words, keeping 34329 word types
+INFO : PROGRESS: at sentence #20000, processed 957730 words, keeping 48773 word types
+INFO : PROGRESS: at sentence #30000, processed 1434097 words, keeping 59992 word types
+INFO : PROGRESS: at sentence #40000, processed 1945279 words, keeping 69729 word types
+INFO : PROGRESS: at sentence #50000, processed 2398675 words, keeping 77185 word types
+INFO : PROGRESS: at sentence #60000, processed 2883534 words, keeping 84258 word types
+INFO : PROGRESS: at sentence #70000, processed 3356131 words, keeping 90146 word types
+INFO : PROGRESS: at sentence #80000, processed 3830327 words, keeping 95719 word types
+INFO : PROGRESS: at sentence #90000, processed 4310046 words, keeping 101159 word types
+INFO : PROGRESS: at sentence #100000, processed 4782559 words, keeping 105950 word types
+INFO : PROGRESS: at sentence #110000, processed 5279574 words, keeping 110579 word types
+INFO : PROGRESS: at sentence #120000, processed 5774214 words, keeping 114684 word types
+INFO : PROGRESS: at sentence #130000, processed 6258209 words, keeping 118756 word types
+INFO : PROGRESS: at sentence #140000, processed 6724500 words, keeping 122826 word types
+INFO : PROGRESS: at sentence #150000, processed 7211655 words, keeping 126278 word types
+INFO : PROGRESS: at sentence #160000, processed 7689992 words, keeping 129462 word types
+INFO : PROGRESS: at sentence #170000, processed 8168618 words, keeping 132988 word types
+INFO : PROGRESS: at sentence #180000, processed 8675556 words, keeping 136431 word types
+INFO : collected 136502 word types from a corpus of 8685125 raw words and 180224 sentences
+INFO : Updating model with new vocabulary
+INFO : New added 58532 unique words (30% of original 195034) and increased the count of 58532 pre-existing words (30% of original 195034)
+INFO : deleting the raw counts dictionary of 136502 items
+INFO : sample=0.001 downsamples 58 most-common words
+INFO : downsampling leaves estimated 13432892 word corpus (157.4% of prior 8535967)
+INFO : estimated required memory for 117064 words and 100 dimensions: 152183200 bytes
+INFO : updating layer weights
+INFO : Batch : 43. Extraction from corpus=1.1828s. Appending to vocabulary=2.1375s
+
+INFO : Tokenizing corpus and creating the vocabulary. Processing batch 44. Line: 180224. Token: 194799232
+INFO : collecting all words and their counts
+INFO : PROGRESS: at sentence #0, processed 0 words, keeping 0 word types
+INFO : PROGRESS: at sentence #10000, processed 478016 words, keeping 34329 word types
+INFO : PROGRESS: at sentence #20000, processed 957730 words, keeping 48773 word types
+INFO : PROGRESS: at sentence #30000, processed 1434097 words, keeping 59992 word types
+INFO : PROGRESS: at sentence #40000, processed 1945279 words, keeping 69729 word types
+INFO : PROGRESS: at sentence #50000, processed 2398675 words, keeping 77185 word types
+INFO : PROGRESS: at sentence #60000, processed 2883534 words, keeping 84258 word types
+INFO : PROGRESS: at sentence #70000, processed 3356131 words, keeping 90146 word types
+INFO : PROGRESS: at sentence #80000, processed 3830327 words, keeping 95719 word types
+INFO : PROGRESS: at sentence #90000, processed 4310046 words, keeping 101159 word types
+INFO : PROGRESS: at sentence #100000, processed 4782559 words, keeping 105950 word types
+INFO : PROGRESS: at sentence #110000, processed 5279574 words, keeping 110579 word types
+INFO : PROGRESS: at sentence #120000, processed 5774214 words, keeping 114684 word types
+INFO : PROGRESS: at sentence #130000, processed 6258209 words, keeping 118756 word types
+INFO : PROGRESS: at sentence #140000, processed 6724500 words, keeping 122826 word types
+INFO : PROGRESS: at sentence #150000, processed 7211655 words, keeping 126278 word types
+INFO : PROGRESS: at sentence #160000, processed 7689992 words, keeping 129462 word types
+INFO : PROGRESS: at sentence #170000, processed 8168618 words, keeping 132988 word types
+INFO : PROGRESS: at sentence #180000, processed 8675556 words, keeping 136431 word types
+INFO : collected 137665 word types from a corpus of 8902838 raw words and 184320 sentences
+INFO : Updating model with new vocabulary
+INFO : New added 59256 unique words (30% of original 196921) and increased the count of 59256 pre-existing words (30% of original 196921)
+INFO : deleting the raw counts dictionary of 137665 items
+INFO : sample=0.001 downsamples 58 most-common words
+INFO : downsampling leaves estimated 13777312 word corpus (157.4% of prior 8752613)
+INFO : estimated required memory for 118512 words and 100 dimensions: 154065600 bytes
+INFO : updating layer weights
+INFO : Batch : 44. Extraction from corpus=1.0039s. Appending to vocabulary=2.242s
+
+INFO : Tokenizing corpus and creating the vocabulary. Processing batch 45. Line: 184320. Token: 203702070
+INFO : collecting all words and their counts
+INFO : PROGRESS: at sentence #0, processed 0 words, keeping 0 word types
+INFO : PROGRESS: at sentence #10000, processed 478016 words, keeping 34329 word types
+INFO : PROGRESS: at sentence #20000, processed 957730 words, keeping 48773 word types
+INFO : PROGRESS: at sentence #30000, processed 1434097 words, keeping 59992 word types
+INFO : PROGRESS: at sentence #40000, processed 1945279 words, keeping 69729 word types
+INFO : PROGRESS: at sentence #50000, processed 2398675 words, keeping 77185 word types
+INFO : PROGRESS: at sentence #60000, processed 2883534 words, keeping 84258 word types
+INFO : PROGRESS: at sentence #70000, processed 3356131 words, keeping 90146 word types
+INFO : PROGRESS: at sentence #80000, processed 3830327 words, keeping 95719 word types
+INFO : PROGRESS: at sentence #90000, processed 4310046 words, keeping 101159 word types
+INFO : PROGRESS: at sentence #100000, processed 4782559 words, keeping 105950 word types
+INFO : PROGRESS: at sentence #110000, processed 5279574 words, keeping 110579 word types
+INFO : PROGRESS: at sentence #120000, processed 5774214 words, keeping 114684 word types
+INFO : PROGRESS: at sentence #130000, processed 6258209 words, keeping 118756 word types
+INFO : PROGRESS: at sentence #140000, processed 6724500 words, keeping 122826 word types
+INFO : PROGRESS: at sentence #150000, processed 7211655 words, keeping 126278 word types
+INFO : PROGRESS: at sentence #160000, processed 7689992 words, keeping 129462 word types
+INFO : PROGRESS: at sentence #170000, processed 8168618 words, keeping 132988 word types
+INFO : PROGRESS: at sentence #180000, processed 8675556 words, keeping 136431 word types
+INFO : collected 139038 word types from a corpus of 9106699 raw words and 188416 sentences
+INFO : Updating model with new vocabulary
+INFO : New added 60058 unique words (30% of original 199096) and increased the count of 60058 pre-existing words (30% of original 199096)
+INFO : deleting the raw counts dictionary of 139038 items
+INFO : sample=0.001 downsamples 58 most-common words
+INFO : downsampling leaves estimated 14094574 word corpus (157.4% of prior 8955053)
+INFO : estimated required memory for 120116 words and 100 dimensions: 156150800 bytes
+INFO : updating layer weights
+INFO : Batch : 45. Extraction from corpus=0.9415s. Appending to vocabulary=2.2124s
+
+INFO : Tokenizing corpus and creating the vocabulary. Processing batch 46. Line: 188416. Token: 212808769
+INFO : collecting all words and their counts
+INFO : PROGRESS: at sentence #0, processed 0 words, keeping 0 word types
+INFO : PROGRESS: at sentence #10000, processed 478016 words, keeping 34329 word types
+INFO : PROGRESS: at sentence #20000, processed 957730 words, keeping 48773 word types
+INFO : PROGRESS: at sentence #30000, processed 1434097 words, keeping 59992 word types
+INFO : PROGRESS: at sentence #40000, processed 1945279 words, keeping 69729 word types
+INFO : PROGRESS: at sentence #50000, processed 2398675 words, keeping 77185 word types
+INFO : PROGRESS: at sentence #60000, processed 2883534 words, keeping 84258 word types
+INFO : PROGRESS: at sentence #70000, processed 3356131 words, keeping 90146 word types
+INFO : PROGRESS: at sentence #80000, processed 3830327 words, keeping 95719 word types
+INFO : PROGRESS: at sentence #90000, processed 4310046 words, keeping 101159 word types
+INFO : PROGRESS: at sentence #100000, processed 4782559 words, keeping 105950 word types
+INFO : PROGRESS: at sentence #110000, processed 5279574 words, keeping 110579 word types
+INFO : PROGRESS: at sentence #120000, processed 5774214 words, keeping 114684 word types
+INFO : PROGRESS: at sentence #130000, processed 6258209 words, keeping 118756 word types
+INFO : PROGRESS: at sentence #140000, processed 6724500 words, keeping 122826 word types
+INFO : PROGRESS: at sentence #150000, processed 7211655 words, keeping 126278 word types
+INFO : PROGRESS: at sentence #160000, processed 7689992 words, keeping 129462 word types
+INFO : PROGRESS: at sentence #170000, processed 8168618 words, keeping 132988 word types
+INFO : PROGRESS: at sentence #180000, processed 8675556 words, keeping 136431 word types

@@ -1,14 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="BookmarkManager">
-    <bookmark url="file://$PROJECT_DIR$/CreateEntities/Examples.py" line="114" />
-  </component>
   <component name="ChangeListManager">
     <list default="true" id="d35dca92-959c-489d-8a61-f337e4cce7fa" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/CreateEntities/SkipGram.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CreateEntities/Examples.log" beforeDir="false" afterPath="$PROJECT_DIR$/CreateEntities/Examples.log" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/CreateEntities/Examples.py" beforeDir="false" afterPath="$PROJECT_DIR$/CreateEntities/Examples.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Plan_Task1.pptx" beforeDir="false" afterPath="$PROJECT_DIR$/Plan_Task1.pptx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Task1_DeveloperDiary.docx" beforeDir="false" afterPath="$PROJECT_DIR$/Task1_DeveloperDiary.docx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/Utils.py" afterDir="false" />
     </list>
@@ -21,10 +17,22 @@
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Utils.py">
+        <entry file="file://$PROJECT_DIR$/GetInputData/RetrieveInputData.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="388">
-              <caret line="34" column="14" selection-start-line="34" selection-start-column="14" selection-end-line="34" selection-end-column="14" />
+            <state relative-caret-position="960">
+              <caret line="73" column="62" selection-start-line="72" selection-start-column="41" selection-end-line="73" selection-end-column="62" />
+              <folding>
+                <element signature="e#0#12#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/CreateEntities/PreprocessInput.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="210">
+              <caret line="20" column="40" selection-start-line="20" selection-start-column="31" selection-end-line="20" selection-end-column="40" />
               <folding>
                 <element signature="e#0#14#0" expanded="true" />
               </folding>
@@ -32,13 +40,37 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/CreateEntities/Examples.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="421">
-              <caret line="160" column="9" selection-start-line="160" selection-start-column="9" selection-end-line="160" selection-end-column="9" />
+            <state relative-caret-position="598">
+              <caret line="196" column="120" selection-start-line="196" selection-start-column="120" selection-end-line="196" selection-end-column="120" />
               <folding>
                 <element signature="e#0#20#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/Utils.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="90">
+              <caret line="6" column="9" selection-start-line="6" selection-start-column="9" selection-end-line="6" selection-end-column="9" />
+              <folding>
+                <element signature="e#0#14#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/CreateEntities/SkipGram.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="240">
+              <caret line="18" column="39" selection-start-line="18" selection-start-column="39" selection-end-line="18" selection-end-column="39" />
+              <folding>
+                <element signature="e#0#18#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -60,6 +92,7 @@
       <find>all-time</find>
       <find>english</find>
       <find>extended_lang_id</find>
+      <find>stopwo</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -72,15 +105,16 @@
         <option value="$PROJECT_DIR$/GetInputData/Wiktionary.py" />
         <option value="$PROJECT_DIR$/GetInputData/RetrieveInputData.py" />
         <option value="$PROJECT_DIR$/CreateEntities/PreprocessInput.py" />
-        <option value="$PROJECT_DIR$/Utils.py" />
+        <option value="$PROJECT_DIR$/CreateEntities/SkipGram.py" />
         <option value="$PROJECT_DIR$/CreateEntities/Examples.py" />
+        <option value="$PROJECT_DIR$/Utils.py" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
     <option name="y" value="23" />
     <option name="width" value="1440" />
-    <option name="height" value="801" />
+    <option name="height" value="798" />
   </component>
   <component name="ProjectView">
     <navigator proportions="" version="1">
@@ -99,6 +133,11 @@
               <item name="TASK1_Gbwe" type="b2602c69:ProjectViewProjectNode" />
               <item name="TASK1_Gbwe" type="462c0819:PsiDirectoryNode" />
               <item name="CreateEntities" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="TASK1_Gbwe" type="b2602c69:ProjectViewProjectNode" />
+              <item name="TASK1_Gbwe" type="462c0819:PsiDirectoryNode" />
+              <item name="GetInputData" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -146,13 +185,14 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="23" width="1920" height="977" extended-state="6" />
+    <frame x="0" y="23" width="1920" height="976" extended-state="6" />
+    <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.19914803" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.28115016" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
-      <window_info anchor="bottom" id="Find" order="1" />
+      <window_info anchor="bottom" id="Find" order="1" weight="0.3299435" />
       <window_info anchor="bottom" id="Run" order="2" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
@@ -161,7 +201,7 @@
       <window_info anchor="bottom" id="Version Control" order="7" />
       <window_info anchor="bottom" id="Terminal" order="8" />
       <window_info anchor="bottom" id="Event Log" order="9" side_tool="true" />
-      <window_info active="true" anchor="bottom" id="Python Console" order="10" visible="true" weight="0.26892656" />
+      <window_info active="true" anchor="bottom" id="Python Console" order="10" visible="true" weight="0.33710408" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
@@ -220,8 +260,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/GetInputData/RetrieveInputData.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="13">
-          <caret line="70" column="63" selection-start-line="70" selection-start-column="63" selection-end-line="70" selection-end-column="63" />
+        <state relative-caret-position="960">
+          <caret line="73" column="62" selection-start-line="72" selection-start-column="41" selection-end-line="73" selection-end-column="62" />
           <folding>
             <element signature="e#0#12#0" expanded="true" />
           </folding>
@@ -230,30 +270,40 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/CreateEntities/PreprocessInput.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="270">
-          <caret line="24" column="57" selection-start-line="24" selection-start-column="22" selection-end-line="24" selection-end-column="57" />
+        <state relative-caret-position="210">
+          <caret line="20" column="40" selection-start-line="20" selection-start-column="31" selection-end-line="20" selection-end-column="40" />
           <folding>
             <element signature="e#0#14#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Utils.py">
+    <entry file="file://$PROJECT_DIR$/CreateEntities/SkipGram.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="388">
-          <caret line="34" column="14" selection-start-line="34" selection-start-column="14" selection-end-line="34" selection-end-column="14" />
+        <state relative-caret-position="240">
+          <caret line="18" column="39" selection-start-line="18" selection-start-column="39" selection-end-line="18" selection-end-column="39" />
           <folding>
-            <element signature="e#0#14#0" expanded="true" />
+            <element signature="e#0#18#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/CreateEntities/Examples.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="421">
-          <caret line="160" column="9" selection-start-line="160" selection-start-column="9" selection-end-line="160" selection-end-column="9" />
+        <state relative-caret-position="598">
+          <caret line="196" column="120" selection-start-line="196" selection-start-column="120" selection-end-line="196" selection-end-column="120" />
           <folding>
             <element signature="e#0#20#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Utils.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="90">
+          <caret line="6" column="9" selection-start-line="6" selection-start-column="9" selection-end-line="6" selection-end-column="9" />
+          <folding>
+            <element signature="e#0#14#0" expanded="true" />
           </folding>
         </state>
       </provider>

@@ -8,10 +8,16 @@ import pandas as pd
 import nltk
 import re
 import numpy as np
+import CreateEntities.SkipGram as SkipGram
+import itertools
+import time
 
 CHUNKSIZE_HDF5 = 128
 
-
+# Step 0):
+# Read the HDF5 storage that contains the examples from the dictionary sources, after they were pre-processed.
+# Load them in tokenized form (e.g.: ['summer', 'temperatures', 'reached', 'all-time', 'high'])
+# in a list-of-lists, currently in memory
 def load_input_examples():
     all_examples_df_chunksIter = pd.read_hdf(os.path.join(Utils.FOLDER_INPUT, Utils.PREP_EXAMPLES + ".h5")
                                   ,iterator=True, chunksize=CHUNKSIZE_HDF5)
@@ -24,17 +30,26 @@ def load_input_examples():
         sentences_tokenized_lls.extend(chunk_lls)
     return sentences_tokenized_lls
 
-def prepare_input(sentences_tokenized_lls, window_radius):
-    word_pairs_ls = []
+# Step 1): Create the tuples (center_word, word_to_predict)
+# Stored in a HDF5 file
+def prepare_input(sentences_tokenized_lls, window_radius, out_hdf5_filepath):
 
-    for sentence_tokens_ls in sentences_tokenized_lls:
-        length = len(sentence_tokens_ls)
-        for i in range(length):
-            center_word = sentence_tokens_ls[i]
-            window_words = sentence_tokens_ls[max(0,i-window_radius):i] + sentence_tokens_ls[i+1:i+window_radius+1]
-            for w in window_words:
-                word_pairs_ls.append((center_word,w))
-    return word_pairs_ls
+    with pd.HDFStore(out_hdf5_filepath, mode='w') as out_hdf5_file: # reset and open
+        df_columns = ['center_word', 'word_to_predict']
+
+        for sentence_tokens_ls in sentences_tokenized_lls:
+            length = len(sentence_tokens_ls)
+            sentence_word_pairs = []
+            for i in range(length):
+                center_word = sentence_tokens_ls[i]
+                window_words = sentence_tokens_ls[max(0,i-window_radius):i] + sentence_tokens_ls[i+1:i+window_radius+1]
+                for w in window_words:
+                    sentence_word_pairs.append((center_word,w))
+            df = pd.DataFrame(data=sentence_word_pairs, columns=df_columns)
+            out_hdf5_file.append(key='skipgram_input', value=df,
+                                 min_itemsize={key: Utils.HDF5_BASE_CHARSIZE/2 for key in df_columns})
+    return
+
 
 def input_to_indices(word_pairs_ls, vocabulary_wordlist, oov_index):
 
@@ -56,56 +71,6 @@ def input_to_indices(word_pairs_ls, vocabulary_wordlist, oov_index):
     return input_indices_ls
 
 
-class SkipGram_BatchGenerator():
-
-    def __init__(self, inputpairs_indices_ls, batch_size):
-        self.inputpairs_indices_ls = inputpairs_indices_ls
-        self.batch_size = batch_size
-        self.current_pair = 0
-        self.num_pairs = len(inputpairs_indices_ls)
-
-    def __iter__(self):
-        return self
-
-    def __next__(self): # Python 2: def next(self)
-        if self.current_pair > self.num_pairs:
-            raise StopIteration
-        else:
-            self.batch = self.inputpairs_indices_ls[self.current_pair: self.current_pair + self.batch_size]
-            self.current_pair = self.current_pair + self.batch_size
-            self.inputs = list(map(lambda tpl: tpl[0], self.batch))
-            self.labels = list(map(lambda tpl: tpl[1], self.batch))
-            return self.inputs, self.labels
-
-
-def SkipGram_graph_OLD(embeddings_atstart, vocab_size, hidden_size_d, batch_size):
-    nn_graph = tf.Graph()
-    with nn_graph.as_default():
-        with tf.variable_scope("SkipGram", reuse=tf.AUTO_REUSE):
-            inputs = tf.placeholder(tf.int32, shape=[batch_size])
-            labels = tf.placeholder(tf.int32, shape=[batch_size, 1])
-
-            W_E = tf.Variable(embeddings_atstart, name="embeddings")
-
-            # e.g: model_wv.vectors, or our embeddings, or a random
-            # n: shape=(vocab_size, hidden_size_d) -> ValueError: If initializer is a constant, do not specify shape.
-
-            embed = tf.nn.embedding_lookup(W_E, inputs)
-            # hidden_layer = tf.matmul(center_word, W_E)
-
-            W_h_out = tf.get_variable(name="weights_h_out", initializer=tf.random_uniform([vocab_size, hidden_size_d], -1.0, 1.0))
-            biases_out = tf.Variable(tf.zeros(shape=[vocab_size]), name='biases_out')
-
-            # Calculate the loss
-            losses = tf.nn.sampled_softmax_loss(W_h_out, biases_out, labels, embed, num_sampled=5, num_classes=vocab_size)
-            loss = tf.reduce_mean(losses)
-            # tvars = tf.trainable_variables()
-            # vars_to_change = [var for var in tvars if not('fixed' in var.name)]
-
-            return inputs, labels, loss
-
-
-
 class CorpusTokenizerIterator():
     def __init__(self, corpus_filepath, batch_lines):
         self.corpus_filepath = corpus_filepath
@@ -113,64 +78,28 @@ class CorpusTokenizerIterator():
         self.current_tokens = []
         self.puncts_nohyphen_pattern_str = '[' + string.punctuation.replace('-', '') + ']'
         self.file_handler = open(corpus_filepath, "r")
-        self.flag_eof_reached = False
+        #self.flag_eof_reached = False
 
     def __iter__(self):
         return self
 
     def __next__(self): # Python 2: def next(self)
-        if self.flag_eof_reached == True:
-            raise StopIteration
-        else:
             for i in range(0,self.batch_lines):
                 self.next_line = self.file_handler.readline()
+                logging.debug('{'+ self.next_line +'}')
                 if self.next_line == '':
-                    self.flag_eof_reached = True
+                    raise StopIteration
                 self.next_line_noPuncts = re.sub(self.puncts_nohyphen_pattern_str, ' ', self.next_line)
                 self.current_tokens.append(nltk.tokenize.word_tokenize(self.next_line_noPuncts))
             return self.current_tokens
 
 
+def word_to_vocab_index(word, vocabulary_ls):
 
-def SkipGram_graph(vocabulary_size, hidden_size_d, batch_size):
-    # Placeholders for inputs
-    train_inputs = tf.placeholder(tf.int32, shape=[batch_size])
-    train_labels = tf.placeholder(tf.int32, shape=[batch_size, 1])
-
-    W_E = tf.Variable(tf.random_uniform([vocabulary_size, hidden_size_d], -1.0, 1.0))
-    embed = tf.nn.embedding_lookup(W_E, train_inputs)
-
-    nce_weights = tf.Variable(
-        tf.truncated_normal([vocabulary_size, hidden_size_d],
-                            stddev=1.0 / np.sqrt(hidden_size_d)))
-    nce_biases = tf.Variable(tf.zeros([vocabulary_size]))
-
-    loss = tf.reduce_mean(
-        tf.nn.nce_loss(weights=nce_weights,
-                       biases=nce_biases,
-                       labels=train_labels,
-                       inputs=embed,
-                       num_sampled=5,
-                       num_classes=vocabulary_size))
-
-    return train_inputs, train_labels, loss
-
-
-
-
-def trim_vocabulary_on_corpus_frequency(corpus_txt_filepath):
-
-    batch_lines = 1024
-    corpus_tok_iter = CorpusTokenizerIterator(corpus_txt_filepath, batch_lines)
-    vocab_model = gensim.models.Word2Vec()
-    vocab_model.build_vocab(corpus_tok_iter.__next__(), update=False);
-    while True:
-        try:
-            corpus_segment = corpus_tok_iter.__next__()
-            logging.info('Tokenizing corpus, to create the vocabulary. Processing batch ...' + logging.info(corpus_segment[0]))
-            vocab_model.build_vocab(corpus_segment, update=True);
-        except StopIteration:
-            pass
+    try:
+        return vocabulary_ls.index(word)
+    except ValueError:
+        return vocabulary_ls.index(Utils.UNK_TOKEN)
 
 
 
@@ -190,6 +119,9 @@ def main():
     #reduced_vocab = trim_vocabulary_on_corpus_frequency(os.path.join(Utils.FOLDER_WT103, Utils.WT103_TRAIN_FILE))
     # Temporary vocabulary from: nltk
     vocabulary = nltk.corpus.words.words()
+    vocabulary_h5 = pd.HDFStore(os.path.join(Utils.FOLDER_WORD_EMBEDDINGS, Utils.WT_MYVOCAB_FILE), mode='w')
+    vocab_h5_itemsizes = {'word': Utils.HDF5_BASE_CHARSIZE / 4, 'frequency': Utils.HDF5_BASE_CHARSIZE / 4}
+    vocabulary_h5.append(key='vocabulary', value=vocabulary, min_itemsize=vocab_h5_itemsizes)
 
     # In skip gram architecture of word2vec, the input is the center word and the predictions are the context words.
     # Consider an array of words W, if W(i) is the input (center word), then W(i-2), W(i-1), W(i+1), and W(i+2) are the
@@ -207,13 +139,17 @@ def main():
     ####### Boot-strap version: : No pre-initialization. Skip-Gram over the corpus of examples, then select w ‘s vector
 
     examples_tokenized_lls = load_input_examples()
-    word_centerPred_pairs = prepare_input(examples_tokenized_lls, window_radius)
 
-    batch_gen = SkipGram_BatchGenerator(word_centerPred_pairs, batch_size)
-    max_iterations = len(word_centerPred_pairs) // batch_size  # in 1 epoch, you can not have more iterations than batches
+    word_pairs_hdf5_filepath = os.path.join(Utils.FOLDER_WORD_EMBEDDINGS, Utils.SKIPGRAM_INPUTWORDPAIRS_FILENAME)
+    prepare_input(examples_tokenized_lls, window_radius, word_pairs_hdf5_filepath)
+    inputpairs_hdf5 = pd.read_hdf(word_pairs_hdf5_filepath, mode='r', chunksize=batch_size, iterator = True)
+    inputhdf5_df_iterator = inputpairs_hdf5.__iter__()
+
+    batch_gen = SkipGram.BatchGenerator(inputhdf5_df_iterator)
+    #max_iterations = len(word_centerPred_pairs) // batch_size  # in 1 epoch, you can not have more iterations than batches
     random_start_embeddings = np.random.standard_normal((vocab_size,d)).astype(dtype=np.float32)
 
-    inputs_pl, labels_pl, loss = SkipGram_graph(vocab_size, d, batch_size)
+    inputs_pl, labels_pl, loss = SkipGram.graph(vocab_size, d, batch_size)
     optimizer = tf.train.AdamOptimizer().minimize(loss)
     train_loss_summary = tf.summary.scalar('Training_loss_Softmax_withNegSampling', loss)
 
@@ -222,7 +158,7 @@ def main():
     with tf.Session() as sess:
         sess.run(init_op)
 
-        for j in range(0,max_iterations):
+        for j in range(0,1000000): #max_iterations
 
             batch_input_txt, batch_labels_txt = batch_gen.__next__()
             batch_input = list(map(lambda w: word_to_vocab_index(w,vocabulary), batch_input_txt))
@@ -232,9 +168,48 @@ def main():
             sess.run([optimizer], feed_dict=feed_dict)
 
 
-def word_to_vocab_index(word, vocabulary_ls):
 
-    try:
-        return vocabulary_ls.index(word)
-    except ValueError:
-        return vocabulary_ls.index(Utils.UNK_TOKEN)
+
+
+
+
+
+def create_vocabulary_from_corpus(corpus_txt_filepath):
+
+    batch_lines = 4096
+    corpus_tok_iter = CorpusTokenizerIterator(corpus_txt_filepath, batch_lines)
+    vocab_dict = {}
+    tot_tokens = 0
+    w2v_model = gensim.models.Word2Vec(min_count=5)
+
+    i = 0
+    while True:
+        try:
+            time_01 = time.time()
+            corpus_segment_lls = corpus_tok_iter.__next__()
+            logging.info('Tokenizing corpus and creating the vocabulary. Processing batch ' + str(
+                i) + '. Line: ' + str(batch_lines*i) + '. Token: ' + str(tot_tokens))
+            time_02 = time.time()
+            i = i + 1
+            try:
+                w2v_model.build_vocab(sentences=corpus_segment_lls, update=True, progress_per=10000,
+                                      keep_raw_vocab=False, trim_rule=None)
+            except RuntimeError: # "You cannot do an online vocabulary-update of a model which has no prior vocabulary."
+                w2v_model.build_vocab(sentences=corpus_segment_lls, update=False, progress_per=10000,
+                                      keep_raw_vocab=False, trim_rule=None)
+            for line in corpus_segment_lls:
+                # update_lts = [(token, line.count(token) ) for token in line]
+                tot_tokens = tot_tokens + len(line)
+                # for word, freq in update_lts:
+                #     try:
+                #         prev_freq = vocab_dict[word]
+                #         vocab_dict[word] = prev_freq + freq
+                #     except KeyError:
+                #         vocab_dict[word] = freq
+            time_03 = time.time()
+            logging.info('Batch : '+ str(i-1) +
+                         '. Extraction from corpus=' + str(round(time_02 - time_01,4))
+                         + 's. Appending to vocabulary=' + str(round(time_03 - time_02,4)) + 's \n'  )
+        except StopIteration:
+            #return vocab_dict
+            return w2v_model.vocabulary

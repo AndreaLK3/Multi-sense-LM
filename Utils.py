@@ -4,6 +4,7 @@ import pandas as pd
 import langid
 import nltk
 import string
+import re
 
 # Constants
 BABELNET_KEY = '7ba5e9a1-1f42-4d9a-97a7-c888975a60a1' #1000 queries per day. Wrote e-mail to request 5000
@@ -15,6 +16,8 @@ SOURCE_WIKTIONARY = 'Wiktionary'
 SOURCE_OMEGAWIKI = 'OmegaWiki'
 SOURCE_DBPEDIA = "DBpedia"
 
+HDF5_BASE_CHARSIZE = 1024
+
 DEFINITIONS = 'definitions'
 EXAMPLES = 'examples'
 SYNONYMS = 'synonyms'
@@ -23,16 +26,21 @@ ENCYCLOPEDIA_DEF = 'encyclopedia_def'
 PREP_DEFINITIONS = 'preprocessed_definitions'
 PREP_EXAMPLES = 'preprocessed_examples'
 
+
 FOLDER_INPUT = 'InputData'
 FOLDER_WORD_EMBEDDINGS = 'WordEmbeddings'
 FOLDER_WT103 = 'WikiText-103'
 
 WORD2VEC_FILENAME = 'GoogleNews-vectors-negative300.bin'
-WT103_TRAIN_FILE = 'wiki.train.tokens'
-WT103_VALID_FILE = 'wiki.valid.tokens'
-WT103_TEST_FILE = 'wiki.test.tokens'
+WT_TRAIN_FILE = 'wiki.train.tokens'
+WT_VALID_FILE = 'wiki.valid.tokens'
+WT_TEST_FILE = 'wiki.test.tokens'
+WT_MYVOCAB_FILE = 'vocabulary_fromWikiText.h5'
+
+SKIPGRAM_INPUTWORDPAIRS_FILENAME = 'SkipGram_inputWordPairs.h5'
 
 UNK_TOKEN = '<unk>'
+
 
 def init_logging(logfilename, loglevel=logging.INFO):
   for handler in logging.root.handlers[:]:
@@ -72,4 +80,22 @@ def check_language(text, lang_id):
     return possible_match
 
 
-HDF5_BASE_CHARSIZE = 1024
+# Utility for processing entities, word embeddings & co
+def count_tokens_in_corpus(corpus_txt_filepath):
+
+    file = open(corpus_txt_filepath, "r", encoding="utf-8")
+    num_tokens = 0
+
+    for i, line in enumerate(file):
+        if line == '':
+            break
+        line_noPuncts = re.sub('['+string.punctuation.replace('-', '')+']', ' ', line)
+        tokens_in_line = nltk.tokenize.word_tokenize(line_noPuncts)
+        num_tokens = num_tokens + len(tokens_in_line)
+
+        if i % 1000 == 0:
+            print("Reading in line n. : " + str(i) + ' ; number of tokens encountered: ' + str(num_tokens))
+
+    file.close()
+
+    return num_tokens
