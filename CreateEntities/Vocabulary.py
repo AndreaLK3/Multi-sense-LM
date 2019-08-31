@@ -24,9 +24,9 @@ def get_vocabulary_df(vocabulary_h5_filepath, corpus_txt_filepath, min_count, ex
     return vocab_df
 
 
-def eliminate_short_numbers(list_of_tokens):
+def replace_numbers(list_of_tokens):
     modified_tokens = []
-    nums_pattern = re.compile('([0-9]){1,3}')
+    nums_pattern = re.compile('([0-9]){5,}|([0-9]){1,3}')
     for tok in list_of_tokens:
         match = re.match(nums_pattern, tok)
         if match is None:
@@ -40,7 +40,22 @@ def eliminate_short_numbers(list_of_tokens):
 
     return modified_tokens
 
-# modifies the dictionary. Words are removed if frequency < min_count
+
+# There are strings with non-latin characters, such as: 匹, 枚, マギカ , etc.
+# In those, we replace the non-latin words with <unk>
+def replace_nonLatin_words(list_of_tokens):
+    modified_tokens = []
+    for tok in list_of_tokens:
+        try:
+            tok.encode('latin-1')
+            modified_tokens.append(tok)
+        except UnicodeEncodeError:
+            modified_tokens.append(Utils.UNK_TOKEN)
+    return modified_tokens
+
+
+
+# modifies an already created vocabulary dictionary. Words are removed if frequency < min_count
 def eliminate_rare_words(vocabulary_dict, min_count):
     logging.info('Removing from the vocabulary words with frequency < ' + str(min_count))
     all_words = list(vocabulary_dict.keys()) # if we operate directly on keys(), we get: RuntimeError: dictionary changed size during iteration
@@ -56,24 +71,38 @@ def build_vocabulary_from_corpus(corpus_txt_filepath, extended_lang_id):
     stopwords_ls = nltk.corpus.stopwords.words(extended_lang_id)
 
     time_prev = time.time()
+    time_archives = [0,0,0,0,0,0]
     for i, line in enumerate(open(corpus_txt_filepath, "r", encoding="utf-8")):
         if line == '':
             break
-        # tokens_in_line = nltk.tokenize.word_tokenize(line)
-        line_noPuncts = re.sub('[' + string.punctuation.replace('-', '') + ']', ' ', line)
-        tokens_in_line_nopuncts = nltk.tokenize.word_tokenize(line_noPuncts)
-        tokens_in_line_nonumbers = eliminate_short_numbers(tokens_in_line_nopuncts)
+        time_00 = time.time()
+        tokens_in_line = nltk.tokenize.word_tokenize(line)
+        time_01 = time.time()
+        tot_tokens = tot_tokens + len(tokens_in_line)
+        time_02 = time.time()
+        tokens_in_line_01 = list(filter(lambda tok: (tok not in string.punctuation)
+                                                    and (tok not in stopwords_ls), tokens_in_line))
+        time_03 = time.time()
+        tokens_in_line_latinWords = replace_nonLatin_words(tokens_in_line_01)
+        tokens_in_line_nonumbers = replace_numbers(tokens_in_line_latinWords)
+        time_04 = time.time()
         tokens_in_line_lowercase = list(map(lambda tok : tok.lower(), tokens_in_line_nonumbers))
-        tokens_in_line_nostopwords = list(filter(lambda tok: tok not in stopwords_ls, tokens_in_line_lowercase))
+        time_05 = time.time()
+        time_updates = [time_01-time_00, time_02-time_01, time_03-time_02, time_04-time_03, time_05-time_04] # , time_06-time_05
+        time_archives = [ time_archives[i] + time_updates[i] for i in range(len(time_updates)) ]
 
-        tot_tokens = tot_tokens + len(tokens_in_line_nostopwords)
 
         if i % 10000 == 0:
             time_next = time.time()
             time_elapsed = round( time_next - time_prev, 4)
-            print("Reading in line n. : " + str(i) + ' ; number of tokens encountered: ' + str(tot_tokens) +
+            logging.info("Reading in line n. : " + str(i) + ' ; number of tokens encountered: ' + str(tot_tokens) +
                   " ; time elapsed = " + str(time_elapsed) + " s")
             time_prev = time.time()
+            logging.info("Time spent on the phases: tokenization=" + str(round(time_archives[0],4)) +
+                         "\t ; count tokens= " + str(round(time_archives[1],4)) +
+                         "\t ; eliminate punctuation and stopwords= " + str(round(time_archives[2],4)) +
+                         "\t ; replace numbers= " + str(round(time_archives[3],4)) +
+                         "\t ; lowercase= " + str(round(time_archives[4],4)))
 
         different_tokens = set(token for token in tokens_in_line_lowercase)
 

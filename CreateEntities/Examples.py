@@ -68,6 +68,7 @@ def input_to_indices(word_pairs_ls, vocabulary_wordlist, oov_index):
 
     return input_indices_ls
 
+
 def word_to_vocab_index(word, vocabulary_ls):
 
     try:
@@ -95,15 +96,14 @@ def main():
     # Temporary vocabulary was from: nltk.corpus.words.words()
     extended_lang_id = 'english'
     min_count = 5
-    vocabulary_storage_fpath = os.path.join(Utils.FOLDER_WORD_EMBEDDINGS, ) #Utils.WT_MYVOCAB_MINITEST_FILE
-    vocabulary_source_corpus_fpath = os.path.join(Utils.FOLDER_WT103, ) #Utils.WT_VALID_FILE
+    vocabulary_storage_fpath = os.path.join(Utils.FOLDER_WORD_EMBEDDINGS, Utils.WT_MYVOCAB_FILE) #Utils.WT_MYVOCAB_MINITEST_FILE
+    vocabulary_source_corpus_fpath = os.path.join(Utils.FOLDER_WT103, Utils.WT_TRAIN_FILE) #Utils.WT_VALID_FILE
     vocabulary = Vocabulary.get_vocabulary_df(vocabulary_storage_fpath, vocabulary_source_corpus_fpath, min_count, extended_lang_id)
 
-
+    raise Exception
     # In skip gram architecture of word2vec, the input is the center word and the predictions are the context words.
     # Consider an array of words W, if W(i) is the input (center word), then W(i-2), W(i-1), W(i+1), and W(i+2) are the
     # context words, if the sliding window size is 2.
-
 
     ####### Common
     batch_size = 8
@@ -128,12 +128,14 @@ def main():
 
     inputs_pl, labels_pl, loss = SkipGram.graph(vocab_size, d, batch_size)
     optimizer = tf.train.AdamOptimizer().minimize(loss)
-    train_loss_summary = tf.summary.scalar('Training_loss_Softmax_withNegSampling', loss)
+    train_loss_summary = tf.summary.scalar('Training_loss', loss)
+
 
     init_op = tf.global_variables_initializer()
 
     with tf.Session() as sess:
         sess.run(init_op)
+        tf.summary.FileWriter(os.path.join(Utils.FOLDER_TENSORBOARD, train_loss_summary.name), sess.graph)
 
         for j in range(0,1000000): #max_iterations
 

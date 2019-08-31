@@ -30,6 +30,7 @@ PREP_EXAMPLES = 'preprocessed_examples'
 FOLDER_INPUT = 'InputData'
 FOLDER_WORD_EMBEDDINGS = 'WordEmbeddings'
 FOLDER_WT103 = 'WikiText-103'
+FOLDER_TENSORBOARD = 'TensorBoard'
 
 WORD2VEC_FILENAME = 'GoogleNews-vectors-negative300.bin'
 WT_TRAIN_FILE = 'wiki.train.tokens'
@@ -40,9 +41,8 @@ WT_MYVOCAB_MINITEST_FILE = 'vocabulary_miniTest.h5'
 
 SKIPGRAM_INPUTWORDPAIRS_FILENAME = 'SkipGram_inputWordPairs.h5'
 
-UNK_TOKEN = '<UNK>'
-NUM_TOKEN = '<NUM>'
-
+UNK_TOKEN = '<unk>'
+NUM_TOKEN = '<num>'
 
 def init_logging(logfilename, loglevel=logging.INFO):
   for handler in logging.root.handlers[:]:
