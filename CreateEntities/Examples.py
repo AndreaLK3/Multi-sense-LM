@@ -48,33 +48,27 @@ def prepare_input(sentences_tokenized_lls, window_radius, out_hdf5_filepath):
                                  min_itemsize={key: Utils.HDF5_BASE_CHARSIZE/2 for key in df_columns})
     return
 
-
-def input_to_indices(word_pairs_ls, vocabulary_wordlist, oov_index):
+# Step 2):
+def input_to_indices(word_pairs_ls, vocabulary_wordlist):
 
     input_indices_ls = []
 
     for word_pair in word_pairs_ls:
         center_word = word_pair[0]
         word_toPredict = word_pair[1]
-        try:
-            center_word_index = vocabulary_wordlist.index(center_word)
-        except ValueError:
-            center_word_index = oov_index
-        try:
-            word_toPredict_index = vocabulary_wordlist.index(word_toPredict)
-        except ValueError:
-            word_toPredict_index = oov_index
+        center_word_index = word_to_vocab_index(center_word, vocabulary_wordlist)
+        word_toPredict_index = word_to_vocab_index(word_toPredict, vocabulary_wordlist)
         input_indices_ls.append((center_word_index, word_toPredict_index))
 
     return input_indices_ls
 
 
-def word_to_vocab_index(word, vocabulary_ls):
+def word_to_vocab_index(word, vocabulary_wordList):
 
     try:
-        return vocabulary_ls.index(word)
+        return vocabulary_wordList.index(word)
     except ValueError:
-        return vocabulary_ls.index(Utils.UNK_TOKEN)
+        return vocabulary_wordList.index(Utils.UNK_TOKEN)
 
 
 
@@ -96,11 +90,10 @@ def main():
     # Temporary vocabulary was from: nltk.corpus.words.words()
     extended_lang_id = 'english'
     min_count = 5
-    vocabulary_storage_fpath = os.path.join(Utils.FOLDER_WORD_EMBEDDINGS, Utils.WT_MYVOCAB_FILE) #Utils.WT_MYVOCAB_MINITEST_FILE
-    vocabulary_source_corpus_fpath = os.path.join(Utils.FOLDER_WT103, Utils.WT_TRAIN_FILE) #Utils.WT_VALID_FILE
-    vocabulary = Vocabulary.get_vocabulary_df(vocabulary_storage_fpath, vocabulary_source_corpus_fpath, min_count, extended_lang_id)
+    vocabulary_storage_fpath = os.path.join(Utils.FOLDER_WORD_EMBEDDINGS, Utils.WT_MYVOCAB_MINITEST_FILE) # Utils.WT_MYVOCAB_FILE
+    vocabulary_source_corpus_fpath = os.path.join(Utils.FOLDER_WT103, Utils.WT_VALID_FILE) # Utils.WT_TRAIN_FILE
+    vocabulary_df = Vocabulary.get_vocabulary_df(vocabulary_storage_fpath, vocabulary_source_corpus_fpath, min_count, extended_lang_id)
 
-    raise Exception
     # In skip gram architecture of word2vec, the input is the center word and the predictions are the context words.
     # Consider an array of words W, if W(i) is the input (center word), then W(i-2), W(i-1), W(i+1), and W(i+2) are the
     # context words, if the sliding window size is 2.
@@ -111,7 +104,8 @@ def main():
 
     d = 300 # len(pretrained_model_wv.vectors[0])   # Number of neurons in the hidden layer of neural network
     #Temporary vocabulary from: nltk
-    vocab_size = len(vocabulary)
+    vocab_size = len(vocabulary_df)
+    vocabulary_words_ls = vocabulary_df['word'].to_list()
 
     ####### Boot-strap version: : No pre-initialization. Skip-Gram over the corpus of examples, then select w ‘s vector
 
@@ -119,6 +113,8 @@ def main():
 
     word_pairs_hdf5_filepath = os.path.join(Utils.FOLDER_WORD_EMBEDDINGS, Utils.SKIPGRAM_INPUTWORDPAIRS_FILENAME)
     prepare_input(examples_tokenized_lls, window_radius, word_pairs_hdf5_filepath)
+    logging.info("The input corpus of examples was organized into pairs of (centerWord, wordToPredict)")
+
     inputpairs_hdf5 = pd.read_hdf(word_pairs_hdf5_filepath, mode='r', chunksize=batch_size, iterator = True)
     inputhdf5_df_iterator = inputpairs_hdf5.__iter__()
 
@@ -130,26 +126,20 @@ def main():
     optimizer = tf.train.AdamOptimizer().minimize(loss)
     train_loss_summary = tf.summary.scalar('Training_loss', loss)
 
-
     init_op = tf.global_variables_initializer()
 
     with tf.Session() as sess:
         sess.run(init_op)
-        tf.summary.FileWriter(os.path.join(Utils.FOLDER_TENSORBOARD, train_loss_summary.name), sess.graph)
+        writer_1 = tf.summary.FileWriter(os.path.join("CreateEntities", Utils.SUBFOLDER_TENSORBOARD, train_loss_summary.name), sess.graph)
 
-        for j in range(0,1000000): #max_iterations
+        for j in range(0,10000): #max_iterations
 
             batch_input_txt, batch_labels_txt = batch_gen.__next__()
-            batch_input = list(map(lambda w: word_to_vocab_index(w,vocabulary), batch_input_txt))
-            batch_labels = list(map(lambda w: word_to_vocab_index(w, vocabulary), batch_labels_txt))
+            batch_input = list(map(lambda w: word_to_vocab_index(w,vocabulary_words_ls), batch_input_txt))
+            batch_labels = list(map(lambda w: word_to_vocab_index(w, vocabulary_words_ls), batch_labels_txt))
 
             feed_dict = {inputs_pl: batch_input, labels_pl: batch_labels}
-            sess.run([optimizer], feed_dict=feed_dict)
-
-
-
-
-
+            sess.run([optimizer, writer_1], feed_dict=feed_dict)
 
 
 

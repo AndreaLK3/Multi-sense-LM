@@ -41,32 +41,3 @@ def graph(vocabulary_size, hidden_size_d, batch_size):
                        num_classes=vocabulary_size))
 
     return train_inputs, train_labels, loss
-
-
-
-#### Not used:
-# def SkipGram_graph_OLD(embeddings_atstart, vocab_size, hidden_size_d, batch_size):
-#     nn_graph = tf.Graph()
-#     with nn_graph.as_default():
-#         with tf.variable_scope("SkipGram", reuse=tf.AUTO_REUSE):
-#             inputs = tf.placeholder(tf.int32, shape=[batch_size])
-#             labels = tf.placeholder(tf.int32, shape=[batch_size, 1])
-#
-#             W_E = tf.Variable(embeddings_atstart, name="embeddings")
-#
-#             # e.g: model_wv.vectors, or our embeddings, or a random
-#             # n: shape=(vocab_size, hidden_size_d) -> ValueError: If initializer is a constant, do not specify shape.
-#
-#             embed = tf.nn.embedding_lookup(W_E, inputs)
-#             # hidden_layer = tf.matmul(center_word, W_E)
-#
-#             W_h_out = tf.get_variable(name="weights_h_out", initializer=tf.random_uniform([vocab_size, hidden_size_d], -1.0, 1.0))
-#             biases_out = tf.Variable(tf.zeros(shape=[vocab_size]), name='biases_out')
-#
-#             # Calculate the loss
-#             losses = tf.nn.sampled_softmax_loss(W_h_out, biases_out, labels, embed, num_sampled=5, num_classes=vocab_size)
-#             loss = tf.reduce_mean(losses)
-#             # tvars = tf.trainable_variables()
-#             # vars_to_change = [var for var in tvars if not('fixed' in var.name)]
-#
-#             return inputs, labels, loss

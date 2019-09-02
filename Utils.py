@@ -30,7 +30,7 @@ PREP_EXAMPLES = 'preprocessed_examples'
 FOLDER_INPUT = 'InputData'
 FOLDER_WORD_EMBEDDINGS = 'WordEmbeddings'
 FOLDER_WT103 = 'WikiText-103'
-FOLDER_TENSORBOARD = 'TensorBoard'
+SUBFOLDER_TENSORBOARD = 'TensorBoard'
 
 WORD2VEC_FILENAME = 'GoogleNews-vectors-negative300.bin'
 WT_TRAIN_FILE = 'wiki.train.tokens'
