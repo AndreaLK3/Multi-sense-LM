@@ -11,6 +11,9 @@ import CreateEntities.SkipGram as SkipGram
 import CreateEntities.Vocabulary as Vocabulary
 
 CHUNKSIZE_HDF5 = 128
+BATCH_SIZE = 8
+WINDOW_RADIUS = 5
+D = 300
 
 # Step 0):
 # Read the HDF5 storage that contains the examples from the dictionary sources, after they were pre-processed.
@@ -32,35 +35,25 @@ def load_input_examples():
 # Stored in a HDF5 file
 def prepare_input(sentences_tokenized_lls, window_radius, out_hdf5_filepath):
 
-    with pd.HDFStore(out_hdf5_filepath, mode='w') as out_hdf5_file: # reset and open
-        df_columns = ['center_word', 'word_to_predict']
+    if os.path.exists(out_hdf5_filepath):
+        logging.info("*** The input word pairs had already been created in the file:" + out_hdf5_filepath)
+    else:
+        logging.info("*** Creating input word pairs from the corpus of examples...")
+        with pd.HDFStore(out_hdf5_filepath, mode='w') as out_hdf5_file: # reset and open
+            df_columns = ['center_word', 'word_to_predict']
 
-        for sentence_tokens_ls in sentences_tokenized_lls:
-            length = len(sentence_tokens_ls)
-            sentence_word_pairs = []
-            for i in range(length):
-                center_word = sentence_tokens_ls[i]
-                window_words = sentence_tokens_ls[max(0,i-window_radius):i] + sentence_tokens_ls[i+1:i+window_radius+1]
-                for w in window_words:
-                    sentence_word_pairs.append((center_word,w))
-            df = pd.DataFrame(data=sentence_word_pairs, columns=df_columns)
-            out_hdf5_file.append(key='skipgram_input', value=df,
-                                 min_itemsize={key: Utils.HDF5_BASE_CHARSIZE/2 for key in df_columns})
-    return
-
-# Step 2):
-def input_to_indices(word_pairs_ls, vocabulary_wordlist):
-
-    input_indices_ls = []
-
-    for word_pair in word_pairs_ls:
-        center_word = word_pair[0]
-        word_toPredict = word_pair[1]
-        center_word_index = word_to_vocab_index(center_word, vocabulary_wordlist)
-        word_toPredict_index = word_to_vocab_index(word_toPredict, vocabulary_wordlist)
-        input_indices_ls.append((center_word_index, word_toPredict_index))
-
-    return input_indices_ls
+            for sentence_tokens_ls in sentences_tokenized_lls:
+                length = len(sentence_tokens_ls)
+                sentence_word_pairs = []
+                for i in range(length):
+                    center_word = sentence_tokens_ls[i]
+                    window_words = sentence_tokens_ls[max(0,i-window_radius):i] + sentence_tokens_ls[i+1:i+window_radius+1]
+                    for w in window_words:
+                        sentence_word_pairs.append((center_word,w))
+                df = pd.DataFrame(data=sentence_word_pairs, columns=df_columns)
+                out_hdf5_file.append(key='skipgram_input', value=df,
+                                     min_itemsize={key: Utils.HDF5_BASE_CHARSIZE/2 for key in df_columns})
+        return
 
 
 def word_to_vocab_index(word, vocabulary_wordList):
@@ -69,8 +62,6 @@ def word_to_vocab_index(word, vocabulary_wordList):
         return vocabulary_wordList.index(word)
     except ValueError:
         return vocabulary_wordList.index(Utils.UNK_TOKEN)
-
-
 
 
 def main():
@@ -99,47 +90,51 @@ def main():
     # context words, if the sliding window size is 2.
 
     ####### Common
-    batch_size = 8
-    window_radius = 5
+    batch_size = BATCH_SIZE
+    window_radius = WINDOW_RADIUS
 
-    d = 300 # len(pretrained_model_wv.vectors[0])   # Number of neurons in the hidden layer of neural network
+    d = D # len(pretrained_model_wv.vectors[0])   # Number of neurons in the hidden layer of neural network
     #Temporary vocabulary from: nltk
     vocab_size = len(vocabulary_df)
+    logging.info('*** Settings: batch_size= ' + str(batch_size) +', window_radius=' + str(window_radius)
+                 + ', d=' + str(d) + ', vocab_size=' + str(vocab_size) )
     vocabulary_words_ls = vocabulary_df['word'].to_list()
 
     ####### Boot-strap version: : No pre-initialization. Skip-Gram over the corpus of examples, then select w ‘s vector
 
     examples_tokenized_lls = load_input_examples()
+    logging.info('*** The input examples from dictionary sources have been loaded.')
 
     word_pairs_hdf5_filepath = os.path.join(Utils.FOLDER_WORD_EMBEDDINGS, Utils.SKIPGRAM_INPUTWORDPAIRS_FILENAME)
     prepare_input(examples_tokenized_lls, window_radius, word_pairs_hdf5_filepath)
-    logging.info("The input corpus of examples was organized into pairs of (centerWord, wordToPredict)")
+    logging.info("*** Input pairs (centerWord, wordToPredict)")
 
     inputpairs_hdf5 = pd.read_hdf(word_pairs_hdf5_filepath, mode='r', chunksize=batch_size, iterator = True)
     inputhdf5_df_iterator = inputpairs_hdf5.__iter__()
-
     batch_gen = SkipGram.BatchGenerator(inputhdf5_df_iterator)
+    logging.info('*** Input batch generator')
     #max_iterations = len(word_centerPred_pairs) // batch_size  # in 1 epoch, you can not have more iterations than batches
     random_start_embeddings = np.random.standard_normal((vocab_size,d)).astype(dtype=np.float32)
 
     inputs_pl, labels_pl, loss = SkipGram.graph(vocab_size, d, batch_size)
     optimizer = tf.train.AdamOptimizer().minimize(loss)
     train_loss_summary = tf.summary.scalar('Training_loss', loss)
-
     init_op = tf.global_variables_initializer()
+    logging.info('*** Tensorflow graph ready. Starting Skip-gram training')
 
     with tf.Session() as sess:
         sess.run(init_op)
         writer_1 = tf.summary.FileWriter(os.path.join("CreateEntities", Utils.SUBFOLDER_TENSORBOARD, train_loss_summary.name), sess.graph)
 
-        for j in range(0,10000): #max_iterations
+        while True:
+            try:
+                batch_input_txt, batch_labels_txt = batch_gen.__next__()
+                batch_input = list(map(lambda w: word_to_vocab_index(w, vocabulary_words_ls), batch_input_txt))
+                batch_labels = list(map(lambda w: word_to_vocab_index(w, vocabulary_words_ls), batch_labels_txt))
 
-            batch_input_txt, batch_labels_txt = batch_gen.__next__()
-            batch_input = list(map(lambda w: word_to_vocab_index(w,vocabulary_words_ls), batch_input_txt))
-            batch_labels = list(map(lambda w: word_to_vocab_index(w, vocabulary_words_ls), batch_labels_txt))
-
-            feed_dict = {inputs_pl: batch_input, labels_pl: batch_labels}
-            sess.run([optimizer, writer_1], feed_dict=feed_dict)
-
+                feed_dict = {inputs_pl: batch_input, labels_pl: batch_labels}
+                sess.run([optimizer, writer_1], feed_dict=feed_dict)
+            except StopIteration:
+                pass
 
 

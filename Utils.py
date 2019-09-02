@@ -102,3 +102,11 @@ def count_tokens_in_corpus(corpus_txt_filepath):
     file.close()
 
     return tot_tokens
+
+
+def word_to_vocab_index(word, vocabulary_wordList):
+
+    try:
+        return vocabulary_wordList.index(word)
+    except ValueError:
+        return vocabulary_wordList.index(UNK_TOKEN)

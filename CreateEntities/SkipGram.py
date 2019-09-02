@@ -21,8 +21,8 @@ class BatchGenerator():
 
 def graph(vocabulary_size, hidden_size_d, batch_size):
     # Placeholders for inputs
-    train_inputs = tf.placeholder(tf.int32, shape=[batch_size])
-    train_labels = tf.placeholder(tf.int32, shape=[batch_size, 1])
+    train_inputs = tf.placeholder(tf.int32, name="inputs", shape=[batch_size])
+    train_labels = tf.placeholder(tf.int32, name="labels", shape=[batch_size, 1])
 
     W_E = tf.Variable(tf.random_uniform([vocabulary_size, hidden_size_d], -1.0, 1.0))
     embed = tf.nn.embedding_lookup(W_E, train_inputs)

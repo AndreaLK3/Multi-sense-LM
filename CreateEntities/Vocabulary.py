@@ -11,7 +11,7 @@ import re
 def get_vocabulary_df(vocabulary_h5_filepath, corpus_txt_filepath, min_count, extended_lang_id):
     if os.path.exists(vocabulary_h5_filepath):
         vocab_df = pd.read_hdf(vocabulary_h5_filepath, mode='r')
-        logging.info("The vocabulary was loaded from the file " + vocabulary_h5_filepath)
+        logging.info("*** The vocabulary was loaded from the file " + vocabulary_h5_filepath)
     else:
         vocabulary_h5 = pd.HDFStore(vocabulary_h5_filepath, mode='w')
         vocab_h5_itemsizes = {'word': Utils.HDF5_BASE_CHARSIZE / 4, 'frequency': Utils.HDF5_BASE_CHARSIZE / 8}
@@ -21,7 +21,7 @@ def get_vocabulary_df(vocabulary_h5_filepath, corpus_txt_filepath, min_count, ex
         vocab_df = pd.DataFrame(data=zip(vocabulary.keys(), vocabulary.values()), columns=['word', 'frequency'])
         vocabulary_h5.append(key='vocabulary', value=vocab_df, min_itemsize=vocab_h5_itemsizes)
         vocabulary_h5.close()
-        logging.info("The vocabulary was created from the corpus file " + corpus_txt_filepath)
+        logging.info("*** The vocabulary was created from the corpus file " + corpus_txt_filepath)
 
     return vocab_df
 

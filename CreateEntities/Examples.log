@@ -1,7 +1,13 @@
-INFO : The vocabulary was loaded from the file WordEmbeddings/vocabulary_miniTest.h5
+INFO : *** The vocabulary was loaded from the file WordEmbeddings/vocabulary_miniTest.h5
+INFO : *** Settings: batch_size= 8, window_radius=5, d=300, vocab_size=3436
+INFO : *** The input examples from dictionary sources have been loaded.
+INFO : *** The input word pairs had already been created in the file:WordEmbeddings/SkipGram_inputWordPairs.h5
+INFO : *** Input pairs (centerWord, wordToPredict)
+INFO : *** Input batch generator
 WARNING : From /Users/andrea/anaconda3/lib/python3.7/site-packages/tensorflow/python/framework/op_def_library.py:263: colocate_with (from tensorflow.python.framework.ops) is deprecated and will be removed in a future version.
 Instructions for updating:
 Colocations handled automatically by placer.
 WARNING : From /Users/andrea/anaconda3/lib/python3.7/site-packages/tensorflow/python/ops/array_grad.py:425: to_int32 (from tensorflow.python.ops.math_ops) is deprecated and will be removed in a future version.
 Instructions for updating:
 Use tf.cast instead.
+INFO : *** Tensorflow graph ready. Starting Skip-gram training
