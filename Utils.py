@@ -6,9 +6,9 @@ import nltk
 import string
 import re
 
-# Constants
-BABELNET_KEY = '7ba5e9a1-1f42-4d9a-97a7-c888975a60a1' #1000 queries per day. Wrote e-mail to request 5000
-THESAURUS_KEY = 'xIOLizqsIEV9CMmfkza9' #upto 5000 queries per day.
+########## Constants ##########
+
+BABELNET_KEY = '7ba5e9a1-1f42-4d9a-97a7-c888975a60a1' # 5000 queries per day until 31-12-2019, then 1000
 
 SOURCE_WORDNET = 'WordNet'
 SOURCE_BABELNET = 'BabelNet'
@@ -26,23 +26,26 @@ ENCYCLOPEDIA_DEF = 'encyclopedia_def'
 PREP_DEFINITIONS = 'preprocessed_definitions'
 PREP_EXAMPLES = 'preprocessed_examples'
 
+########## Constants - filesystem ##########
 
 FOLDER_INPUT = 'InputData'
 FOLDER_WORD_EMBEDDINGS = 'WordEmbeddings'
 FOLDER_WT103 = 'WikiText-103'
 SUBFOLDER_TENSORBOARD = 'TensorBoard'
 
-WORD2VEC_FILENAME = 'GoogleNews-vectors-negative300.bin'
 WT_TRAIN_FILE = 'wiki.train.tokens'
 WT_VALID_FILE = 'wiki.valid.tokens'
 WT_TEST_FILE = 'wiki.test.tokens'
+
 WT_MYVOCAB_FILE = 'vocabulary_fromWikiText.h5'
 WT_MYVOCAB_MINITEST_FILE = 'vocabulary_miniTest.h5'
 
-SKIPGRAM_INPUTWORDPAIRS_FILENAME = 'SkipGram_inputWordPairs.h5'
 
 UNK_TOKEN = '<unk>'
 NUM_TOKEN = '<num>'
+
+
+########## Functions ##########
 
 def init_logging(logfilename, loglevel=logging.INFO):
   for handler in logging.root.handlers[:]:
@@ -55,12 +58,6 @@ def init_logging(logfilename, loglevel=logging.INFO):
       outlog_h = logging.StreamHandler(sys.stdout)
       outlog_h.setLevel(loglevel)
       logging.getLogger().addHandler(outlog_h)
-
-
-def read_hdf5_storage(filepath):
-    df = pd.read_hdf(filepath)
-    return df
-
 
 
 ### Note: must add the vocabularies of other languages
@@ -102,6 +99,7 @@ def count_tokens_in_corpus(corpus_txt_filepath):
     file.close()
 
     return tot_tokens
+
 
 
 def word_to_vocab_index(word, vocabulary_wordList):

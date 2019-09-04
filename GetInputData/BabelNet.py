@@ -2,29 +2,36 @@ import Utils
 import urllib.request
 import logging
 import json
+import pandas as pd
+import os
+from itertools import cycle
+
 
 ########## HTTP Requests
+
+# For a word, retrieve the "introductory structures" of its synsets, containing id and PoS
+# e.g.: [{'id': 'bn:00030151n', 'pos': 'NOUN', 'source': 'BABELNET'}, {...}, ...]
 def get_syns_intros_word(key, target_word, searchLang='EN'):
     req_url = 'https://babelnet.io/v5/getSynsetIds?lemma='+target_word+'&searchLang='+searchLang+'&key='+key
     with urllib.request.urlopen(req_url) as response:
         synsets_intros = json.load(response)
     return synsets_intros
 
+# Retrieve the data structure of the synset with the given id.
+# It contains everything: glosses, examples, etc.
 def get_synset_data(key, synset_ID):
     req_url = 'https://babelnet.io/v5/getSynset?id='+synset_ID+'&key='+key
     with urllib.request.urlopen(req_url) as response:
         synset_data = json.load(response)
     return synset_data
-####################
 
+####################
 
 
 # Keep only the relevant synsets for the target word.
 # Directives:
 # Exclude the synsets where the synsetType is NAMED_ENTITIES instead of CONCEPTS
-# Policy: Restrict to WordNet. in the list of senses:
-# 	- if there isn’t any WordNetSense, drop
-#   - go into properties > fullLemma. If the original target word is not contained in any of the lemmas, then drop.
+# Policy: Restrict to WordNet. If there isn’t any WordNetSense in the list of senses, drop
 def check_include_synset(target_word, synset_data):
     if synset_data['synsetType'] != 'CONCEPT':
         logging.debug("Named Entity. Ignoring.")
@@ -36,50 +43,47 @@ def check_include_synset(target_word, synset_data):
         logging.debug("No WordNet senses. Ignoring.")
         return False
 
-    lemmas = [sense['properties']['simpleLemma'] for sense in senses]
-
-    if not(any([True if (target_word.lower() == lemma.lower()) else False for lemma in lemmas])):
-        logging.debug("Target word not found inside lemmas. Ignoring.")
-        return False
-
     return True
 
 
+#################### Extract elements from the data structure
+
 # Get dictionary definitions.
-# Collect the definitions: glosses > gloss
-def extract_definitions(synset_data):
+# Collect the definitions: synset_data > glosses [list of dicts] > gloss
+def extract_definitions(synset_data, accepted_sources):
 
-    accepted_definition_entries = list(filter(lambda defDict: defDict['source'] == 'WIKI' and defDict['language']=='EN',
+    accepted_definition_entries = list(filter(lambda defDict: defDict['source'] in accepted_sources and defDict['language']=='EN',
                                               synset_data['glosses']))
-
-    defs = list(map( lambda defDict : (defDict['gloss']), accepted_definition_entries))
+    defs = list(map( lambda defDict : defDict['gloss'], accepted_definition_entries))
     return defs
 
-### Exclude all elements (examples, synonyms) that are also present on one of the other sources
-def valid_element_notADuplicate(element):
-    sources_already_considered = ['WIKT', 'WN', 'OMWIKI']
-    return element['source'] not in sources_already_considered
 
 def extract_examples(synset_data):
-    original_examples = list(filter(valid_element_notADuplicate, synset_data['examples']))
-    examples_text = [ex['example'] for ex in original_examples]
-    return examples_text
+    examples_text = [ex['example'] for ex in synset_data['examples'] if ex['language']=='EN']
+    return list(set(examples_text))
 
 def extract_synonyms(synset_data):
     synonyms = []
     senses = synset_data['senses']
 
     for s in senses:
-        if valid_element_notADuplicate(s['properties']):
-            synonyms.append(s['properties']['simpleLemma'])
+        properties = s['properties']
+        if properties['language'] == 'EN':
+            synonyms.append(properties['simpleLemma'])
     #return in lowercase
     return list(map(lambda s: s.lower() ,synonyms))
 
-def retrieve_DES(target_word):
+####################
+
+
+def retrieve_DES(target_word='light'):
+    Utils.init_logging(os.path.join("GetInputData", "BabelNet.log"), logging.INFO)
+
     key = Utils.BABELNET_KEY
-    definitions = []
-    examples = []
-    synonyms = []
+    accepted_sources = ['WIKI', 'WIKIDIS', 'OMWIKI', 'WN']
+    definitions_dict = {} # the key is the synset id
+    examples_dict = {}
+    synonyms_dict = {}
     syns_intros = get_syns_intros_word(key, target_word)
     synset_ids = list(map(lambda syns_intro_dict: syns_intro_dict["id"], syns_intros))
     logging.debug(synset_ids)
@@ -87,24 +91,30 @@ def retrieve_DES(target_word):
     for s_id in synset_ids:
         synset_data = get_synset_data(key, s_id)
         if check_include_synset(target_word, synset_data):
-            definitions.extend(extract_definitions(synset_data))
-            examples.extend(extract_examples(synset_data))
-            synonyms.extend(extract_synonyms(synset_data))
+            logging.info("Including synset for:" + str(s_id))
+            definitions = extract_definitions(synset_data,accepted_sources)
+            if len(definitions) < 1: #No definitions were found from approved sources.
+                logging.info("No definitions from the approved sources were found. Excluding synset")
+                continue
+            else:
+                definitions_dict[s_id] = definitions
+                logging.info(definitions)
 
-    synonyms = list(dict.fromkeys(synonyms))
+                examples = extract_examples(synset_data)
+                if len(examples) > 1:
+                    examples_dict[s_id] = examples
+                logging.info(examples)
 
-    return (definitions, examples, synonyms)
+                synonyms = extract_synonyms(synset_data)
+                synonyms = list(filter(lambda sy: sy != target_word, synonyms))
+                if len(synonyms) > 1:
+                    synonyms_dict[s_id] = synonyms
+                logging.info(synonyms)
+
+    logging.info(definitions_dict)
+    logging.info(examples_dict)
+    logging.info(synonyms_dict)
+
+    return definitions_dict, examples_dict, synonyms_dict
 
 
-
-
-def main():
-    Utils.init_logging("defs_BabelNet.log", logging.INFO)
-    #key = '7ba5e9a1-1f42-4d9a-97a7-c888975a60a1'
-
-    target_word = 'sea'
-    logging.info(retrieve_DES(target_word))
-
-
-
-#main()

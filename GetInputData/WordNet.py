@@ -51,3 +51,36 @@ def retrieve_DESA(target_word):
 
     return (defs, examples, synonyms, antonyms)
 
+
+
+def lookup_bndefs_dictionary(wn_def, bn_defs_dict):
+
+    for key_bn_id in bn_defs_dict.keys():
+        bn_def_ls = bn_defs_dict[key_bn_id]
+        if wn_def in bn_def_ls:
+            logging.info("Match found for def='" + str(wn_def) +"' at bn_id=" + str(key_bn_id))
+            return key_bn_id
+        else:
+            continue
+    return None
+
+
+
+def retrieve_ESA_bySenses(target_word, bn_defs_dict):
+
+    examples_dict = {}
+    synonyms_dict = {}
+    antonyms_dict = {}
+
+    syns_ls = wn.synsets(target_word)
+
+    for synset in syns_ls:
+        wn_def = synset.definition()
+        bn_id = lookup_bndefs_dictionary(wn_def, bn_defs_dict)
+        if bn_id is not None:
+            examples, synonyms, antonyms = process_synset(synset)
+            examples_dict[bn_id] = examples
+            synonyms_dict[bn_id] = synonyms
+            antonyms_dict[bn_id] = antonyms
+
+    return examples_dict, synonyms_dict, antonyms_dict
