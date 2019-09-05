@@ -19,12 +19,10 @@ def process_synset(synset):
         for a in ants:
             all_antonyms.append(a.name())
 
-    #name_count_lts = list(map( lambda lm: (lm.name(), lm.count()),lemmas))
-    definition = synset.definition()
+    #definition = synset.definition()
     examples = synset.examples()
-    #total_count = sum([tpl[1] for tpl in name_count_lts])
 
-    return definition, examples, all_synonyms, all_antonyms
+    return examples, all_synonyms, all_antonyms
 
 
 # n: POS-tagging and the different roles and meanings of a word are not addressed in this task. The purpose is to obtain

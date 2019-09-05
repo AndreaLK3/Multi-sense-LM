@@ -3,21 +3,13 @@
   <component name="ChangeListManager">
     <list default="true" id="d35dca92-959c-489d-8a61-f337e4cce7fa" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CreateEntities/SkipGram.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/GetInputData/BabelNet.log" beforeDir="false" afterPath="$PROJECT_DIR$/GetInputData/BabelNet.log" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/GetInputData/BabelNet.py" beforeDir="false" afterPath="$PROJECT_DIR$/GetInputData/BabelNet.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/GetInputData/OmegaWiki.py" beforeDir="false" afterPath="$PROJECT_DIR$/GetInputData/OmegaWiki.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/GetInputData/RetrieveInputData.py" beforeDir="false" afterPath="$PROJECT_DIR$/GetInputData/RetrieveInputData.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/GetInputData/Wiktionary.log" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/GetInputData/Wiktionary.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/GetInputData/WordNet.py" beforeDir="false" afterPath="$PROJECT_DIR$/GetInputData/WordNet.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/InputData/antonyms.h5" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/InputData/definitions.h5" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/InputData/encyclopedia_def.h5" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/InputData/examples.h5" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/InputData/synonyms.h5" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Plan_Task1.pptx" beforeDir="false" afterPath="$PROJECT_DIR$/Plan_Task1.pptx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Task1_DeveloperDiary.docx" beforeDir="false" afterPath="$PROJECT_DIR$/Task1_DeveloperDiary.docx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/Utils.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/~$Plan_Task1.pptx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/unused/RetrieveInputData.py" beforeDir="false" afterPath="$PROJECT_DIR$/unused/RetrieveInputData.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -27,11 +19,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/GetInputData/RetrieveInputData.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="430">
-              <caret line="136" column="91" lean-forward="true" selection-start-line="136" selection-start-column="4" selection-end-line="136" selection-end-column="91" />
+            <state relative-caret-position="262">
+              <caret line="184" column="30" selection-start-line="184" selection-start-column="30" selection-end-line="184" selection-end-column="30" />
               <folding>
                 <element signature="e#0#12#0" expanded="true" />
               </folding>
@@ -42,8 +34,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/GetInputData/OmegaWiki.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-11">
-              <caret line="56" lean-forward="true" selection-start-line="56" selection-end-line="56" />
+            <state relative-caret-position="59">
+              <caret line="24" column="22" lean-forward="true" selection-start-line="24" selection-start-column="22" selection-end-line="24" selection-end-column="22" />
               <folding>
                 <element signature="e#0#12#0" expanded="true" />
               </folding>
@@ -51,11 +43,11 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/GetInputData/BabelNet.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1093">
-              <caret line="96" column="93" selection-start-line="96" selection-start-column="93" selection-end-line="96" selection-end-column="93" />
+            <state relative-caret-position="151">
+              <caret line="111" column="13" lean-forward="true" selection-start-line="111" selection-start-column="13" selection-end-line="111" selection-end-column="13" />
               <folding>
                 <element signature="e#0#12#0" expanded="true" />
               </folding>
@@ -66,8 +58,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/GetInputData/WordNet.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="559">
-              <caret line="85" column="11" selection-start-line="85" selection-start-column="11" selection-end-line="85" selection-end-column="11" />
+            <state relative-caret-position="186">
+              <caret line="19" column="38" selection-start-line="19" selection-start-column="34" selection-end-line="19" selection-end-column="38" />
               <folding>
                 <element signature="e#0#37#0" expanded="true" />
               </folding>
@@ -78,8 +70,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Utils.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="366">
-              <caret line="40" column="16" lean-forward="true" selection-start-line="40" selection-start-column="16" selection-end-line="40" selection-end-column="16" />
+            <state relative-caret-position="510">
+              <caret line="40" column="16" selection-start-line="40" selection-start-column="16" selection-end-line="40" selection-end-column="16" />
               <folding>
                 <element signature="e#0#14#0" expanded="true" />
               </folding>
@@ -90,22 +82,10 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/CreateEntities/Vocabulary.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1161">
-              <caret line="97" column="45" selection-start-line="97" selection-start-column="45" selection-end-line="97" selection-end-column="45" />
+            <state relative-caret-position="126">
+              <caret line="80" column="38" lean-forward="true" selection-start-line="80" selection-start-column="38" selection-end-line="80" selection-end-column="38" />
               <folding>
                 <element signature="e#0#9#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/GetInputData/DBpedia.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="120">
-              <caret line="8" column="17" selection-start-line="8" selection-start-column="17" selection-end-line="8" selection-end-column="17" />
-              <folding>
-                <element signature="e#0#26#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -147,13 +127,13 @@
         <option value="$PROJECT_DIR$/CreateEntities/Examples.py" />
         <option value="$PROJECT_DIR$/Utils.py" />
         <option value="$PROJECT_DIR$/GetInputData/OmegaWiki.py" />
-        <option value="$PROJECT_DIR$/GetInputData/RetrieveInputData.py" />
         <option value="$PROJECT_DIR$/GetInputData/WordNet.py" />
         <option value="$PROJECT_DIR$/GetInputData/BabelNet.py" />
+        <option value="$PROJECT_DIR$/GetInputData/RetrieveInputData.py" />
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds">
+  <component name="ProjectFrameBounds" extendedState="6">
     <option name="y" value="23" />
     <option name="width" value="1920" />
     <option name="height" value="976" />
@@ -163,7 +143,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -185,6 +164,7 @@
           <select />
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -255,13 +235,14 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="23" width="1920" height="976" extended-state="0" />
+    <frame x="0" y="23" width="1440" height="798" extended-state="6" />
+    <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.12034079" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.12160229" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
-      <window_info anchor="bottom" id="Find" order="1" weight="0.3280543" />
+      <window_info anchor="bottom" id="Find" order="1" weight="0.32719547" />
       <window_info anchor="bottom" id="Run" order="2" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
@@ -270,7 +251,7 @@
       <window_info anchor="bottom" id="Version Control" order="7" weight="0.3299435" />
       <window_info anchor="bottom" id="Terminal" order="8" />
       <window_info anchor="bottom" id="Event Log" order="9" side_tool="true" />
-      <window_info active="true" anchor="bottom" id="Python Console" order="10" visible="true" weight="0.20927602" />
+      <window_info active="true" anchor="bottom" id="Python Console" order="10" visible="true" weight="0.34560907" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
@@ -301,6 +282,11 @@
   </component>
   <component name="debuggerHistoryManager">
     <expressions id="setValue">
+      <expression>
+        <expression-string>{'senses': [{'type': 'WordNetSense', 'properties': {'wordNetSenseNumber': 9, 'wordNetOffset': '13983304n', 'wordNetSynsetPosition': 1, 'fullLemma': 'light', 'simpleLemma': 'light', 'source': 'WN', 'senseKey': 'light%1:26:00::', 'frequency': 0, 'language': 'EN', 'pos': 'NOUN', 'synsetID': {'id': 'bn:00051114n', 'pos': 'NOUN', 'source': 'BABELNET'}, 'translationInfo': '', 'pronunciations': {'audios': [{'lemma': 'light', 'language': 'EN', 'filename': 'en-uk-light.ogg'}], 'transcriptions': ['[/laɪt/]']}, 'bKeySense': False, 'idSense': 1127007}}, {'type': 'WordNetSense', 'properties': {'wordNetSenseNumber': 1, 'wordNetOffset': '13983304n', 'wordNetSynsetPosition': 2, 'fullLemma': 'lighting', 'simpleLemma': 'lighting', 'source': 'WN', 'senseKey': 'lighting%1:26:00::', 'frequency': 0, 'language': 'EN', 'pos': 'NOUN', 'synsetID': {'id': 'bn:00051114n', 'pos': 'NOUN', 'source': 'BABELNET'}, 'translationInfo': '', 'pronunciations': {'audios': [{'lemma': 'lighting', 'language': 'EN', 'filename': ...</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
       <expression>
         <expression-string>{'senses': [{'type': 'WordNetSense', 'properties': {'wordNetSenseNumber': 1, 'wordNetOffset': '03272383n', 'wordNetSynsetPosition': 1, 'fullLemma': 'electric_lamp', 'simpleLemma': 'electric_lamp', 'source': 'WN', 'senseKey': 'electric_lamp%1:06:00::', 'frequency': 0, 'language': 'EN', 'pos': 'NOUN', 'synsetID': {'id': 'bn:00030151n', 'pos': 'NOUN', 'source': 'BABELNET'}, 'translationInfo': '', 'pronunciations': {'audios': [], 'transcriptions': []}, 'bKeySense': False, 'idSense': 8978139}}, {'type': 'BabelSense', 'properties': {'fullLemma': 'lámpara_eléctrica', 'simpleLemma': 'lámpara_eléctrica', 'source': 'MCR_ES', 'senseKey': '', 'frequency': 0, 'language': 'ES', 'pos': 'NOUN', 'synsetID': {'id': 'bn:00030151n', 'pos': 'NOUN', 'source': 'BABELNET'}, 'translationInfo': '', 'pronunciations': {'audios': [], 'transcriptions': []}, 'bKeySense': False, 'idSense': 251596699}}, {'type': 'BabelSense', 'properties': {'fullLemma': 'Leuchtmittel', 'simpleLemma': 'Leuchtmittel', 'source': 'WIKI', ...</expression-string>
         <language-id>Python</language-id>
@@ -358,20 +344,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/CreateEntities/Vocabulary.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1161">
-          <caret line="97" column="45" selection-start-line="97" selection-start-column="45" selection-end-line="97" selection-end-column="45" />
-          <folding>
-            <element signature="e#0#9#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Utils.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="366">
-          <caret line="40" column="16" lean-forward="true" selection-start-line="40" selection-start-column="16" selection-end-line="40" selection-end-column="16" />
+        <state relative-caret-position="510">
+          <caret line="40" column="16" selection-start-line="40" selection-start-column="16" selection-end-line="40" selection-end-column="16" />
           <folding>
             <element signature="e#0#14#0" expanded="true" />
           </folding>
@@ -380,28 +356,28 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/GetInputData/DBpedia.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="120">
-          <caret line="8" column="17" selection-start-line="8" selection-start-column="17" selection-end-line="8" selection-end-column="17" />
+        <state relative-caret-position="291">
+          <caret line="40" column="26" lean-forward="true" selection-start-line="40" selection-start-column="26" selection-end-line="40" selection-end-column="26" />
           <folding>
             <element signature="e#0#26#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/GetInputData/OmegaWiki.py">
+    <entry file="file://$PROJECT_DIR$/CreateEntities/Vocabulary.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-11">
-          <caret line="56" lean-forward="true" selection-start-line="56" selection-end-line="56" />
+        <state relative-caret-position="126">
+          <caret line="80" column="38" lean-forward="true" selection-start-line="80" selection-start-column="38" selection-end-line="80" selection-end-column="38" />
           <folding>
-            <element signature="e#0#12#0" expanded="true" />
+            <element signature="e#0#9#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/GetInputData/RetrieveInputData.py">
+    <entry file="file://$PROJECT_DIR$/GetInputData/OmegaWiki.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="430">
-          <caret line="136" column="91" lean-forward="true" selection-start-line="136" selection-start-column="4" selection-end-line="136" selection-end-column="91" />
+        <state relative-caret-position="59">
+          <caret line="24" column="22" lean-forward="true" selection-start-line="24" selection-start-column="22" selection-end-line="24" selection-end-column="22" />
           <folding>
             <element signature="e#0#12#0" expanded="true" />
           </folding>
@@ -410,8 +386,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/GetInputData/WordNet.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="559">
-          <caret line="85" column="11" selection-start-line="85" selection-start-column="11" selection-end-line="85" selection-end-column="11" />
+        <state relative-caret-position="186">
+          <caret line="19" column="38" selection-start-line="19" selection-start-column="34" selection-end-line="19" selection-end-column="38" />
           <folding>
             <element signature="e#0#37#0" expanded="true" />
           </folding>
@@ -420,8 +396,18 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/GetInputData/BabelNet.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1093">
-          <caret line="96" column="93" selection-start-line="96" selection-start-column="93" selection-end-line="96" selection-end-column="93" />
+        <state relative-caret-position="151">
+          <caret line="111" column="13" lean-forward="true" selection-start-line="111" selection-start-column="13" selection-end-line="111" selection-end-column="13" />
+          <folding>
+            <element signature="e#0#12#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/GetInputData/RetrieveInputData.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="262">
+          <caret line="184" column="30" selection-start-line="184" selection-start-column="30" selection-end-line="184" selection-end-column="30" />
           <folding>
             <element signature="e#0#12#0" expanded="true" />
           </folding>

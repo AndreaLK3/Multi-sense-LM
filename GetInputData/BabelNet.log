@@ -1,199 +1,33 @@
-INFO : Including synset for:bn:00030151n
-INFO : ['A lamp powered by electricity', 'A device for producing light.']
-INFO : []
-INFO : ['electric_lamp', 'bulb', 'electric_bulb', 'electric_lamp', 'lamp', 'lamp']
-INFO : Including synset for:bn:00105953a
-INFO : ['Intended primarily as entertainment; not serious or profound']
-INFO : ['Light verse', 'A light comedy']
-INFO : []
-INFO : Including synset for:bn:00051113n
-INFO : ['A person regarded very fondly']
-INFO : ["Magoon's governorship in Cuba was viewed in a negative light by many Cuban historians for years thereafter.", "I'm really seeing you in a different light today.", 'The light of my life']
-INFO : []
-INFO : Including synset for:bn:00013123n
-INFO : ['The quality of being luminous; emitting or reflecting light', 'Luminance is a photometric measure of the luminous intensity per unit area of light travelling in a given direction.', 'A photometric measure of the density of luminous intensity in a given direction, measured in candela per square metre (cd/m 2).', 'The ability of emitting or reflecting light.', 'The amount of light coming from an object.']
-INFO : ['Its luminosity is measured relative to that of our sun']
-INFO : ['luminosity', 'brightness', 'brightness_level', 'luminance', 'luminousness', 'luminance', 'luminance', 'brightness', 'luminance', 'luminosity', 'luminance', 'luminosity', 'brightness', 'luminance', 'cd/m²', 'luminance_factor', 'photometric_brightness']
-INFO : Including synset for:bn:00105941a
-INFO : ['Psychologically light; especially free from sadness or troubles', 'Psychologically light; especially free from sadness or troubles.']
-INFO : ['A light heart']
-INFO : []
-INFO : Including synset for:bn:00099778a
-INFO : ['(of sound or color) free from anything that dulls or dims']
-INFO : ['Clear reds and blues', 'Clear laughter like a waterfall', 'A light lilting voice like a silver bell', 'Efforts to obtain a clean bass in orchestral recordings']
-INFO : ['clean', 'clear', 'unclouded']
-INFO : Including synset for:bn:00051117n
-INFO : ['Public awareness']
-INFO : ['It brought the scandal to light']
-INFO : []
-INFO : Including synset for:bn:00051109n
-INFO : ['Any device serving as a source of illumination']
-INFO : ['He stopped the car and turned off the lights', 'Put that light out!']
-INFO : ['light_source', 'light_source', 'light_source']
-INFO : Including synset for:bn:00082516v
-INFO : ['To come to rest, settle']
-INFO : ['Misfortune lighted upon him']
-INFO : ['alight', 'perch']
-INFO : Including synset for:bn:00088230v
-INFO : ['Begin to smoke']
-INFO : ['After the meal, some of the diners lit up']
-INFO : ['light_up', 'fire_up']
-INFO : Including synset for:bn:00105945a
-INFO : ['(used of soil) loose and large-grained in consistency', '(used of soil) loose and large-grained in consistency.']
-INFO : ['Light soil']
-INFO : []
-INFO : Including synset for:bn:00105937a
-INFO : ['Of comparatively little physical weight or density', 'Of low weight.']
-INFO : ['My bag was much lighter once I had dropped off the books.', 'A light load', 'Magnesium is a light metal--having a specific gravity of 1.74 at 20 degrees C']
-INFO : []
-INFO : Including synset for:bn:00045882n
-INFO : ['A device for lighting or igniting fuel or charges or fires', 'A pyrotechnic initiator is a device containing a pyrotechnic composition used primarily to ignite other, more difficult-to-ignite materials, e.g. thermites, gas generators, and solid-fuel rockets.', 'A lighter is a portable device used to create a flame, and to ignite a variety of combustible materials, such as cigars, gas stoves, fireworks, candles or cigarettes.', 'A device containing a pyrotechnic composition used primarily to ignite other, more difficult to ignite materials', 'A portable device used to create a flame.', 'A small, reusable, handheld device for creating fire.', 'A device for producing light.']
-INFO : ['Hey, buddy, you got a light?', 'Cigarette in mouth, he clutched his pockets in search of a lighter.', 'Do you have a light?']
-INFO : ['lighter', 'igniter', 'ignitor', 'lighter', 'pyrotechnic_initiator', 'lighter', 'pyrotechnic_initiator', 'cigarette_lighter', 'lamp', 'lighter', 'pocket_lighter', 'cigarette_lighter', 'lighter', 'pyrotechnic_initiator', 'bncp', 'boron-potassium_nitrate', 'butane_lighter', 'cigarette_lighter', 'cigarette_lighters', 'cigarrette_lighter', 'ciggarette_lighter', 'cricket_lighter', 'disposable_lighter', 'electric_arc_lighter', 'electroexplosive_device', 'fire_lighter', 'igniter', 'lighter_fuel', 'lighters', 'nasa_standard_initiator', 'permanent_match', 'permanent_match', 'pyrofuze', 'pyrotechnic_igniter', 'rippo', 'spark_cigarette_lighters', 'tokai_lighter', 'zirconium-potassium_perchlorate', 'lighter', 'pyrogen']
-INFO : Including synset for:bn:00105949a
-INFO : ['(physics, chemistry) not having atomic weight greater than average']
-INFO : ['Light water is ordinary water']
-INFO : []
-INFO : Including synset for:bn:00051110n
-INFO : ['A particular perspective or aspect of a situation']
-INFO : ['Although he saw it in a different light, he still did not understand']
-INFO : []
-INFO : Including synset for:bn:00105940a
-INFO : ['Not great in degree or quantity or number', 'Low in degree or quantity or number (e.g. of rain, snow, accent).']
-INFO : ['Casualties were light', 'Light smoke from the chimney', 'A light sentence', 'Light snow was falling', 'A light accent', 'Light misty rain']
-INFO : []
-INFO : Including synset for:bn:00051114n
-INFO : ['Having abundant light or illumination']
-INFO : ['They played as long as it was light', 'As long as the lighting was good']
-INFO : ['lighting']
-INFO : Including synset for:bn:00105952a
-INFO : ['Having little importance']
-INFO : ['Losing his job was no light matter']
-INFO : []
-INFO : Including synset for:bn:00105944a
-INFO : ['Easily assimilated in the alimentary canal; not rich or heavily seasoned']
-INFO : ['A light diet']
-INFO : []
-INFO : Including synset for:bn:00089581v
-INFO : ['Cause to start burning; subject to fire or great heat', 'To start (a fire).']
-INFO : ['Please kindle a fire in the barbecue.', 'Light a cigarette', 'We lit the fire to get some heat.', 'Great heat can ignite almost any dry matter']
-INFO : ['ignite', 'kindle', 'ignite', 'kindle', 'ignite']
-INFO : Including synset for:bn:00051118n
-INFO : ['A visual warning signal']
-INFO : ['They saw the light of the beacon', 'There was a light at every corner']
-INFO : []
-INFO : Including synset for:bn:00087990v
-INFO : ['Fall to somebody by assignment or lot']
-INFO : ['It fell to me to notify the parents of the victims', 'The task fell to me']
-INFO : ['fall']
-INFO : Including synset for:bn:00096210a
-INFO : ['Marked by temperance in indulgence']
-INFO : ['A light smoker', 'A light eater', 'Ate a light supper', 'Abstemious with the use of adverbs']
-INFO : ['abstemious']
-INFO : Including synset for:bn:00105948a
-INFO : ['Of little intensity or power or force']
-INFO : ['The light touch of her fingers', 'A light breeze']
-INFO : []
-INFO : Including synset for:bn:00102716a
-INFO : ['Weak and likely to lose consciousness']
-INFO : ['A swooning fit', 'Was sick and faint from hunger', 'Light-headed with wine', 'Light-headed from lack of sleep', 'Felt light in the head', 'Suddenly felt faint from the pain']
-INFO : ['faint', 'swooning', 'light-headed', 'lightheaded']
-INFO : Including synset for:bn:00105951a
-INFO : ['Less than the correct or legal or full amount often deliberately so']
-INFO : ['Regularly gives short weight', 'A scant cup of sugar', 'A light pound']
-INFO : ['scant', 'short']
-INFO : Including synset for:bn:00086995v
-INFO : ['Alight from (a horse)']
-INFO : ["The knight was unhorsed when his opponent's lance struck his shield."]
-INFO : ['unhorse', 'dismount', 'get_off', 'get_down', 'unhorse', 'dismount']
-INFO : Including synset for:bn:00089584v
-INFO : ['Make lighter or brighter', 'To give light to (something).']
-INFO : ['He saw Mary and his face lit up.', 'This lamp lightens the room a bit']
-INFO : ['illume', 'illumine', 'light_up', 'illuminate', 'illume', 'illuminate', 'illumine', 'light_up', 'illuminate', 'light_up', 'illuminate']
-INFO : Including synset for:bn:00105955a
-INFO : ['(of sleep) easily disturbed']
-INFO : ['A restless wakeful night', 'A light sleeper', 'In a light doze']
-INFO : ['wakeful']
-INFO : Including synset for:bn:00105943a
-INFO : ['(used of vowels or syllables) pronounced with little or no stress']
-INFO : ['A syllable that ends in a short vowel is a light syllable', 'A weak stress on the second syllable']
-INFO : ['unaccented', 'weak', 'unaccented']
-INFO : Including synset for:bn:00051111n
-INFO : ['An illuminated area']
-INFO : ['He stepped into the light']
-INFO : []
-INFO : Including synset for:bn:00051115n
-INFO : ['Mental understanding as an enlightening experience']
-INFO : ['Can you shed light on this problem?', 'He finally saw the light']
-INFO : []
-INFO : Including synset for:bn:00101981a
-INFO : ['Casual and unrestrained in sexual behavior']
-INFO : ['He was told to avoid loose (or light) women', 'Wanton behavior', 'Her easy virtue']
-INFO : ['easy', 'loose', 'promiscuous', 'sluttish', 'wanton']
-INFO : Including synset for:bn:00116115r
-INFO : ['With few burdens']
-INFO : ['Experienced travellers travel light']
-INFO : ['lightly']
-INFO : Including synset for:bn:00018811n
-INFO : ['A divine presence believed by Quakers to enlighten and guide the soul', "Light of God, Light of Christ, Christ within, That of God, Spirit of God within us, Light within, inward light and inner light are related phrases commonly used within the Religious Society of Friends as metaphors for Christ's light shining on or in them."]
-INFO : []
-INFO : ['inner_light', 'light_within', 'christ_within', 'inward_light', 'inner_light', 'inner_light', 'inner_light', 'inward_light', 'light_within', 'spirit_of_christ', 'the_light_within']
-INFO : Including synset for:bn:00105947a
-INFO : ['Demanding little effort; not burdensome']
-INFO : ['Light housework', 'Light exercise']
-INFO : []
-INFO : Including synset for:bn:00105939a
-INFO : ['Of the military or industry; using (or being) relatively small or light arms or equipment', '(of the military or industry) using (or being) relatively small or light weapons or equipment.']
-INFO : ['Light infantry', 'Light cavalry', 'Light industry', 'Light weapons']
-INFO : []
-INFO : Including synset for:bn:00081285n
-INFO : ['A framework of wood or metal that contains a glass windowpane and is built into a wall or roof to admit light or air', 'A window is an opening in a wall, door, roof or vehicle that allows the passage of light, sound, and air.', 'An opening, usually covered by one or more panes of clear glass, to allow light from outside to enter a building or vehicle.', 'A horizontal slat which forms the base of a window.']
-INFO : ['This facade has eight south-facing lights.']
-INFO : ['window', 'window', 'window', 'ledge-sill', 'sill', 'window', 'window_ledge', 'window_sill', 'window', 'awning_window', 'clerestory_window', 'divided-light_window', 'double-hung_sash_window', 'egress_window', 'eyebrow_window', 'finestra', 'flanking_window', 'french_casement', 'french_windows', 'garden_window', 'glass_window', 'hopper_window', 'latticed_light', 'passive_solar_window', 'photovoltaic_window', 'photovoltaic_windows', 'picture-window', 'portafinestra', 'side-light', 'single-hung', 'solar_window', 'tilt_window', 'transparent_solar_panel', 'two-light_window', 'window-frame', 'window-ledge', 'window-sill', 'window_frame', 'window_frames', 'window_ledge', 'window_sill', 'window_stool', 'wing-light', 'window']
-INFO : Including synset for:bn:00105950a
-INFO : ['Very thin and insubstantial']
-INFO : ['Light summer dresses', 'Thin paper']
-INFO : ['light[illumination]', 'light[weight]']
-INFO : Including synset for:bn:00105942a
-INFO : ['Characterized by or emitting light']
-INFO : ['A room that is light when the shutters are open', 'The inside of the house was airy and light']
-INFO : []
-INFO : Including synset for:bn:00051112n
-INFO : ['The visual effect of illumination on objects or scenes as created in pictures']
-INFO : ['He could paint the lightest light and the darkest dark']
-INFO : ['lightness']
-INFO : Including synset for:bn:00105954a
-INFO : ['Designed for ease of movement or to carry little weight']
-INFO : ['Light aircraft', 'A light truck']
-INFO : []
-INFO : Including synset for:bn:00051116n
-INFO : ['Merriment expressed by a brightness or gleam or animation of countenance']
-INFO : ['He had a sparkle in his eye', 'He was a rotund, jolly man with a twinkle in his eye.', "There's a perpetual twinkle in his eyes"]
-INFO : ['sparkle', 'twinkle', 'spark', 'twinkle']
-INFO : Including synset for:bn:00099149a
-INFO : ['Having relatively few calories']
-INFO : ['Light (or lite) beer', 'Lite (or light) mayonnaise', 'A low-cal diet', 'Diet cola']
-INFO : ['lite', 'low-cal', 'calorie-free']
-INFO : Including synset for:bn:00051108n
-INFO : ['(physics) electromagnetic radiation that can produce a visual sensation', 'Light is electromagnetic radiation within a certain portion of the electromagnetic spectrum.', 'In chemistry shorthand', 'Object, natural or artificial, that produces light.', 'Electromagnetic radiation that is capable of causing a visual sensation.']
-INFO : ['The light was filtered through a soft glass window']
-INFO : ['visible_light', 'visible_radiation', 'light_source', 'bright', 'brighter', 'electromagnetic_theory_of_light', 'exciting_light', 'light_generation', 'light_in_space', 'light_reflection', 'light_source', 'light_wave', 'light_wave', 'light_wavelength', 'light_waves', 'lighting', 'lights', 'lightsource', 'optic_light', 'propagation_of_light', 'properties_of_light', 'sunlight', 'undulatory_theory_of_light', 'visible_light', 'visible_light', 'visible_radiation', 'vislble_light']
-INFO : Including synset for:bn:00045956n
-INFO : ['A condition of spiritual awareness; divine illumination']
-INFO : ["Follow God's light"]
-INFO : ['illumination']
-INFO : Including synset for:bn:00104522a
-INFO : ['Silly or trivial']
-INFO : ['Light banter', 'Light idle chatter', 'Idle pleasure']
-INFO : ['idle']
-INFO : Including synset for:bn:00105946a
-INFO : ['Moving easily and quickly; nimble']
-INFO : ['The dancer was light and graceful', 'Walked with a light tripping step', 'A lightsome buoyant step']
-INFO : ['lightsome', 'tripping']
-INFO : Including synset for:bn:00105938a
-INFO : ['(used of color) having a relatively small amount of coloring agent', 'Having colors relatıvely near white.']
-INFO : ['She had light skin.', 'Light blue', 'A light-colored powder', 'Light colors such as pastels']
-INFO : ['light-colored']
-INFO : {'bn:00030151n': ['A lamp powered by electricity', 'A device for producing light.'], 'bn:00105953a': ['Intended primarily as entertainment; not serious or profound'], 'bn:00051113n': ['A person regarded very fondly'], 'bn:00013123n': ['The quality of being luminous; emitting or reflecting light', 'Luminance is a photometric measure of the luminous intensity per unit area of light travelling in a given direction.', 'A photometric measure of the density of luminous intensity in a given direction, measured in candela per square metre (cd/m 2).', 'The ability of emitting or reflecting light.', 'The amount of light coming from an object.'], 'bn:00105941a': ['Psychologically light; especially free from sadness or troubles', 'Psychologically light; especially free from sadness or troubles.'], 'bn:00099778a': ['(of sound or color) free from anything that dulls or dims'], 'bn:00051117n': ['Public awareness'], 'bn:00051109n': ['Any device serving as a source of illumination'], 'bn:00082516v': ['To come to rest, settle'], 'bn:00088230v': ['Begin to smoke'], 'bn:00105945a': ['(used of soil) loose and large-grained in consistency', '(used of soil) loose and large-grained in consistency.'], 'bn:00105937a': ['Of comparatively little physical weight or density', 'Of low weight.'], 'bn:00045882n': ['A device for lighting or igniting fuel or charges or fires', 'A pyrotechnic initiator is a device containing a pyrotechnic composition used primarily to ignite other, more difficult-to-ignite materials, e.g. thermites, gas generators, and solid-fuel rockets.', 'A lighter is a portable device used to create a flame, and to ignite a variety of combustible materials, such as cigars, gas stoves, fireworks, candles or cigarettes.', 'A device containing a pyrotechnic composition used primarily to ignite other, more difficult to ignite materials', 'A portable device used to create a flame.', 'A small, reusable, handheld device for creating fire.', 'A device for producing light.'], 'bn:00105949a': ['(physics, chemistry) not having atomic weight greater than average'], 'bn:00051110n': ['A particular perspective or aspect of a situation'], 'bn:00105940a': ['Not great in degree or quantity or number', 'Low in degree or quantity or number (e.g. of rain, snow, accent).'], 'bn:00051114n': ['Having abundant light or illumination'], 'bn:00105952a': ['Having little importance'], 'bn:00105944a': ['Easily assimilated in the alimentary canal; not rich or heavily seasoned'], 'bn:00089581v': ['Cause to start burning; subject to fire or great heat', 'To start (a fire).'], 'bn:00051118n': ['A visual warning signal'], 'bn:00087990v': ['Fall to somebody by assignment or lot'], 'bn:00096210a': ['Marked by temperance in indulgence'], 'bn:00105948a': ['Of little intensity or power or force'], 'bn:00102716a': ['Weak and likely to lose consciousness'], 'bn:00105951a': ['Less than the correct or legal or full amount often deliberately so'], 'bn:00086995v': ['Alight from (a horse)'], 'bn:00089584v': ['Make lighter or brighter', 'To give light to (something).'], 'bn:00105955a': ['(of sleep) easily disturbed'], 'bn:00105943a': ['(used of vowels or syllables) pronounced with little or no stress'], 'bn:00051111n': ['An illuminated area'], 'bn:00051115n': ['Mental understanding as an enlightening experience'], 'bn:00101981a': ['Casual and unrestrained in sexual behavior'], 'bn:00116115r': ['With few burdens'], 'bn:00018811n': ['A divine presence believed by Quakers to enlighten and guide the soul', "Light of God, Light of Christ, Christ within, That of God, Spirit of God within us, Light within, inward light and inner light are related phrases commonly used within the Religious Society of Friends as metaphors for Christ's light shining on or in them."], 'bn:00105947a': ['Demanding little effort; not burdensome'], 'bn:00105939a': ['Of the military or industry; using (or being) relatively small or light arms or equipment', '(of the military or industry) using (or being) relatively small or light weapons or equipment.'], 'bn:00081285n': ['A framework of wood or metal that contains a glass windowpane and is built into a wall or roof to admit light or air', 'A window is an opening in a wall, door, roof or vehicle that allows the passage of light, sound, and air.', 'An opening, usually covered by one or more panes of clear glass, to allow light from outside to enter a building or vehicle.', 'A horizontal slat which forms the base of a window.'], 'bn:00105950a': ['Very thin and insubstantial'], 'bn:00105942a': ['Characterized by or emitting light'], 'bn:00051112n': ['The visual effect of illumination on objects or scenes as created in pictures'], 'bn:00105954a': ['Designed for ease of movement or to carry little weight'], 'bn:00051116n': ['Merriment expressed by a brightness or gleam or animation of countenance'], 'bn:00099149a': ['Having relatively few calories'], 'bn:00051108n': ['(physics) electromagnetic radiation that can produce a visual sensation', 'Light is electromagnetic radiation within a certain portion of the electromagnetic spectrum.', 'In chemistry shorthand', 'Object, natural or artificial, that produces light.', 'Electromagnetic radiation that is capable of causing a visual sensation.'], 'bn:00045956n': ['A condition of spiritual awareness; divine illumination'], 'bn:00104522a': ['Silly or trivial'], 'bn:00105946a': ['Moving easily and quickly; nimble'], 'bn:00105938a': ['(used of color) having a relatively small amount of coloring agent', 'Having colors relatıvely near white.']}
-INFO : {'bn:00105953a': ['Light verse', 'A light comedy'], 'bn:00051113n': ["Magoon's governorship in Cuba was viewed in a negative light by many Cuban historians for years thereafter.", "I'm really seeing you in a different light today.", 'The light of my life'], 'bn:00099778a': ['Clear reds and blues', 'Clear laughter like a waterfall', 'A light lilting voice like a silver bell', 'Efforts to obtain a clean bass in orchestral recordings'], 'bn:00051109n': ['He stopped the car and turned off the lights', 'Put that light out!'], 'bn:00105937a': ['My bag was much lighter once I had dropped off the books.', 'A light load', 'Magnesium is a light metal--having a specific gravity of 1.74 at 20 degrees C'], 'bn:00045882n': ['Hey, buddy, you got a light?', 'Cigarette in mouth, he clutched his pockets in search of a lighter.', 'Do you have a light?'], 'bn:00105940a': ['Casualties were light', 'Light smoke from the chimney', 'A light sentence', 'Light snow was falling', 'A light accent', 'Light misty rain'], 'bn:00051114n': ['They played as long as it was light', 'As long as the lighting was good'], 'bn:00089581v': ['Please kindle a fire in the barbecue.', 'Light a cigarette', 'We lit the fire to get some heat.', 'Great heat can ignite almost any dry matter'], 'bn:00051118n': ['They saw the light of the beacon', 'There was a light at every corner'], 'bn:00087990v': ['It fell to me to notify the parents of the victims', 'The task fell to me'], 'bn:00096210a': ['A light smoker', 'A light eater', 'Ate a light supper', 'Abstemious with the use of adverbs'], 'bn:00105948a': ['The light touch of her fingers', 'A light breeze'], 'bn:00102716a': ['A swooning fit', 'Was sick and faint from hunger', 'Light-headed with wine', 'Light-headed from lack of sleep', 'Felt light in the head', 'Suddenly felt faint from the pain'], 'bn:00105951a': ['Regularly gives short weight', 'A scant cup of sugar', 'A light pound'], 'bn:00089584v': ['He saw Mary and his face lit up.', 'This lamp lightens the room a bit'], 'bn:00105955a': ['A restless wakeful night', 'A light sleeper', 'In a light doze'], 'bn:00105943a': ['A syllable that ends in a short vowel is a light syllable', 'A weak stress on the second syllable'], 'bn:00051115n': ['Can you shed light on this problem?', 'He finally saw the light'], 'bn:00101981a': ['He was told to avoid loose (or light) women', 'Wanton behavior', 'Her easy virtue'], 'bn:00105947a': ['Light housework', 'Light exercise'], 'bn:00105939a': ['Light infantry', 'Light cavalry', 'Light industry', 'Light weapons'], 'bn:00105950a': ['Light summer dresses', 'Thin paper'], 'bn:00105942a': ['A room that is light when the shutters are open', 'The inside of the house was airy and light'], 'bn:00105954a': ['Light aircraft', 'A light truck'], 'bn:00051116n': ['He had a sparkle in his eye', 'He was a rotund, jolly man with a twinkle in his eye.', "There's a perpetual twinkle in his eyes"], 'bn:00099149a': ['Light (or lite) beer', 'Lite (or light) mayonnaise', 'A low-cal diet', 'Diet cola'], 'bn:00104522a': ['Light banter', 'Light idle chatter', 'Idle pleasure'], 'bn:00105946a': ['The dancer was light and graceful', 'Walked with a light tripping step', 'A lightsome buoyant step'], 'bn:00105938a': ['She had light skin.', 'Light blue', 'A light-colored powder', 'Light colors such as pastels']}
-INFO : {'bn:00030151n': ['electric_lamp', 'bulb', 'electric_bulb', 'electric_lamp', 'lamp', 'lamp'], 'bn:00013123n': ['luminosity', 'brightness', 'brightness_level', 'luminance', 'luminousness', 'luminance', 'luminance', 'brightness', 'luminance', 'luminosity', 'luminance', 'luminosity', 'brightness', 'luminance', 'cd/m²', 'luminance_factor', 'photometric_brightness'], 'bn:00099778a': ['clean', 'clear', 'unclouded'], 'bn:00051109n': ['light_source', 'light_source', 'light_source'], 'bn:00082516v': ['alight', 'perch'], 'bn:00088230v': ['light_up', 'fire_up'], 'bn:00045882n': ['lighter', 'igniter', 'ignitor', 'lighter', 'pyrotechnic_initiator', 'lighter', 'pyrotechnic_initiator', 'cigarette_lighter', 'lamp', 'lighter', 'pocket_lighter', 'cigarette_lighter', 'lighter', 'pyrotechnic_initiator', 'bncp', 'boron-potassium_nitrate', 'butane_lighter', 'cigarette_lighter', 'cigarette_lighters', 'cigarrette_lighter', 'ciggarette_lighter', 'cricket_lighter', 'disposable_lighter', 'electric_arc_lighter', 'electroexplosive_device', 'fire_lighter', 'igniter', 'lighter_fuel', 'lighters', 'nasa_standard_initiator', 'permanent_match', 'permanent_match', 'pyrofuze', 'pyrotechnic_igniter', 'rippo', 'spark_cigarette_lighters', 'tokai_lighter', 'zirconium-potassium_perchlorate', 'lighter', 'pyrogen'], 'bn:00089581v': ['ignite', 'kindle', 'ignite', 'kindle', 'ignite'], 'bn:00102716a': ['faint', 'swooning', 'light-headed', 'lightheaded'], 'bn:00105951a': ['scant', 'short'], 'bn:00086995v': ['unhorse', 'dismount', 'get_off', 'get_down', 'unhorse', 'dismount'], 'bn:00089584v': ['illume', 'illumine', 'light_up', 'illuminate', 'illume', 'illuminate', 'illumine', 'light_up', 'illuminate', 'light_up', 'illuminate'], 'bn:00105943a': ['unaccented', 'weak', 'unaccented'], 'bn:00101981a': ['easy', 'loose', 'promiscuous', 'sluttish', 'wanton'], 'bn:00018811n': ['inner_light', 'light_within', 'christ_within', 'inward_light', 'inner_light', 'inner_light', 'inner_light', 'inward_light', 'light_within', 'spirit_of_christ', 'the_light_within'], 'bn:00081285n': ['window', 'window', 'window', 'ledge-sill', 'sill', 'window', 'window_ledge', 'window_sill', 'window', 'awning_window', 'clerestory_window', 'divided-light_window', 'double-hung_sash_window', 'egress_window', 'eyebrow_window', 'finestra', 'flanking_window', 'french_casement', 'french_windows', 'garden_window', 'glass_window', 'hopper_window', 'latticed_light', 'passive_solar_window', 'photovoltaic_window', 'photovoltaic_windows', 'picture-window', 'portafinestra', 'side-light', 'single-hung', 'solar_window', 'tilt_window', 'transparent_solar_panel', 'two-light_window', 'window-frame', 'window-ledge', 'window-sill', 'window_frame', 'window_frames', 'window_ledge', 'window_sill', 'window_stool', 'wing-light', 'window'], 'bn:00105950a': ['light[illumination]', 'light[weight]'], 'bn:00051116n': ['sparkle', 'twinkle', 'spark', 'twinkle'], 'bn:00099149a': ['lite', 'low-cal', 'calorie-free'], 'bn:00051108n': ['visible_light', 'visible_radiation', 'light_source', 'bright', 'brighter', 'electromagnetic_theory_of_light', 'exciting_light', 'light_generation', 'light_in_space', 'light_reflection', 'light_source', 'light_wave', 'light_wave', 'light_wavelength', 'light_waves', 'lighting', 'lights', 'lightsource', 'optic_light', 'propagation_of_light', 'properties_of_light', 'sunlight', 'undulatory_theory_of_light', 'visible_light', 'visible_light', 'visible_radiation', 'vislble_light'], 'bn:00105946a': ['lightsome', 'tripping']}
+INFO : No WordNet senses. Ignoring.
+INFO : Excluding synset for:bn:03328519n
+INFO : No WordNet senses. Ignoring.
+INFO : Excluding synset for:bn:08090784n
+INFO : No WordNet senses. Ignoring.
+INFO : Excluding synset for:bn:03864854n
+INFO : Including synset for:bn:00089620v
+INFO : No WordNet senses. Ignoring.
+INFO : Excluding synset for:bn:00570329n
+INFO : Including synset for:bn:00091694v
+INFO : No WordNet senses. Ignoring.
+INFO : Excluding synset for:bn:16262198n
+INFO : Including synset for:bn:00085671v
+INFO : No WordNet senses. Ignoring.
+INFO : Excluding synset for:bn:16359676n
+INFO : Including synset for:bn:00035324n
+INFO : Including synset for:bn:00062801n
+INFO : Including synset for:bn:00087554v
+INFO : Including synset for:bn:00091693v
+INFO : Including synset for:bn:00091692v
+INFO : Including synset for:bn:00087732v
+INFO : Including synset for:bn:00046568n
+INFO : Including synset for:bn:00062800n
+INFO : Including synset for:bn:00006491n
+INFO : Named Entity. Ignoring.
+INFO : Excluding synset for:bn:02476200n
+INFO : Including synset for:bn:00032675n
+INFO : Including synset for:bn:00071073n
+INFO : Named Entity. Ignoring.
+INFO : Excluding synset for:bn:11393020n
+INFO : {'bn:00089620v': ['Put firmly in the mind'], 'bn:00091694v': ['Place something or someone in a certain position in order to secretly observe or deceive'], 'bn:00085671v': ['Set up or lay the groundwork for', 'To set up or lay the groundwork for.'], 'bn:00035324n': ['(botany) a living organism lacking the power of locomotion', 'Plants are mainly multicellular, predominantly photosynthetic eukaryotes of the kingdom Plantae.', 'Flora is the plant life occurring in a particular region or time, generally the naturally occurring or indigenous—native plant life.', 'The plants that inhabit a certain region or environment.', 'Species belonging to the plant kingdom.', 'Any living organism that synthesizes its food from inorganic substances, possesses cellulose cell walls, responds slowly and often permanently to a stimulus, lacks specialized sense organs and nervous system, and has no powers of locomotion.', 'The plant life characterizing a specific geographic region or environment.'], 'bn:00062801n': ['Something planted secretly for discovery by another'], 'bn:00087554v': ['Fix or set securely or deeply', 'To fix or set securely or deeply.'], 'bn:00091693v': ['Place into a river'], 'bn:00091692v': ['Put or set (seeds, seedlings, or plants) into the ground'], 'bn:00087732v': ['Set up or found', 'To set up or found; to begin something, to undertake a plan, to give life to an institution, enterprise, etc.'], 'bn:00046568n': ['Buildings for carrying on industrial labor', 'Physical plant, mechanical plant or industrial plant refers to the necessary infrastructure used in operation and maintenance of a given facility.', 'Often just called "plant", a facility\'s infrastructure (i.e., "Plant Room")', 'Buildings where the operations related to industrial productive processes are carried out. ', 'The whole of buildings, machines and necessary devices to carry out an activity.'], 'bn:00062800n': ['An actor situated in the audience whose acting is rehearsed but seems spontaneous to the audience'], 'bn:00006491n': ['Mechanical system in a factory whereby an article is conveyed through sites at which successive operations are performed on it', 'A production line is a set of sequential operations established in a factory where materials are put through a refining process to produce an end-product that is suitable for onward consumption; or components are assembled to make a finished article.', 'An assembly line is a manufacturing process in which parts are added as the semi-finished assembly moves from workstation to workstation where the parts are added in sequence until the final assembly is produced.', 'A manufacturing process in which parts are added to a product in a sequential manner'], 'bn:00032675n': ['A plant consisting of one or more buildings with facilities for manufacturing', 'A factory or manufacturing plant is an industrial site, usually consisting of buildings and machinery, or more commonly a complex having several buildings, where workers manufacture goods or operate machines processing one product into another.', 'An establishment where products are manufactured using industrial methods.', 'Single building or group of buildings and installations destined to industrial activities.'], 'bn:00071073n': ['A decoy who acts as an enthusiastic customer in order to stimulate the participation of others', 'A shill, also called a plant or a stooge, is a person who publicly helps or gives credibility to a person or organization without disclosing that they have a close relationship with the person or organization.', 'A person who profits from helping another person or organization to sell goods or services and/or attract customers while pretending to be impartial.']}
+INFO : {'bn:00091694v': ['Plant a spy in Moscow', "Plant bugs in the dissident's apartment"], 'bn:00035324n': ['The garden had a couple of trees, and a cluster of colourful plants around the border.', 'There were large amounts of vegetation in the forest.'], 'bn:00062801n': ['He claimed that the evidence against him was a plant', 'The police used a plant to trick the thieves'], 'bn:00087554v': ['He planted a knee in the back of his opponent', 'The dentist implanted a tooth in the gum'], 'bn:00091692v': ["Let's plant flowers in the garden", 'To set pear trees in an orchard'], 'bn:00087732v': ['To set up in trade; to set up for oneself', 'She set up a literacy program']}
+INFO : {'bn:00085671v': ['establish', 'found', 'constitute', 'institute', 'constitute', 'establish', 'found', 'institute', 'found'], 'bn:00035324n': ['flora', 'plant_life', 'flora', 'flora', 'green_plant', 'green_plant', 'green_plants', 'plantae', 'plants', 'flora', 'flora', 'plant_life', 'plant_species', 'vegetation', 'flora', 'vegetable_kingdom', 'vegetation', 'plants', 'antigens,_plant', 'external_factors_plant', 'florae', 'floras', 'floræ', 'green_plant', 'green_plants', 'kingdom_vegetable', 'mazonipterus', 'metaphyta', 'phyto', 'plant_life', 'plant_species', 'planted', 'planter', 'plantes', 'plants', 'plantæ', 'vegetabilia', 'vegetable_kingdom', 'flora', 'planters', 'planting', 'platn', 'reed', 'simple_plants'], 'bn:00087554v': ['implant', 'engraft', 'embed', 'imbed', 'embed', 'engraft', 'imbed', 'implant', 'implant', 'embed', 'implant'], 'bn:00091692v': ['set', 'set'], 'bn:00087732v': ['establish', 'set_up', 'found', 'launch', 'constitute', 'establish', 'found', 'institute', 'set_up', 'launch', 'set_up'], 'bn:00046568n': ['works', 'industrial_plant', 'physical_plant', 'physical_plant', 'industrial_plant', 'industrial_plant', 'whole', 'industrial_plant', 'industrial_plant', 'mechanical_plant', 'plant_operations', 'plant_ops', 'transmitter_plant'], 'bn:00006491n': ['production_line', 'assembly_line', 'line', 'assembly_line', 'production_line', 'assembly_line', 'processing_line', 'processing_plant', 'production_line', 'production_line', 'assembly_line', 'assembly-line', 'assembly_line', 'assembly_lines', 'assembly_process', 'detailed_division_of_labor', 'history_of_assembly_lines', 'history_of_the_assembly_line', 'production-line', 'production_line', 'production_lines'], 'bn:00032675n': ['factory', 'mill', 'manufacturing_plant', 'manufactory', 'factory', 'factory', 'manufactory', 'manufacturing_plant', 'factory', 'factory', 'manufactory', 'manufacturing_plant', 'mill', 'factory', 'mill', 'factories', 'factory_employment', 'factory_mills', 'factory_worker', 'factory_workers', 'manufactories', 'manufactory', 'manufacturing_plant', 'manufacturing_plants', '⛭', '🏭', '👨\u200d🏭', '👨🏻\u200d🏭', '👨🏼\u200d🏭', '👨🏽\u200d🏭', '👨🏾\u200d🏭', '👨🏿\u200d🏭', '👩\u200d🏭', '👩🏻\u200d🏭', '👩🏼\u200d🏭', '👩🏽\u200d🏭', '👩🏾\u200d🏭', '👩🏿\u200d🏭', 'factory'], 'bn:00071073n': ['shill', 'shill', 'shill', 'shill', 'shill', 'house_player', 'paid_basher', 'secretly_paid', 'shill_bidding', 'shills', 'will_the_shill']}

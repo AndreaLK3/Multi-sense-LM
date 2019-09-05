@@ -87,7 +87,7 @@ def getAndSave_inputData(vocabulary=[], use_mini_vocabulary=True, lang_id='en'):
     vocabulary_sorted = sorted(vocabulary)
 
     tasks = [WordNet.retrieve_DESA, Wiktionary.retrieve_DESA, OmegaWiki.retrieve_S,
-             DBpedia.retrieve_dbpedia_def, BabelNet.retrieve_DES]
+             DBpedia.retrieve_dbpedia_def, BabelNet.retrieve_DESA]
     sources = [Utils.SOURCE_WORDNET, Utils.SOURCE_WIKTIONARY, Utils.SOURCE_OMEGAWIKI, Utils.SOURCE_DBPEDIA, Utils.SOURCE_BABELNET]
     categories_returned = [[0,1,2,3],[0,1,2,3],[0,2],[4], [0,1,2]]
     num_columns = [4,4,2,1,3]
@@ -116,38 +116,73 @@ def getAndSave_inputData(vocabulary=[], use_mini_vocabulary=True, lang_id='en'):
         storagefile.close()
 
 
-# note: we assume that {dict_2.keys} \subsetOf {dict_1.keys}
-def merge_dictionaries_withlists(dict_1, dict_2):
+
+def merge_dicts_withlists(all_dicts_ls):
     merged_dict = {}
 
-    for key in dict_1.keys():
-        ls_1 = dict_1[key]
-        ls_2 = []
+    all_keys = []
+    for dict in all_dicts_ls:
+        all_keys.extend(dict.keys())
+
+    for key in all_keys:
         try:
-            ls_2 = dict_2[key]
+            values_lls = [dict[key] for dict in all_dicts_ls]
         except KeyError:
-            pass
-        merged_dict[key] = ls_1 + ls_2
+            values_lls = [[]]
+        merged_dict[key] = [item for values_ls in values_lls for item in values_ls]
 
     return merged_dict
 
 
+
 #### Version 2:
-def retrieve_multisense_data():
-    Utils.init_logging(os.path.join("GetInputData", "RetrieveInputData.log"), logging.INFO)
+def retrieve_word_multisense_data(target_word):
 
-    target_word = 'light'
-    bn_defs_dict,bn_ex_dict, bn_syn_dict = BabelNet.retrieve_DES(target_word)
+    Utils.init_logging(os.path.join("GetInputData", "RetrieveWordMSData.log"), logging.INFO)
 
-    definitions_dict, examples_dict, synonyms_dict, antonyms_dict = WordNet.retrieve_DESA_bySenses(target_word, bn_defs_dict)
+    bn_dicts = BabelNet.retrieve_DESA(target_word)
+    wn_dicts = WordNet.retrieve_ESA_bySenses(target_word, bn_dicts[0])
+    ow_syn_dict = OmegaWiki.retrieve_S(target_word, bn_dicts[0])
 
-    OmegaWiki.retrieve_S(target_word, bn_defs_dict)
+    # merge dictionaries for D,E,S from the various sources
+    all_definitions_dict = bn_dicts[0]
+    all_examples_dict = merge_dicts_withlists([bn_dicts[1], wn_dicts[0]])
+    all_synonyms_dict = merge_dicts_withlists([bn_dicts[2], wn_dicts[1], ow_syn_dict])
+    all_antonyms_dict = merge_dicts_withlists([bn_dicts[3], wn_dicts[2]])
 
-    example = bn_defs_dict.keys()[0]
+    # eliminate duplicates, and remove the target word itself from synonyms and antonyms
+    all_definitions_dict = {k:list(set(v)) for k,v in all_definitions_dict.items()}
+    all_synonyms_dict = {k:list(set(v).remove(target_word)) for k,v in all_synonyms_dict.items()}
+    all_examples_dict = {k:list(set(v).remove(target_word)) for k,v in all_examples_dict.items()}
+    all_antonyms_dict = {k:list(set(v)).remove(target_word) for k,v in all_antonyms_dict.items()}
+
+    return all_definitions_dict, all_examples_dict, all_synonyms_dict, all_antonyms_dict
 
 
 
+def getAndSave_multisense_data(vocabulary=[], lang_id='en'):
+    Utils.init_logging(os.path.join("GetInputData","RetrieveMSData.log"), logging.INFO)
 
+    vocabulary = ['plant', 'light']
 
+    # prepare storage facilities
+    hdf5_min_itemsizes_dict = {'word': Utils.HDF5_BASE_CHARSIZE / 4, 'bn_id': Utils.HDF5_BASE_CHARSIZE / 4,
+                               Utils.DEFINITIONS: Utils.HDF5_BASE_CHARSIZE, Utils.EXAMPLES: Utils.HDF5_BASE_CHARSIZE,
+                               Utils.SYNONYMS: Utils.HDF5_BASE_CHARSIZE / 2,
+                               Utils.ANTONYMS: Utils.HDF5_BASE_CHARSIZE / 2,
+                               Utils.ENCYCLOPEDIA_DEF: 4 * Utils.HDF5_BASE_CHARSIZE}
+
+    storage_filenames = [categ + ".h5" for categ in CATEGORIES]
+    storage_filepaths = list(map(lambda fn: os.path.join(Utils.FOLDER_INPUT, fn), storage_filenames))
+    open_storage_files = [pd.HDFStore(fname, mode='w') for fname in storage_filepaths]  # reset HDF5 archives
+
+    for word in vocabulary:
+        d,e,s,a = retrieve_word_multisense_data(word)
+
+        df_data = zip(cycle([word]), d.keys(), d.values())
+        df_columns = ['word', 'bn_id', Utils.DEFINITIONS]
+        df = pd.DataFrame(data=df_data, columns=df_columns)
+        (open_storage_files[0]).append(key=Utils.DEFINITIONS, value=df,
+                                         min_itemsize={key: hdf5_min_itemsizes_dict[key] for key in df_columns})
 
 

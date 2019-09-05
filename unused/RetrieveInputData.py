@@ -87,7 +87,7 @@ def getAndSave_inputData(vocabulary=[], use_mini_vocabulary=True, lang_id='en'):
     vocabulary_sorted = sorted(vocabulary)
 
     tasks = [WordNet.retrieve_DESA, Wiktionary.retrieve_DESA, OmegaWiki.retrieve_S,
-             DBpedia.retrieve_dbpedia_def, BabelNet.retrieve_DES]
+             DBpedia.retrieve_dbpedia_def, BabelNet.retrieve_DESA]
     sources = [Utils.SOURCE_WORDNET, Utils.SOURCE_WIKTIONARY, Utils.SOURCE_OMEGAWIKI, Utils.SOURCE_DBPEDIA, Utils.SOURCE_BABELNET]
     categories_returned = [[0,1,2,3],[0,1,2,3],[0,2],[4], [0,1,2]]
     num_columns = [4,4,2,1,3]
