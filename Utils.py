@@ -16,7 +16,7 @@ SOURCE_WIKTIONARY = 'Wiktionary'
 SOURCE_OMEGAWIKI = 'OmegaWiki'
 SOURCE_DBPEDIA = "DBpedia"
 
-HDF5_BASE_CHARSIZE = 1024
+HDF5_BASE_CHARSIZE = 512
 
 DEFINITIONS = 'definitions'
 EXAMPLES = 'examples'
@@ -70,12 +70,12 @@ def check_language(text, lang_id):
     text_tokens_nopunct = list(filter(lambda t: t not in string.punctuation, text_tokens))
 
     if not(possible_match):
-        logging.warning("Examining vocabulary for element : '" + str(text) +"'")
+        logging.debug("Examining vocabulary for element : '" + str(text) +"'")
         if all([t in nltk.corpus.words.words() for t in text_tokens_nopunct]):
             possible_match = True #all the words can be found in the vocabulary of the target language
 
     if not possible_match:
-        logging.warning("Not of language : " + lang_id + " Element : '" + str(text) + "'")
+        logging.info("Not of language : " + lang_id + " Element : '" + str(text) + "'")
     return possible_match
 
 

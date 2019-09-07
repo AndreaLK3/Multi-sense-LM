@@ -2,7 +2,8 @@ import Utils
 import urllib.request
 import json
 import logging
-
+import re
+import string
 
 ########## HTTP request
 def get_data_structure(target_word):
@@ -63,8 +64,8 @@ def lookup_bndefs_dict(ow_define_i, bn_defs_dict):
 
     for key_bn_id in bn_defs_dict.keys():
         if (ow_define_i['lang'] == 'English'):
-            bn_defs_ls = bn_defs_dict[key_bn_id]
-            if ow_def in bn_defs_ls:
+            bn_defs_ls = list(map(lambda d: re.sub('['+string.punctuation+']',"",d.lower()), bn_defs_dict[key_bn_id]))
+            if ow_def.lower() in bn_defs_ls:
                 logging.info("Match found for ow_def='" + str(ow_def) + "' at bn_id=" + str(key_bn_id))
                 return key_bn_id
     return None
@@ -86,6 +87,7 @@ def retrieve_S(target_word, bn_defs_dict):
             dm_id = ow_define_i['dmid']
             synonyms = get_synonyms_for_sense(dm_id)
             synonyms = list(dict.fromkeys(synonyms))
+            logging.debug("From OmegaWiki: synonyms : " + str(synonyms))
             synonyms_dict[bn_id] = synonyms
 
     return synonyms_dict

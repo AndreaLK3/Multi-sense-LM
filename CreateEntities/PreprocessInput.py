@@ -31,7 +31,7 @@ def preprocess_elements(elements_name, extended_lang_id):
 
     with pd.HDFStore(hdf5_output_filepath, mode='w') as outfile:
 
-        # the columns are: (index, word, examples/definitions, source)
+        # the columns are: (index, word, bn_id, examples/definitions, source)
         for chunk in df_chunksIterator:
             word_elem_source_lts = []
             for row in chunk.itertuples():

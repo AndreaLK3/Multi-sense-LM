@@ -43,13 +43,13 @@ def get_synset_edges(key, synset_ID):
 # (drop also if the target word is not found among the lemmas of the synset)
 def check_include_synset(target_word, synset_data):
     if synset_data['synsetType'] != 'CONCEPT':
-        logging.info("Named Entity. Ignoring.")
+        logging.debug("Named Entity. Ignoring.")
         return False #we do not deal with Named Entities here
 
     defs = synset_data['glosses']
 
     if not (any([True if (definition['source']=='WN') else False for definition in defs])):
-        logging.info("No WordNet senses. Ignoring.")
+        logging.debug("No WordNet senses. Ignoring.")
         return False
 
     senses = synset_data['senses']
@@ -91,16 +91,16 @@ def extract_synonyms(synset_data):
     return list(map(lambda s: s.lower() ,synonyms))
 
 
-def extract_antonyms(synset_edges, key):
+def extract_antonyms(key, synset_edges):
 
     antonyms_edges = list(filter(lambda edge: edge['pointer']['name'] == 'Antonym', synset_edges))
     antonyms_bnIds = list(map( lambda a_e: a_e['target'] ,antonyms_edges))
-    logging.info("Antonyms: " + str(len(antonyms_bnIds)) + " babelNet IDs")
+    logging.debug("Antonyms: " + str(len(antonyms_bnIds)) + " babelNet IDs")
     antonym_words = []
 
     for synset_id in antonyms_bnIds:
         antonym_data = get_synset_data(key, synset_id)
-        antonym_word = antonym_data['senses'][0]['simpleLemma']
+        antonym_word = antonym_data['senses'][0]['properties']['simpleLemma']
         antonym_words.append(antonym_word)
 
     return antonym_words
@@ -110,7 +110,7 @@ def extract_antonyms(synset_edges, key):
 
 
 def retrieve_DESA(target_word='light'):
-    Utils.init_logging(os.path.join("GetInputData", "BabelNet.log"), logging.INFO)
+    #Utils.init_logging(os.path.join("GetInputData", "BabelNet.log"), logging.INFO)
 
     key = Utils.BABELNET_KEY
     accepted_sources = ['WIKI', 'WIKIDIS', 'OMWIKI', 'WN']
@@ -127,10 +127,10 @@ def retrieve_DESA(target_word='light'):
     for s_id in synset_ids:
         synset_data = get_synset_data(key, s_id)
         if check_include_synset(target_word, synset_data):
-            logging.info("Including synset for:" + str(s_id))
+            logging.debug("Including synset for:" + str(s_id))
             definitions = extract_definitions(synset_data,accepted_sources)
             if len(definitions) < 1: #No definitions were found from approved sources.
-                logging.info("No definitions from the approved sources were found. Excluding synset")
+                logging.debug("No definitions from the approved sources were found. Excluding synset")
                 continue
             else:
                 definitions_dict[s_id] = definitions
@@ -140,15 +140,15 @@ def retrieve_DESA(target_word='light'):
 
                 synonyms = extract_synonyms(synset_data)
                 synonyms_dict[s_id] = synonyms
+                logging.debug("From BabelNet: synonyms : " + str(synonyms))
 
-                antonyms = extract_antonyms(key, s_id) # extracted from the 'target' of the Antonym edges
+                synset_edges = get_synset_edges(key, s_id)
+                antonyms = extract_antonyms(key, synset_edges) # extracted from the 'target' of the Antonym edges
                 antonyms_dict[s_id] = antonyms
         else:
-            logging.info("Excluding synset for:" + str(s_id))
-    logging.info(definitions_dict)
-    logging.info(examples_dict)
-    logging.info(synonyms_dict)
+            logging.debug("Excluding synset for:" + str(s_id))
 
+    logging.info("")
     return definitions_dict, examples_dict, synonyms_dict, antonyms_dict
 
 

@@ -1,0 +1,50 @@
+INFO : Retrieving Multisense data for word: sunlight
+INFO : Match found for ow_def='The electromagnetic radiation and particles emitted by the sun.' at bn_id=bn:00075171n
+INFO : Match found for ow_def='The direct light of the sun.' at bn_id=bn:00075171n
+INFO : data_dict = {'
+bn:00075171n': ['The rays of the sun', '
+The total spectrum of the electromagnetic radiation given off by the Sun', '
+The electromagnetic radiation and particles emitted by the sun.', '
+Sunlight is a portion of the electromagnetic radiation given off by the Sun, in particular infrared, visible, and ultraviolet light.', '
+The direct light of the sun.'], '
+bn:00051108n': ['In chemistry shorthand', '
+Light is electromagnetic radiation within a certain portion of the electromagnetic spectrum.', '
+(physics) electromagnetic radiation that can produce a visual sensation', '
+Object, natural or artificial, that produces light.', '
+Electromagnetic radiation that is capable of causing a visual sensation.']}
+INFO : bn_ids = ['bn:00075171n', '
+bn:00075171n', '
+bn:00075171n', '
+bn:00075171n', '
+bn:00075171n', '
+bn:00051108n', '
+bn:00051108n', '
+bn:00051108n', '
+bn:00051108n', '
+bn:00051108n']
+INFO : elements = [
+'The rays of the sun', '
+The total spectrum of the electromagnetic radiation given off by the Sun', '
+The electromagnetic radiation and particles emitted by the sun.', '
+Sunlight is a portion of the electromagnetic radiation given off by the Sun, in particular infrared, visible, and ultraviolet light.', '
+The direct light of the sun.', '
+In chemistry shorthand', '
+Light is electromagnetic radiation within a certain portion of the electromagnetic spectrum.', '
+(physics) electromagnetic radiation that can produce a visual sensation', '
+Object, natural or artificial, that produces light.', '
+Electromagnetic radiation that is capable of causing a visual sensation.']
+INFO : data_dict = {'
+bn:00075171n': [], '
+bn:00051108n': []}
+INFO : bn_ids = []
+INFO : elements = []
+INFO : data_dict = {'
+bn:00075171n': [], '
+bn:00051108n': []}
+INFO : bn_ids = []
+INFO : elements = []
+INFO : data_dict = {'
+bn:00075171n': [], '
+bn:00051108n': []}
+INFO : bn_ids = []
+INFO : elements = []
