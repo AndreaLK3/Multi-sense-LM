@@ -22,9 +22,9 @@ def process_synset(synset):
             all_antonyms.extend(antonyms_to_add)
 
     #definition = synset.definition()
-    examples = synset.examples()
+    # examples = synset.examples()
 
-    return examples, all_synonyms, all_antonyms
+    return all_synonyms, all_antonyms
 
 
 # n: POS-tagging and the different roles and meanings of a word are not addressed in this task. The purpose is to obtain
@@ -71,7 +71,6 @@ def lookup_bndefs_dictionary(wn_def, bn_defs_dict):
 def retrieve_ESA_bySenses(target_word, bn_defs_dict):
     #Utils.init_logging(os.path.join("GetInputData", "WordNet.log"), logging.INFO)
 
-    examples_dict = {}
     synonyms_dict = {}
     antonyms_dict = {}
 
@@ -81,10 +80,9 @@ def retrieve_ESA_bySenses(target_word, bn_defs_dict):
         wn_def = synset.definition()
         bn_id = lookup_bndefs_dictionary(wn_def, bn_defs_dict)
         if bn_id is not None:
-            examples, synonyms, antonyms = process_synset(synset)
-            examples_dict[bn_id] = examples
+            synonyms, antonyms = process_synset(synset)
             synonyms_dict[bn_id] = synonyms
             logging.debug("From WordNet: synonyms : " + str(synonyms))
             antonyms_dict[bn_id] = antonyms
 
-    return examples_dict, synonyms_dict, antonyms_dict
+    return synonyms_dict, antonyms_dict

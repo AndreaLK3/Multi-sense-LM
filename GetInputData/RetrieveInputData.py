@@ -94,7 +94,7 @@ def retrieve_word_multisense_data(target_word):
 
     # merge dictionaries for D,E,S from the various sources
     all_definitions_dict = bn_dicts[0]
-    all_examples_dict = merge_dictionaries_withlists(bn_dicts[1], wn_dicts[0])
+    all_examples_dict = bn_dicts[1]
     all_synonyms_dict = merge_dictionaries_withlists(merge_dictionaries_withlists(bn_dicts[2], wn_dicts[1]), ow_syn_dict)
     all_antonyms_dict = merge_dictionaries_withlists(bn_dicts[3], wn_dicts[2])
 
@@ -124,7 +124,7 @@ def store_data_to_hdf5(word, data_dict, elements_col_name, h5_outfile, h5_itemsi
 def getAndSave_multisense_data(vocabulary=[], lang_id='en'):
     Utils.init_logging(os.path.join("GetInputData","RetrieveMSData.log"), logging.INFO)
 
-    vocabulary = ['plant'] # 'light', 'plant', 'move'
+    vocabulary = ['plant', 'wide', 'move']
 
     # prepare storage facilities
     hdf5_min_itemsizes_dict = {'word': Utils.HDF5_BASE_CHARSIZE / 4, 'bn_id': Utils.HDF5_BASE_CHARSIZE / 8,

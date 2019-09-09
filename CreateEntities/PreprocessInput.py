@@ -11,11 +11,11 @@ STOPWORDS_CORENLP_FILEPATH = os.path.join("CreateEntities",'stopwords_coreNLP.tx
 
 
 # elements_name must be either 'definitions' or 'examples'
-def preprocess_elements(elements_name, extended_lang_id):
+def preprocess_Ds_Es(elements_name, extended_lang_id):
     Utils.init_logging(os.path.join("CreateEntities","PreprocessInput.log"), logging.INFO)
     
     hdf5_input_filepath = os.path.join(Utils.FOLDER_INPUT, elements_name +".h5")
-    hdf5_output_filepath = os.path.join(Utils.FOLDER_INPUT, "preprocessed_"+elements_name +".h5")
+    hdf5_output_filepath = os.path.join(Utils.FOLDER_INPUT, Utils.PROCESSED + '_' +elements_name + ".h5")
     df_chunksIterator = pd.read_hdf(hdf5_input_filepath, mode='r',iterator=True, chunksize=NUM_INSTANCES_CHUNK)
 
     stopwords_ls = nltk.corpus.stopwords.words(extended_lang_id)
@@ -25,9 +25,9 @@ def preprocess_elements(elements_name, extended_lang_id):
     puncts_nohyphen = string.punctuation.replace('-', '')
     puncts_nohyphen_pattern_str = '[' + puncts_nohyphen + ']'
 
-    hdf5_min_itemsizes = {'word': Utils.HDF5_BASE_CHARSIZE / 4, 'source': Utils.HDF5_BASE_CHARSIZE / 4,
-                               Utils.DEFINITIONS:20, Utils.EXAMPLES:20}
-    min_itemsize_dict = {key: hdf5_min_itemsizes[key] for key in ['word', 'source', elements_name]}
+    hdf5_min_itemsizes = {'word': Utils.HDF5_BASE_CHARSIZE / 4, 'bn_id': Utils.HDF5_BASE_CHARSIZE / 4,
+                               Utils.DEFINITIONS:Utils.HDF5_BASE_CHARSIZE/2, Utils.EXAMPLES:Utils.HDF5_BASE_CHARSIZE/2}
+    min_itemsize_dict = {key: hdf5_min_itemsizes[key] for key in ['word', 'bn_id', elements_name]}
 
     with pd.HDFStore(hdf5_output_filepath, mode='w') as outfile:
 
@@ -49,7 +49,7 @@ def preprocess_elements(elements_name, extended_lang_id):
 
 
 def preprocess_examples(extended_lang_id='english'):
-    preprocess_elements(Utils.EXAMPLES, extended_lang_id)
+    preprocess_Ds_Es(Utils.EXAMPLES, extended_lang_id)
 
 def preprocess_definitions(extended_lang_id='english'):
-    preprocess_elements(Utils.DEFINITIONS, extended_lang_id)
+    preprocess_Ds_Es(Utils.DEFINITIONS, extended_lang_id)

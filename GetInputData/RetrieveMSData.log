@@ -1,6 +1,5 @@
 INFO : Retrieving Multisense data for word: plant
 INFO : 
-INFO : initializing identifier
 WARNING : Examining vocabulary for element : 'floræ'
 WARNING : Not of language : en Element : 'floræ'
 WARNING : Examining vocabulary for element : 'plantæ'
@@ -35,3 +34,10 @@ WARNING : Examining vocabulary for element : '👨🏻‍🏭'
 WARNING : Not of language : en Element : '👨🏻‍🏭'
 WARNING : Examining vocabulary for element : '⛭'
 WARNING : Not of language : en Element : '⛭'
+INFO : Retrieving Multisense data for word: wide
+INFO : 
+WARNING : Examining vocabulary for element : 'a spacious view'
+WARNING : Examining vocabulary for element : 'spacious skies'
+WARNING : Examining vocabulary for element : 'spacious'
+INFO : Retrieving Multisense data for word: move
+INFO : 

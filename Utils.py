@@ -18,13 +18,14 @@ SOURCE_DBPEDIA = "DBpedia"
 
 HDF5_BASE_CHARSIZE = 512
 
+# Lexicon
+
 DEFINITIONS = 'definitions'
 EXAMPLES = 'examples'
 SYNONYMS = 'synonyms'
 ANTONYMS = 'antonyms'
 ENCYCLOPEDIA_DEF = 'encyclopedia_def'
-PREP_DEFINITIONS = 'preprocessed_definitions'
-PREP_EXAMPLES = 'preprocessed_examples'
+PROCESSED = 'processed'
 
 ########## Constants - filesystem ##########
 
