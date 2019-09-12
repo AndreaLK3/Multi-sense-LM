@@ -12,26 +12,6 @@ from itertools import cycle
 NUM_WORDS_IN_FILE = 5000
 CATEGORIES = [Utils.DEFINITIONS, Utils.EXAMPLES, Utils.SYNONYMS, Utils.ANTONYMS] # , Utils.ENCYCLOPEDIA_DEF
 
-
-# def merge_dicts_withlists(all_dicts_ls):
-#     merged_dict = {}
-#     logging.info('\n all_dicts_ls = \n' + str(all_dicts_ls))
-#
-#     for dictionary in all_dicts_ls:
-#         for k, v in dictionary.items():
-#             try:
-#                 values_ls = merged_dict[k] # may fail with KeyError
-#                 logging.info('Extending values_ls='+ str(values_ls) + 'with v=' + str(v))
-#                 merged_dict.update( (k, values_ls.append(v)) )
-#             except KeyError:
-#                 logging.info('inserting v=' + str(v) + 'at k=' + str(k))
-#                 merged_dict.update((k,v))
-#         logging.info('Snapshot: ' + str(merged_dict))
-#
-#     logging.info('\n merged_dict = \n' + str(merged_dict))
-#     return merged_dict
-
-
 # note: we assume that {dict_2.keys} \subsetOf {dict_1.keys}
 def merge_dictionaries_withlists(dict_1, dict_2):
     merged_dict = {}

@@ -33,6 +33,7 @@ FOLDER_INPUT = 'InputData'
 FOLDER_WORD_EMBEDDINGS = 'WordEmbeddings'
 FOLDER_WT103 = 'WikiText-103'
 SUBFOLDER_TENSORBOARD = 'TensorBoard'
+SUBFOLDER_INPUT_BERT = 'Input_BERT'
 
 WT_TRAIN_FILE = 'wiki.train.tokens'
 WT_VALID_FILE = 'wiki.valid.tokens'
@@ -40,7 +41,6 @@ WT_TEST_FILE = 'wiki.test.tokens'
 
 WT_MYVOCAB_FILE = 'vocabulary_fromWikiText.h5'
 WT_MYVOCAB_MINITEST_FILE = 'vocabulary_miniTest.h5'
-
 
 UNK_TOKEN = '<unk>'
 NUM_TOKEN = '<num>'
