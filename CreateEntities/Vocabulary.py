@@ -14,7 +14,7 @@ def get_vocabulary_df(vocabulary_h5_filepath, corpus_txt_filepath, min_count, ex
         logging.info("*** The vocabulary was loaded from the file " + vocabulary_h5_filepath)
     else:
         vocabulary_h5 = pd.HDFStore(vocabulary_h5_filepath, mode='w')
-        vocab_h5_itemsizes = {'word': Utils.HDF5_BASE_CHARSIZE / 4, 'frequency': Utils.HDF5_BASE_CHARSIZE / 8}
+        vocab_h5_itemsizes = {'word': Utils.HDF5_BASE_SIZE_512 / 4, 'frequency': Utils.HDF5_BASE_SIZE_512 / 8}
 
         vocabulary = build_vocabulary_from_corpus(corpus_txt_filepath, extended_lang_id)
         eliminate_rare_words(vocabulary, min_count)

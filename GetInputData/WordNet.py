@@ -27,32 +27,6 @@ def process_synset(synset):
     return all_synonyms, all_antonyms
 
 
-# n: POS-tagging and the different roles and meanings of a word are not addressed in this task. The purpose is to obtain
-# graph-based, dictionary-enhanced word embeddings, not multi-sense
-def retrieve_DESA(target_word):
-
-    defs = []
-    examples = []
-    synonyms = []
-    antonyms = []
-    syns_ls = wn.synsets(target_word)
-    logging.debug(syns_ls)
-
-    for syn in syns_ls:
-        def_exs_syns_ants = process_synset(syn)
-        defs.append(def_exs_syns_ants[0])
-        examples.extend(def_exs_syns_ants[1])
-        synonyms.extend(list(filter (lambda s: s != target_word, def_exs_syns_ants[2])) )
-        antonyms.extend(list(filter(lambda s: s != target_word, def_exs_syns_ants[3])))
-
-    #eliminate duplicates coming from different senses and synsets
-    synonyms = list(dict.fromkeys(synonyms))
-    antonyms = list(dict.fromkeys(antonyms))
-
-    return (defs, examples, synonyms, antonyms)
-
-
-
 def lookup_bndefs_dictionary(wn_def, bn_defs_dict):
 
     for key_bn_id in bn_defs_dict.keys():
@@ -68,7 +42,7 @@ def lookup_bndefs_dictionary(wn_def, bn_defs_dict):
 
 
 
-def retrieve_ESA_bySenses(target_word, bn_defs_dict):
+def retrieve_SA_bySenses(target_word, bn_defs_dict):
     #Utils.init_logging(os.path.join("GetInputData", "WordNet.log"), logging.INFO)
 
     synonyms_dict = {}

@@ -16,7 +16,7 @@ SOURCE_WIKTIONARY = 'Wiktionary'
 SOURCE_OMEGAWIKI = 'OmegaWiki'
 SOURCE_DBPEDIA = "DBpedia"
 
-HDF5_BASE_CHARSIZE = 512
+HDF5_BASE_SIZE_512 = 512
 
 # Lexicon
 
@@ -25,7 +25,10 @@ EXAMPLES = 'examples'
 SYNONYMS = 'synonyms'
 ANTONYMS = 'antonyms'
 ENCYCLOPEDIA_DEF = 'encyclopedia_def'
-PROCESSED = 'processed'
+CATEGORIES = [DEFINITIONS, EXAMPLES, SYNONYMS, ANTONYMS] # , Utils.ENCYCLOPEDIA_DEF
+
+DENOMINATED = 'denominated'
+PROCESSED = 'processed' # for defs and examples, it means: 'no duplicates'; for synonyms and antonyms: 'lemmatized'
 
 ########## Constants - filesystem ##########
 
@@ -109,3 +112,7 @@ def word_to_vocab_index(word, vocabulary_wordList):
         return vocabulary_wordList.index(word)
     except ValueError:
         return vocabulary_wordList.index(UNK_TOKEN)
+
+def close_list_of_files(files_ls):
+    for file in files_ls:
+        file.close()

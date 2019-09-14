@@ -97,10 +97,10 @@ def getAndSave_inputData(vocabulary=[], use_mini_vocabulary=True, lang_id='en'):
         tasks_info_dict[sources[i]]={'task':tasks[i], 'categories':categories_returned[i],'n_cols':num_columns[i]}
 
 
-    hdf5_min_itemsizes_dict = {'word': Utils.HDF5_BASE_CHARSIZE / 4, 'source': Utils.HDF5_BASE_CHARSIZE / 4,
-                               Utils.DEFINITIONS: Utils.HDF5_BASE_CHARSIZE, Utils.EXAMPLES: Utils.HDF5_BASE_CHARSIZE,
-                               Utils.SYNONYMS: Utils.HDF5_BASE_CHARSIZE / 2, Utils.ANTONYMS: Utils.HDF5_BASE_CHARSIZE / 2,
-                               Utils.ENCYCLOPEDIA_DEF: 4 * Utils.HDF5_BASE_CHARSIZE}
+    hdf5_min_itemsizes_dict = {'word': Utils.HDF5_BASE_SIZE_512 / 4, 'source': Utils.HDF5_BASE_SIZE_512 / 4,
+                               Utils.DEFINITIONS: Utils.HDF5_BASE_SIZE_512, Utils.EXAMPLES: Utils.HDF5_BASE_SIZE_512,
+                               Utils.SYNONYMS: Utils.HDF5_BASE_SIZE_512 / 2, Utils.ANTONYMS: Utils.HDF5_BASE_SIZE_512 / 2,
+                               Utils.ENCYCLOPEDIA_DEF: 4 * Utils.HDF5_BASE_SIZE_512}
 
     storage_filenames = [categ + ".h5" for categ in CATEGORIES]
     storage_filepaths = list(map(lambda fn: os.path.join(Utils.FOLDER_INPUT, fn), storage_filenames))

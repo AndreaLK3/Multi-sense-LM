@@ -1,0 +1,78 @@
+INFO : [('bn:00098887a', 3011), ('bn:00096366a', 2690), ('bn:00098891a', 2620), ('bn:00103396a', 1320), ('bn:00113860a', 1300), ('bn:00114394r', 1210), ('bn:00113858a', 1210), ('bn:00117624r', 1210), ('bn:00117623r', 1200), ('bn:00117622r', 1200), ('bn:00113859a', 1101)]
+INFO : 11
+INFO : Applying low score cutoff
+INFO : {'bn:00098887a': 'adj.1', 'bn:00096366a': 'adj.2', 'bn:00098891a': 'adj.3', 'bn:00103396a': 'adj.4', 'bn:00113860a': 'adj.5', 'bn:00114394r': 'adv.1', 'bn:00113858a': 'adj.6', 'bn:00117624r': 'adv.2', 'bn:00117623r': 'adv.3', 'bn:00117622r': 'adv.4'}
+INFO : 10
+INFO :     word  bn_id                                        definitions
+0   wide  adj.4                                having ample fabric
+1   wide  adv.3                     to the fullest extent possible
+2   wide  adv.4                           with or by a broad space
+4   wide  adv.2            to or over a great extent or range; far
+5   wide  adj.6              (used of eyes) fully open or extended
+6   wide  adj.3                     very large in expanse or scope
+7   wide  adj.3                    very large in expanse or scope.
+8   wide  adv.1                       far from the intended target
+9   wide  adj.5                                      not on target
+10  wide  adj.2  broad in scope or content; affecting every par...
+11  wide  adj.2              broad in scope or content- t.g.winner
+12  wide  adj.1  having great (or a certain) extent from one si...
+13  wide  adj.1  having a long distance or area between two poi...
+INFO :     word  bn_id                                           examples
+0   wide  adj.4  a full pleated skirt;   she needed her full cl...
+1   wide  adj.4                                       a full skirt
+2   wide  adj.4                the current taste for wide trousers
+3   wide  adv.3                        with the throttle wide open
+4   wide  adv.3                                open your eyes wide
+5   wide  adv.4                         stand with legs wide apart
+6   wide  adv.4                           ran wide around left end
+8   wide  adv.2                                 he traveled widely
+9   wide  adv.2                   wandered wide through many lands
+10  wide  adj.6                              stared with wide eyes
+11  wide  adj.6  she was like her mother: tiny, curly-haired, a...
+12  wide  adj.3                                    the wide plains
+13  wide  adj.3                                       a broad lawn
+14  wide  adj.3     . and it has a spacious view of the mountains.
+15  wide  adj.3                                    a spacious view
+16  wide  adj.3                                     spacious skies
+17  wide  adj.3                      the inquiry had a wide remit.
+18  wide  adv.1        a bullet went astray and killed a bystander
+19  wide  adv.1                    the arrow went wide of the mark
+20  wide  adj.5                     the arrow was wide of the mark
+21  wide  adj.5                                  the kick was wide
+22  wide  adj.5                 a claim that was wide of the truth
+23  wide  adj.2                            granted him wide powers
+24  wide  adj.2               an invention with broad applications
+25  wide  adj.2   blanket sanctions against human-rights violators
+26  wide  adj.2                        an all-embracing definition
+27  wide  adj.2                     across-the-board pay increases
+28  wide  adj.2             a panoptic study of soviet nationality
+29  wide  adj.1                                     a wide necktie
+30  wide  adj.1                                   three feet broad
+31  wide  adj.1                         the broad expanse of ocean
+32  wide  adj.1                                         wide roads
+33  wide  adj.1                    we walked down a wide corridor.
+34  wide  adj.1                                      a broad river
+35  wide  adj.1                                    broad shoulders
+36  wide  adj.1                            a river two miles broad
+37  wide  adj.1                                    three feet wide
+38  wide  adj.1                                       wide margins
+INFO :     word  bn_id          synonyms
+0   wide  adj.4              full
+1   wide  adj.4          wide-cut
+2   wide  adv.2            widely
+3   wide  adj.6         wide-eyed
+4   wide  adj.3             broad
+5   wide  adj.3          spacious
+6   wide  adv.1            astray
+7   wide  adj.2      encompassing
+8   wide  adj.2     all-inclusive
+9   wide  adj.2  across-the-board
+10  wide  adj.2  all-encompassing
+11  wide  adj.2             broad
+12  wide  adj.2     all-embracing
+13  wide  adj.2          panoptic
+14  wide  adj.2           blanket
+15  wide  adj.2         extensive
+16  wide  adj.1             broad
+INFO :    word  bn_id antonyms
+1  wide  adj.1   narrow

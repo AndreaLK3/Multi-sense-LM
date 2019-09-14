@@ -52,7 +52,7 @@ def prepare_input(sentences_tokenized_lls, window_radius, out_hdf5_filepath):
                         sentence_word_pairs.append((center_word,w))
                 df = pd.DataFrame(data=sentence_word_pairs, columns=df_columns)
                 out_hdf5_file.append(key='skipgram_input', value=df,
-                                     min_itemsize={key: Utils.HDF5_BASE_CHARSIZE/2 for key in df_columns})
+                                     min_itemsize={key: Utils.HDF5_BASE_SIZE_512 / 2 for key in df_columns})
         return
 
 

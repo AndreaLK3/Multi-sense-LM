@@ -130,7 +130,7 @@ def retrieve_DESA(target_word='light'):
             logging.debug("Including synset for:" + str(s_id))
             definitions = extract_definitions(synset_data,accepted_sources)
             if len(definitions) < 1: #No definitions were found from approved sources.
-                logging.debug("No definitions from the approved sources were found. Excluding synset")
+                logging.debug("BN: No definitions from the approved sources were found. Excluding synset")
                 continue
             else:
                 definitions_dict[s_id] = definitions
@@ -148,7 +148,6 @@ def retrieve_DESA(target_word='light'):
         else:
             logging.debug("Excluding synset for:" + str(s_id))
 
-    logging.info("")
     return definitions_dict, examples_dict, synonyms_dict, antonyms_dict
 
 
