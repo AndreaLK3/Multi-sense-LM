@@ -1,12 +1,12 @@
-import CreateEntities.RemoveQuasiDuplicates as RQD
-import CreateEntities.LemmatizeNyms as LN
-import CreateEntities.SenseDenominations as SD
+import PrepareGraphInput.RemoveQuasiDuplicates as RQD
+import PrepareGraphInput.LemmatizeNyms as LN
+import PrepareGraphInput.SenseDenominations as SD
 import os
 import Utils
 import pandas as pd
 import logging
 
-def preprocess(vocabulary = ['wide', 'plant', 'move', 'light']):
+def preprocess(vocabulary):
     Utils.init_logging('PreprocessInput.log', logging.INFO)
 
     # categories= [d., e., s., a.]
@@ -31,7 +31,9 @@ def preprocess(vocabulary = ['wide', 'plant', 'move', 'light']):
     Utils.close_list_of_files(input_dbs + processed_dbs)
 
 
+
 def assign_sense_names(vocabulary = ['wide', 'plant', 'move', 'light']):
+    Utils.init_logging('AssignSenseNames.log', logging.INFO)
 
     hdf5_input_filepaths = [os.path.join(Utils.FOLDER_INPUT, Utils.PROCESSED + '_' + categ + ".h5")
                              for categ in Utils.CATEGORIES]
@@ -43,6 +45,7 @@ def assign_sense_names(vocabulary = ['wide', 'plant', 'move', 'light']):
 
 
     for word in vocabulary:
-        pass
+        SD.assign_senses_to_word(word, input_dbs, denominated_dbs)
+
 
 

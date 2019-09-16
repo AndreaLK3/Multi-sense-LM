@@ -8,8 +8,9 @@ EXS_DB_INDEX = 1
 SYNS_DB_INDEX = 2
 ANTS_DB_INDEX = 3
 
-LOW_SCORE_CUTOFF = 120
-HIGH_SCORE_CUTOFF = 135
+LOW_SCORE_CUTOFF = 130
+MID_SCORE_CUTOFF = 160
+HIGH_SCORE_CUTOFF = 230
 
 # The importance score for each sense is based on:
 # num of definitions >  num of examples >  num of synonyms > num of antonyms
@@ -77,40 +78,27 @@ def assign_senses_to_word(word, input_dbs, output_dbs):
                                          len(senses_df[2]), len(senses_df[3])) )))
 
     sorted_senses_lts = sorted(senses_resources_lts, key=lambda tpl: tpl[1], reverse=True)
-    logging.info(sorted_senses_lts)
-    logging.info(len(sorted_senses_lts))
+    logging.info("Initial number of senses : " + str(len(sorted_senses_lts)))
 
-    if len(sorted_senses_lts) >= 15:
-        logging.info("Applying high score cutoff")
+    if len(sorted_senses_lts) >= 25:
         sorted_senses_lts = list(filter(lambda tpl: tpl[1] >= HIGH_SCORE_CUTOFF, sorted_senses_lts))
+    elif len(sorted_senses_lts) >= 15:
+        sorted_senses_lts = list(filter(lambda tpl: tpl[1] >= MID_SCORE_CUTOFF, sorted_senses_lts))
     elif len(sorted_senses_lts) >= 5:
         sorted_senses_lts = list(filter(lambda tpl: tpl[1] >= LOW_SCORE_CUTOFF, sorted_senses_lts))
-        logging.info("Applying low score cutoff")
 
     bnids_denoms_dict = get_denominations(sorted_senses_lts)
-    logging.info(bnids_denoms_dict)
-    logging.info(len(bnids_denoms_dict.keys()))
+    logging.info("Remaining senses: " + str(len(bnids_denoms_dict.keys())))
+
 
     word_dfs_named = [eliminate_secondary_senses(word_dfs[i], bnids_denoms_dict)
                     for i in range(len(Utils.CATEGORIES))]
-    # word_examples_df_named = eliminate_secondary_senses(word_examples_df, bnids_denoms_dict)
-    # word_synonyms_df_named = eliminate_secondary_senses(word_synonyms_df, bnids_denoms_dict)
-    # word_antonyms_df_named = eliminate_secondary_senses(word_antonyms_df, bnids_denoms_dict)
 
     for i in range(len(Utils.CATEGORIES)):
-        
+
         output_dbs[i].append(key=Utils.CATEGORIES[i], value=word_dfs_named[i],
                          min_itemsize={key:hdf5_min_itemsizes[key]
                                        for key in hdf5_min_itemsizes.keys() if key in ['word', 'sense', Utils.CATEGORIES[i]]})
-    # output_dbs[1].append(key=Utils.EXAMPLES, value=word_examples_df_named,
-    #                      min_itemsize={key for key in hdf5_min_itemsizes if
-    #                                    key in ['word', 'sense', Utils.DEFINITIONS]})
-    # output_dbs[2].append(key=Utils.SYNONYMS, value=word_synonyms_df_named,
-    #                      min_itemsize={key for key in hdf5_min_itemsizes if
-    #                                    key in ['word', 'sense', Utils.DEFINITIONS]})
-    # output_dbs[3].append(key=Utils.ANTONYMS, value=word_antonyms_df_named,
-    #                      min_itemsize={key for key in hdf5_min_itemsizes if
-    #                                    key in ['word', 'sense', Utils.DEFINITIONS]})
 
 
 def main():
