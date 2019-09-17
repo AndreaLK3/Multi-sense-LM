@@ -53,7 +53,6 @@ def eliminate_secondary_senses(word_element_df, bnids_denoms_dict):
 
 
 def assign_senses_to_word(word, input_dbs, output_dbs):
-    Utils.init_logging(os.path.join("CreateEntities" ,"SenseDenominations.log"), logging.INFO)
 
     hdf5_min_itemsizes = {'word': Utils.HDF5_BASE_SIZE_512 / 4, 'sense': Utils.HDF5_BASE_SIZE_512 / 16,
                           Utils.DEFINITIONS: Utils.HDF5_BASE_SIZE_512 / 2, Utils.EXAMPLES: Utils.HDF5_BASE_SIZE_512 / 2,
@@ -68,9 +67,6 @@ def assign_senses_to_word(word, input_dbs, output_dbs):
     for bn_id in bn_ids:
         senses_df = [word_dfs[i].loc[word_dfs[i]['bn_id']== str(bn_id)]
                     for i in range(len(Utils.CATEGORIES))]
-        # sense_examples_df = word_examples_df.loc[word_examples_df['bn_id']== str(bn_id)]
-        # sense_synonyms_df = word_synonyms_df.loc[word_synonyms_df['bn_id']== str(bn_id)]
-        # sense_antonyms_df = word_antonyms_df.loc[word_antonyms_df['bn_id']== str(bn_id)]
 
         senses_resources_lts.append((bn_id,
                                      compute_importance_score(
@@ -99,18 +95,3 @@ def assign_senses_to_word(word, input_dbs, output_dbs):
         output_dbs[i].append(key=Utils.CATEGORIES[i], value=word_dfs_named[i],
                          min_itemsize={key:hdf5_min_itemsizes[key]
                                        for key in hdf5_min_itemsizes.keys() if key in ['word', 'sense', Utils.CATEGORIES[i]]})
-
-
-def main():
-    hdf5_input_filepaths = [os.path.join(Utils.FOLDER_INPUT, Utils.PROCESSED + "_" + categ + ".h5") for categ in Utils.CATEGORIES]
-    hdf5_output_filepaths = [os.path.join(Utils.FOLDER_INPUT, Utils.DENOMINATED + '_' + categ + ".h5")
-                             for categ in Utils.CATEGORIES]
-    input_dbs = [pd.HDFStore(input_fpath, mode='r') for input_fpath in hdf5_input_filepaths]  # D,E,S,A
-    output_dbs = [pd.HDFStore(output_fpath, mode='w') for output_fpath in hdf5_output_filepaths]
-
-    mini_vocab = ['wide', 'move', 'plant', 'light']
-    for word in mini_vocab:
-        logging.info("Selecting, sorting and naming the senses of the word: " + word)
-        assign_senses_to_word(word, input_dbs, output_dbs)
-
-    Utils.close_list_of_files(input_dbs + output_dbs)

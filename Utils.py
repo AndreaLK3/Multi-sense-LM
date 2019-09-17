@@ -29,6 +29,9 @@ CATEGORIES = [DEFINITIONS, EXAMPLES, SYNONYMS, ANTONYMS] # , Utils.ENCYCLOPEDIA_
 
 DENOMINATED = 'denominated'
 PROCESSED = 'processed' # for defs and examples, it means: 'no duplicates'; for synonyms and antonyms: 'lemmatized'
+VECTORIZED = 'vectorized'
+
+VOCABULARY_TABLE = 'vocabulary_table'
 
 ########## Constants - filesystem ##########
 
