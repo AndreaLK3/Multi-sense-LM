@@ -10,7 +10,7 @@ import re
 
 
 # Entry function: if a vocabulary is already present in the specified path, load it. Otherwise, create it.
-def get_vocabulary_df(vocabulary_h5_filepath, corpus_txt_filepath, min_count, extended_lang_id):
+def get_vocabulary_df(vocabulary_h5_filepath, corpus_txt_filepath, min_count):
     if os.path.exists(vocabulary_h5_filepath):
         vocab_df = pd.read_hdf(vocabulary_h5_filepath, mode='r')
         logging.info("*** The vocabulary was loaded from the file " + vocabulary_h5_filepath)
@@ -18,7 +18,7 @@ def get_vocabulary_df(vocabulary_h5_filepath, corpus_txt_filepath, min_count, ex
         vocabulary_h5 = pd.HDFStore(vocabulary_h5_filepath, mode='w')
         vocab_h5_itemsizes = {'word': Utils.HDF5_BASE_SIZE_512 / 4, 'frequency': Utils.HDF5_BASE_SIZE_512 / 8}
 
-        vocabulary = build_vocabulary_from_corpus(corpus_txt_filepath, extended_lang_id)
+        vocabulary = build_vocabulary_from_corpus(corpus_txt_filepath)
         eliminate_rare_words(vocabulary, min_count)
         vocab_df = pd.DataFrame(data=zip(vocabulary.keys(), vocabulary.values()), columns=['word', 'frequency'])
         vocabulary_h5.append(key='vocabulary', value=vocab_df, min_itemsize=vocab_h5_itemsizes)
@@ -42,11 +42,13 @@ def eliminate_rare_words(vocabulary_dict, min_count):
 
 ##### Step 0:
 ##### It is necessary to reconvert some of the symbols found in the WikiText datasets, in particular:
-##### ‘@-@’	4 ‘@.@’ 5 metres
+##### ‘@-@’	4 ‘@.@’ 5 metres. Including also the title signs, such as in ' = = = Title = = = \n'
 def convert_symbols(line_text):
-    patterns_ls = [' @-@ ', ' @,@ ', ' @.@ ', ' @_@ ']
-    for pat in patterns_ls:
+    symbol_patterns_ls = [' @-@ ', ' @,@ ', ' @.@ ', ' @_@ ']
+    for pat in symbol_patterns_ls:
         line_text = re.sub(pat, pat[2], line_text) #keep the symbol, and eliminate the spaces too
+    title_pattern = ' (= )+|'
+    line_text = re.sub(title_pattern, "", line_text)
     return line_text
 
 ##### Step 1: nltk's tokenizer - sentence tokenizer
@@ -126,7 +128,7 @@ def process_line(line, tot_tokens=0):
     return line_tokens_03_replNumbers, tot_tokens
 
 
-def build_vocabulary_from_corpus(corpus_txt_filepath, extended_lang_id="'english"):
+def build_vocabulary_from_corpus(corpus_txt_filepath):
     Utils.init_logging(os.path.join("PrepareGraphInput", "Vocabulary.log"), logging.INFO)
     vocab_dict = {}
     tot_tokens = 0

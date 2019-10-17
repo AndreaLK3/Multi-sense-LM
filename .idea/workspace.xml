@@ -2,33 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="d35dca92-959c-489d-8a61-f337e4cce7fa" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/AssignSenseNames.log" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ComputeSentenceEmbeddings.log" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/CreateSensesVocabularyTable.log" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/CreatingVocabulary_timeanalysis.log" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/EmbedWithBERT.log" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Experiments.log" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Plan_Task1.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Plan_Task1.pptx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/PrepareGraphInput/PrepareInput.py" beforeDir="false" afterPath="$PROJECT_DIR$/PrepareGraphInput/PrepareInput.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PrepareGraphInput/PreprocessInput.log" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/PrepareGraphInput/Vocabulary.log" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/PrepareGraphInput/Vocabulary.py" beforeDir="false" afterPath="$PROJECT_DIR$/PrepareGraphInput/Vocabulary.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PreprocessInput.log" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/RDF_1_1_Primer.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/SPARQL 1.1 Overview.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Task1_DeveloperDiary.docx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Task1_DeveloperDiary_previous.docx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/TensorBoard/Training_loss:0/events.out.tfevents.1567416565.Drifts-MacBook-Pro.local" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/TensorBoard/Training_loss:0/events.out.tfevents.1567418531.Drifts-MacBook-Pro.local" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/Utils.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unused/RetrieveInputData.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/unused/SkipGram.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/unused/Wiktionary.log" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/unused/Wiktionary.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/wikitext-2/wiki.test.tokens" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/wikitext-2/wiki.train.tokens" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/wikitext-2/wiki.valid.tokens" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Documents/Task1_DeveloperDiary.docx" beforeDir="false" afterPath="$PROJECT_DIR$/Documents/Task1_DeveloperDiary.docx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Vocabulary.py" beforeDir="false" afterPath="$PROJECT_DIR$/Vocabulary.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -37,20 +12,7 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="FileEditorManager">
-    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/Utils.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="381">
-              <caret line="40" column="6" selection-start-line="40" selection-start-column="6" selection-end-line="40" selection-end-column="6" />
-              <folding>
-                <element signature="e#0#14#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-    </leaf>
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300" />
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -118,6 +80,7 @@
         <option value="$PROJECT_DIR$/PrepareGraphInput/Vocabulary.py" />
         <option value="$PROJECT_DIR$/PrepareGraphInput/PrepareInput.py" />
         <option value="$PROJECT_DIR$/Utils.py" />
+        <option value="$PROJECT_DIR$/Vocabulary.py" />
       </list>
     </option>
   </component>
@@ -170,6 +133,9 @@
     </option>
   </component>
   <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/" />
+    </key>
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/CreateEntities" />
     </key>
@@ -255,9 +221,8 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1920" height="986" extended-state="0" />
-    <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.19861555" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.19861555" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -270,7 +235,7 @@
       <window_info anchor="bottom" id="Version Control" order="7" weight="0.3299435" />
       <window_info anchor="bottom" id="Terminal" order="8" weight="0.3299435" />
       <window_info anchor="bottom" id="Event Log" order="9" side_tool="true" />
-      <window_info anchor="bottom" id="Python Console" order="10" visible="true" weight="0.29642057" />
+      <window_info active="true" anchor="bottom" id="Python Console" order="10" visible="true" weight="0.29642057" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
@@ -480,16 +445,6 @@
     <entry file="file://$PROJECT_DIR$/PrepareGraphInput/PreprocessInput.log">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/PrepareGraphInput/PrepareInput.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1681">
-          <caret line="135" column="43" lean-forward="true" selection-start-line="135" selection-start-column="43" selection-end-line="135" selection-end-column="43" />
-          <folding>
-            <element signature="e#0#53#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/PrepareGraphInput/LemmatizeNyms.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="776">
@@ -540,10 +495,20 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/PrepareGraphInput/Vocabulary.py">
+    <entry file="file://$PROJECT_DIR$/PrepareGraphInput/PrepareInput.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="144">
-          <caret line="134" column="78" lean-forward="true" selection-start-line="134" selection-start-column="78" selection-end-line="134" selection-end-column="78" />
+        <state relative-caret-position="2025">
+          <caret line="135" column="43" lean-forward="true" selection-start-line="135" selection-start-column="43" selection-end-line="135" selection-end-column="43" />
+          <folding>
+            <element signature="e#0#53#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Vocabulary.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="401">
+          <caret line="54" selection-start-line="54" selection-end-line="54" />
           <folding>
             <element signature="e#0#9#0" expanded="true" />
           </folding>
@@ -552,8 +517,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Utils.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="381">
-          <caret line="40" column="6" selection-start-line="40" selection-start-column="6" selection-end-line="40" selection-end-column="6" />
+        <state relative-caret-position="490">
+          <caret line="49" selection-start-line="49" selection-end-line="49" />
           <folding>
             <element signature="e#0#14#0" expanded="true" />
           </folding>
