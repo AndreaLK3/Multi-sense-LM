@@ -26,7 +26,16 @@ def get_vocabulary_df(vocabulary_h5_filepath, corpus_txt_filepath, min_count, ex
     return vocab_df
 
 
-# To transform a line
+# To transform the text of a line:
+
+
+# It is also necessary to reconvert some of the symbols found in the WikiText datasets, in particular:
+# ‘@-@’	4 ‘@.@’ 5 metres
+def convert_symbols(line_text):
+    patterns_ls = [' @-@ ', ' @,@ ', ' @.@ ', ' @_@ ']
+    for pat in patterns_ls:
+        line_text = re.sub(pat, pat[2], line_text) #keep the symbol, and eliminate the spaces too
+    return line_text
 
 def replace_numbers(list_of_tokens):
     modified_tokens = []
@@ -45,16 +54,33 @@ def replace_numbers(list_of_tokens):
     return modified_tokens
 
 
-# There are strings with non-latin characters, such as: 匹, 枚, マギカ , etc.
-# In those, we replace the non-latin words with <unk>
-def replace_nonLatin_words(list_of_tokens):
+def restore_unk_token(list_of_tokens):
+    modified_tokens = []
+    i = 0
+    while i < (len(list_of_tokens)):
+        tok = list_of_tokens[i]
+        if tok == '<' and list_of_tokens[i+1]=='unk' and list_of_tokens[i+2] == '>':
+                modified_tokens.append(''.join(list_of_tokens[i:i+3])) #include <unk>
+                i = i+3 #and go beyond it
+        else:
+            modified_tokens.append(tok)
+            i = i + 1
+    return modified_tokens
+
+# There are strings with non-Latin and non-Greek characters, such as: 匹, 枚, マギカ , etc.
+# We replace those words with <unk>
+def replace_nonLatinGreek_words(list_of_tokens):
     modified_tokens = []
     for tok in list_of_tokens:
         try:
             tok.encode('latin-1')
             modified_tokens.append(tok)
         except UnicodeEncodeError:
-            modified_tokens.append(Utils.UNK_TOKEN)
+            try:
+                tok.encode('greek')
+                modified_tokens.append(tok)
+            except UnicodeEncodeError:
+                modified_tokens.append(Utils.UNK_TOKEN)
     return modified_tokens
 
 
@@ -66,66 +92,67 @@ def eliminate_rare_words(vocabulary_dict, min_count):
         if vocabulary_dict[key] < min_count:
             vocabulary_dict.pop(key)
 
-# keeps the <unk> token
-def remove_punctuation (list_of_tokens):
-    modified_tokens = []
-    i = 0
-    while i < (len(list_of_tokens)):
-        tok = list_of_tokens[i]
-        if tok not in string.punctuation:
-            modified_tokens.append(tok)
-            i = i+1
-        else:
-            if tok == '<' and list_of_tokens[i+1]==['unk'] and list_of_tokens[i+2] == '>':
-                modified_tokens.extend(list_of_tokens[i:i+3])
-                i = i+3 #include <unk>
-            else:
-                i = i+1 #skip punctuation
-    return modified_tokens
 
 
-
-def process_line(line, stopwords_ls, tot_tokens=0):
-    line_noperiods = re.sub('[.]', ' ', line)
-    tokens_in_line = nltk.tokenize.word_tokenize(line_noperiods)
-    tot_tokens = tot_tokens + len(tokens_in_line)
-    tokens_in_line_nopuncts = remove_punctuation(tokens_in_line)
-    tokens_in_line_nostopwords = list(filter(lambda tok: tok not in stopwords_ls, tokens_in_line_nopuncts))
-    tokens_in_line_latinWords = replace_nonLatin_words(tokens_in_line_nostopwords)
+def process_line(line, tot_tokens=0):
+    raw_sentences_ls = nltk.tokenize.sent_tokenize(line)
+    sentences_ls = list(map(lambda sent: sent.strip(), raw_sentences_ls)) # eliminate space at start and end
+    # truecasing: lowercase only the word at the beginning of the sentence
+    truecased_sentences_ls = list(map(lambda sent: sent[0:1].lower() + sent[1:], sentences_ls))
+    tokenized_sentences_lls = list(map(lambda sent: nltk.tokenize.word_tokenize(sent), truecased_sentences_ls))
+    line_tokens = [elem for ls in tokenized_sentences_lls for elem in ls]
+    tot_tokens = tot_tokens + len(line_tokens)
+    tokens_in_line_latinWords = replace_nonLatinGreek_words(line_tokens)
     tokens_in_line_nonumbers = replace_numbers(tokens_in_line_latinWords)
 
     tokens_in_line_lowercase = list(map(lambda tok: tok.lower(), tokens_in_line_nonumbers))
     return tokens_in_line_lowercase, tot_tokens
 
 
-def build_vocabulary_from_corpus(corpus_txt_filepath, extended_lang_id):
-
+def build_vocabulary_from_corpus(corpus_txt_filepath, extended_lang_id="'english"):
+    Utils.init_logging(os.path.join("PrepareGraphInput", "Vocabulary.log"), logging.INFO)
     vocab_dict = {}
     tot_tokens = 0
-    stopwords_ls = nltk.corpus.stopwords.words(extended_lang_id)
     time_prev = time.time()
 
     for i, line in enumerate(open(corpus_txt_filepath, "r", encoding="utf-8")):
         if line == '':
             break
-        tokens_in_line_lowercase, tot_tokens = process_line(line, stopwords_ls, tot_tokens)
+        logging.info("\n " + str(i) + " \t - " + line)
+        no_ampersand_symbols_line = convert_symbols(line) # eliminate @-@, @.@ etc.
+        raw_sentences_ls = nltk.tokenize.sent_tokenize(no_ampersand_symbols_line)
+        logging.info("\n No ampersand symbols:" + str(i) + " \t - " + str(raw_sentences_ls))
+        sentences_ls = list(map(lambda sent: sent.strip(), raw_sentences_ls))  # eliminate space at start and end
+        truecased_sentences_ls = list(map(lambda sent: sent[0:1].lower() + sent[1:], sentences_ls))
+        logging.info("\n No outer spaces; truecased" + str(i) + " \t - " + str(truecased_sentences_ls))
+        tokenized_sentences_lls = list(map(lambda sent: nltk.tokenize.word_tokenize(sent), truecased_sentences_ls))
+        line_tokens_00 = [elem for ls in tokenized_sentences_lls for elem in ls]
+        line_tokens_01_unk = restore_unk_token(line_tokens_00)
+        logging.info("\n Tokenized, and then restored the <unk> token" + str(i) + " \t - " + str(line_tokens_01_unk))
+        line_tokens_02_latinGreekWords = replace_nonLatinGreek_words(line_tokens_01_unk)
+        logging.info("\n Tokens that are neither Latin nor Greek get replaced with <unk>" + str(i) + " \t - " + str(line_tokens_02_latinGreekWords))
 
-        if i % 10000 == 0:
-            time_next = time.time()
-            time_elapsed = round( time_next - time_prev, 4)
-            logging.info("Reading in line n. : " + str(i) + ' ; number of tokens encountered: ' + str(tot_tokens) +
-                  " ; time elapsed = " + str(time_elapsed) + " s")
-            time_prev = time.time()
 
-        different_tokens = set(token for token in tokens_in_line_lowercase)
 
-        update_lts = [(token, line.count(token) ) for token in different_tokens]
-        for word, freq in update_lts:
-            try:
-                prev_freq = vocab_dict[word]
-                vocab_dict[word] = prev_freq + freq
-            except KeyError:
-                vocab_dict[word] = freq
 
-    logging.info("Vocabulary created, after processing " + str(tot_tokens) + ' tokens')
+    #     tokens_in_line_lowercase, tot_tokens = process_line(line, tot_tokens)
+    #
+    #     if i % 10000 == 0:
+    #         time_next = time.time()
+    #         time_elapsed = round( time_next - time_prev, 4)
+    #         logging.info("Reading in line n. : " + str(i) + ' ; number of tokens encountered: ' + str(tot_tokens) +
+    #               " ; time elapsed = " + str(time_elapsed) + " s")
+    #         time_prev = time.time()
+    #
+    #     different_tokens = set(token for token in tokens_in_line_lowercase)
+    #
+    #     update_lts = [(token, line.count(token) ) for token in different_tokens]
+    #     for word, freq in update_lts:
+    #         try:
+    #             prev_freq = vocab_dict[word]
+    #             vocab_dict[word] = prev_freq + freq
+    #         except KeyError:
+    #             vocab_dict[word] = freq
+    #
+    # logging.info("Vocabulary created, after processing " + str(tot_tokens) + ' tokens')
     return vocab_dict

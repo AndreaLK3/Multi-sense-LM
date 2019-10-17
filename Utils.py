@@ -38,6 +38,7 @@ VOCABULARY_TABLE = 'vocabulary_table'
 FOLDER_INPUT = 'InputData'
 FOLDER_WORD_EMBEDDINGS = 'WordEmbeddings'
 FOLDER_WT103 = 'WikiText-103'
+FOLDER_WT2 = 'wikitext-2'
 SUBFOLDER_TENSORBOARD = 'TensorBoard'
 SUBFOLDER_INPUT_BERT = 'Input_BERT'
 
