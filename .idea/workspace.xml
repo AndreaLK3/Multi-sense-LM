@@ -2,11 +2,33 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="d35dca92-959c-489d-8a61-f337e4cce7fa" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Plan_Task1.pptx" beforeDir="false" afterPath="$PROJECT_DIR$/Plan_Task1.pptx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AssignSenseNames.log" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ComputeSentenceEmbeddings.log" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CreateSensesVocabularyTable.log" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CreatingVocabulary_timeanalysis.log" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/EmbedWithBERT.log" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Experiments.log" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Plan_Task1.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Plan_Task1.pptx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/PrepareGraphInput/PrepareInput.py" beforeDir="false" afterPath="$PROJECT_DIR$/PrepareGraphInput/PrepareInput.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PrepareGraphInput/PreprocessInput.log" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/PrepareGraphInput/Vocabulary.log" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/PrepareGraphInput/Vocabulary.py" beforeDir="false" afterPath="$PROJECT_DIR$/PrepareGraphInput/Vocabulary.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Task1_DeveloperDiary.docx" beforeDir="false" afterPath="$PROJECT_DIR$/Task1_DeveloperDiary.docx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PreprocessInput.log" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/RDF_1_1_Primer.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/SPARQL 1.1 Overview.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Task1_DeveloperDiary.docx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Task1_DeveloperDiary_previous.docx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TensorBoard/Training_loss:0/events.out.tfevents.1567416565.Drifts-MacBook-Pro.local" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TensorBoard/Training_loss:0/events.out.tfevents.1567418531.Drifts-MacBook-Pro.local" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/Utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/Utils.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/unused/RetrieveInputData.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/unused/SkipGram.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/unused/Wiktionary.log" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/unused/Wiktionary.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/wikitext-2/wiki.test.tokens" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/wikitext-2/wiki.train.tokens" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/wikitext-2/wiki.valid.tokens" beforeDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -16,25 +38,13 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Utils.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-546">
-              <caret line="52" column="19" selection-start-line="52" selection-start-column="19" selection-end-line="52" selection-end-column="19" />
+            <state relative-caret-position="381">
+              <caret line="40" column="6" selection-start-line="40" selection-start-column="6" selection-end-line="40" selection-end-column="6" />
               <folding>
                 <element signature="e#0#14#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/PrepareGraphInput/Vocabulary.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="420">
-              <caret line="28" column="34" selection-start-line="28" selection-start-column="34" selection-end-line="28" selection-end-column="34" />
-              <folding>
-                <element signature="e#0#9#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -104,10 +114,10 @@
         <option value="$PROJECT_DIR$/CreateEntities/ProcessInput.py" />
         <option value="$PROJECT_DIR$/PrepareGraphInput/ProcessInput.py" />
         <option value="$PROJECT_DIR$/PrepareGraphInput/SenseDenominations.py" />
-        <option value="$PROJECT_DIR$/PrepareGraphInput/PrepareInput.py" />
         <option value="$PROJECT_DIR$/PrepareGraphInput/EmbedWithBERT.py" />
-        <option value="$PROJECT_DIR$/Utils.py" />
         <option value="$PROJECT_DIR$/PrepareGraphInput/Vocabulary.py" />
+        <option value="$PROJECT_DIR$/PrepareGraphInput/PrepareInput.py" />
+        <option value="$PROJECT_DIR$/Utils.py" />
       </list>
     </option>
   </component>
@@ -251,7 +261,7 @@
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
-      <window_info anchor="bottom" id="Find" order="1" weight="0.32090396" />
+      <window_info anchor="bottom" id="Find" order="1" weight="0.31991053" />
       <window_info anchor="bottom" id="Run" order="2" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.39943343" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
@@ -397,26 +407,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/PrepareGraphInput/SenseDenominations.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="470">
-          <caret line="68" column="58" lean-forward="true" selection-start-line="67" selection-start-column="8" selection-end-line="68" selection-end-column="58" />
-          <folding>
-            <element signature="e#0#12#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/PrepareGraphInput/LemmatizeNyms.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="825">
-          <caret line="55" selection-start-line="55" selection-end-line="55" />
-          <folding>
-            <element signature="e#0#14#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$USER_HOME$/anaconda3/lib/python3.7/site-packages/tables/utils.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="167">
@@ -487,29 +477,32 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/PrepareGraphInput/PreprocessInput.log">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
     <entry file="file://$PROJECT_DIR$/PrepareGraphInput/PrepareInput.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1665">
-          <caret line="119" column="90" selection-start-line="119" selection-start-column="90" selection-end-line="119" selection-end-column="90" />
+        <state relative-caret-position="1681">
+          <caret line="135" column="43" lean-forward="true" selection-start-line="135" selection-start-column="43" selection-end-line="135" selection-end-column="43" />
           <folding>
             <element signature="e#0#53#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/PrepareGraphInput/EmbedWithBERT.py">
+    <entry file="file://$PROJECT_DIR$/PrepareGraphInput/LemmatizeNyms.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="223">
-          <caret line="30" column="49" selection-start-line="30" selection-start-column="49" selection-end-line="30" selection-end-column="49" />
+        <state relative-caret-position="776">
+          <caret line="55" selection-start-line="55" selection-end-line="55" />
           <folding>
-            <element signature="e#0#9#0" expanded="true" />
+            <element signature="e#0#14#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/PrepareGraphInput/RemoveQuasiDuplicates.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="549">
+        <state relative-caret-position="701">
           <caret line="53" column="27" selection-start-line="53" selection-start-column="27" selection-end-line="53" selection-end-column="27" />
           <folding>
             <element signature="e#0#14#0" expanded="true" />
@@ -517,32 +510,52 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/PrepareGraphInput/Examples.py">
+    <entry file="file://$PROJECT_DIR$/PrepareGraphInput/EmbedWithBERT.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="191">
-          <caret line="67" column="87" lean-forward="true" selection-start-line="67" selection-start-column="4" selection-end-line="67" selection-end-column="87" />
+        <state relative-caret-position="161">
+          <caret line="23" column="25" lean-forward="true" selection-start-line="23" selection-start-column="25" selection-end-line="23" selection-end-column="25" />
+          <folding>
+            <element signature="e#0#9#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/PrepareGraphInput/SenseDenominations.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="470">
+          <caret line="68" column="58" lean-forward="true" selection-start-line="67" selection-start-column="8" selection-end-line="68" selection-end-column="58" />
           <folding>
             <element signature="e#0#12#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Utils.py">
+    <entry file="file://$PROJECT_DIR$/PrepareGraphInput/Examples.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-546">
-          <caret line="52" column="19" selection-start-line="52" selection-start-column="19" selection-end-line="52" selection-end-column="19" />
+        <state relative-caret-position="259">
+          <caret line="107" column="88" lean-forward="true" selection-start-line="107" selection-start-column="88" selection-end-line="107" selection-end-column="88" />
           <folding>
-            <element signature="e#0#14#0" expanded="true" />
+            <element signature="e#0#12#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/PrepareGraphInput/Vocabulary.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="420">
-          <caret line="28" column="34" selection-start-line="28" selection-start-column="34" selection-end-line="28" selection-end-column="34" />
+        <state relative-caret-position="144">
+          <caret line="134" column="78" lean-forward="true" selection-start-line="134" selection-start-column="78" selection-end-line="134" selection-end-column="78" />
           <folding>
             <element signature="e#0#9#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Utils.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="381">
+          <caret line="40" column="6" selection-start-line="40" selection-start-column="6" selection-end-line="40" selection-end-column="6" />
+          <folding>
+            <element signature="e#0#14#0" expanded="true" />
           </folding>
         </state>
       </provider>

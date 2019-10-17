@@ -1,6 +1,6 @@
 import logging
 import sys
-import pandas as pd
+import os
 import langid
 import nltk
 import string
@@ -37,17 +37,16 @@ VOCABULARY_TABLE = 'vocabulary_table'
 
 FOLDER_INPUT = 'InputData'
 FOLDER_WORD_EMBEDDINGS = 'WordEmbeddings'
-FOLDER_WT103 = 'WikiText-103'
-FOLDER_WT2 = 'wikitext-2'
-SUBFOLDER_TENSORBOARD = 'TensorBoard'
+FOLDER_WT103 = os.path.join('TextCorpuses','WikiText-103')
+FOLDER_WT2 = os.path.join('TextCorpuses','wikitext-2')
 SUBFOLDER_INPUT_BERT = 'Input_BERT'
 
 WT_TRAIN_FILE = 'wiki.train.tokens'
 WT_VALID_FILE = 'wiki.valid.tokens'
 WT_TEST_FILE = 'wiki.test.tokens'
 
-WT_MYVOCAB_FILE = 'vocabulary_fromWikiText.h5'
-WT_MYVOCAB_MINITEST_FILE = 'vocabulary_miniTest.h5'
+WT2_MYVOCAB_FILE = 'vocabulary_from_WikiText-2.h5'
+WT103_MYVOCAB_FILE = 'vocabulary_from_WikiText-103.h5'
 
 UNK_TOKEN = '<unk>'
 NUM_TOKEN = '<num>'

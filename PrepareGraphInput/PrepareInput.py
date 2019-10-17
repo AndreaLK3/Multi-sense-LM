@@ -10,7 +10,7 @@ import sqlite3
 
 # Phase 1 - Preprocessing: eliminating quasi-duplicate definitions and examples, and lemmatizing synonyms & antonyms
 def preprocess(vocabulary):
-    Utils.init_logging('PreprocessInput.log', logging.INFO)
+    Utils.init_logging(os.path.join('PrepareGraphInput','PreprocessInput.log'), logging.INFO)
 
     # categories= [d., e., s., a.]
     hdf5_input_filepaths = [os.path.join(Utils.FOLDER_INPUT, categ + ".h5") for categ in Utils.CATEGORIES]

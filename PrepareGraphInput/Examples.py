@@ -2,13 +2,11 @@ import Utils
 import os
 import logging
 import tensorflow as tf
-import string
 import pandas as pd
 import nltk
-import re
 import numpy as np
 import PrepareGraphInput.SkipGram as SkipGram
-import PrepareGraphInput.Vocabulary as Vocabulary
+import Vocabulary as Vocabulary
 
 CHUNKSIZE_HDF5 = 128
 BATCH_SIZE = 8
