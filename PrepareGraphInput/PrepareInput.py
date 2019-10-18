@@ -134,6 +134,3 @@ def prepare(vocabulary = ['wide', 'plant', 'move', 'light']):
     EWB.compute_sentence_embeddings(Utils.EXAMPLES)
 
     Utils.close_list_of_files(all_archives)
-
-
-

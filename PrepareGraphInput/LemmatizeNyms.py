@@ -48,8 +48,7 @@ def lemmatize_nyms_in_word(word, elements_name, input_db, output_db):
         sense_lts_01_lemmatized = list(set(sense_lts_01))
 
         data_to_add = list(map(lambda tpl: (word, tpl[0], tpl[1]) , sense_lts_01_lemmatized))
-        new_data.extend(data_to_add)
 
-        new_df = pd.DataFrame(data=new_data, columns=['word', 'bn_id', elements_name])
+        new_df = pd.DataFrame(data=data_to_add, columns=['word', 'bn_id', elements_name])
         output_db.append(key=elements_name, value=new_df, min_itemsize=min_itemsize_dict)
 
