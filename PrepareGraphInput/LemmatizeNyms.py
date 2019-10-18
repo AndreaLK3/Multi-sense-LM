@@ -19,7 +19,7 @@ def get_wordnet_pos(word):
     return tag_dict.get(tag, 'n')
 
 # We lemmatize synonyms and antonyms
-def modify_synonym_or_antonym(nym, lemmatizer):
+def lemmatize_term(nym, lemmatizer):
     nym_lemmatized = lemmatizer.lemmatize(nym, get_wordnet_pos(nym))
     return nym_lemmatized
 
@@ -43,7 +43,7 @@ def lemmatize_nyms_in_word(word, elements_name, input_db, output_db):
         sense_lts = list(zip(sense_df.bn_id, sense_df[elements_name]))
 
         sense_lts_01 = list(map(
-            lambda tpl: (tpl[0], modify_synonym_or_antonym(tpl[1], lemmatizer)),
+            lambda tpl: (tpl[0], lemmatize_term(tpl[1], lemmatizer)),
                         sense_lts))
         sense_lts_01_lemmatized = list(set(sense_lts_01))
 

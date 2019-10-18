@@ -45,7 +45,7 @@ def compute_sentence_embeddings(elements_name):
 
     input_filepath = os.path.join(Utils.FOLDER_INPUT, Utils.DENOMINATED + '_' + elements_name + ".h5")
     output_filepath = os.path.join(Utils.FOLDER_INPUT, Utils.VECTORIZED + '_' + elements_name + ".npy")
-    vocabTable_db_filepath = os.path.join(Utils.FOLDER_INPUT, Utils.VOCABULARY_TABLE + ".sql")
+    vocabTable_db_filepath = os.path.join(Utils.FOLDER_INPUT, Utils.INDICES_TABLE + ".sql")
 
     input_db = pd.HDFStore(input_filepath, mode='r')
     vocabTable_db = sqlite3.connect(vocabTable_db_filepath)

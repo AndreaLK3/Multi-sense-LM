@@ -109,7 +109,7 @@ def extract_antonyms(key, synset_edges):
 ####################
 
 
-def retrieve_DESA(target_word='light'):
+def retrieve_DESA(target_word):
     #Utils.init_logging(os.path.join("GetInputData", "BabelNet.log"), logging.INFO)
 
     key = Utils.BABELNET_KEY

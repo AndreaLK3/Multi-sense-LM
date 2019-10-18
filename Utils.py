@@ -31,7 +31,7 @@ DENOMINATED = 'denominated'
 PROCESSED = 'processed' # for defs and examples, it means: 'no duplicates'; for synonyms and antonyms: 'lemmatized'
 VECTORIZED = 'vectorized'
 
-VOCABULARY_TABLE = 'vocabulary_table'
+INDICES_TABLE = 'indices_table'
 
 ########## Constants - filesystem ##########
 

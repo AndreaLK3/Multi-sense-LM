@@ -64,7 +64,7 @@ def create_senses_vocabulary_table(vocabulary_words_ls):
     defs_input_db = pd.HDFStore(defs_input_filepath, mode='r')
     examples_input_db = pd.HDFStore(examples_input_filepath, mode='r')
 
-    output_filepath = os.path.join(Utils.FOLDER_INPUT, Utils.VOCABULARY_TABLE + ".sql")
+    output_filepath = os.path.join(Utils.FOLDER_INPUT, Utils.INDICES_TABLE + ".sql")
     outdb_reset = open(output_filepath, 'w'); outdb_reset.close()
     out_vocabTable_db = sqlite3.connect(output_filepath)
     out_vocabTable_db_c = out_vocabTable_db.cursor()
@@ -107,9 +107,9 @@ def create_senses_vocabulary_table(vocabulary_words_ls):
 
 # Phase 4 - get the sentence embeddings for definitions and examples, using BERT, and store them
 
-
+# ['move', 'light']
 def prepare(vocabulary = ['wide', 'plant', 'move', 'light']):
-    # we must reset the output archives
+
     hdf5_output_filepaths = [os.path.join(Utils.FOLDER_INPUT, Utils.PROCESSED + '_' + categ + ".h5")
                              for categ in Utils.CATEGORIES] + \
                             [os.path.join(Utils.FOLDER_INPUT, Utils.DENOMINATED + '_' + categ + ".h5")
@@ -117,7 +117,7 @@ def prepare(vocabulary = ['wide', 'plant', 'move', 'light']):
                             [os.path.join(Utils.FOLDER_INPUT, Utils.VECTORIZED + '_' + categ + ".npy")
                              for categ in Utils.CATEGORIES[0:2]]
 
-    all_archives = [open(input_filepath, 'w') for input_filepath in hdf5_output_filepaths]
+    all_archives = [open(input_filepath, 'w') for input_filepath in hdf5_output_filepaths] # we must reset the output archivess
     Utils.close_list_of_files(all_archives)
 
     # Phase 1 - Preprocessing: eliminating quasi-duplicate definitions and examples, and lemmatizing synonyms & antonyms
