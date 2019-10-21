@@ -33,6 +33,10 @@ VECTORIZED = 'vectorized'
 
 INDICES_TABLE = 'indices_table'
 
+UNK_TOKEN = '<unk>'
+NUM_TOKEN = '<num>'
+
+
 ########## Constants - filesystem ##########
 
 FOLDER_INPUT = 'InputData'
@@ -45,11 +49,10 @@ WT_TRAIN_FILE = 'wiki.train.tokens'
 WT_VALID_FILE = 'wiki.valid.tokens'
 WT_TEST_FILE = 'wiki.test.tokens'
 
-WT2_MYVOCAB_FILE = 'vocabulary_from_WikiText-2.h5'
-WT103_MYVOCAB_FILE = 'vocabulary_from_WikiText-103.h5'
+VOCAB_WT2_FILE = 'vocabulary_from_WikiText-2.h5'
+VOCAB_WT103_FILE = 'vocabulary_from_WikiText-103.h5'
 
-UNK_TOKEN = '<unk>'
-NUM_TOKEN = '<num>'
+VOCAB_CURRENT_INDEX_FILE = 'vocabulary_currentIndex.txt'
 
 
 ########## Functions ##########

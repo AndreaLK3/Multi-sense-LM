@@ -7,33 +7,42 @@ import os
 from itertools import cycle
 
 
-########## HTTP Requests
+class BabelNet_RequestSender:
 
-# For a word, retrieve the "introductory structures" of its synsets, containing id and PoS
-# e.g.: [{'id': 'bn:00030151n', 'pos': 'NOUN', 'source': 'BABELNET'}, {...}, ...]
-def get_syns_intros_word(key, target_word, searchLang='EN'):
-    req_url = 'https://babelnet.io/v5/getSynsetIds?lemma='+target_word+'&searchLang='+searchLang+'&key='+key
-    with urllib.request.urlopen(req_url) as response:
-        synsets_intros = json.load(response)
-    return synsets_intros
+    def __init__(self):
+        self.requests_threshold = 20 # 4900 based on the available amount of BabelCoins (for me currently 5000)
+        self.requests_counter = 0 # It is set when we create this object
 
-# Retrieve the data structure of the synset with the given id.
-# It contains everything: glosses, examples, etc.
-def get_synset_data(key, synset_ID):
-    req_url = 'https://babelnet.io/v5/getSynset?id='+synset_ID+'&key='+key
-    with urllib.request.urlopen(req_url) as response:
-        synset_data = json.load(response)
-    return synset_data
+    ########## HTTP Requests
 
-# For a synset, retrieve the relation edges (hypernyms, hyponyms, antonyms etc.)
-def get_synset_edges(key, synset_ID):
-    req_url = 'https://babelnet.io/v5/getOutgoingEdges?id='+ synset_ID +'&key='+ key
-    with urllib.request.urlopen(req_url) as response:
-        synset_edges = json.load(response)
-    return synset_edges
+    # For a word, retrieve the "introductory structures" of its synsets, containing id and PoS
+    # e.g.: [{'id': 'bn:00030151n', 'pos': 'NOUN', 'source': 'BABELNET'}, {...}, ...]
+    def get_syns_intros_word(self, key, target_word, searchLang='EN'):
+        req_url = 'https://babelnet.io/v5/getSynsetIds?lemma='+target_word+'&searchLang='+searchLang+'&key='+key
+        with urllib.request.urlopen(req_url) as response:
+            synsets_intros = json.load(response)
+        self.requests_counter = self.requests_counter =+1
+        return synsets_intros
+
+    # Retrieve the data structure of the synset with the given id.
+    # It contains everything: glosses, examples, etc.
+    def get_synset_data(self, key, synset_ID):
+        req_url = 'https://babelnet.io/v5/getSynset?id='+synset_ID+'&key='+key
+        with urllib.request.urlopen(req_url) as response:
+            synset_data = json.load(response)
+        self.requests_counter = self.requests_counter = +1
+        return synset_data
+
+    # For a synset, retrieve the relation edges (hypernyms, hyponyms, antonyms etc.)
+    def get_synset_edges(self, key, synset_ID):
+        req_url = 'https://babelnet.io/v5/getOutgoingEdges?id='+ synset_ID +'&key='+ key
+        with urllib.request.urlopen(req_url) as response:
+            synset_edges = json.load(response)
+        self.requests_counter = self.requests_counter = +1
+        return synset_edges
 
 
-####################
+    ####################
 
 
 # Keep only the relevant synsets for the target word.
@@ -91,7 +100,7 @@ def extract_synonyms(synset_data):
     return list(map(lambda s: s.lower() ,synonyms))
 
 
-def extract_antonyms(key, synset_edges):
+def extract_antonyms(BN_request_sender, key, synset_edges):
 
     antonyms_edges = list(filter(lambda edge: edge['pointer']['name'] == 'Antonym', synset_edges))
     antonyms_bnIds = list(map( lambda a_e: a_e['target'] ,antonyms_edges))
@@ -99,7 +108,7 @@ def extract_antonyms(key, synset_edges):
     antonym_words = []
 
     for synset_id in antonyms_bnIds:
-        antonym_data = get_synset_data(key, synset_id)
+        antonym_data = BN_request_sender.get_synset_data(key, synset_id)
         antonym_word = antonym_data['senses'][0]['properties']['simpleLemma']
         antonym_words.append(antonym_word)
 
@@ -109,7 +118,7 @@ def extract_antonyms(key, synset_edges):
 ####################
 
 
-def retrieve_DESA(target_word):
+def retrieve_DESA(BN_request_sender, target_word):
     #Utils.init_logging(os.path.join("GetInputData", "BabelNet.log"), logging.INFO)
 
     key = Utils.BABELNET_KEY
@@ -120,12 +129,12 @@ def retrieve_DESA(target_word):
     synonyms_dict = {}
     antonyms_dict = {}
 
-    syns_intros = get_syns_intros_word(key, target_word)
+    syns_intros = BN_request_sender.get_syns_intros_word(key, target_word)
     synset_ids = list(map(lambda syns_intro_dict: syns_intro_dict["id"], syns_intros))
     logging.debug(synset_ids)
 
     for s_id in synset_ids:
-        synset_data = get_synset_data(key, s_id)
+        synset_data = BN_request_sender.get_synset_data(key, s_id)
         if check_include_synset(target_word, synset_data):
             logging.debug("Including synset for:" + str(s_id))
             definitions = extract_definitions(synset_data,accepted_sources)
@@ -142,8 +151,8 @@ def retrieve_DESA(target_word):
                 synonyms_dict[s_id] = synonyms
                 logging.debug("From BabelNet: synonyms : " + str(synonyms))
 
-                synset_edges = get_synset_edges(key, s_id)
-                antonyms = extract_antonyms(key, synset_edges) # extracted from the 'target' of the Antonym edges
+                synset_edges = BN_request_sender.get_synset_edges(key, s_id)
+                antonyms = extract_antonyms(BN_request_sender, key, synset_edges) # extracted from the 'target' of the Antonym edges
                 antonyms_dict[s_id] = antonyms
         else:
             logging.debug("Excluding synset for:" + str(s_id))

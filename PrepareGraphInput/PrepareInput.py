@@ -104,11 +104,9 @@ def create_senses_vocabulary_table(vocabulary_words_ls):
     out_vocabTable_db.close()
 
 
-
-# Phase 4 - get the sentence embeddings for definitions and examples, using BERT, and store them
-
 # ['move', 'light']
-def prepare(vocabulary = ['wide', 'plant', 'move', 'light']):
+def prepare(vocabulary):
+    Utils.init_logging(os.path.join("PrepareGraphInput", "PrepareInput"))
 
     hdf5_output_filepaths = [os.path.join(Utils.FOLDER_INPUT, Utils.PROCESSED + '_' + categ + ".h5")
                              for categ in Utils.CATEGORIES] + \
