@@ -50,6 +50,7 @@ WT_VALID_FILE = 'wiki.valid.tokens'
 WT_TEST_FILE = 'wiki.test.tokens'
 
 PHRASED_TRAINING_CORPUS = 'phrased_training_corpus.txt'
+PHRASES_LIST = ''
 
 VOCAB_WT2_FILE = 'vocabulary_from_WikiText-2.h5'
 VOCAB_WT103_FILE = 'vocabulary_from_WikiText-103.h5'
