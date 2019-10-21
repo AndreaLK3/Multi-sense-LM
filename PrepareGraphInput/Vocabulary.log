@@ -1,7 +1,0 @@
-INFO : Reading in line n. : 0 ; number of tokens encountered: 0 ; time elapsed = 0.0002 s
-INFO : Reading in line n. : 10000 ; number of tokens encountered: 563451 ; time elapsed = 7.9565 s
-INFO : Reading in line n. : 20000 ; number of tokens encountered: 1125794 ; time elapsed = 7.8788 s
-INFO : Reading in line n. : 30000 ; number of tokens encountered: 1686222 ; time elapsed = 7.8761 s
-INFO : Vocabulary created, after processing 2089445 tokens
-INFO : Removing from the vocabulary words with frequency < 2
-INFO : *** The vocabulary was created from the corpus file TextCorpuses/wikitext-2/wiki.train.tokens

@@ -77,6 +77,8 @@ def retrieve_S(target_word, bn_defs_dict):
     synonyms_dict = {}
 
     ow_data = get_data_structure(target_word)
+    if 'ow_express' not in ow_data.keys(): # {'error': {'..., 'info': 'the search word does not exist.'}, ...
+        return {}
     ow_dict_keys = (ow_data['ow_express']).keys()
     ow_defs_keys = list(filter(lambda key: key.startswith('ow_define'), ow_dict_keys))
 

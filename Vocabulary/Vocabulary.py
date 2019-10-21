@@ -1,5 +1,4 @@
-import re
-import string
+import gensim
 import time
 import os
 import logging
@@ -8,24 +7,6 @@ import Utils
 import pandas as pd
 import re
 
-
-# Entry function: if a vocabulary is already present in the specified path, load it. Otherwise, create it.
-def get_vocabulary_df(vocabulary_h5_filepath, corpus_txt_filepath, min_count):
-    if os.path.exists(vocabulary_h5_filepath):
-        vocab_df = pd.read_hdf(vocabulary_h5_filepath, mode='r')
-        logging.info("*** The vocabulary was loaded from the file " + vocabulary_h5_filepath)
-    else:
-        vocabulary_h5 = pd.HDFStore(vocabulary_h5_filepath, mode='w')
-        vocab_h5_itemsizes = {'word': Utils.HDF5_BASE_SIZE_512 / 4, 'frequency': Utils.HDF5_BASE_SIZE_512 / 8}
-
-        vocabulary = build_vocabulary_from_corpus(corpus_txt_filepath)
-        eliminate_rare_words(vocabulary, min_count)
-        vocab_df = pd.DataFrame(data=zip(vocabulary.keys(), vocabulary.values()), columns=['word', 'frequency'])
-        vocabulary_h5.append(key='vocabulary', value=vocab_df, min_itemsize=vocab_h5_itemsizes)
-        vocabulary_h5.close()
-        logging.info("*** The vocabulary was created from the corpus file " + corpus_txt_filepath)
-
-    return vocab_df
 
 
 # Post-processing function:
@@ -128,8 +109,11 @@ def process_line(line, tot_tokens=0):
     return line_tokens_03_replNumbers, tot_tokens
 
 
+
+
+
 def build_vocabulary_from_corpus(corpus_txt_filepath):
-    Utils.init_logging(os.path.join("PrepareGraphInput", "Vocabulary.log"), logging.INFO)
+    #Utils.init_logging(os.path.join("PrepareGraphInput", "Vocabulary.log"), logging.INFO)
     vocab_dict = {}
     tot_tokens = 0
     time_prev = time.time()
@@ -158,3 +142,23 @@ def build_vocabulary_from_corpus(corpus_txt_filepath):
 
     logging.info("Vocabulary created, after processing " + str(tot_tokens) + ' tokens')
     return vocab_dict
+
+
+
+# Entry function: if a vocabulary is already present in the specified path, load it. Otherwise, create it.
+def get_vocabulary_df(vocabulary_h5_filepath, corpus_txt_filepath, min_count):
+    if os.path.exists(vocabulary_h5_filepath):
+        vocab_df = pd.read_hdf(vocabulary_h5_filepath, mode='r')
+        logging.info("*** The vocabulary was loaded from the file " + vocabulary_h5_filepath)
+    else:
+        vocabulary_h5 = pd.HDFStore(vocabulary_h5_filepath, mode='w')
+        vocab_h5_itemsizes = {'word': Utils.HDF5_BASE_SIZE_512 / 4, 'frequency': Utils.HDF5_BASE_SIZE_512 / 8}
+
+        vocabulary = build_vocabulary_from_corpus(corpus_txt_filepath)
+        eliminate_rare_words(vocabulary, min_count)
+        vocab_df = pd.DataFrame(data=zip(vocabulary.keys(), vocabulary.values()), columns=['word', 'frequency'])
+        vocabulary_h5.append(key='vocabulary', value=vocab_df, min_itemsize=vocab_h5_itemsizes)
+        vocabulary_h5.close()
+        logging.info("*** The vocabulary was created from the corpus file " + corpus_txt_filepath)
+
+    return vocab_df

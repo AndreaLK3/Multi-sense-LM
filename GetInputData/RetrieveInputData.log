@@ -1,0 +1,180 @@
+INFO : 0
+INFO : Retrieving Multisense data for word: Chronicles
+INFO : BN_request_sender.requests_counter= 0
+INFO : BabelNet request: get_syns_intros_word for:Chronicles
+INFO : BabelNet request: get_synset_data for:bn:00000094n
+INFO : BabelNet request: get_synset_data for:bn:00000062n
+INFO : BabelNet request: get_synset_data for:bn:01279551n
+INFO : BabelNet request: get_synset_data for:bn:01068772n
+INFO : BabelNet request: get_synset_data for:bn:00451422n
+INFO : BabelNet request: get_synset_data for:bn:01582150n
+INFO : BabelNet request: get_synset_data for:bn:00369639n
+INFO : BabelNet request: get_synset_data for:bn:03377482n
+INFO : BabelNet request: get_synset_data for:bn:00060567n
+INFO : BabelNet request: get_synset_edges for:bn:00060567n
+INFO : BabelNet request: get_synset_data for:bn:03522137n
+INFO : BabelNet request: get_synset_data for:bn:00425496n
+INFO : BabelNet request: get_synset_data for:bn:03603303n
+INFO : BabelNet request: get_synset_data for:bn:03869030n
+INFO : BabelNet request: get_synset_data for:bn:03657572n
+INFO : initializing identifier
+INFO : Not of language : en Element : 'paralipoménōn'
+INFO : Retrieving Multisense data for word: III
+INFO : BN_request_sender.requests_counter= 16
+INFO : BabelNet request: get_syns_intros_word for:III
+INFO : BabelNet request: get_synset_data for:bn:14313462n
+INFO : BabelNet request: get_synset_data for:bn:03284105n
+INFO : BabelNet request: get_synset_data for:bn:00506629n
+INFO : BabelNet request: get_synset_data for:bn:00314301n
+INFO : BabelNet request: get_synset_data for:bn:14132788n
+INFO : BabelNet request: get_synset_data for:bn:15026649n
+INFO : BabelNet request: get_synset_data for:bn:10653240n
+INFO : BabelNet request: get_synset_data for:bn:21708606n
+INFO : BabelNet request: get_synset_data for:bn:10712888n
+INFO : BabelNet request: get_synset_data for:bn:21121884n
+INFO : BabelNet request: get_synset_data for:bn:17680049n
+INFO : BabelNet request: get_synset_data for:bn:01606050n
+INFO : BabelNet request: get_synset_data for:bn:17358949n
+INFO : BabelNet request: get_synset_data for:bn:00907373n
+INFO : BabelNet request: get_synset_data for:bn:17632393n
+INFO : BabelNet request: get_synset_data for:bn:02667603n
+INFO : BabelNet request: get_synset_data for:bn:01885898n
+INFO : BabelNet request: get_synset_data for:bn:01799629n
+INFO : BabelNet request: get_synset_data for:bn:10175178n
+INFO : BabelNet request: get_synset_data for:bn:00000100n
+INFO : BabelNet request: get_synset_edges for:bn:00000100n
+INFO : BabelNet request: get_synset_data for:bn:01802854n
+INFO : BabelNet request: get_synset_data for:bn:03627562n
+INFO : BabelNet request: get_synset_data for:bn:02709622n
+INFO : BabelNet request: get_synset_data for:bn:01744789n
+INFO : BabelNet request: get_synset_data for:bn:00361170n
+INFO : BabelNet request: get_synset_data for:bn:00289516n
+INFO : BabelNet request: get_synset_data for:bn:00095975a
+INFO : BabelNet request: get_synset_edges for:bn:00095975a
+INFO : BabelNet request: get_synset_data for:bn:00195633n
+INFO : BabelNet request: get_synset_data for:bn:16427964n
+INFO : BabelNet request: get_synset_data for:bn:02881326n
+INFO : BabelNet request: get_synset_data for:bn:14009231n
+INFO : BabelNet request: get_synset_data for:bn:14251870n
+INFO : BabelNet request: get_synset_data for:bn:17574915n
+INFO : BabelNet request: get_synset_data for:bn:01247418n
+INFO : BabelNet request: get_synset_data for:bn:17879283n
+INFO : BabelNet request: get_synset_data for:bn:11525187n
+INFO : BabelNet request: get_synset_data for:bn:00630479n
+INFO : BabelNet request: get_synset_data for:bn:00552248n
+INFO : BabelNet request: get_synset_data for:bn:10186556n
+INFO : BabelNet request: get_synset_data for:bn:02041372n
+INFO : BabelNet request: get_synset_data for:bn:17663588n
+INFO : BabelNet request: get_synset_data for:bn:01579499n
+INFO : BabelNet request: get_synset_data for:bn:17683549n
+INFO : BabelNet request: get_synset_data for:bn:10129673n
+INFO : Not of language : en Element : '⑶'
+INFO : Not of language : en Element : '៣'
+INFO : Not of language : en Element : '౩'
+INFO : Not of language : en Element : '⒊'
+INFO : Not of language : en Element : '꣓'
+INFO : Not of language : en Element : '3️⃣'
+INFO : Not of language : en Element : '➌'
+INFO : Not of language : en Element : '꧓'
+INFO : Not of language : en Element : '𐒣'
+INFO : Not of language : en Element : '٣'
+INFO : Not of language : en Element : '੩'
+INFO : Not of language : en Element : '𐡚'
+INFO : Not of language : en Element : '௩'
+INFO : Not of language : en Element : '三'
+INFO : Not of language : en Element : '൩'
+INFO : Not of language : en Element : '३'
+INFO : Not of language : en Element : '꤃'
+INFO : Not of language : en Element : '༣'
+INFO : Not of language : en Element : '૩'
+INFO : Not of language : en Element : '−3'
+INFO : Not of language : en Element : 'ⅲ'
+INFO : Not of language : en Element : '୩'
+INFO : Not of language : en Element : '⓷'
+INFO : Not of language : en Element : '۳'
+INFO : Not of language : en Element : '᥉'
+INFO : Not of language : en Element : '໓'
+INFO : Not of language : en Element : '೩'
+INFO : Not of language : en Element : '❸'
+INFO : Not of language : en Element : '꩓'
+INFO : Not of language : en Element : '๓'
+INFO : Not of language : en Element : '③'
+INFO : Not of language : en Element : '৩'
+INFO : Not of language : en Element : '３'
+INFO : Retrieving Multisense data for word: Imperial
+INFO : BN_request_sender.requests_counter= 63
+INFO : BabelNet request: get_syns_intros_word for:Imperial
+INFO : BabelNet request: get_synset_data for:bn:16285409n
+INFO : BabelNet request: get_synset_data for:bn:00486976n
+INFO : BabelNet request: get_synset_data for:bn:00104650a
+INFO : BabelNet request: get_synset_edges for:bn:00104650a
+INFO : BabelNet request: get_synset_data for:bn:00046103n
+INFO : BabelNet request: get_synset_edges for:bn:00046103n
+INFO : BabelNet request: get_synset_data for:bn:03314754n
+INFO : BabelNet request: get_synset_data for:bn:01385347n
+INFO : BabelNet request: get_synset_data for:bn:00392072n
+INFO : BabelNet request: get_synset_data for:bn:00671267n
+INFO : BabelNet request: get_synset_data for:bn:00104652a
+INFO : BabelNet request: get_synset_edges for:bn:00104652a
+INFO : BabelNet request: get_synset_data for:bn:17692100n
+INFO : BabelNet request: get_synset_data for:bn:02112731n
+INFO : BabelNet request: get_synset_data for:bn:00208924n
+INFO : BabelNet request: get_synset_data for:bn:00671306n
+INFO : BabelNet request: get_synset_data for:bn:00648251n
+INFO : BabelNet request: get_synset_data for:bn:21706275n
+INFO : BabelNet request: get_synset_data for:bn:02653863n
+INFO : BabelNet request: get_synset_data for:bn:00193422n
+INFO : BabelNet request: get_synset_data for:bn:00567531n
+INFO : BabelNet request: get_synset_data for:bn:00503121n
+INFO : BabelNet request: get_synset_data for:bn:00104649a
+INFO : BabelNet request: get_synset_edges for:bn:00104649a
+INFO : BabelNet request: get_synset_data for:bn:02053347n
+INFO : BabelNet request: get_synset_data for:bn:00104651a
+INFO : BabelNet request: get_synset_edges for:bn:00104651a
+INFO : BabelNet request: get_synset_data for:bn:00046102n
+INFO : BabelNet request: get_synset_edges for:bn:00046102n
+INFO : BabelNet request: get_synset_data for:bn:03317412n
+INFO : BabelNet request: get_synset_data for:bn:01123818n
+INFO : BabelNet request: get_synset_data for:bn:00671317n
+INFO : BabelNet request: get_synset_data for:bn:00378151n
+INFO : Retrieving Multisense data for word: fusion
+INFO : BN_request_sender.requests_counter= 97
+INFO : BabelNet request: get_syns_intros_word for:fusion
+INFO : BabelNet request: get_synset_data for:bn:14790489n
+INFO : BabelNet request: get_synset_data for:bn:00036930n
+INFO : BabelNet request: get_synset_edges for:bn:00036930n
+INFO : BabelNet request: get_synset_data for:bn:16923406n
+INFO : BabelNet request: get_synset_data for:bn:02512755n
+INFO : BabelNet request: get_synset_data for:bn:02544720n
+INFO : BabelNet request: get_synset_data for:bn:00036928n
+INFO : BabelNet request: get_synset_edges for:bn:00036928n
+INFO : BabelNet request: get_synset_data for:bn:01650312n
+INFO : BabelNet request: get_synset_data for:bn:00036926n
+INFO : BabelNet request: get_synset_edges for:bn:00036926n
+INFO : BabelNet request: get_synset_data for:bn:00299199n
+INFO : BabelNet request: get_synset_data for:bn:01306117n
+INFO : BabelNet request: get_synset_data for:bn:14583703n
+INFO : BabelNet request: get_synset_data for:bn:00020155n
+INFO : BabelNet request: get_synset_edges for:bn:00020155n
+INFO : BabelNet request: get_synset_data for:bn:03637523n
+INFO : BabelNet request: get_synset_data for:bn:00256106n
+INFO : BabelNet request: get_synset_data for:bn:02750021n
+INFO : BabelNet request: get_synset_data for:bn:00054268n
+INFO : BabelNet request: get_synset_edges for:bn:00054268n
+INFO : BabelNet request: get_synset_data for:bn:21129369n
+INFO : BabelNet request: get_synset_data for:bn:02257379n
+INFO : BabelNet request: get_synset_data for:bn:02627546n
+INFO : BabelNet request: get_synset_data for:bn:00036931n
+INFO : BabelNet request: get_synset_edges for:bn:00036931n
+INFO : BabelNet request: get_synset_data for:bn:00438184n
+INFO : BabelNet request: get_synset_data for:bn:16277606n
+INFO : BabelNet request: get_synset_data for:bn:01432889n
+INFO : BabelNet request: get_synset_data for:bn:15718622n
+INFO : BabelNet request: get_synset_data for:bn:00036927n
+INFO : BabelNet request: get_synset_edges for:bn:00036927n
+INFO : BabelNet request: get_synset_data for:bn:02228046n
+INFO : BabelNet request: get_synset_data for:bn:00036929n
+INFO : BabelNet request: get_synset_edges for:bn:00036929n
+INFO : BabelNet request: get_synset_data for:bn:15585905n
+INFO : BabelNet request: get_synset_data for:bn:01267595n
+INFO : BabelNet request: get_syns_intros_word for:III

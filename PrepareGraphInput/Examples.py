@@ -6,7 +6,7 @@ import pandas as pd
 import nltk
 import numpy as np
 import PrepareGraphInput.SkipGram as SkipGram
-import Vocabulary as Vocabulary
+from Vocabulary import Vocabulary as Vocabulary
 
 CHUNKSIZE_HDF5 = 128
 BATCH_SIZE = 8
@@ -63,7 +63,7 @@ def word_to_vocab_index(word, vocabulary_wordList):
 
 
 def main():
-    Utils.init_logging(os.path.join("PrepareGraphInput", "Examples.log"), logging.INFO)
+    #Utils.init_logging(os.path.join("PrepareGraphInput", "Examples.log"), logging.INFO)
 
     # Load vectors directly from the file
     #pretrained_model_wv = gensim.models.KeyedVectors.load_word2vec_format(os.path.join(Utils.FOLDER_WORD_EMBEDDINGS, Utils.WORD2VEC_FILENAME), binary=True)

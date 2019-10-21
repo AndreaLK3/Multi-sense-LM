@@ -66,8 +66,11 @@ def refine_bnid_elements_dict(target_word, elems_dict, exclude_multiword=False):
 def retrieve_word_multisense_data(BN_request_sender, target_word):
 
     bn_dicts = BabelNet.retrieve_DESA(BN_request_sender, target_word)
+    logging.debug(bn_dicts)
     wn_dicts = WordNet.retrieve_SA_bySenses(target_word, bn_dicts[0])
+    logging.debug(wn_dicts)
     ow_syn_dict = OmegaWiki.retrieve_S(target_word, bn_dicts[0])
+    logging.debug(ow_syn_dict)
 
     # merge dictionaries for D,E,S from the various sources
     all_definitions_dict = bn_dicts[0]

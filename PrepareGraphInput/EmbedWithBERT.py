@@ -39,7 +39,7 @@ def compute_sentence_vector(model, tokenizer, sentence_text):
 # In the previous step, we stored the start-and-end indices in a Sqlite3 database.
 # It is necessary to write the embeddings in the .npy file with the correct ordering.
 def compute_sentence_embeddings(elements_name):
-    Utils.init_logging('ComputeSentenceEmbeddings.log', logging.INFO)
+    #Utils.init_logging('ComputeSentenceEmbeddings.log', logging.INFO)
     model = pt.BertModel.from_pretrained('bert-base-uncased')
     tokenizer = pt.BertTokenizer.from_pretrained('bert-base-uncased')
 

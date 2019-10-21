@@ -10,7 +10,7 @@ from itertools import cycle
 class BabelNet_RequestSender:
 
     def __init__(self):
-        self.requests_threshold = 20 # 4900 based on the available amount of BabelCoins (for me currently 5000)
+        self.requests_threshold = 100 # 4500, based on the available amount of BabelCoins (for me currently 5000)
         self.requests_counter = 0 # It is set when we create this object
 
     ########## HTTP Requests
@@ -21,7 +21,8 @@ class BabelNet_RequestSender:
         req_url = 'https://babelnet.io/v5/getSynsetIds?lemma='+target_word+'&searchLang='+searchLang+'&key='+key
         with urllib.request.urlopen(req_url) as response:
             synsets_intros = json.load(response)
-        self.requests_counter = self.requests_counter =+1
+        self.requests_counter = self.requests_counter +1
+        logging.debug("BabelNet request: get_syns_intros_word for:" + target_word)
         return synsets_intros
 
     # Retrieve the data structure of the synset with the given id.
@@ -30,7 +31,8 @@ class BabelNet_RequestSender:
         req_url = 'https://babelnet.io/v5/getSynset?id='+synset_ID+'&key='+key
         with urllib.request.urlopen(req_url) as response:
             synset_data = json.load(response)
-        self.requests_counter = self.requests_counter = +1
+        self.requests_counter = self.requests_counter +1
+        logging.debug("BabelNet request: get_synset_data for:" + synset_ID)
         return synset_data
 
     # For a synset, retrieve the relation edges (hypernyms, hyponyms, antonyms etc.)
@@ -38,7 +40,8 @@ class BabelNet_RequestSender:
         req_url = 'https://babelnet.io/v5/getOutgoingEdges?id='+ synset_ID +'&key='+ key
         with urllib.request.urlopen(req_url) as response:
             synset_edges = json.load(response)
-        self.requests_counter = self.requests_counter = +1
+        self.requests_counter = self.requests_counter +1
+        logging.debug("BabelNet request: get_synset_edges for:" + synset_ID)
         return synset_edges
 
 

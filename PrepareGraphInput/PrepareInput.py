@@ -10,7 +10,7 @@ import sqlite3
 
 # Phase 1 - Preprocessing: eliminating quasi-duplicate definitions and examples, and lemmatizing synonyms & antonyms
 def preprocess(vocabulary):
-    Utils.init_logging(os.path.join('PrepareGraphInput','PreprocessInput.log'), logging.INFO)
+    #Utils.init_logging(os.path.join('PrepareGraphInput','PreprocessInput.log'), logging.INFO)
 
     # categories= [d., e., s., a.]
     hdf5_input_filepaths = [os.path.join(Utils.FOLDER_INPUT, categ + ".h5") for categ in Utils.CATEGORIES]
@@ -36,7 +36,7 @@ def preprocess(vocabulary):
 
 # Phase 2 - Selecting, sorting and naming (noun.1, verb.4, etc.) the senses of each word
 def assign_sense_names(vocabulary):
-    Utils.init_logging('AssignSenseNames.log', logging.INFO)
+    #Utils.init_logging('AssignSenseNames.log', logging.INFO)
 
     hdf5_input_filepaths = [os.path.join(Utils.FOLDER_INPUT, Utils.PROCESSED + '_' + categ + ".h5")
                              for categ in Utils.CATEGORIES]
@@ -57,7 +57,7 @@ def assign_sense_names(vocabulary):
 # establish a correspondence with an integer index.
 # Moreover, counting the number of defs and examples, define start&end indices for the matrix of word embeddings.
 def create_senses_vocabulary_table(vocabulary_words_ls):
-    Utils.init_logging('CreateSensesVocabularyTable.log', logging.INFO)
+    #Utils.init_logging('CreateSensesVocabularyTable.log', logging.INFO)
 
     defs_input_filepath = os.path.join(Utils.FOLDER_INPUT, Utils.DENOMINATED + '_' + Utils.DEFINITIONS + ".h5")
     examples_input_filepath = os.path.join(Utils.FOLDER_INPUT, Utils.DENOMINATED + '_' + Utils.EXAMPLES + ".h5")
@@ -106,7 +106,7 @@ def create_senses_vocabulary_table(vocabulary_words_ls):
 
 # ['move', 'light']
 def prepare(vocabulary):
-    Utils.init_logging(os.path.join("PrepareGraphInput", "PrepareInput"))
+    #Utils.init_logging(os.path.join("PrepareGraphInput", "PrepareInput"))
 
     hdf5_output_filepaths = [os.path.join(Utils.FOLDER_INPUT, Utils.PROCESSED + '_' + categ + ".h5")
                              for categ in Utils.CATEGORIES] + \
