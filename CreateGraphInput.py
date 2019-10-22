@@ -18,6 +18,9 @@ def reset():
         if fpath.endswith('h5'):
             f = pd.HDFStore(fpath, mode='w')
             f.close()
+        else:
+            if os.path.exists(fpath):
+                os.remove(fpath)
     for fpath in vocab_filepaths:
         if os.path.exists(fpath):
             os.remove(fpath)
@@ -31,7 +34,7 @@ def exe(do_reset=False):
     if do_reset:
         reset()
     PHR.setup_phrased_corpus(os.path.join(Utils.FOLDER_WT2, Utils.WT_TRAIN_FILE),
-                             Utils.PHRASED_TRAINING_CORPUS)
+                             os.path.join(Utils.FOLDER_INPUT, Utils.PHRASED_TRAINING_CORPUS))
     VOC.get_vocabulary_df(os.path.join(Utils.FOLDER_VOCABULARY, Utils.VOCAB_WT2_FILE),
                         os.path.join(Utils.FOLDER_WT2, Utils.WT_TRAIN_FILE), min_count=2)
     vocabulary_chunk = RID.continue_retrieving_data()

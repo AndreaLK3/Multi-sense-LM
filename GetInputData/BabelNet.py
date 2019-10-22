@@ -10,7 +10,7 @@ from itertools import cycle
 class BabelNet_RequestSender:
 
     def __init__(self):
-        self.requests_threshold = 100 # 4500, based on the available amount of BabelCoins (for me currently 5000)
+        self.requests_threshold = 50 # 4500, based on the available amount of BabelCoins (for me currently 5000)
         self.requests_counter = 0 # It is set when we create this object
 
     ########## HTTP Requests
