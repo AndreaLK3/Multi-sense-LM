@@ -2,6 +2,8 @@ import nltk
 import logging
 import gensim
 import os
+
+import Filesystem
 import Utils
 import pandas as pd
 import math
@@ -29,10 +31,10 @@ def create_phrases_model(corpus_txt_filepath):
                                                   min_count=min_freq, threshold=phrases_score_threshold,
                                                   delimiter=b'_') # Default: min_count=5, threshold=10.0
     logging.info("Phrases: Saving the model...")
-    phrases_model.save(os.path.join(Utils.FOLDER_VOCABULARY, Utils.PHRASES_MODEL_FILE))
+    phrases_model.save(os.path.join(Filesystem.FOLDER_VOCABULARY, Filesystem.PHRASES_MODEL_FILE))
 
     phrases_found_df = pd.DataFrame(set(phrases_model.export_phrases(all_docsentences)))
-    phrases_found_df.to_csv(os.path.join(Utils.FOLDER_VOCABULARY, "Check_PhrasesFound.csv"))
+    phrases_found_df.to_csv(os.path.join(Filesystem.FOLDER_VOCABULARY, "Check_PhrasesFound.csv"))
 
     del phrases_model
 
@@ -40,19 +42,15 @@ def create_phrases_model(corpus_txt_filepath):
 # Then, re-write the phrases-augmented corpus in a new file.
 def augment_corpus(in_corpus_txt_filepath, out_corpus_txt_filepath):
 
-    phrases_model = gensim.models.phrases.Phrases.load(os.path.join(Utils.FOLDER_VOCABULARY, Utils.PHRASES_MODEL_FILE))
+    phrases_model = gensim.models.phrases.Phrases.load(os.path.join(Filesystem.FOLDER_VOCABULARY,
+                                                                    Filesystem.PHRASES_MODEL_FILE))
 
     with open(out_corpus_txt_filepath, "w", encoding="utf-8") as outfile:
         for i, line in enumerate(open(in_corpus_txt_filepath, "r", encoding="utf-8")):
-            logging.info(line.split())
             line_withphrases = phrases_model[line.split()]
-            logging.info(line_withphrases)
+            outfile.write(' '.join(line_withphrases))
             if i % 10000 == 0 and i != 0:
                 logging.info("Phrases: modifying corpus... line n." + str(i))
-                break
-            continue
-            outfile.write(line_withphrases)
-
 
 
 # Entry point function: if a phrase-processed training corpus has been already created, load it.

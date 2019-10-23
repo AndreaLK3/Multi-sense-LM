@@ -5,6 +5,8 @@ import pandas as pd
 import pytorch_transformers as pt
 import torch
 import logging
+
+import Filesystem
 import Utils
 
 START_SENTENCE_TOKEN = "[CLS]"
@@ -43,9 +45,9 @@ def compute_sentence_embeddings(elements_name):
     model = pt.BertModel.from_pretrained('bert-base-uncased')
     tokenizer = pt.BertTokenizer.from_pretrained('bert-base-uncased')
 
-    input_filepath = os.path.join(Utils.FOLDER_INPUT, Utils.DENOMINATED + '_' + elements_name + ".h5")
-    output_filepath = os.path.join(Utils.FOLDER_INPUT, Utils.VECTORIZED + '_' + elements_name + ".npy")
-    vocabTable_db_filepath = os.path.join(Utils.FOLDER_INPUT, Utils.INDICES_TABLE + ".sql")
+    input_filepath = os.path.join(Filesystem.FOLDER_INPUT, Utils.DENOMINATED + '_' + elements_name + ".h5")
+    output_filepath = os.path.join(Filesystem.FOLDER_INPUT, Utils.VECTORIZED + '_' + elements_name + ".npy")
+    vocabTable_db_filepath = os.path.join(Filesystem.FOLDER_INPUT, Utils.INDICES_TABLE + ".sql")
 
     input_db = pd.HDFStore(input_filepath, mode='r')
     vocabTable_db = sqlite3.connect(vocabTable_db_filepath)

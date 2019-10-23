@@ -33,8 +33,11 @@ def lemmatize_nyms_in_word(word, elements_name, input_db, output_db):
                           Utils.SYNONYMS: Utils.HDF5_BASE_SIZE_512 / 4, Utils.ANTONYMS: Utils.HDF5_BASE_SIZE_512 / 4}
     min_itemsize_dict = {key: hdf5_min_itemsizes[key] for key in ['word', 'bn_id', elements_name]}
 
-
-    word_df = input_db.select(key=elements_name, where="word == " + str(word))
+    try:
+        word_df = input_db.select(key=elements_name, where="word == '" + str(word) + "'")
+    except KeyError: # no elements of that kind for the word (e.g. it has no antonyms)
+        logging.info("Did not found any " + elements_name + " for word: " + word + ". Moving on")
+        return
     bn_ids = set(word_df['bn_id'])
     new_data = []
 

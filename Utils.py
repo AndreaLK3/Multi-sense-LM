@@ -1,6 +1,5 @@
 import logging
 import sys
-import os
 import langid
 import nltk
 import string
@@ -35,28 +34,6 @@ INDICES_TABLE = 'indices_table'
 
 UNK_TOKEN = '<unk>'
 NUM_TOKEN = '<num>'
-
-
-########## Constants - filesystem ##########
-
-FOLDER_INPUT = 'InputData'
-FOLDER_WORD_EMBEDDINGS = 'WordEmbeddings'
-FOLDER_VOCABULARY = 'Vocabulary'
-FOLDER_WT103 = os.path.join('TextCorpuses','WikiText-103')
-FOLDER_WT2 = os.path.join('TextCorpuses','wikitext-2')
-
-WT_TRAIN_FILE = 'wiki.train.tokens'
-WT_VALID_FILE = 'wiki.valid.tokens'
-WT_TEST_FILE = 'wiki.test.tokens'
-
-PHRASED_TRAINING_CORPUS = 'phrased_training_corpus.txt'
-PHRASES_LIST = ''
-
-VOCAB_WT2_FILE = 'vocabulary_from_WikiText-2.h5'
-VOCAB_WT103_FILE = 'vocabulary_from_WikiText-103.h5'
-
-VOCAB_CURRENT_INDEX_FILE = 'vocabulary_currentIndex.txt'
-PHRASES_MODEL_FILE = 'phrases_model.pickle'
 
 ########## Functions ##########
 

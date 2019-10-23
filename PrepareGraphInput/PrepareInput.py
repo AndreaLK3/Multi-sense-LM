@@ -1,3 +1,4 @@
+import Filesystem
 import PrepareGraphInput.RemoveQuasiDuplicates as RQD
 import PrepareGraphInput.LemmatizeNyms as LN
 import PrepareGraphInput.SenseDenominations as SD
@@ -13,8 +14,8 @@ def preprocess(vocabulary):
     #Utils.init_logging(os.path.join('PrepareGraphInput','PreprocessInput.log'), logging.INFO)
 
     # categories= [d., e., s., a.]
-    hdf5_input_filepaths = [os.path.join(Utils.FOLDER_INPUT, categ + ".h5") for categ in Utils.CATEGORIES]
-    hdf5_output_filepaths = [os.path.join(Utils.FOLDER_INPUT, Utils.PROCESSED + '_' + categ + ".h5")
+    hdf5_input_filepaths = [os.path.join(Filesystem.FOLDER_INPUT, categ + ".h5") for categ in Utils.CATEGORIES]
+    hdf5_output_filepaths = [os.path.join(Filesystem.FOLDER_INPUT, Utils.PROCESSED + '_' + categ + ".h5")
                              for categ in Utils.CATEGORIES]
 
     input_dbs = [pd.HDFStore(input_filepath, mode='r') for input_filepath in hdf5_input_filepaths]
@@ -38,9 +39,9 @@ def preprocess(vocabulary):
 def assign_sense_names(vocabulary):
     #Utils.init_logging('AssignSenseNames.log', logging.INFO)
 
-    hdf5_input_filepaths = [os.path.join(Utils.FOLDER_INPUT, Utils.PROCESSED + '_' + categ + ".h5")
+    hdf5_input_filepaths = [os.path.join(Filesystem.FOLDER_INPUT, Utils.PROCESSED + '_' + categ + ".h5")
                              for categ in Utils.CATEGORIES]
-    hdf5_output_filepaths = [os.path.join(Utils.FOLDER_INPUT, Utils.DENOMINATED + '_' + categ + ".h5")
+    hdf5_output_filepaths = [os.path.join(Filesystem.FOLDER_INPUT, Utils.DENOMINATED + '_' + categ + ".h5")
                             for categ in Utils.CATEGORIES]
 
     input_dbs = [pd.HDFStore(input_filepath, mode='r') for input_filepath in hdf5_input_filepaths]
@@ -59,12 +60,12 @@ def assign_sense_names(vocabulary):
 def create_senses_vocabulary_table(vocabulary_words_ls):
     #Utils.init_logging('CreateSensesVocabularyTable.log', logging.INFO)
 
-    defs_input_filepath = os.path.join(Utils.FOLDER_INPUT, Utils.DENOMINATED + '_' + Utils.DEFINITIONS + ".h5")
-    examples_input_filepath = os.path.join(Utils.FOLDER_INPUT, Utils.DENOMINATED + '_' + Utils.EXAMPLES + ".h5")
+    defs_input_filepath = os.path.join(Filesystem.FOLDER_INPUT, Utils.DENOMINATED + '_' + Utils.DEFINITIONS + ".h5")
+    examples_input_filepath = os.path.join(Filesystem.FOLDER_INPUT, Utils.DENOMINATED + '_' + Utils.EXAMPLES + ".h5")
     defs_input_db = pd.HDFStore(defs_input_filepath, mode='r')
     examples_input_db = pd.HDFStore(examples_input_filepath, mode='r')
 
-    output_filepath = os.path.join(Utils.FOLDER_INPUT, Utils.INDICES_TABLE + ".sql")
+    output_filepath = os.path.join(Filesystem.FOLDER_INPUT, Utils.INDICES_TABLE + ".sql")
     outdb_reset = open(output_filepath, 'w'); outdb_reset.close()
     out_vocabTable_db = sqlite3.connect(output_filepath)
     out_vocabTable_db_c = out_vocabTable_db.cursor()
@@ -108,11 +109,11 @@ def create_senses_vocabulary_table(vocabulary_words_ls):
 def prepare(vocabulary):
     #Utils.init_logging(os.path.join("PrepareGraphInput", "PrepareInput"))
 
-    hdf5_output_filepaths = [os.path.join(Utils.FOLDER_INPUT, Utils.PROCESSED + '_' + categ + ".h5")
+    hdf5_output_filepaths = [os.path.join(Filesystem.FOLDER_INPUT, Utils.PROCESSED + '_' + categ + ".h5")
                              for categ in Utils.CATEGORIES] + \
-                            [os.path.join(Utils.FOLDER_INPUT, Utils.DENOMINATED + '_' + categ + ".h5")
+                            [os.path.join(Filesystem.FOLDER_INPUT, Utils.DENOMINATED + '_' + categ + ".h5")
                              for categ in Utils.CATEGORIES] +\
-                            [os.path.join(Utils.FOLDER_INPUT, Utils.VECTORIZED + '_' + categ + ".npy")
+                            [os.path.join(Filesystem.FOLDER_INPUT, Utils.VECTORIZED + '_' + categ + ".npy")
                              for categ in Utils.CATEGORIES[0:2]]
 
     all_archives = [open(input_filepath, 'w') for input_filepath in hdf5_output_filepaths] # we must reset the output archivess

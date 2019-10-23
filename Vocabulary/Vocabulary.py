@@ -126,7 +126,7 @@ def build_vocabulary_from_corpus(corpus_txt_filepath):
         if i % 10000 == 0:
             time_next = time.time()
             time_elapsed = round( time_next - time_prev, 4)
-            logging.info("Reading in line n. : " + str(i) + ' ; number of tokens encountered: ' + str(tot_tokens) +
+            logging.info("Building vocabulary. Reading in line n. : " + str(i) + ' ; number of tokens encountered: ' + str(tot_tokens) +
                   " ; time elapsed = " + str(time_elapsed) + " s")
             time_prev = time.time()
 

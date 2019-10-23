@@ -1,3 +1,4 @@
+import Filesystem
 import Utils
 import os
 import logging
@@ -18,7 +19,7 @@ D = 300
 # Load them in tokenized form (e.g.: ['summer', 'temperatures', 'reached', 'all-time', 'high'])
 # in a list-of-lists, currently in memory
 def load_input_examples():
-    all_examples_df_chunksIter = pd.read_hdf(os.path.join(Utils.FOLDER_INPUT, Utils.PREP_EXAMPLES + ".h5")
+    all_examples_df_chunksIter = pd.read_hdf(os.path.join(Filesystem.FOLDER_INPUT, Utils.PREP_EXAMPLES + ".h5")
                                   ,iterator=True, chunksize=CHUNKSIZE_HDF5)
     sentences_tokenized_lls = []
 
@@ -79,8 +80,8 @@ def main():
     # Temporary vocabulary was from: nltk.corpus.words.words()
     extended_lang_id = 'english'
     min_count = 5
-    vocabulary_storage_fpath = os.path.join(Utils.FOLDER_WORD_EMBEDDINGS, Utils.WT_MYVOCAB_MINITEST_FILE) # Utils.WT_MYVOCAB_FILE
-    vocabulary_source_corpus_fpath = os.path.join(Utils.FOLDER_WT103, Utils.WT_VALID_FILE) # Utils.WT_TRAIN_FILE
+    vocabulary_storage_fpath = os.path.join(Filesystem.FOLDER_WORD_EMBEDDINGS, Utils.WT_MYVOCAB_MINITEST_FILE) # Utils.WT_MYVOCAB_FILE
+    vocabulary_source_corpus_fpath = os.path.join(Filesystem.FOLDER_WT103, Filesystem.WT_VALID_FILE) # Utils.WT_TRAIN_FILE
     vocabulary_df = Vocabulary.get_vocabulary_df(vocabulary_storage_fpath, vocabulary_source_corpus_fpath, min_count, extended_lang_id)
 
     # In skip gram architecture of word2vec, the input is the center word and the predictions are the context words.
@@ -103,7 +104,7 @@ def main():
     examples_tokenized_lls = load_input_examples()
     logging.info('*** The input examples from dictionary sources have been loaded.')
 
-    word_pairs_hdf5_filepath = os.path.join(Utils.FOLDER_WORD_EMBEDDINGS, Utils.SKIPGRAM_INPUTWORDPAIRS_FILENAME)
+    word_pairs_hdf5_filepath = os.path.join(Filesystem.FOLDER_WORD_EMBEDDINGS, Utils.SKIPGRAM_INPUTWORDPAIRS_FILENAME)
     prepare_input(examples_tokenized_lls, window_radius, word_pairs_hdf5_filepath)
     logging.info("*** Input pairs (centerWord, wordToPredict)")
 
