@@ -17,7 +17,7 @@ WT_TEST_FILE = 'wiki.test.tokens'
 
 PHRASES_MODEL_FILE = 'phrases_model.pickle'
 PHRASED_TRAINING_CORPUS = 'phrased_training_corpus.txt'
-PHRASES_LIST = ''
+TEMPORARY_PHRASED_CORPUS = 'temp_phrased_training_corpus.txt'
 
 VOCAB_WT2_FILE = 'vocabulary_from_WikiText-2.h5'
 VOCAB_WT103_FILE = 'vocabulary_from_WikiText-103.h5'

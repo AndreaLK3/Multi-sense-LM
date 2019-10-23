@@ -1,42 +1,12 @@
 import urllib.request
 import json
 import logging
-from enum import Enum
-import Filesystem as F
-import os
-import pandas as pd
-
-
-class RequestType(Enum):
-    WORD_SYNSETS_INTROS = 'WORD_SYNSETS_INTROS'
-    SYNSET_DATA = 'SYNSET_DATA'
-    SYNSET_EDGES = 'SYNSET_EDGES'
-
 
 class BabelNetRequestSender:
 
     def __init__(self):
         self.requests_threshold = 100 # 4500, based on the available amount of BabelCoins (for me currently 5000)
         self.requests_counter = 0 # It is set when we create this object
-
-    # Enty function: If we already sent this request to BabelNet, then it has been stored in one of the hdf5 archives.
-    # Search for it, and if we find it we load it.
-    # If it is new, then we must proceed with a HTTP request to BabelNet, and save the result
-    def lookup_resource(self, req_type, key, target_word='', synset_id=''):
-        # choose archive to extract from:
-        if req_type == RequestType.WORD_SYNSETS_INTROS:
-            archive_fpath = os.path.join(F.FOLDER_INPUT, F.BN_WORD_INTROS)
-            babelNet_archive = pd.HDFStore(archive_fpath, mode='r')
-            babelNet_archive.select(key=req_type, where="word == '" + target_word + "'")
-        elif req_type == RequestType.SYNSET_DATA:
-            archive_fpath = os.path.join(F.FOLDER_INPUT, F.BN_SYNSET_DATA)
-            babelNet_archive = pd.HDFStore(archive_fpath, mode='r')
-            babelNet_archive.select(key=req_type, where="synset_id == '" + synset_id + "'")
-        else:
-            archive_fpath = os.path.join(F.FOLDER_INPUT, F.BN_SYNSET_EDGES)
-            babelNet_archive = pd.HDFStore(archive_fpath, mode='r')
-            babelNet_archive.select(key=req_type, where="synset_id == '" + synset_id + "'")
-
 
     ########## HTTP Requests
 

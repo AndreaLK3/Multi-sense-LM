@@ -11,7 +11,7 @@ import math
 
 # Examine the whole corpus, and create the phrases model,
 # that stores a vocabulary that includes a list of phrases (bigrams, e.g. New York).
-def create_phrases_model(corpus_txt_filepath):
+def create_phrases_model(corpus_txt_filepath,min_freq, phrases_score_threshold):
     all_docsentences = []
     total_num_tokens = 0
     for i, line in enumerate(open(corpus_txt_filepath, "r", encoding="utf-8")):
@@ -21,8 +21,6 @@ def create_phrases_model(corpus_txt_filepath):
         if i%10000 == 0 and i !=0:
             logging.info("Phrases: reading in corpus... line n." + str(i))
 
-    min_freq = 50 # math.pow(total_num_tokens, 1/3) // 2
-    phrases_score_threshold = 120 # min_freq * 2
     logging.info("Number of tokens in corpus=" + str(total_num_tokens) +
                  " \tParameters for Phrases: min_count=" + str(min_freq) +
                  " \tthreshold=" + str(phrases_score_threshold))
@@ -34,7 +32,8 @@ def create_phrases_model(corpus_txt_filepath):
     phrases_model.save(os.path.join(Filesystem.FOLDER_VOCABULARY, Filesystem.PHRASES_MODEL_FILE))
 
     phrases_found_df = pd.DataFrame(set(phrases_model.export_phrases(all_docsentences)))
-    phrases_found_df.to_csv(os.path.join(Filesystem.FOLDER_VOCABULARY, "Check_PhrasesFound.csv"))
+    phrases_found_df.to_csv(os.path.join(Filesystem.FOLDER_VOCABULARY, "Check_PhrasesFound_"+ str(min_freq) + "_"
+                                         + str(phrases_score_threshold) + ".csv"))
 
     del phrases_model
 
@@ -55,13 +54,13 @@ def augment_corpus(in_corpus_txt_filepath, out_corpus_txt_filepath):
 
 # Entry point function: if a phrase-processed training corpus has been already created, load it.
 # Otherwise, you have to read the original training set and create it.
-def setup_phrased_corpus(initial_corpus_fpath, phrased_corpus_fpath):
+def setup_phrased_corpus(initial_corpus_fpath, phrased_corpus_fpath, min_freq, score_threshold):
     if os.path.exists(phrased_corpus_fpath):
         logging.info("*** The training corpus was already put through phrases-processing. Found at " + phrased_corpus_fpath)
         return
     else:
         logging.info(
             "*** Phrases have not been added to the training corpus. Must create Phrases model, etc.")
-        create_phrases_model(initial_corpus_fpath)
+        create_phrases_model(initial_corpus_fpath, min_freq, score_threshold)
         augment_corpus(initial_corpus_fpath, phrased_corpus_fpath)
         logging.info("*** Phrases have been added to the training corpus.")

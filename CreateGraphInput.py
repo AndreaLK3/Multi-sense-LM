@@ -11,9 +11,9 @@ import Vocabulary.Phrases as PHR
 # Before starting: clean all storage files; reset vocabulary index to 0
 def reset():
     input_corenames = Utils.CATEGORIES + list(map(lambda c: Utils.DENOMINATED + '_' + c, Utils.CATEGORIES)) + \
-                    list(map(lambda c: Utils.PROCESSED + '_' + c, Utils.CATEGORIES)) + \
-                      [F.BN_WORD_INTROS, F.BN_SYNSET_DATA, F.BN_SYNSET_EDGES]
-    input_filenames = list(map(lambda corename : corename + '.h5', input_corenames)) + [F.PHRASED_TRAINING_CORPUS]
+                    list(map(lambda c: Utils.PROCESSED + '_' + c, Utils.CATEGORIES))
+    input_filenames = list(map(lambda corename : corename + '.h5', input_corenames)) +\
+                      [F.PHRASED_TRAINING_CORPUS, F.TEMPORARY_PHRASED_CORPUS]
     input_filepaths = list(map(lambda fname: os.path.join(F.FOLDER_INPUT, fname),
                                               input_filenames))
     vocab_filepaths = list(map(lambda fname: os.path.join(F.FOLDER_VOCABULARY, fname),
@@ -39,7 +39,8 @@ def exe(do_reset=False):
     if do_reset:
         reset()
     PHR.setup_phrased_corpus(os.path.join(F.FOLDER_WT2, F.WT_TRAIN_FILE),
-                             os.path.join(F.FOLDER_INPUT, F.PHRASED_TRAINING_CORPUS))
+                             os.path.join(F.FOLDER_INPUT, F.TEMPORARY_PHRASED_CORPUS),
+                             min_freq=40, score_threshold=120) # bigrams of phrases
     VOC.get_vocabulary_df(os.path.join(F.FOLDER_VOCABULARY, F.VOCAB_WT2_FILE),
                           os.path.join(F.FOLDER_INPUT, F.PHRASED_TRAINING_CORPUS), min_count=5)
 

@@ -1,8 +1,5 @@
 import Utils
-import urllib.request
 import logging
-import json
-import GetInputData.BabelNetRequests as BNR
 
 
 # Keep only the relevant synsets for the target word.
@@ -89,7 +86,7 @@ def retrieve_DESA(BN_request_sender, target_word):
     synonyms_dict = {}
     antonyms_dict = {}
 
-    syns_intros = BN_request_sender.lookup_resource(BNR.RequestType.WORD_SYNSETS_INTROS, key, target_word)
+    syns_intros = BN_request_sender.get_syns_intros_word(key, target_word)
     synset_ids = list(map(lambda syns_intro_dict: syns_intro_dict["id"], syns_intros))
     logging.debug(synset_ids)
 

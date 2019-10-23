@@ -2,7 +2,7 @@ INFO : *** Phrases have not been added to the training corpus. Must create Phras
 INFO : Phrases: reading in corpus... line n.10000
 INFO : Phrases: reading in corpus... line n.20000
 INFO : Phrases: reading in corpus... line n.30000
-INFO : Number of tokens in corpus=2207934 	Parameters for Phrases: min_count=50 	threshold=120
+INFO : Number of tokens in corpus=2207934 	Parameters for Phrases: min_count=40 	threshold=120
 INFO : Phrases: Creating the model...
 INFO : collecting all words and their counts
 INFO : PROGRESS: at sentence #0, processed 0 words and 0 word types
@@ -10,7 +10,7 @@ INFO : PROGRESS: at sentence #10000, processed 596881 words and 248982 word type
 INFO : PROGRESS: at sentence #20000, processed 1191469 words and 413221 word types
 INFO : PROGRESS: at sentence #30000, processed 1782140 words and 552782 word types
 INFO : collected 648628 word types from a corpus of 2207934 words (unigram + bigrams) and 36718 sentences
-INFO : using 648628 counts as vocab in Phrases<0 vocab, min_count=50, threshold=120, max_vocab_size=40000000>
+INFO : using 648628 counts as vocab in Phrases<0 vocab, min_count=40, threshold=120, max_vocab_size=40000000>
 INFO : Phrases: Saving the model...
 INFO : saving Phrases object under Vocabulary/phrases_model.pickle, separately None
 INFO : saved Vocabulary/phrases_model.pickle
@@ -20,10 +20,17 @@ INFO : Phrases: modifying corpus... line n.10000
 INFO : Phrases: modifying corpus... line n.20000
 INFO : Phrases: modifying corpus... line n.30000
 INFO : *** Phrases have been added to the training corpus.
-INFO : Building vocabulary. Reading in line n. : 0 ; number of tokens encountered: 2063803 ; time elapsed = 23.993 s
-INFO : Vocabulary created, after processing 2063803 tokens
-INFO : Removing from the vocabulary words with frequency < 5
-INFO : *** The vocabulary was created from the corpus file InputData/phrased_training_corpus.txt
-INFO : 0
-INFO : Retrieving Multisense data for word: besides
-INFO : BN_request_sender.requests_counter= 0
+INFO : *** Phrases have not been added to the training corpus. Must create Phrases model, etc.
+INFO : Number of tokens in corpus=2178128 	Parameters for Phrases: min_count=40 	threshold=150
+INFO : Phrases: Creating the model...
+INFO : collecting all words and their counts
+INFO : PROGRESS: at sentence #0, processed 0 words and 0 word types
+INFO : collected 671565 word types from a corpus of 2178128 words (unigram + bigrams) and 1 sentences
+INFO : using 671565 counts as vocab in Phrases<0 vocab, min_count=40, threshold=150, max_vocab_size=40000000>
+INFO : Phrases: Saving the model...
+INFO : saving Phrases object under Vocabulary/phrases_model.pickle, separately None
+INFO : saved Vocabulary/phrases_model.pickle
+INFO : loading Phrases object from Vocabulary/phrases_model.pickle
+INFO : loaded Vocabulary/phrases_model.pickle
+INFO : *** Phrases have been added to the training corpus.
+INFO : Building vocabulary. Reading in line n. : 0 ; number of tokens encountered: 2061070 ; time elapsed = 25.7188 s
