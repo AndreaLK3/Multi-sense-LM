@@ -44,6 +44,8 @@ def get_denominations(sorted_senses_lts):
 
 
 def eliminate_secondary_senses(word_element_df, bnids_denoms_dict):
+    if (word_element_df.empty):
+        return word_element_df
     word_element_df_named = word_element_df.replace(to_replace={'bn_id' : bnids_denoms_dict}, value=None)
     row_check = [(row.bn_id[0] != 'b') for row in word_element_df_named.itertuples()]
     word_element_df_named = word_element_df_named[row_check]
@@ -55,11 +57,12 @@ def eliminate_secondary_senses(word_element_df, bnids_denoms_dict):
 def assign_senses_to_word(word, input_dbs, output_dbs):
 
     hdf5_min_itemsizes = {'word': Utils.HDF5_BASE_SIZE_512 / 4, 'sense': Utils.HDF5_BASE_SIZE_512 / 16,
-                          Utils.DEFINITIONS: Utils.HDF5_BASE_SIZE_512 / 2, Utils.EXAMPLES: Utils.HDF5_BASE_SIZE_512 / 2,
+                          Utils.DEFINITIONS: Utils.HDF5_BASE_SIZE_512, Utils.EXAMPLES: Utils.HDF5_BASE_SIZE_512,
                           Utils.SYNONYMS: Utils.HDF5_BASE_SIZE_512 / 4, Utils.ANTONYMS: Utils.HDF5_BASE_SIZE_512 / 4}
 
     word_dfs = [input_dbs[i].select(key=Utils.CATEGORIES[i], where="word == '" + str(word) + "'")
                 for i in range(len(Utils.CATEGORIES))]
+    # word_dfs = list(filter( lambda word_df: not(word_df.empty), word_dfs))
     bn_ids = set(word_dfs[0]['bn_id'])
 
     senses_resources_lts = []
@@ -88,9 +91,10 @@ def assign_senses_to_word(word, input_dbs, output_dbs):
 
 
     word_dfs_named = [eliminate_secondary_senses(word_dfs[i], bnids_denoms_dict)
-                    for i in range(len(Utils.CATEGORIES))]
+                    for i in range(len(word_dfs))]
 
     for i in range(len(Utils.CATEGORIES)):
+
 
         output_dbs[i].append(key=Utils.CATEGORIES[i], value=word_dfs_named[i],
                          min_itemsize={key:hdf5_min_itemsizes[key]
