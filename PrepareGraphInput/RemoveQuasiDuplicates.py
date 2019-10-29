@@ -27,7 +27,7 @@ def eliminate_duplicates_in_word(word, elements_name, input_db, output_db, exten
     stopwords_ls = nltk.corpus.stopwords.words(extended_lang_id)
 
     hdf5_min_itemsizes = {'word': Utils.HDF5_BASE_SIZE_512 / 4, 'bn_id': Utils.HDF5_BASE_SIZE_512 / 4,
-                          Utils.DEFINITIONS: Utils.HDF5_BASE_SIZE_512 / 2, Utils.EXAMPLES: Utils.HDF5_BASE_SIZE_512 / 2}
+                          Utils.DEFINITIONS: Utils.HDF5_BASE_SIZE_512 , Utils.EXAMPLES: Utils.HDF5_BASE_SIZE_512 }
     min_itemsize_dict = {key: hdf5_min_itemsizes[key] for key in ['word', 'bn_id', elements_name]}
 
     try:

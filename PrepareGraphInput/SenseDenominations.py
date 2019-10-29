@@ -58,7 +58,7 @@ def assign_senses_to_word(word, input_dbs, output_dbs):
                           Utils.DEFINITIONS: Utils.HDF5_BASE_SIZE_512 / 2, Utils.EXAMPLES: Utils.HDF5_BASE_SIZE_512 / 2,
                           Utils.SYNONYMS: Utils.HDF5_BASE_SIZE_512 / 4, Utils.ANTONYMS: Utils.HDF5_BASE_SIZE_512 / 4}
 
-    word_dfs = [input_dbs[i].select(key=Utils.CATEGORIES[i], where="word == " + str(word))
+    word_dfs = [input_dbs[i].select(key=Utils.CATEGORIES[i], where="word == '" + str(word) + "'")
                 for i in range(len(Utils.CATEGORIES))]
     bn_ids = set(word_dfs[0]['bn_id'])
 

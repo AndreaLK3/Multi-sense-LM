@@ -18,7 +18,7 @@ def create_phrases_model(corpus_txt_filepath,min_freq, phrases_score_threshold):
         line_words = nltk.tokenize.word_tokenize(line)
         total_num_tokens = total_num_tokens + len(line_words)
         all_docsentences.append(line_words)
-        if i%10000 == 0 and i !=0:
+        if i % 10000 == 0 and i !=0:
             logging.info("Phrases: reading in corpus... line n." + str(i))
 
     logging.info("Number of tokens in corpus=" + str(total_num_tokens) +
@@ -47,7 +47,7 @@ def augment_corpus(in_corpus_txt_filepath, out_corpus_txt_filepath):
     with open(out_corpus_txt_filepath, "w", encoding="utf-8") as outfile:
         for i, line in enumerate(open(in_corpus_txt_filepath, "r", encoding="utf-8")):
             line_withphrases = phrases_model[line.split()]
-            outfile.write(' '.join(line_withphrases))
+            outfile.write(' '.join(line_withphrases) + "\n")
             if i % 10000 == 0 and i != 0:
                 logging.info("Phrases: modifying corpus... line n." + str(i))
 

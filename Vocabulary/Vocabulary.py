@@ -1,4 +1,3 @@
-import gensim
 import time
 import os
 import logging
@@ -132,7 +131,7 @@ def build_vocabulary_from_corpus(corpus_txt_filepath):
 
         different_tokens = set(token for token in tokens_in_line_lowercase)
 
-        update_lts = [(token, line.count(token) ) for token in different_tokens]
+        update_lts = [(token.replace('_', ' '), line.count(token) ) for token in different_tokens] # '_' was used for phrases.
         for word, freq in update_lts:
             try:
                 prev_freq = vocab_dict[word]

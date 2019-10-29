@@ -20,17 +20,123 @@ INFO : Phrases: modifying corpus... line n.10000
 INFO : Phrases: modifying corpus... line n.20000
 INFO : Phrases: modifying corpus... line n.30000
 INFO : *** Phrases have been added to the training corpus.
-INFO : *** Phrases have not been added to the training corpus. Must create Phrases model, etc.
-INFO : Number of tokens in corpus=2178128 	Parameters for Phrases: min_count=40 	threshold=150
-INFO : Phrases: Creating the model...
-INFO : collecting all words and their counts
-INFO : PROGRESS: at sentence #0, processed 0 words and 0 word types
-INFO : collected 671565 word types from a corpus of 2178128 words (unigram + bigrams) and 1 sentences
-INFO : using 671565 counts as vocab in Phrases<0 vocab, min_count=40, threshold=150, max_vocab_size=40000000>
-INFO : Phrases: Saving the model...
-INFO : saving Phrases object under Vocabulary/phrases_model.pickle, separately None
-INFO : saved Vocabulary/phrases_model.pickle
-INFO : loading Phrases object from Vocabulary/phrases_model.pickle
-INFO : loaded Vocabulary/phrases_model.pickle
-INFO : *** Phrases have been added to the training corpus.
-INFO : Building vocabulary. Reading in line n. : 0 ; number of tokens encountered: 2061070 ; time elapsed = 25.7188 s
+INFO : Building vocabulary. Reading in line n. : 0 ; number of tokens encountered: 0 ; time elapsed = 0.0007 s
+INFO : Building vocabulary. Reading in line n. : 10000 ; number of tokens encountered: 561895 ; time elapsed = 8.3857 s
+INFO : Building vocabulary. Reading in line n. : 20000 ; number of tokens encountered: 1122060 ; time elapsed = 8.4166 s
+INFO : Building vocabulary. Reading in line n. : 30000 ; number of tokens encountered: 1680525 ; time elapsed = 8.3104 s
+INFO : Vocabulary created, after processing 2082539 tokens
+INFO : Removing from the vocabulary words with frequency < 5
+INFO : *** The vocabulary was created from the corpus file InputData/phrased_training_corpus.txt
+INFO : 0
+INFO : Retrieving Multisense data for word: Chronicles
+INFO : BN_request_sender.requests_counter= 0
+INFO : initializing identifier
+INFO : Not of language : en Element : 'paralipoménōn'
+INFO : Retrieving Multisense data for word: III
+INFO : BN_request_sender.requests_counter= 16
+INFO : Not of language : en Element : '−3'
+INFO : Not of language : en Element : '۳'
+INFO : Not of language : en Element : '٣'
+INFO : Not of language : en Element : '𐡚'
+INFO : Not of language : en Element : '꣓'
+INFO : Not of language : en Element : '౩'
+INFO : Not of language : en Element : '३'
+INFO : Not of language : en Element : '௩'
+INFO : Not of language : en Element : '꩓'
+INFO : Not of language : en Element : '三'
+INFO : Not of language : en Element : '3️⃣'
+INFO : Not of language : en Element : '꤃'
+INFO : Not of language : en Element : '⓷'
+INFO : Not of language : en Element : '୩'
+INFO : Not of language : en Element : '３'
+INFO : Not of language : en Element : '⑶'
+INFO : Not of language : en Element : '૩'
+INFO : Not of language : en Element : '൩'
+INFO : Not of language : en Element : '৩'
+INFO : Not of language : en Element : '៣'
+INFO : Not of language : en Element : '᥉'
+INFO : Not of language : en Element : '⒊'
+INFO : Not of language : en Element : '❸'
+INFO : Not of language : en Element : '੩'
+INFO : Not of language : en Element : 'ⅲ'
+INFO : Not of language : en Element : '೩'
+INFO : Not of language : en Element : '๓'
+INFO : Not of language : en Element : '𐒣'
+INFO : Not of language : en Element : '➌'
+INFO : Not of language : en Element : '꧓'
+INFO : Not of language : en Element : '༣'
+INFO : Not of language : en Element : '③'
+INFO : Not of language : en Element : '໓'
+INFO : Retrieving Multisense data for word: =
+INFO : BN_request_sender.requests_counter= 63
+INFO : Not of language : en Element : '≞'
+INFO : Not of language : en Element : '≗'
+INFO : Not of language : en Element : '﹦'
+INFO : Not of language : en Element : '≌'
+INFO : Not of language : en Element : '≖'
+INFO : Not of language : en Element : '≔'
+INFO : Not of language : en Element : '≕'
+INFO : Not of language : en Element : '＝'
+INFO : Not of language : en Element : '≠'
+INFO : Retrieving Multisense data for word: Valkyria
+INFO : BN_request_sender.requests_counter= 66
+INFO : Retrieving Multisense data for word: Imperial
+INFO : BN_request_sender.requests_counter= 69
+INFO : Retrieving Multisense data for word: Portable
+INFO : BN_request_sender.requests_counter= 103
+INFO : Retrieving Multisense data for word: runs
+INFO : BN_request_sender.requests_counter= 111
+INFO : Retrieving Multisense data for word: nation
+INFO : BN_request_sender.requests_counter= 116
+INFO : Not of language : en Element : 'flächenländer'
+INFO : Not of language : en Element : 'stadtstaaten'
+INFO : Retrieving Multisense data for word: War
+INFO : BN_request_sender.requests_counter= 136
+INFO : Retrieving Multisense data for word: no
+INFO : BN_request_sender.requests_counter= 186
+INFO : Not of language : en Element : 'bokmaalandnynorsk'
+INFO : BN_request_sender.requests_counter= 226
+INFO : Eliminating quasi-duplicate definitions for the senses of the word: Chronicles
+INFO : Eliminating quasi-duplicate examples for the senses of the word: Chronicles
+INFO : Lemmatizing synonyms for the senses of the word: Chronicles
+INFO : Lemmatizing antonyms for the senses of the word: Chronicles
+INFO : Eliminating quasi-duplicate definitions for the senses of the word: III
+INFO : Eliminating quasi-duplicate examples for the senses of the word: III
+INFO : Lemmatizing synonyms for the senses of the word: III
+INFO : Lemmatizing antonyms for the senses of the word: III
+INFO : Eliminating quasi-duplicate definitions for the senses of the word: =
+INFO : Eliminating quasi-duplicate examples for the senses of the word: =
+INFO : Lemmatizing synonyms for the senses of the word: =
+INFO : Lemmatizing antonyms for the senses of the word: =
+INFO : Eliminating quasi-duplicate definitions for the senses of the word: Valkyria
+INFO : Eliminating quasi-duplicate examples for the senses of the word: Valkyria
+INFO : Lemmatizing synonyms for the senses of the word: Valkyria
+INFO : Lemmatizing antonyms for the senses of the word: Valkyria
+INFO : Eliminating quasi-duplicate definitions for the senses of the word: Imperial
+INFO : Eliminating quasi-duplicate examples for the senses of the word: Imperial
+INFO : Lemmatizing synonyms for the senses of the word: Imperial
+INFO : Lemmatizing antonyms for the senses of the word: Imperial
+INFO : Eliminating quasi-duplicate definitions for the senses of the word: Portable
+INFO : Eliminating quasi-duplicate examples for the senses of the word: Portable
+INFO : Lemmatizing synonyms for the senses of the word: Portable
+INFO : Lemmatizing antonyms for the senses of the word: Portable
+INFO : Eliminating quasi-duplicate definitions for the senses of the word: runs
+INFO : Eliminating quasi-duplicate examples for the senses of the word: runs
+INFO : Lemmatizing synonyms for the senses of the word: runs
+INFO : Lemmatizing antonyms for the senses of the word: runs
+INFO : Eliminating quasi-duplicate definitions for the senses of the word: nation
+INFO : Duplicate element found: a federation of tribes (especially native american tribes).
+INFO : Eliminating quasi-duplicate examples for the senses of the word: nation
+INFO : Lemmatizing synonyms for the senses of the word: nation
+INFO : Lemmatizing antonyms for the senses of the word: nation
+INFO : Eliminating quasi-duplicate definitions for the senses of the word: War
+INFO : Eliminating quasi-duplicate examples for the senses of the word: War
+INFO : Lemmatizing synonyms for the senses of the word: War
+INFO : Lemmatizing antonyms for the senses of the word: War
+INFO : Eliminating quasi-duplicate definitions for the senses of the word: no
+INFO : Eliminating quasi-duplicate examples for the senses of the word: no
+INFO : Lemmatizing synonyms for the senses of the word: no
+INFO : Lemmatizing antonyms for the senses of the word: no
+INFO : Selecting, sorting and naming the senses of the word: Chronicles
+INFO : Initial number of senses : 1
+INFO : Remaining senses: 1

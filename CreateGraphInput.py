@@ -39,7 +39,7 @@ def exe(do_reset=False):
     if do_reset:
         reset()
     PHR.setup_phrased_corpus(os.path.join(F.FOLDER_WT2, F.WT_TRAIN_FILE),
-                             os.path.join(F.FOLDER_INPUT, F.TEMPORARY_PHRASED_CORPUS),
+                             os.path.join(F.FOLDER_INPUT, F.PHRASED_TRAINING_CORPUS),
                              min_freq=40, score_threshold=120) # bigrams of phrases
     VOC.get_vocabulary_df(os.path.join(F.FOLDER_VOCABULARY, F.VOCAB_WT2_FILE),
                           os.path.join(F.FOLDER_INPUT, F.PHRASED_TRAINING_CORPUS), min_count=5)
