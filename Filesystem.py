@@ -3,6 +3,7 @@ import os
 FOLDER_INPUT = 'InputData'
 FOLDER_WORD_EMBEDDINGS = 'WordEmbeddings'
 FOLDER_VOCABULARY = 'Vocabulary'
+FOLDER_DISTILBERT_MODEL = 'Finetuned_DistilBERT'
 
 BN_WORD_INTROS = 'BabelNet_word_intros'
 BN_SYNSET_DATA = 'BabelNet_synset_data'

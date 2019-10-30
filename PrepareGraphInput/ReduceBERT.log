@@ -1,0 +1,107 @@
+INFO : Loading features from cached file TextCorpuses/wikitext-2/cached_lm_510_wiki.train.tokens
+INFO : ***** Running training *****
+INFO :   Num examples = 4691
+INFO :   Num Epochs = 10
+INFO :   Total train batch size = 4
+INFO :   Gradient Accumulation steps = 1
+INFO :   Total optimization steps = 11730
+INFO : Loading features from cached file TextCorpuses/wikitext-2/cached_lm_510_wiki.valid.tokens
+INFO : ***** Running evaluation  *****
+INFO :   Num examples = 510
+INFO :   Batch size (spread over all GPUs) = 4
+INFO : ***** Eval results  *****
+INFO :   perplexity = tensor(0.9482)
+INFO : Saving checkpoint to output location: WordEmbeddings/Finetuned_DistilBERT/checkpoint-50
+INFO : Configuration saved in WordEmbeddings/Finetuned_DistilBERT/checkpoint-50/config.json
+INFO : Model weights saved in WordEmbeddings/Finetuned_DistilBERT/checkpoint-50/pytorch_model.bin
+INFO : Saving model checkpoint to WordEmbeddings/Finetuned_DistilBERT/checkpoint-50
+INFO : Loading features from cached file TextCorpuses/wikitext-2/cached_lm_510_wiki.valid.tokens
+INFO : ***** Running evaluation  *****
+INFO :   Num examples = 510
+INFO :   Batch size (spread over all GPUs) = 4
+INFO : ***** Eval results  *****
+INFO :   perplexity = tensor(0.9442)
+INFO : Saving checkpoint to output location: WordEmbeddings/Finetuned_DistilBERT/checkpoint-100
+INFO : Configuration saved in WordEmbeddings/Finetuned_DistilBERT/checkpoint-100/config.json
+INFO : Model weights saved in WordEmbeddings/Finetuned_DistilBERT/checkpoint-100/pytorch_model.bin
+INFO : Saving model checkpoint to WordEmbeddings/Finetuned_DistilBERT/checkpoint-100
+INFO : Loading features from cached file TextCorpuses/wikitext-2/cached_lm_510_wiki.valid.tokens
+INFO : ***** Running evaluation  *****
+INFO :   Num examples = 510
+INFO :   Batch size (spread over all GPUs) = 4
+INFO : ***** Eval results  *****
+INFO :   perplexity = tensor(0.9401)
+INFO : Saving checkpoint to output location: WordEmbeddings/Finetuned_DistilBERT/checkpoint-150
+INFO : Configuration saved in WordEmbeddings/Finetuned_DistilBERT/checkpoint-150/config.json
+INFO : Model weights saved in WordEmbeddings/Finetuned_DistilBERT/checkpoint-150/pytorch_model.bin
+INFO : Saving model checkpoint to WordEmbeddings/Finetuned_DistilBERT/checkpoint-150
+INFO : Loading features from cached file TextCorpuses/wikitext-2/cached_lm_510_wiki.valid.tokens
+INFO : ***** Running evaluation  *****
+INFO :   Num examples = 510
+INFO :   Batch size (spread over all GPUs) = 4
+INFO : ***** Eval results  *****
+INFO :   perplexity = tensor(0.9359)
+INFO : Saving checkpoint to output location: WordEmbeddings/Finetuned_DistilBERT/checkpoint-200
+INFO : Configuration saved in WordEmbeddings/Finetuned_DistilBERT/checkpoint-200/config.json
+INFO : Model weights saved in WordEmbeddings/Finetuned_DistilBERT/checkpoint-200/pytorch_model.bin
+INFO : Saving model checkpoint to WordEmbeddings/Finetuned_DistilBERT/checkpoint-200
+INFO : Loading features from cached file TextCorpuses/wikitext-2/cached_lm_510_wiki.valid.tokens
+INFO : ***** Running evaluation  *****
+INFO :   Num examples = 510
+INFO :   Batch size (spread over all GPUs) = 4
+INFO : ***** Eval results  *****
+INFO :   perplexity = tensor(0.9317)
+INFO : Saving checkpoint to output location: WordEmbeddings/Finetuned_DistilBERT/checkpoint-250
+INFO : Configuration saved in WordEmbeddings/Finetuned_DistilBERT/checkpoint-250/config.json
+INFO : Model weights saved in WordEmbeddings/Finetuned_DistilBERT/checkpoint-250/pytorch_model.bin
+INFO : Saving model checkpoint to WordEmbeddings/Finetuned_DistilBERT/checkpoint-250
+INFO : Loading features from cached file TextCorpuses/wikitext-2/cached_lm_510_wiki.valid.tokens
+INFO : ***** Running evaluation  *****
+INFO :   Num examples = 510
+INFO :   Batch size (spread over all GPUs) = 4
+INFO : ***** Eval results  *****
+INFO :   perplexity = tensor(0.9274)
+INFO : Saving checkpoint to output location: WordEmbeddings/Finetuned_DistilBERT/checkpoint-300
+INFO : Configuration saved in WordEmbeddings/Finetuned_DistilBERT/checkpoint-300/config.json
+INFO : Model weights saved in WordEmbeddings/Finetuned_DistilBERT/checkpoint-300/pytorch_model.bin
+INFO : Saving model checkpoint to WordEmbeddings/Finetuned_DistilBERT/checkpoint-300
+INFO : Loading features from cached file TextCorpuses/wikitext-2/cached_lm_510_wiki.valid.tokens
+INFO : ***** Running evaluation  *****
+INFO :   Num examples = 510
+INFO :   Batch size (spread over all GPUs) = 4
+INFO : ***** Eval results  *****
+INFO :   perplexity = tensor(0.9230)
+INFO : Saving checkpoint to output location: WordEmbeddings/Finetuned_DistilBERT/checkpoint-350
+INFO : Configuration saved in WordEmbeddings/Finetuned_DistilBERT/checkpoint-350/config.json
+INFO : Model weights saved in WordEmbeddings/Finetuned_DistilBERT/checkpoint-350/pytorch_model.bin
+INFO : Saving model checkpoint to WordEmbeddings/Finetuned_DistilBERT/checkpoint-350
+INFO : Loading features from cached file TextCorpuses/wikitext-2/cached_lm_510_wiki.valid.tokens
+INFO : ***** Running evaluation  *****
+INFO :   Num examples = 510
+INFO :   Batch size (spread over all GPUs) = 4
+INFO : ***** Eval results  *****
+INFO :   perplexity = tensor(0.9186)
+INFO : Saving checkpoint to output location: WordEmbeddings/Finetuned_DistilBERT/checkpoint-400
+INFO : Configuration saved in WordEmbeddings/Finetuned_DistilBERT/checkpoint-400/config.json
+INFO : Model weights saved in WordEmbeddings/Finetuned_DistilBERT/checkpoint-400/pytorch_model.bin
+INFO : Saving model checkpoint to WordEmbeddings/Finetuned_DistilBERT/checkpoint-400
+INFO : Loading features from cached file TextCorpuses/wikitext-2/cached_lm_510_wiki.valid.tokens
+INFO : ***** Running evaluation  *****
+INFO :   Num examples = 510
+INFO :   Batch size (spread over all GPUs) = 4
+INFO : ***** Eval results  *****
+INFO :   perplexity = tensor(0.9142)
+INFO : Saving checkpoint to output location: WordEmbeddings/Finetuned_DistilBERT/checkpoint-450
+INFO : Configuration saved in WordEmbeddings/Finetuned_DistilBERT/checkpoint-450/config.json
+INFO : Model weights saved in WordEmbeddings/Finetuned_DistilBERT/checkpoint-450/pytorch_model.bin
+INFO : Saving model checkpoint to WordEmbeddings/Finetuned_DistilBERT/checkpoint-450
+INFO : Loading features from cached file TextCorpuses/wikitext-2/cached_lm_510_wiki.valid.tokens
+INFO : ***** Running evaluation  *****
+INFO :   Num examples = 510
+INFO :   Batch size (spread over all GPUs) = 4
+INFO : ***** Eval results  *****
+INFO :   perplexity = tensor(0.9098)
+INFO : Saving checkpoint to output location: WordEmbeddings/Finetuned_DistilBERT/checkpoint-500
+INFO : Configuration saved in WordEmbeddings/Finetuned_DistilBERT/checkpoint-500/config.json
+INFO : Model weights saved in WordEmbeddings/Finetuned_DistilBERT/checkpoint-500/pytorch_model.bin
+INFO : Saving model checkpoint to WordEmbeddings/Finetuned_DistilBERT/checkpoint-500
