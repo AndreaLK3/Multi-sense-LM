@@ -13,7 +13,7 @@ INFO : Model config {
   "n_layers": 6,
   "num_labels": 2,
   "output_attentions": false,
-  "output_hidden_states": false,
+  "output_hidden_states": true,
   "output_past": true,
   "pruned_heads": {},
   "qa_dropout": 0.1,
@@ -26,8 +26,62 @@ INFO : Model config {
 }
 
 INFO : loading weights file https://s3.amazonaws.com/models.huggingface.co/bert/distilbert-base-uncased-pytorch_model.bin from cache at /Users/andrea/.cache/torch/transformers/7b8a8f0b21c4e7f6962451c9370a5d9af90372a5f64637a251f2de154d0fc72c.c2015533705b9dff680ae707e205a35e2860e8d148b45d35085419d74fe57ac5
-INFO : torch.Size([1, 3, 768])
-INFO : torch.Size([1, 9, 768])
-INFO : torch.Size([1, 3, 768])
-INFO : torch.Size([1, 34, 768])
-INFO : torch.Size([1, 34, 768])
+INFO : Reading in next line.  1 tokens
+INFO : Attention mask shape: torch.Size([128]); 1s = 3 ; 0s= 125
+INFO : torch.Size([1, 128, 768])
+INFO : Dimension of (d)BERT sentence embedding = torch.Size([1, 768])
+INFO : Dimension of autoencoded reconstructed sentence embedding = torch.Size([1, 768])
+INFO : Cosine distance reconstruction loss = tensor(0., grad_fn=<MeanBackward0>)
+***
+
+INFO : Reading in next line.  7 tokens
+INFO : Attention mask shape: torch.Size([128]); 1s = 9 ; 0s= 119
+INFO : torch.Size([1, 128, 768])
+INFO : Dimension of (d)BERT sentence embedding = torch.Size([1, 768])
+INFO : Dimension of autoencoded reconstructed sentence embedding = torch.Size([1, 768])
+INFO : Cosine distance reconstruction loss = tensor(0., grad_fn=<MeanBackward0>)
+***
+
+INFO : Reading in next line.  1 tokens
+INFO : Attention mask shape: torch.Size([128]); 1s = 3 ; 0s= 125
+INFO : torch.Size([1, 128, 768])
+INFO : Dimension of (d)BERT sentence embedding = torch.Size([1, 768])
+INFO : Dimension of autoencoded reconstructed sentence embedding = torch.Size([1, 768])
+INFO : Cosine distance reconstruction loss = tensor(0., grad_fn=<MeanBackward0>)
+***
+
+INFO : Reading in next line.  164 tokens
+INFO : Line length = 126. Sending the part beyond 126 to the reading buffer.
+INFO : Attention mask shape: torch.Size([128]); 1s = 128 ; 0s= 0
+INFO : torch.Size([1, 128, 768])
+INFO : Dimension of (d)BERT sentence embedding = torch.Size([1, 768])
+INFO : Dimension of autoencoded reconstructed sentence embedding = torch.Size([1, 768])
+INFO : Cosine distance reconstruction loss = tensor(0., grad_fn=<MeanBackward0>)
+***
+
+INFO : Retrieving the remaining 38 tokens from the buffer
+INFO : Attention mask shape: torch.Size([128]); 1s = 40 ; 0s= 88
+INFO : torch.Size([1, 128, 768])
+INFO : Dimension of (d)BERT sentence embedding = torch.Size([1, 768])
+INFO : Dimension of autoencoded reconstructed sentence embedding = torch.Size([1, 768])
+INFO : Cosine distance reconstruction loss = tensor(0., grad_fn=<MeanBackward0>)
+***
+
+INFO : Reading in next line.  109 tokens
+INFO : Attention mask shape: torch.Size([128]); 1s = 111 ; 0s= 17
+INFO : torch.Size([1, 128, 768])
+INFO : Dimension of (d)BERT sentence embedding = torch.Size([1, 768])
+INFO : Dimension of autoencoded reconstructed sentence embedding = torch.Size([1, 768])
+INFO : Cosine distance reconstruction loss = tensor(0., grad_fn=<MeanBackward0>)
+***
+
+INFO : Reading in next line.  110 tokens
+INFO : Attention mask shape: torch.Size([128]); 1s = 112 ; 0s= 16
+INFO : torch.Size([1, 128, 768])
+INFO : Dimension of (d)BERT sentence embedding = torch.Size([1, 768])
+INFO : Dimension of autoencoded reconstructed sentence embedding = torch.Size([1, 768])
+INFO : Cosine distance reconstruction loss = tensor(0., grad_fn=<MeanBackward0>)
+***
+
+INFO : Reading in next line.  1 tokens
+INFO : Attention mask shape: torch.Size([128]); 1s = 3 ; 0s= 125
