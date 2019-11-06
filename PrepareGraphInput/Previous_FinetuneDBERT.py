@@ -75,18 +75,41 @@ def mask_last_token(inputs, tokenizer):
     return inputs, labels
 
 
+### For debugging, also trying to use this...
+def mask_tokens(inputs, tokenizer):
+    """ Prepare masked tokens inputs/labels for masked language modeling: 80% MASK, 10% random, 10% original. """
+    labels = inputs.clone()
+    # We sample a few tokens in each sequence for masked-LM training (with probability args.mlm_probability defaults to 0.15 in Bert/RoBERTa)
+    probability_matrix = torch.full(labels.shape,0.15)
+    special_tokens_mask = [tokenizer.get_special_tokens_mask(val, already_has_special_tokens=True) for val in
+                           labels.tolist()]
+    probability_matrix.masked_fill_(torch.tensor(special_tokens_mask, dtype=torch.bool), value=0.0)
+    masked_indices = torch.bernoulli(probability_matrix).bool()
+    labels[~masked_indices] = -1  # We only compute loss on masked tokens
 
-class ModifiedDistilBERT:
+    # 80% of the time, we replace masked input tokens with tokenizer.mask_token ([MASK])
+    indices_replaced = torch.bernoulli(torch.full(labels.shape, 0.8)).bool() & masked_indices
+    inputs[indices_replaced] = tokenizer.convert_tokens_to_ids(tokenizer.mask_token)
+
+    # 10% of the time, we replace masked input tokens with random word
+    indices_random = torch.bernoulli(torch.full(labels.shape, 0.5)).bool() & masked_indices & ~indices_replaced
+    random_words = torch.randint(len(tokenizer), labels.shape, dtype=torch.long)
+    inputs[indices_random] = random_words[indices_random]
+
+    # The rest of the time (10% of the time) we keep the masked input tokens unchanged
+    return inputs, labels
+
+
+class TunedDistilBERT:
 
     def __init__(self, output_dir=os.path.join(F.FOLDER_WORD_EMBEDDINGS, F.FOLDER_DISTILBERT_MODEL)):
         # Constructing the architecture: DistilBERT + last linear layer L_768to300
         self.tokenizer = transformers.DistilBertTokenizer.from_pretrained('distilbert-base-uncased')
         self.core_model = transformers.DistilBertModel.from_pretrained('distilbert-base-uncased')
 
-        #self.model = nn.Sequential(self.core_model,
-        #                           nn.Linear(BERT_EMBEDDINGS_DIMENSIONS,TARGET_DIMENSIONS),
-        #                           nn.Softmax())
-        self.model = self.core_model
+        self.model = nn.Sequential(self.core_model,
+                                   nn.Linear(BERT_EMBEDDINGS_DIMENSIONS,TARGET_DIMENSIONS),
+                                   nn.CrossEntropyLoss())
 
         # Other parameters
         self.output_dir = output_dir
@@ -94,11 +117,11 @@ class ModifiedDistilBERT:
         self.n_gpu = torch.cuda.device_count()
         self.block_size = self.tokenizer.max_len_single_sentence
 
-        Utils.init_logging(os.path.join("PrepareGraphInput", "ReduceBERT.log"))
+        Utils.init_logging(os.path.join("PrepareGraphInput", "AdjustDistilBERT.log"))
 
 
     def train(self, train_txt_path=os.path.join(F.FOLDER_WT2, F.WT_TRAIN_FILE),
-              validation_txt_path=os.path.join(F.FOLDER_WT2, F.WT_VALID_FILE), num_train_epochs=10,
+              validation_txt_path=os.path.join(F.FOLDER_WT2, F.WT_VALID_FILE), num_train_epochs=1, #5
               learning_rate = 5e-5, adam_epsilon =1e-8, batch_size=4, logging_steps=50, max_grad_norm=1.0):
 
         tb_writer = SummaryWriter()
@@ -150,19 +173,21 @@ class ModifiedDistilBERT:
                 # we are finetuning a (Distil)BERT model on Language Modeling --> we use mlm
                 inputs = inputs.to(self.device)
                 labels = labels.to(self.device)
-                logging.debug("inputs.shape=" + str(inputs.shape))
+                logging.info("inputs.shape=" + str(inputs.shape))
+                logging.info("labels.shape=" + str(labels.shape))
 
                 model.train() # setting training mode
+                #outputs = model(torch.tensor([1,1,1]), torch.tensor([1,1,1]))
                 outputs = model(inputs, labels) # masked_lm_labels if args.mlm else model(inputs, labels=labels)
                 loss = outputs[0]  # model outputs are always tuple in transformers (see doc)
 
-                # if self.n_gpu > 1:
-                #     loss = loss.mean()  # mean() to average on multi-gpu parallel training
+                if self.n_gpu > 1:
+                     loss = loss.mean()  # mean() to average on multi-gpu parallel training
                 # # if args.gradient_accumulation_steps > 1:
                 # #    loss = loss / args.gradient_accumulation_steps
                 # logging.info("loss.shape=" + str(loss.shape))
                 # RuntimeError: grad can be implicitly created only for scalar outputs
-                loss = loss.mean()
+                #loss = loss.mean()
                 loss.backward()
 
                 tr_loss += loss.item()

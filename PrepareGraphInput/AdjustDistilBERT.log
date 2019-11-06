@@ -1,0 +1,9 @@
+INFO : Loading features from cached file TextCorpuses/wikitext-2/cached_lm_510_wiki.train.tokens
+INFO : ***** Running training *****
+INFO :   Num examples = 4691
+INFO :   Num Epochs = 1
+INFO :   Total train batch size = 4
+INFO :   Gradient Accumulation steps = 1
+INFO :   Total optimization steps = 1173
+INFO : inputs.shape=torch.Size([4, 512])
+INFO : labels.shape=torch.Size([4, 512])

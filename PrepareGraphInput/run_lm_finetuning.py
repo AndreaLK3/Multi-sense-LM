@@ -20,7 +20,7 @@ using a masked language modeling (MLM) loss.
 """
 
 from __future__ import absolute_import, division, print_function
-
+import sys
 import argparse
 import glob
 import logging
@@ -35,10 +35,10 @@ import torch
 from torch.utils.data import DataLoader, Dataset, SequentialSampler, RandomSampler
 from torch.utils.data.distributed import DistributedSampler
 
-# try:
-from torch.utils.tensorboard import SummaryWriter
-# except:
-#     from tensorboardX import SummaryWriter
+try:
+    from torch.utils.tensorboard import SummaryWriter
+except:
+    from tensorboardX import SummaryWriter
 
 from tqdm import tqdm, trange
 
@@ -551,4 +551,5 @@ def main():
 
 
 if __name__ == "__main__":
+
     main()

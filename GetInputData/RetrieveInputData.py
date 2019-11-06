@@ -32,8 +32,9 @@ def continue_retrieving_data():
         logging.info("Retrieving Multisense data for word: " + str(word))
         logging.info("BN_request_sender.requests_counter= " + str(BN_request_sender.requests_counter))
         vocabulary_chunk.append(word)
-
+        # ********* core function invocation *********
         GWD.getAndSave_multisense_data(word, BN_request_sender, open_storage_files)
+        # *********
         current_index = current_index + 1
 
     logging.info("BN_request_sender.requests_counter= " + str(BN_request_sender.requests_counter))

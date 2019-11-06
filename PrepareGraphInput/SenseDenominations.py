@@ -44,8 +44,6 @@ def get_denominations(sorted_senses_lts):
 
 
 def eliminate_secondary_senses(word_element_df, bnids_denoms_dict):
-    if (word_element_df.empty):
-        return word_element_df
     word_element_df_named = word_element_df.replace(to_replace={'bn_id' : bnids_denoms_dict}, value=None)
     row_check = [(row.bn_id[0] != 'b') for row in word_element_df_named.itertuples()]
     word_element_df_named = word_element_df_named[row_check]
@@ -89,13 +87,9 @@ def assign_senses_to_word(word, input_dbs, output_dbs):
     bnids_denoms_dict = get_denominations(sorted_senses_lts)
     logging.info("Remaining senses: " + str(len(bnids_denoms_dict.keys())))
 
-
-    word_dfs_named = [eliminate_secondary_senses(word_dfs[i], bnids_denoms_dict)
-                    for i in range(len(word_dfs))]
-
-    for i in range(len(Utils.CATEGORIES)):
-
-
-        output_dbs[i].append(key=Utils.CATEGORIES[i], value=word_dfs_named[i],
+    for i in range(len(word_dfs)):
+        if not(word_dfs[i].empty):
+            word_dfs_named = [eliminate_secondary_senses(word_dfs[i], bnids_denoms_dict)]
+            output_dbs[i].append(key=Utils.CATEGORIES[i], value=word_dfs_named,
                          min_itemsize={key:hdf5_min_itemsizes[key]
                                        for key in hdf5_min_itemsizes.keys() if key in ['word', 'sense', Utils.CATEGORIES[i]]})

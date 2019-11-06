@@ -1,17 +1,6 @@
-INFO : *** Phrases have not been added to the training corpus. Must create Phrases model, etc.
-INFO : Phrases: reading in corpus... line n.10000
-INFO : Phrases: reading in corpus... line n.20000
-INFO : Phrases: reading in corpus... line n.30000
-INFO : Number of tokens in corpus=2207934 	Parameters for Phrases: min_count=40 	threshold=120
-INFO : Phrases: Creating the model...
-INFO : collecting all words and their counts
-INFO : PROGRESS: at sentence #0, processed 0 words and 0 word types
-INFO : PROGRESS: at sentence #10000, processed 596881 words and 248982 word types
-INFO : PyTorch version 1.2.0 available.
-INFO : Better speed can be achieved with apex installed from https://www.github.com/nvidia/apex .
-INFO : https://s3.amazonaws.com/models.huggingface.co/bert/bert-base-uncased-vocab.txt not found in cache or force_download set to True, downloading to /var/folders/rm/0xzw3byx6c73zw7tdm3ljks80000gp/T/tmp4sbfg9fl
-INFO : copying /var/folders/rm/0xzw3byx6c73zw7tdm3ljks80000gp/T/tmp4sbfg9fl to cache at /Users/andrea/.cache/torch/transformers/26bc1ad6c0ac742e9b52263248f6d0f00068293b33709fae12320c0e35ccfbbb.542ce4285a40d23a559526243235df47c5f75c197f04f37d1a0c124c32c9a084
-INFO : creating metadata file for /Users/andrea/.cache/torch/transformers/26bc1ad6c0ac742e9b52263248f6d0f00068293b33709fae12320c0e35ccfbbb.542ce4285a40d23a559526243235df47c5f75c197f04f37d1a0c124c32c9a084
-INFO : removing temp file /var/folders/rm/0xzw3byx6c73zw7tdm3ljks80000gp/T/tmp4sbfg9fl
-INFO : loading file https://s3.amazonaws.com/models.huggingface.co/bert/bert-base-uncased-vocab.txt from cache at /Users/andrea/.cache/torch/transformers/26bc1ad6c0ac742e9b52263248f6d0f00068293b33709fae12320c0e35ccfbbb.542ce4285a40d23a559526243235df47c5f75c197f04f37d1a0c124c32c9a084
-INFO : loading file https://s3.amazonaws.com/models.huggingface.co/bert/bert-base-uncased-vocab.txt from cache at /Users/andrea/.cache/torch/transformers/26bc1ad6c0ac742e9b52263248f6d0f00068293b33709fae12320c0e35ccfbbb.542ce4285a40d23a559526243235df47c5f75c197f04f37d1a0c124c32c9a084
+INFO : *** The training corpus was already put through phrases-processing. Found at InputData/phrased_training_corpus.txt
+INFO : NumExpr defaulting to 8 threads.
+INFO : *** The vocabulary was loaded from the file Vocabulary/vocabulary_from_WikiText-2.h5
+INFO : 0
+INFO : Retrieving Multisense data for word: III
+INFO : BN_request_sender.requests_counter= 0
