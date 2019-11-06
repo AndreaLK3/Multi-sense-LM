@@ -60,20 +60,6 @@ class TextDataset(Dataset):
         return torch.tensor(self.examples[item])
 
 
-def mask_last_token(inputs, tokenizer):
-    """ Mask the last token preparing inputs and labels for standard language modeling. """
-    labels = inputs.clone()
-    rows = labels.shape[0]
-    columns = labels.shape[1]
-    mask_formasking = torch.tensor([[False if col != columns - 1 else True for col in range(columns)] for _row in range(rows)])
-    labels[~mask_formasking] = -1  # We only compute loss on masked tokens
-    print(labels)
-
-    # 100% of the time, we replace masked input tokens with tokenizer.mask_token ([MASK])
-    inputs[mask_formasking] = tokenizer.convert_tokens_to_ids(tokenizer.mask_token)
-
-    return inputs, labels
-
 
 ### For debugging, also trying to use this...
 def mask_tokens(inputs, tokenizer):
