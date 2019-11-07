@@ -25,3 +25,5 @@ VOCAB_WT103_FILE = 'vocabulary_from_WikiText-103.h5'
 
 VOCAB_CURRENT_INDEX_FILE = 'vocabulary_currentIndex.txt'
 
+
+ENCODER_MODEL = "Encoder_768to300_nn.model"

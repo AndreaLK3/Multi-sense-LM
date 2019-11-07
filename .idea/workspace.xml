@@ -2,12 +2,12 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="d35dca92-959c-489d-8a61-f337e4cce7fa" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Filesystem.py" beforeDir="false" afterPath="$PROJECT_DIR$/Filesystem.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Media/Task1_DeveloperDiary.docx" beforeDir="false" afterPath="$PROJECT_DIR$/Media/Task1_DeveloperDiary.docx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PrepareGraphInput/AdjustDistilBERT.log" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/PrepareGraphInput/Previous_FinetuneDBERT.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/PrepareGraphInput/TuneDBert.log" beforeDir="false" afterPath="$PROJECT_DIR$/PrepareGraphInput/TuneDBert.log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PrepareGraphInput/TunedDBert.py" beforeDir="false" afterPath="$PROJECT_DIR$/PrepareGraphInput/AutoEncoderDBERT.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PrepareGraphInput/run_lm_finetuning.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/PrepareGraphInput/AutoEncoderDBERT.py" beforeDir="false" afterPath="$PROJECT_DIR$/PrepareGraphInput/AutoEncoderDBERT.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PrepareGraphInput/TuneDBert.log" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/Utils.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -20,8 +20,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/PrepareGraphInput/EmbedWithBERT.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="432">
-              <caret line="36" column="43" lean-forward="true" selection-start-line="35" selection-start-column="4" selection-end-line="36" selection-end-column="43" />
+            <state relative-caret-position="405">
+              <caret line="36" column="43" selection-start-line="35" selection-start-column="4" selection-end-line="36" selection-end-column="43" />
               <folding>
                 <element signature="e#0#9#0" expanded="true" />
               </folding>
@@ -32,11 +32,32 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/PrepareGraphInput/AutoEncoderDBERT.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="459">
-              <caret line="138" column="16" selection-start-line="138" selection-start-column="16" selection-end-line="138" selection-end-column="16" />
+            <state relative-caret-position="70">
+              <caret line="95" lean-forward="true" selection-start-line="95" selection-end-line="95" />
               <folding>
                 <element signature="e#0#12#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Utils.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="178">
+              <caret line="117" column="30" lean-forward="true" selection-start-line="117" selection-start-column="30" selection-end-line="117" selection-end-column="30" />
+              <folding>
+                <element signature="e#0#14#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Filesystem.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="420">
+              <caret line="28" column="42" selection-start-line="28" selection-start-column="42" selection-end-line="28" selection-end-column="42" />
             </state>
           </provider>
         </entry>
@@ -64,9 +85,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>adam_eps</find>
-      <find>logger</find>
-      <find>batch_size</find>
       <find>logging_steps</find>
       <find>local_rank</find>
       <find>block_size</find>
@@ -84,7 +102,6 @@
       <find>512</find>
       <find>512510</find>
       <find>backwa</find>
-      <find>logging</find>
       <find>logging.</find>
       <find>gene</find>
       <find>tqdm</find>
@@ -94,11 +111,16 @@
       <find>tokenizer</find>
       <find>[SEP]</find>
       <find>torch.nn</find>
+      <find>logging</find>
+      <find>cuda</find>
+      <find>100</find>
+      <find>torch.cuda.empty_cache()</find>
     </findStrings>
     <replaceStrings>
       <replace>F</replace>
       <replace>logging</replace>
       <replace>nn</replace>
+      <replace>1</replace>
     </replaceStrings>
     <dirStrings>
       <dir>$PROJECT_DIR$</dir>
@@ -133,14 +155,12 @@
         <option value="$PROJECT_DIR$/Phrases.py" />
         <option value="$PROJECT_DIR$/PrepareGraphInput/Examples.py" />
         <option value="$PROJECT_DIR$/PrepareGraphInput/LemmatizeNyms.py" />
-        <option value="$PROJECT_DIR$/Utils.py" />
         <option value="$PROJECT_DIR$/GetInputData/BabelNet.py" />
         <option value="$PROJECT_DIR$/GetInputData/BabelNetRequests.py" />
         <option value="$PROJECT_DIR$/PrepareGraphInput/RemoveQuasiDuplicates.py" />
         <option value="$PROJECT_DIR$/Vocabulary/Vocabulary.py" />
         <option value="$PROJECT_DIR$/Vocabulary/Phrases.py" />
         <option value="$PROJECT_DIR$/PrepareGraphInput/PrepareInput.py" />
-        <option value="$PROJECT_DIR$/Filesystem.py" />
         <option value="$PROJECT_DIR$/PrepareGraphInput/RunLMFinetuning.py" />
         <option value="$PROJECT_DIR$/PrepareGraphInput/SenseDenominations.py" />
         <option value="$PROJECT_DIR$/GetInputData/RetrieveInputData.py" />
@@ -152,11 +172,13 @@
         <option value="$PROJECT_DIR$/PrepareGraphInput/FinetuneDBERT.py" />
         <option value="$PROJECT_DIR$/PrepareGraphInput/Previous_FinetuneDBERT.py" />
         <option value="$PROJECT_DIR$/PrepareGraphInput/TunedDBert.py" />
+        <option value="$PROJECT_DIR$/Filesystem.py" />
+        <option value="$PROJECT_DIR$/Utils.py" />
         <option value="$PROJECT_DIR$/PrepareGraphInput/AutoEncoderDBERT.py" />
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds" extendedState="6">
+  <component name="ProjectFrameBounds">
     <option name="y" value="23" />
     <option name="width" value="1440" />
     <option name="height" value="806" />
@@ -166,7 +188,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -193,6 +214,7 @@
           <select />
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -298,13 +320,12 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="23" width="1920" height="985" extended-state="6" />
+    <frame x="0" y="23" width="1440" height="806" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.10383387" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.105150215" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
-      <window_info anchor="bottom" id="Inspection Results" weight="0.32922733" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.31914893" />
       <window_info anchor="bottom" id="Run" order="2" />
@@ -315,7 +336,8 @@
       <window_info anchor="bottom" id="Version Control" order="7" weight="0.3299435" />
       <window_info anchor="bottom" id="Terminal" order="8" weight="0.3277311" />
       <window_info anchor="bottom" id="Event Log" order="9" side_tool="true" />
-      <window_info active="true" anchor="bottom" id="Python Console" order="10" visible="true" weight="0.32362822" />
+      <window_info active="true" anchor="bottom" id="Python Console" order="10" visible="true" weight="0.32352942" />
+      <window_info anchor="bottom" id="Inspection Results" order="11" weight="0.32922733" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
@@ -481,16 +503,6 @@
       </provider>
     </entry>
     <entry file="file://$USER_HOME$/anaconda3/lib/python3.7/site-packages/torch/nn/modules/module.py" />
-    <entry file="file://$PROJECT_DIR$/Utils.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="210">
-          <caret line="19" column="1" selection-start-line="19" selection-start-column="1" selection-end-line="19" selection-end-column="1" />
-          <folding>
-            <element signature="e#0#14#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Vocabulary/Vocabulary.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="119">
@@ -515,13 +527,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Filesystem.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="75">
-          <caret line="5" column="48" selection-start-line="5" selection-start-column="48" selection-end-line="5" selection-end-column="48" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/CreateGraphInput.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="228">
@@ -532,48 +537,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/PrepareGraphInput/SenseDenominations.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1365">
-          <caret line="94" column="78" selection-start-line="94" selection-start-column="78" selection-end-line="94" selection-end-column="78" />
-          <folding>
-            <element signature="e#0#12#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/PrepareGraphInput/run_lm_finetuning.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="924">
-          <caret line="82" column="114" lean-forward="true" selection-start-line="76" selection-start-column="12" selection-end-line="82" selection-end-column="114" />
-          <folding>
-            <element signature="e#971#1035#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/PrepareGraphInput/Previous_FinetuneDBERT.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="5">
-          <caret line="52" column="47" lean-forward="true" selection-start-line="52" selection-start-column="47" selection-end-line="52" selection-end-column="47" />
-          <folding>
-            <element signature="e#0#19#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/PrepareGraphInput/run_lm_finetuning.py" />
+    <entry file="file://$PROJECT_DIR$/PrepareGraphInput/Previous_FinetuneDBERT.py" />
     <entry file="file://$PROJECT_DIR$/PrepareGraphInput/eval_results.txt">
       <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/PrepareGraphInput/EmbedWithBERT.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="432">
-          <caret line="36" column="43" lean-forward="true" selection-start-line="35" selection-start-column="4" selection-end-line="36" selection-end-column="43" />
-          <folding>
-            <element signature="e#0#9#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
     </entry>
     <entry file="file://$USER_HOME$/opt/anaconda3/lib/python3.7/site-packages/transformers/modeling_distilbert.py">
       <provider selected="true" editor-type-id="text-editor">
@@ -589,10 +556,47 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/PrepareGraphInput/EmbedWithBERT.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="405">
+          <caret line="36" column="43" selection-start-line="35" selection-start-column="4" selection-end-line="36" selection-end-column="43" />
+          <folding>
+            <element signature="e#0#9#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Filesystem.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="420">
+          <caret line="28" column="42" selection-start-line="28" selection-start-column="42" selection-end-line="28" selection-end-column="42" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/PrepareGraphInput/SenseDenominations.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1365">
+          <caret line="94" column="78" selection-start-line="94" selection-start-column="78" selection-end-line="94" selection-end-column="78" />
+          <folding>
+            <element signature="e#0#12#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Utils.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="178">
+          <caret line="117" column="30" lean-forward="true" selection-start-line="117" selection-start-column="30" selection-end-line="117" selection-end-column="30" />
+          <folding>
+            <element signature="e#0#14#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/PrepareGraphInput/AutoEncoderDBERT.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="459">
-          <caret line="138" column="16" selection-start-line="138" selection-start-column="16" selection-end-line="138" selection-end-column="16" />
+        <state relative-caret-position="70">
+          <caret line="95" lean-forward="true" selection-start-line="95" selection-end-line="95" />
           <folding>
             <element signature="e#0#12#0" expanded="true" />
           </folding>

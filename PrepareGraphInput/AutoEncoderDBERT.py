@@ -5,11 +5,13 @@ import os
 import Filesystem as F
 import Utils
 import logging
-
+import numpy as np
+import time
 
 PADDED_WINDOW_SIZE = 128
 BERT_DIMENSIONS = 768
 TARGET_DIMENSIONS = 300
+DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 class TextEncoder():
     def __init__(self, tokenizer, txt_fpath):
@@ -22,7 +24,7 @@ class TextEncoder():
     def __next__(self):
 
         if len(self.prev_input_buffer) > 0:
-            logging.info("Retrieving the remaining " + str(len(self.prev_input_buffer)) + " tokens from the buffer")
+            logging.debug("Retrieving the remaining " + str(len(self.prev_input_buffer)) + " tokens from the buffer")
             self.tokens = self.prev_input_buffer
             self.prev_input_buffer = [] # reset buffer
         else:
@@ -30,13 +32,13 @@ class TextEncoder():
             if self.text_line == '':
                 raise StopIteration
             self.tokens = self.tokenizer.tokenize(self.text_line)
-            logging.info(
+            logging.debug(
                 "Reading in next line.  " + str(len(self.tokens)) + " tokens")
 
         self.actual_length = min(len(self.tokens)+2, PADDED_WINDOW_SIZE) # used for the attention mask
 
         if len(self.tokens) > PADDED_WINDOW_SIZE - 2:
-            logging.info("Line length = " + str(len(self.tokenized_text)) +
+            logging.debug("Line length = " + str(len(self.tokenized_text)) +
                          ". Sending the part beyond " + str(PADDED_WINDOW_SIZE  -2) + " to the reading buffer.")
             self.prev_input_buffer = self.tokens[self.i_pointer + PADDED_WINDOW_SIZE - 2:]
 
@@ -80,10 +82,10 @@ class SentenceEmbeddingDecoder(nn.Module):
 
 
 class SentenceEmbeddingAutoEncoder(nn.Module):
-    def __init__(self):
+    def __init__(self, encoder, decoder):
         super().__init__()
-        self.encoder = SentenceEmbeddingEncoder()
-        self.decoder = SentenceEmbeddingDecoder()
+        self.encoder = encoder
+        self.decoder = decoder
 
     def forward(self, sentence_d768):
         self.sentence_d300 = self.encoder(sentence_d768)
@@ -93,55 +95,126 @@ class SentenceEmbeddingAutoEncoder(nn.Module):
 
 
 
+
+def evaluate(autoencoder_model, tokenizer, pretrained_model, valid_txt_fpath):
+
+    autoencoder_model.eval()
+    corpus_reader = TextEncoder(tokenizer, valid_txt_fpath)
+    sentences_cosine_distance_ls = []
+
+    try:
+        step = 0;
+        while True:
+            logging.info("\n****\n Evaluation iteration n. " + str(step))
+            logging.info("1) GPU usage: " + str(Utils.get_gpu_memory_map()))
+
+            encoded_window, nonpadded_length = corpus_reader.__next__() # Must refactor to eliminate code duplication
+            logging.info("2) GPU usage: " + str(Utils.get_gpu_memory_map()))
+            nextline_input_ids = torch.tensor(encoded_window).unsqueeze(0).to(DEVICE)  # Batch size 1
+            logging.info("3) GPU usage: " + str(Utils.get_gpu_memory_map()))
+            att_mask = torch.tensor([1] * nonpadded_length + [0] * (PADDED_WINDOW_SIZE - nonpadded_length)).to(DEVICE)
+            logging.info("4) GPU usage: " + str(Utils.get_gpu_memory_map()))
+            dbert_outputs = pretrained_model(nextline_input_ids, attention_mask=att_mask)
+            logging.info("5) GPU usage: " + str(Utils.get_gpu_memory_map()))
+            last_hidden_states = dbert_outputs[0]  # The last hidden-state is the first element of the output tuple
+            logging.info("6) GPU usage: " + str(Utils.get_gpu_memory_map()))
+            sentence_embedding = torch.mean(last_hidden_states, dim=1)[0].unsqueeze(0)  # batch size 1
+            logging.info("7) GPU usage: " + str(Utils.get_gpu_memory_map()))
+
+            autoenc_output = autoencoder_model(sentence_embedding)
+            logging.info("8) GPU usage: " + str(Utils.get_gpu_memory_map()))
+            sentences_cosine_distance = nn.functional.cosine_similarity(sentence_embedding, autoenc_output)
+            logging.info("9) GPU usage: " + str(Utils.get_gpu_memory_map()))
+            sentences_cosine_distance_ls.append(sentences_cosine_distance)
+            logging.info("10) GPU usage: " + str(Utils.get_gpu_memory_map()))
+            step = step + 1
+            torch.cuda.empty_cache()
+
+    except StopIteration:
+        avg_distance_loss = np.average(sentences_cosine_distance_ls)
+
+        logging.info("Cosine distance's reconstruction loss on the validation dataset = " + str(avg_distance_loss))
+        return avg_distance_loss
+
+
+
 def exe():
-    Utils.init_logging(os.path.join("PrepareGraphInput","TuneDBert.log"))
+    Utils.init_logging(os.path.join("PrepareGraphInput","AutoEncoderDBERT.log"))
+    out_encoder_fpath = os.path.join(F.FOLDER_WORD_EMBEDDINGS, F.ENCODER_MODEL)
 
     tokenizer = transformers.DistilBertTokenizer.from_pretrained('distilbert-base-uncased')
-    pretrained_model = transformers.DistilBertModel.from_pretrained('distilbert-base-uncased', output_hidden_states=True)
-    my_autoencoder_model = SentenceEmbeddingAutoEncoder()
+    pretrained_model = transformers.DistilBertModel.from_pretrained('distilbert-base-uncased', output_hidden_states=True).to(DEVICE)
+
+    encoder_model = SentenceEmbeddingEncoder().to(DEVICE)
+    decoder_model = SentenceEmbeddingDecoder().to(DEVICE)
+    my_autoencoder_model = SentenceEmbeddingAutoEncoder(encoder_model, decoder_model)
 
     loss_fn = nn.CosineEmbeddingLoss()
     optimizer = torch.optim.Adam(my_autoencoder_model.parameters())
 
     train_fpath = os.path.join(F.FOLDER_WT2, F.WT_TRAIN_FILE)
+    validation_txt_fpath = os.path.join(F.FOLDER_WT2, F.WT_VALID_FILE)
     corpus_reader = TextEncoder(tokenizer, train_fpath)
 
     num_epochs = 2
+    steps_check = 500
 
     for epoch in range(num_epochs):
-        while True:
-            try:
+        try:
+            step = 0
+            while True:
+
                 encoded_window, nonpadded_length = corpus_reader.__next__()
-                nextline_input_ids = torch.tensor(encoded_window).unsqueeze(0)  # Batch size 1
-                att_mask = torch.tensor([1] * nonpadded_length + [0] * (PADDED_WINDOW_SIZE - nonpadded_length))
-                logging.info("Attention mask shape: " + str(att_mask.shape) +
-                             "; 1s = " + str(nonpadded_length) + " ; 0s= " + str((PADDED_WINDOW_SIZE - nonpadded_length)))
+                if nonpadded_length <= 3:
+                    logging.debug("Almost-empty line. Skipping")
+                    continue # I should skip almost-empty lines, like separators "***"
 
-                outputs = pretrained_model(nextline_input_ids, attention_mask=att_mask)
-                last_hidden_states = outputs[0]  # The last hidden-state is the first element of the output tuple
-                logging.info(last_hidden_states.shape)
+                nextline_input_ids = torch.tensor(encoded_window).unsqueeze(0).to(DEVICE)  # Batch size 1
+                att_mask = torch.tensor([1] * nonpadded_length + [0] * (PADDED_WINDOW_SIZE - nonpadded_length)).to(DEVICE)
+                logging.debug("Attention mask shape: " + str(att_mask.shape) +
+                 "; 1s = " + str(nonpadded_length) + " ; 0s= " + str((PADDED_WINDOW_SIZE - nonpadded_length)))
+                if step % steps_check == 0:
+                    logging.info("- GPU usage: " + str(Utils.get_gpu_memory_map()))
+                dbert_outputs = pretrained_model(nextline_input_ids, attention_mask=att_mask)
+                if step % steps_check == 0:
+                    logging.info("- GPU usage: " + str(Utils.get_gpu_memory_map()))
+                last_hidden_states = dbert_outputs[0]  # The last hidden-state is the first element of the output tuple
+                logging.debug(last_hidden_states.shape)
 
-                sentence_embedding = torch.mean(last_hidden_states, dim=1)[0].unsqueeze(0)  # batch size 1
-                logging.info("Dimension of (d)BERT sentence embedding = " + str(sentence_embedding.shape))
+                sentence_embedding = torch.mean(last_hidden_states, dim=1)[0].unsqueeze(0).to(DEVICE) # batch size 1
+
+                logging.debug("Dimension of (d)BERT sentence embedding = " + str(sentence_embedding.shape))
 
                 autoenc_output = my_autoencoder_model(sentence_embedding)
-                logging.info("Dimension of autoencoded reconstructed sentence embedding = " + str(autoenc_output.shape))
+                logging.debug("Dimension of autoencoded reconstructed sentence embedding = " + str(autoenc_output.shape))
 
-                loss = loss_fn(input1=autoenc_output, input2=sentence_embedding, target=torch.tensor(1))
-                logging.info("Cosine distance reconstruction loss = " + str(loss)  + "\n***\n")
+                loss = loss_fn(input1=autoenc_output, input2=sentence_embedding, target=torch.tensor(1, dtype=torch.float).to(DEVICE))
+                logging.debug("Cosine distance reconstruction loss = " + str(loss)  + "\n***\n")
                 loss.backward()
                 optimizer.step()  # Does the update
                 optimizer.zero_grad()  # zero the gradient buffers
+                step = step +1
 
-            except StopIteration:
+                if step % steps_check == 0:
+                    logging.info("Training the AutoEncoder. Checkpoint at " + str(steps_check) + "*n steps.")
+                    logging.info("Epoch: " + str(epoch) + " ; step:" + str(step))
+                    logging.info("GPU usage, on each device, in MBs: " + str(Utils.get_gpu_memory_map()) + "\n***\n")
 
-                # corpus pass finished. Must: - save the model ; - evaluate average cosine distance on a validation set
+                    #Must: - save the model ; - evaluate average cosine distance on a validation set
+                    evaluate(my_autoencoder_model, tokenizer,pretrained_model, validation_txt_fpath)
+                    my_autoencoder_model.train()  # make the model trainable again
+                    # since we are going to use this for inference, saving the state_dict is sufficient
+                    torch.save(encoder_model.state_dict(), out_encoder_fpath)
+                    torch.cuda.empty_cache()
 
 
-
-    # n: I should consider the sentence only if it is len > 3, [CLS] + more than 1 element + [SEP]
-
-
+        except StopIteration:
+            # corpus pass finished. Must: - save the model ; - evaluate average cosine distance on a validation set
+            evaluate(my_autoencoder_model, tokenizer, validation_txt_fpath)
+            my_autoencoder_model.train() # make the model trainable again
+            # since we are going to use this for inference, saving the state_dict is sufficient
+            torch.save(encoder_model.state_dict(), out_encoder_fpath)
+            torch.cuda.empty_cache()
 
     return corpus_reader
 
