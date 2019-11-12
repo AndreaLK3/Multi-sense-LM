@@ -2,18 +2,27 @@ import os
 import sqlite3
 import numpy as np
 import pandas as pd
-import transformers as pt
+import transformers
 import torch
 import logging
-
 import Filesystem
 import Utils
+from PrepareGraphInput.AutoEncoderDBERT import SentenceEmbeddingEncoder
 
 START_SENTENCE_TOKEN = "[CLS]"
 END_SEP_TOKEN = "[SEP]"
-DIMENSIONS = 768
 
-def compute_sentence_vector(model, tokenizer, sentence_text):
+
+def compute_300d_sentence_vector(distilbert_sentence_vector):
+    encoder_model = SentenceEmbeddingEncoder()
+    encoder_model.load_state_dict(torch.load(os.path.join(Filesystem.FOLDER_WORD_EMBEDDINGS, Filesystem.ENCODER_MODEL)))
+    encoder_model.eval()
+
+    sentence_embedding = encoder_model(distilbert_sentence_vector)
+    return sentence_embedding
+
+
+def compute_sentence_dBert_vector(model, tokenizer, sentence_text):
 
     toks = tokenizer.tokenize(START_SENTENCE_TOKEN + sentence_text + END_SEP_TOKEN)
     indices = tokenizer.convert_tokens_to_ids(toks)
@@ -24,26 +33,28 @@ def compute_sentence_vector(model, tokenizer, sentence_text):
     segment_tensor = torch.tensor(segment_ids).unsqueeze(0)
 
     with torch.no_grad():
-        second_to_last_layer = model(tokens_tensor, segment_tensor)[0]
+        last_layer = model(tokens_tensor, segment_tensor)[0]
         # last_hidden_state: torch.FloatTensor of shape (batch_size, sequence_length, hidden_size) (here [1, 17, 768])
 
-    #  The correct pooling strategy (mean, max, concatenation, etc.) and layers used (last four, all, last layer, etc.)
-    #  are dependent on the application
+    # To get a single vector for our entire sentence we have multiple application-dependent choices, in terms of
+    # methods (mean, max, concatenation, etc.) and layers used (last four, all, last layer, etc.).
+    # A simple approach is to average the (/second-to-last) hidden layer of each token, producing one 768-length vector
 
-    # To get a single vector for our entire sentence we have multiple application-dependent strategies,
-    # a simple approach is to average the (/second-to-last) hidden layer of each token, producing one 768-length vector
-
-    sentence_embedding = torch.mean(second_to_last_layer, dim=1)[0] # batch size 1
+    sentence_embedding = torch.mean(last_layer, dim=1)[0] # batch size 1
     logging.debug(sentence_embedding.shape)
     return sentence_embedding
 
 
 # In the previous step, we stored the start-and-end indices in a Sqlite3 database.
 # It is necessary to write the embeddings in the .npy file with the correct ordering.
+# Steps: - get the DistilBERT sentence embedding, with d=768.
+#        - load the learned Neural Network, that goes from 768d to to 300d
+#        - apply inference and obtain the 300d sentence embedding
 def compute_sentence_embeddings(elements_name):
     #Utils.init_logging('ComputeSentenceEmbeddings.log', logging.INFO)
-    model = pt.BertModel.from_pretrained('bert-base-uncased')
-    tokenizer = pt.BertTokenizer.from_pretrained('bert-base-uncased')
+    tokenizer = transformers.DistilBertTokenizer.from_pretrained('distilbert-base-uncased')
+    pretrained_model = transformers.DistilBertModel.from_pretrained('distilbert-base-uncased',
+                                                                    output_hidden_states=True)
 
     input_filepath = os.path.join(Filesystem.FOLDER_INPUT, Utils.DENOMINATED + '_' + elements_name + ".h5")
     output_filepath = os.path.join(Filesystem.FOLDER_INPUT, Utils.VECTORIZED + '_' + elements_name + ".npy")
@@ -60,7 +71,9 @@ def compute_sentence_embeddings(elements_name):
         sense_df = input_db.select(key=elements_name, where="word == " + str(row[0]) + " & sense =='" + row[1] + "'")
         element_text_series = sense_df[elements_name]
         for element_text in element_text_series:
-            matrix_of_sentence_embeddings.append(compute_sentence_vector(model, tokenizer, element_text).squeeze().tolist())
+            distilbert_sentence = compute_sentence_dBert_vector(pretrained_model, tokenizer, element_text).squeeze()
+            sentence_d300 = compute_300d_sentence_vector(distilbert_sentence)
+            matrix_of_sentence_embeddings.append(sentence_d300.squeeze().tolist())
 
     embds_nparray = np.array(matrix_of_sentence_embeddings)
     np.save(output_filepath, embds_nparray)

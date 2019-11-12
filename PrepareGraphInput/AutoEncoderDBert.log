@@ -26,158 +26,64 @@ INFO : Model config {
 }
 
 INFO : loading weights file https://s3.amazonaws.com/models.huggingface.co/bert/distilbert-base-uncased-pytorch_model.bin from cache at /home/andrealk3/.cache/torch/transformers/7b8a8f0b21c4e7f6962451c9370a5d9af90372a5f64637a251f2de154d0fc72c.c2015533705b9dff680ae707e205a35e2860e8d148b45d35085419d74fe57ac5
+INFO : - GPU usage: {0: 2360, 1: 11, 2: 11, 3: 36}***
+
 INFO : Training the AutoEncoder. Checkpoint at 500*n steps.
 INFO : Epoch: 0 ; step:500
-INFO : GPU usage, on each device, in MBs: {0: 1646, 1: 11, 2: 11, 3: 36}
-***
+WARNING : Token indices sequence length is longer than the specified maximum sequence length for this model (530 > 512). Running this sequence through the model will result in indexing errors
+INFO : Cosine distance's reconstruction loss on the validation dataset = 0.808644
+WARNING : Token indices sequence length is longer than the specified maximum sequence length for this model (693 > 512). Running this sequence through the model will result in indexing errors
+INFO : - GPU usage: {0: 2360, 1: 11, 2: 11, 3: 36}***
 
-INFO :
-****
- Evaluation iteration n. 0
-INFO : 1) GPU usage: {0: 1646, 1: 11, 2: 11, 3: 36}
-INFO : 2) GPU usage: {0: 1646, 1: 11, 2: 11, 3: 36}
-INFO : 3) GPU usage: {0: 1646, 1: 11, 2: 11, 3: 36}
-INFO : 4) GPU usage: {0: 1646, 1: 11, 2: 11, 3: 36}
-INFO : 5) GPU usage: {0: 1646, 1: 11, 2: 11, 3: 36}
-INFO : 6) GPU usage: {0: 1646, 1: 11, 2: 11, 3: 36}
-INFO : 7) GPU usage: {0: 1646, 1: 11, 2: 11, 3: 36}
-INFO : 8) GPU usage: {0: 1646, 1: 11, 2: 11, 3: 36}
-INFO : 9) GPU usage: {0: 1646, 1: 11, 2: 11, 3: 36}
-INFO : 10) GPU usage: {0: 1646, 1: 11, 2: 11, 3: 36}
-INFO :
-****
- Evaluation iteration n. 1
-INFO : 1) GPU usage: {0: 1536, 1: 11, 2: 11, 3: 36}
-INFO : 2) GPU usage: {0: 1536, 1: 11, 2: 11, 3: 36}
-INFO : 3) GPU usage: {0: 1536, 1: 11, 2: 11, 3: 36}
+INFO : Training the AutoEncoder. Checkpoint at 500*n steps.
+INFO : Epoch: 0 ; step:1000
+WARNING : Token indices sequence length is longer than the specified maximum sequence length for this model (530 > 512). Running this sequence through the model will result in indexing errors
+INFO : Cosine distance's reconstruction loss on the validation dataset = 0.82972705
+INFO : - GPU usage: {0: 2360, 1: 11, 2: 11, 3: 36}***
 
-INFO : 4) GPU usage: {0: 1536, 1: 11, 2: 11, 3: 36}
-INFO : 5) GPU usage: {0: 1610, 1: 11, 2: 11, 3: 36}
+INFO : Training the AutoEncoder. Checkpoint at 500*n steps.
+INFO : Epoch: 0 ; step:1500
+WARNING : Token indices sequence length is longer than the specified maximum sequence length for this model (530 > 512). Running this sequence through the model will result in indexing errors
+INFO : Cosine distance's reconstruction loss on the validation dataset = 0.85820043
+WARNING : Token indices sequence length is longer than the specified maximum sequence length for this model (608 > 512). Running this sequence through the model will result in indexing errors
+INFO : - GPU usage: {0: 2360, 1: 11, 2: 11, 3: 36}***
 
-INFO : 6) GPU usage: {0: 1610, 1: 11, 2: 11, 3: 36}
-INFO : 7) GPU usage: {0: 1610, 1: 11, 2: 11, 3: 36}
-INFO : 8) GPU usage: {0: 1610, 1: 11, 2: 11, 3: 36}
-INFO : 9) GPU usage: {0: 1610, 1: 11, 2: 11, 3: 36}
-INFO : 10) GPU usage: {0: 1610, 1: 11, 2: 11, 3: 36}
-INFO :
-****
- Evaluation iteration n. 2
-INFO : 1) GPU usage: {0: 1610, 1: 11, 2: 11, 3: 36}
-INFO : 2) GPU usage: {0: 1610, 1: 11, 2: 11, 3: 36}
-INFO : 3) GPU usage: {0: 1610, 1: 11, 2: 11, 3: 36}
+INFO : Training the AutoEncoder. Checkpoint at 500*n steps.
+INFO : Epoch: 0 ; step:2000
+WARNING : Token indices sequence length is longer than the specified maximum sequence length for this model (530 > 512). Running this sequence through the model will result in indexing errors
+INFO : Cosine distance's reconstruction loss on the validation dataset = 0.8715728
+INFO : - GPU usage: {0: 2360, 1: 11, 2: 11, 3: 36}***
 
-INFO : 4) GPU usage: {0: 1610, 1: 11, 2: 11, 3: 36}
-INFO : 5) GPU usage: {0: 1684, 1: 11, 2: 11, 3: 36}
+INFO : Training the AutoEncoder. Checkpoint at 500*n steps.
+INFO : Epoch: 0 ; step:2500
+WARNING : Token indices sequence length is longer than the specified maximum sequence length for this model (530 > 512). Running this sequence through the model will result in indexing errors
+INFO : Cosine distance's reconstruction loss on the validation dataset = 0.8957136
+INFO : - GPU usage: {0: 2360, 1: 11, 2: 11, 3: 36}***
 
-INFO : 6) GPU usage: {0: 1684, 1: 11, 2: 11, 3: 36}
-INFO : 7) GPU usage: {0: 1684, 1: 11, 2: 11, 3: 36}
-INFO : 8) GPU usage: {0: 1684, 1: 11, 2: 11, 3: 36}
-INFO : 9) GPU usage: {0: 1684, 1: 11, 2: 11, 3: 36}
-INFO : 10) GPU usage: {0: 1684, 1: 11, 2: 11, 3: 36}
-INFO :
-****
- Evaluation iteration n. 3
-INFO : 1) GPU usage: {0: 1684, 1: 11, 2: 11, 3: 36}
-INFO : 2) GPU usage: {0: 1684, 1: 11, 2: 11, 3: 36}
-INFO : 3) GPU usage: {0: 1684, 1: 11, 2: 11, 3: 36}
+INFO : Training the AutoEncoder. Checkpoint at 500*n steps.
+INFO : Epoch: 0 ; step:3000
+WARNING : Token indices sequence length is longer than the specified maximum sequence length for this model (530 > 512). Running this sequence through the model will result in indexing errors
+INFO : Cosine distance's reconstruction loss on the validation dataset = 0.9004526
+INFO : - GPU usage: {0: 2360, 1: 11, 2: 11, 3: 36}***
 
-INFO : 4) GPU usage: {0: 1684, 1: 11, 2: 11, 3: 36}
-INFO : 5) GPU usage: {0: 1760, 1: 11, 2: 11, 3: 36}
+INFO : Training the AutoEncoder. Checkpoint at 500*n steps.
+INFO : Epoch: 0 ; step:3500
+WARNING : Token indices sequence length is longer than the specified maximum sequence length for this model (530 > 512). Running this sequence through the model will result in indexing errors
+INFO : Cosine distance's reconstruction loss on the validation dataset = 0.90255684
+INFO : - GPU usage: {0: 2360, 1: 11, 2: 11, 3: 36}***
 
-INFO : 6) GPU usage: {0: 1760, 1: 11, 2: 11, 3: 36}
-INFO : 7) GPU usage: {0: 1760, 1: 11, 2: 11, 3: 36}
-INFO : 8) GPU usage: {0: 1760, 1: 11, 2: 11, 3: 36}
-INFO : 9) GPU usage: {0: 1760, 1: 11, 2: 11, 3: 36}
-INFO : 10) GPU usage: {0: 1760, 1: 11, 2: 11, 3: 36}
-INFO :
-****
- Evaluation iteration n. 4
-INFO : 1) GPU usage: {0: 1760, 1: 11, 2: 11, 3: 36}
-INFO : 2) GPU usage: {0: 1760, 1: 11, 2: 11, 3: 36}
-INFO : 3) GPU usage: {0: 1760, 1: 11, 2: 11, 3: 36}
-INFO : 4) GPU usage: {0: 1760, 1: 11, 2: 11, 3: 36}
-INFO : 5) GPU usage: {0: 1834, 1: 11, 2: 11, 3: 36}
-INFO : 6) GPU usage: {0: 1834, 1: 11, 2: 11, 3: 36}
-INFO : 7) GPU usage: {0: 1834, 1: 11, 2: 11, 3: 36}
-INFO : 8) GPU usage: {0: 1834, 1: 11, 2: 11, 3: 36}
-INFO : 9) GPU usage: {0: 1834, 1: 11, 2: 11, 3: 36}
-INFO : 10) GPU usage: {0: 1834, 1: 11, 2: 11, 3: 36}
-INFO :
-****
- Evaluation iteration n. 5
-INFO : 1) GPU usage: {0: 1834, 1: 11, 2: 11, 3: 36}
-INFO : 2) GPU usage: {0: 1834, 1: 11, 2: 11, 3: 36}
-INFO : 3) GPU usage: {0: 1834, 1: 11, 2: 11, 3: 36}
-INFO : 4) GPU usage: {0: 1834, 1: 11, 2: 11, 3: 36}
-INFO : 5) GPU usage: {0: 1888, 1: 11, 2: 11, 3: 36}
-INFO : 6) GPU usage: {0: 1888, 1: 11, 2: 11, 3: 36}
-INFO : 7) GPU usage: {0: 1888, 1: 11, 2: 11, 3: 36}
-INFO : 8) GPU usage: {0: 1888, 1: 11, 2: 11, 3: 36}
-INFO : 9) GPU usage: {0: 1888, 1: 11, 2: 11, 3: 36}
-INFO : 10) GPU usage: {0: 1888, 1: 11, 2: 11, 3: 36}
-INFO :
-****
- Evaluation iteration n. 6
-INFO : 1) GPU usage: {0: 1888, 1: 11, 2: 11, 3: 36}
-INFO : 2) GPU usage: {0: 1888, 1: 11, 2: 11, 3: 36}
-INFO : 3) GPU usage: {0: 1888, 1: 11, 2: 11, 3: 36}
-INFO : 4) GPU usage: {0: 1888, 1: 11, 2: 11, 3: 36}
-INFO : 5) GPU usage: {0: 1962, 1: 11, 2: 11, 3: 36}
-INFO : 6) GPU usage: {0: 1962, 1: 11, 2: 11, 3: 36}
-INFO : 7) GPU usage: {0: 1962, 1: 11, 2: 11, 3: 36}
-INFO : 8) GPU usage: {0: 1962, 1: 11, 2: 11, 3: 36}
-INFO : 9) GPU usage: {0: 1962, 1: 11, 2: 11, 3: 36}
-INFO : 10) GPU usage: {0: 1962, 1: 11, 2: 11, 3: 36}
-INFO :
-****
- Evaluation iteration n. 7
-INFO : 1) GPU usage: {0: 1962, 1: 11, 2: 11, 3: 36}
-INFO : 2) GPU usage: {0: 1962, 1: 11, 2: 11, 3: 36}
-INFO : 3) GPU usage: {0: 1962, 1: 11, 2: 11, 3: 36}
+INFO : Training the AutoEncoder. Checkpoint at 500*n steps.
+INFO : Epoch: 0 ; step:4000
+WARNING : Token indices sequence length is longer than the specified maximum sequence length for this model (530 > 512). Running this sequence through the model will result in indexing errors
+INFO : Cosine distance's reconstruction loss on the validation dataset = 0.9011351
+WARNING : Token indices sequence length is longer than the specified maximum sequence length for this model (895 > 512). Running this sequence through the model will result in indexing errors
+WARNING : Token indices sequence length is longer than the specified maximum sequence length for this model (641 > 512). Running this sequence through the model will result in indexing errors
+WARNING : Token indices sequence length is longer than the specified maximum sequence length for this model (515 > 512). Running this sequence through the model will result in indexing errors
+WARNING : Token indices sequence length is longer than the specified maximum sequence length for this model (601 > 512). Running this sequence through the model will result in indexing errors
+WARNING : Token indices sequence length is longer than the specified maximum sequence length for this model (535 > 512). Running this sequence through the model will result in indexing errors
+WARNING : Token indices sequence length is longer than the specified maximum sequence length for this model (842 > 512). Running this sequence through the model will result in indexing errors
+WARNING : Token indices sequence length is longer than the specified maximum sequence length for this model (588 > 512). Running this sequence through the model will result in indexing errors
+INFO : - GPU usage: {0: 2360, 1: 11, 2: 11, 3: 36}***
 
-INFO : 4) GPU usage: {0: 1962, 1: 11, 2: 11, 3: 36}
-INFO : 5) GPU usage: {0: 2036, 1: 11, 2: 11, 3: 36}
-
-INFO : 6) GPU usage: {0: 2036, 1: 11, 2: 11, 3: 36}
-INFO : 7) GPU usage: {0: 2036, 1: 11, 2: 11, 3: 36}
-INFO : 8) GPU usage: {0: 2036, 1: 11, 2: 11, 3: 36}
-INFO : 9) GPU usage: {0: 2036, 1: 11, 2: 11, 3: 36}
-INFO : 10) GPU usage: {0: 2036, 1: 11, 2: 11, 3: 36}
-INFO :
-****
- Evaluation iteration n. 8
-INFO : 1) GPU usage: {0: 2036, 1: 11, 2: 11, 3: 36}
-INFO : 2) GPU usage: {0: 2036, 1: 11, 2: 11, 3: 36}
-INFO : 3) GPU usage: {0: 2036, 1: 11, 2: 11, 3: 36}
-
-INFO : 4) GPU usage: {0: 2036, 1: 11, 2: 11, 3: 36}
-INFO : 5) GPU usage: {0: 2112, 1: 11, 2: 11, 3: 36}
-
-INFO : 6) GPU usage: {0: 2112, 1: 11, 2: 11, 3: 36}
-INFO : 7) GPU usage: {0: 2112, 1: 11, 2: 11, 3: 36}
-INFO : 8) GPU usage: {0: 2112, 1: 11, 2: 11, 3: 36}
-INFO : 9) GPU usage: {0: 2112, 1: 11, 2: 11, 3: 36}
-INFO : 10) GPU usage: {0: 2112, 1: 11, 2: 11, 3: 36}
-INFO :
-****
- Evaluation iteration n. 9
-INFO : 1) GPU usage: {0: 2112, 1: 11, 2: 11, 3: 36}
-INFO : 2) GPU usage: {0: 2112, 1: 11, 2: 11, 3: 36}
-INFO : 3) GPU usage: {0: 2112, 1: 11, 2: 11, 3: 36}
-INFO : 4) GPU usage: {0: 2112, 1: 11, 2: 11, 3: 36}
-INFO : 5) GPU usage: {0: 2186, 1: 11, 2: 11, 3: 36}
-INFO : 6) GPU usage: {0: 2186, 1: 11, 2: 11, 3: 36}
-INFO : 7) GPU usage: {0: 2186, 1: 11, 2: 11, 3: 36}
-INFO : 8) GPU usage: {0: 2186, 1: 11, 2: 11, 3: 36}
-INFO : 9) GPU usage: {0: 2186, 1: 11, 2: 11, 3: 36}
-INFO : 10) GPU usage: {0: 2186, 1: 11, 2: 11, 3: 36}
-INFO :
-****
- Evaluation iteration n. 10
-INFO : 1) GPU usage: {0: 2186, 1: 11, 2: 11, 3: 36}
-INFO : 2) GPU usage: {0: 2186, 1: 11, 2: 11, 3: 36}
-INFO : 3) GPU usage: {0: 2186, 1: 11, 2: 11, 3: 36}
-INFO : 4) GPU usage: {0: 2186, 1: 11, 2: 11, 3: 36}
-INFO : 5) GPU usage: {0: 2260, 1: 11, 2: 11, 3: 36}
-INFO : 6) GPU usage: {0: 2260, 1: 11, 2: 11, 3: 36}
-INFO : 7) GPU usage: {0: 2260, 1: 11, 2: 11, 3: 36}
+INFO : Training the AutoEncoder. Checkpoint at 500*n steps.
+INFO : Epoch: 0 ; step:4500
