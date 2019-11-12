@@ -10,7 +10,7 @@ import os
 
 
 def continue_retrieving_data():
-    #Utils.init_logging(os.path.join("GetInputData", "RetrieveInputData.log"), logging.INFO)
+    # Utils.init_logging(os.path.join("GetInputData", "RetrieveInputData.log"), logging.INFO)
 
     BN_request_sender = BNR.BabelNetRequestSender()  # keeps track of the number of requests sent to BabelNet
     with open(os.path.join(Filesystem.FOLDER_VOCABULARY, Filesystem.VOCAB_CURRENT_INDEX_FILE), "r") as vi_file:

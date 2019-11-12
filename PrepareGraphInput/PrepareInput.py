@@ -2,7 +2,7 @@ import Filesystem
 import PrepareGraphInput.RemoveQuasiDuplicates as RQD
 import PrepareGraphInput.LemmatizeNyms as LN
 import PrepareGraphInput.SenseDenominations as SD
-import PrepareGraphInput.EmbedWithBERT as EWB
+import WordEmbeddings.EmbedWithDBERT as EWB
 import os
 import Utils
 import pandas as pd
@@ -106,18 +106,9 @@ def create_senses_vocabulary_table(vocabulary_words_ls):
 
 
 # ['move', 'light']
-def prepare(vocabulary):
+def prepare(vocabulary = ['move', 'light', 'for', 'sea']):
     #Utils.init_logging(os.path.join("PrepareGraphInput", "PrepareInput"))
 
-    hdf5_output_filepaths = [os.path.join(Filesystem.FOLDER_INPUT, Utils.PROCESSED + '_' + categ + ".h5")
-                             for categ in Utils.CATEGORIES] + \
-                            [os.path.join(Filesystem.FOLDER_INPUT, Utils.DENOMINATED + '_' + categ + ".h5")
-                             for categ in Utils.CATEGORIES] +\
-                            [os.path.join(Filesystem.FOLDER_INPUT, Utils.VECTORIZED + '_' + categ + ".npy")
-                             for categ in Utils.CATEGORIES[0:2]]
-
-    all_archives = [open(input_filepath, 'w') for input_filepath in hdf5_output_filepaths] # we must reset the output archivess
-    Utils.close_list_of_files(all_archives)
 
     # Phase 1 - Preprocessing: eliminating quasi-duplicate definitions and examples, and lemmatizing synonyms & antonyms
     preprocess(vocabulary)
@@ -132,4 +123,3 @@ def prepare(vocabulary):
     EWB.compute_sentence_embeddings(Utils.DEFINITIONS)
     EWB.compute_sentence_embeddings(Utils.EXAMPLES)
 
-    Utils.close_list_of_files(all_archives)

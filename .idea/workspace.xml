@@ -3,10 +3,19 @@
   <component name="ChangeListManager">
     <list default="true" id="d35dca92-959c-489d-8a61-f337e4cce7fa" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CreateGraphInput.py" beforeDir="false" afterPath="$PROJECT_DIR$/CreateGraphInput.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Filesystem.py" beforeDir="false" afterPath="$PROJECT_DIR$/Filesystem.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/GetInputData/RetrieveInputData.py" beforeDir="false" afterPath="$PROJECT_DIR$/GetInputData/RetrieveInputData.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/InputData/phrased_training_corpus.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/InputData/vectorized_definitions.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/InputData/vectorized_examples.npy" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/Media/Task1_DeveloperDiary.docx" beforeDir="false" afterPath="$PROJECT_DIR$/Media/Task1_DeveloperDiary.docx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PrepareGraphInput/AutoEncoderDBERT.py" beforeDir="false" afterPath="$PROJECT_DIR$/PrepareGraphInput/AutoEncoderDBERT.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PrepareGraphInput/AutoEncoderDBert.log" beforeDir="false" afterPath="$PROJECT_DIR$/PrepareGraphInput/AutoEncoderDBert.log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PrepareGraphInput/EmbedWithBERT.py" beforeDir="false" afterPath="$PROJECT_DIR$/PrepareGraphInput/EmbedWithBERT.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PrepareGraphInput/AutoEncoderDBERT.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/PrepareGraphInput/AutoEncoderDBert.log" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/PrepareGraphInput/EmbedWithBERT.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/PrepareGraphInput/PrepareInput.py" beforeDir="false" afterPath="$PROJECT_DIR$/PrepareGraphInput/PrepareInput.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/Utils.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Vocabulary/Vocabulary.py" beforeDir="false" afterPath="$PROJECT_DIR$/Vocabulary/Vocabulary.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -16,11 +25,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/PrepareGraphInput/EmbedWithBERT.py">
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/WordEmbeddings/EmbedWithDBERT.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="241">
-              <caret line="52" column="46" selection-start-line="52" selection-start-column="46" selection-end-line="52" selection-end-column="46" />
+            <state relative-caret-position="75">
+              <caret line="59" column="102" selection-start-line="59" selection-start-column="92" selection-end-line="59" selection-end-column="102" />
               <folding>
                 <element signature="e#0#9#0" expanded="true" />
               </folding>
@@ -29,25 +38,22 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/PrepareGraphInput/AutoEncoderDBERT.py">
+        <entry file="file://$PROJECT_DIR$/CreateGraphInput.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2685">
-              <caret line="179" lean-forward="true" selection-start-line="179" selection-end-line="179" />
+            <state relative-caret-position="390">
+              <caret line="58" column="31" selection-start-line="58" selection-start-column="15" selection-end-line="58" selection-end-column="31" />
               <folding>
-                <element signature="e#0#12#0" expanded="true" />
+                <element signature="e#0#22#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Utils.py">
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/PrepareGraphInput/PrepareInput.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1665">
-              <caret line="117" column="30" selection-start-line="117" selection-start-column="30" selection-end-line="117" selection-end-column="30" />
-              <folding>
-                <element signature="e#0#14#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="375">
+              <caret line="124" selection-start-line="124" selection-end-line="124" />
             </state>
           </provider>
         </entry>
@@ -55,20 +61,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Filesystem.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="420">
-              <caret line="28" column="13" selection-start-line="28" selection-end-line="28" selection-end-column="13" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/PrepareGraphInput/SenseDenominations.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1365">
-              <caret line="94" column="78" selection-start-line="94" selection-start-column="78" selection-end-line="94" selection-end-column="78" />
-              <folding>
-                <element signature="e#0#12#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="408">
+              <caret line="28" lean-forward="true" selection-start-line="28" selection-end-line="28" />
             </state>
           </provider>
         </entry>
@@ -84,9 +78,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>logging_steps</find>
-      <find>local_rank</find>
-      <find>block_size</find>
       <find>glo</find>
       <find>global_step</find>
       <find>save</find>
@@ -114,6 +105,9 @@
       <find>cuda</find>
       <find>100</find>
       <find>torch.cuda.empty_cache()</find>
+      <find>FOLDER_DISTILBERT_MODEL</find>
+      <find>ENCODER_MODEL</find>
+      <find>TEMPORARY_PHRASED_CORPUS</find>
     </findStrings>
     <replaceStrings>
       <replace>F</replace>
@@ -157,23 +151,26 @@
         <option value="$PROJECT_DIR$/GetInputData/BabelNet.py" />
         <option value="$PROJECT_DIR$/GetInputData/BabelNetRequests.py" />
         <option value="$PROJECT_DIR$/PrepareGraphInput/RemoveQuasiDuplicates.py" />
-        <option value="$PROJECT_DIR$/Vocabulary/Vocabulary.py" />
         <option value="$PROJECT_DIR$/Vocabulary/Phrases.py" />
-        <option value="$PROJECT_DIR$/PrepareGraphInput/PrepareInput.py" />
         <option value="$PROJECT_DIR$/PrepareGraphInput/RunLMFinetuning.py" />
         <option value="$PROJECT_DIR$/PrepareGraphInput/SenseDenominations.py" />
-        <option value="$PROJECT_DIR$/GetInputData/RetrieveInputData.py" />
-        <option value="$PROJECT_DIR$/CreateGraphInput.py" />
         <option value="$PROJECT_DIR$/PrepareGraphInput/ReduceBERT.py" />
         <option value="$PROJECT_DIR$/PrepareGraphInput/run_lm_finetuning.py" />
         <option value="$USER_HOME$/opt/anaconda3/lib/python3.7/site-packages/torch/nn/modules/module.py" />
         <option value="$PROJECT_DIR$/PrepareGraphInput/FinetuneDBERT.py" />
         <option value="$PROJECT_DIR$/PrepareGraphInput/Previous_FinetuneDBERT.py" />
         <option value="$PROJECT_DIR$/PrepareGraphInput/TunedDBert.py" />
-        <option value="$PROJECT_DIR$/Filesystem.py" />
-        <option value="$PROJECT_DIR$/Utils.py" />
         <option value="$PROJECT_DIR$/PrepareGraphInput/EmbedWithBERT.py" />
         <option value="$PROJECT_DIR$/PrepareGraphInput/AutoEncoderDBERT.py" />
+        <option value="$PROJECT_DIR$/WordEmbeddings/FastText.py" />
+        <option value="$PROJECT_DIR$/WordEmbeddings/AutoEncoderDBERT.py" />
+        <option value="$PROJECT_DIR$/Vocabulary/Vocabulary.py" />
+        <option value="$PROJECT_DIR$/GetInputData/RetrieveInputData.py" />
+        <option value="$PROJECT_DIR$/Filesystem.py" />
+        <option value="$PROJECT_DIR$/Utils.py" />
+        <option value="$PROJECT_DIR$/WordEmbeddings/EmbedWithDBERT.py" />
+        <option value="$PROJECT_DIR$/CreateGraphInput.py" />
+        <option value="$PROJECT_DIR$/PrepareGraphInput/PrepareInput.py" />
       </list>
     </option>
   </component>
@@ -202,12 +199,39 @@
             <path>
               <item name="TASK1_Gbwe" type="b2602c69:ProjectViewProjectNode" />
               <item name="TASK1_Gbwe" type="462c0819:PsiDirectoryNode" />
+              <item name="InputData" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="TASK1_Gbwe" type="b2602c69:ProjectViewProjectNode" />
+              <item name="TASK1_Gbwe" type="462c0819:PsiDirectoryNode" />
               <item name="PrepareGraphInput" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="TASK1_Gbwe" type="b2602c69:ProjectViewProjectNode" />
               <item name="TASK1_Gbwe" type="462c0819:PsiDirectoryNode" />
+              <item name="TextCorpuses" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="TASK1_Gbwe" type="b2602c69:ProjectViewProjectNode" />
+              <item name="TASK1_Gbwe" type="462c0819:PsiDirectoryNode" />
+              <item name="TextCorpuses" type="462c0819:PsiDirectoryNode" />
+              <item name="wikitext-2" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="TASK1_Gbwe" type="b2602c69:ProjectViewProjectNode" />
+              <item name="TASK1_Gbwe" type="462c0819:PsiDirectoryNode" />
+              <item name="TextCorpuses" type="462c0819:PsiDirectoryNode" />
+              <item name="WikiText-103" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="TASK1_Gbwe" type="b2602c69:ProjectViewProjectNode" />
+              <item name="TASK1_Gbwe" type="462c0819:PsiDirectoryNode" />
               <item name="Vocabulary" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="TASK1_Gbwe" type="b2602c69:ProjectViewProjectNode" />
+              <item name="TASK1_Gbwe" type="462c0819:PsiDirectoryNode" />
+              <item name="WordEmbeddings" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -231,12 +255,13 @@
     </option>
   </component>
   <component name="RecentsManager">
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/CreateEntities" />
-    </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/WordEmbeddings" />
       <recent name="$PROJECT_DIR$/Vocabulary" />
       <recent name="$PROJECT_DIR$/" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/CreateEntities" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -322,7 +347,7 @@
     <frame x="0" y="23" width="1440" height="806" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.08011445" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.24892704" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -335,7 +360,7 @@
       <window_info anchor="bottom" id="Version Control" order="7" weight="0.3299435" />
       <window_info anchor="bottom" id="Terminal" order="8" weight="0.3277311" />
       <window_info anchor="bottom" id="Event Log" order="9" side_tool="true" />
-      <window_info active="true" anchor="bottom" id="Python Console" order="10" visible="true" weight="0.2577031" />
+      <window_info anchor="bottom" id="Python Console" order="10" visible="true" weight="0.2577031" />
       <window_info anchor="bottom" id="Inspection Results" order="11" weight="0.32922733" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
@@ -480,62 +505,8 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Vocabulary/Phrases.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="735">
-          <caret line="49" column="59" lean-forward="true" selection-start-line="49" selection-start-column="59" selection-end-line="49" selection-end-column="59" />
-          <folding>
-            <element signature="e#0#11#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/PrepareGraphInput/Examples.py" />
-    <entry file="file://$PROJECT_DIR$/GetInputData/GetWordData.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="900">
-          <caret line="67" selection-start-line="67" selection-end-line="67" />
-          <folding>
-            <element signature="e#0#12#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$USER_HOME$/anaconda3/lib/python3.7/site-packages/torch/nn/modules/module.py" />
-    <entry file="file://$PROJECT_DIR$/Vocabulary/Vocabulary.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="119">
-          <caret line="124" column="19" selection-start-line="124" selection-start-column="19" selection-end-line="124" selection-end-column="19" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/GetInputData/RetrieveInputData.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="450">
-          <caret line="38" selection-start-line="38" selection-end-line="38" />
-          <folding>
-            <element signature="e#0#19#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/PrepareGraphInput/PrepareInput.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1890">
-          <caret line="135" selection-start-line="135" selection-end-line="135" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/CreateGraphInput.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="228">
-          <caret line="38" column="16" selection-start-line="38" selection-start-column="16" selection-end-line="38" selection-end-column="16" />
-          <folding>
-            <element signature="e#0#22#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/PrepareGraphInput/run_lm_finetuning.py" />
     <entry file="file://$PROJECT_DIR$/PrepareGraphInput/Previous_FinetuneDBERT.py" />
     <entry file="file://$PROJECT_DIR$/PrepareGraphInput/eval_results.txt">
@@ -555,23 +526,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Utils.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1665">
-          <caret line="117" column="30" selection-start-line="117" selection-start-column="30" selection-end-line="117" selection-end-column="30" />
-          <folding>
-            <element signature="e#0#14#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Filesystem.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="420">
-          <caret line="28" column="13" selection-start-line="28" selection-end-line="28" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/PrepareGraphInput/SenseDenominations.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1365">
@@ -582,23 +536,94 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/PrepareGraphInput/AutoEncoderDBERT.py">
+    <entry file="file://$PROJECT_DIR$/WordEmbeddings/FastText.py">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/WordEmbeddings/AutoEncoderDBERT.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2685">
-          <caret line="179" lean-forward="true" selection-start-line="179" selection-end-line="179" />
+        <state relative-caret-position="217">
+          <caret line="134" column="60" selection-start-line="134" selection-start-column="60" selection-end-line="134" selection-end-column="60" />
           <folding>
             <element signature="e#0#12#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/PrepareGraphInput/EmbedWithBERT.py">
+    <entry file="file://$PROJECT_DIR$/Vocabulary/Phrases.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="241">
-          <caret line="52" column="46" selection-start-line="52" selection-start-column="46" selection-end-line="52" selection-end-column="46" />
+        <state relative-caret-position="735">
+          <caret line="49" column="34" lean-forward="true" selection-start-line="49" selection-start-column="34" selection-end-line="49" selection-end-column="34" />
+          <folding>
+            <element signature="e#0#11#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Vocabulary/Vocabulary.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-465">
+          <caret line="104" column="50" selection-start-line="104" selection-start-column="50" selection-end-line="104" selection-end-column="50" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/GetInputData/GetWordData.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1230">
+          <caret line="82" column="28" selection-start-line="82" selection-start-column="28" selection-end-line="82" selection-end-column="28" />
+          <folding>
+            <element signature="e#0#12#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/GetInputData/RetrieveInputData.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="16">
+          <caret line="6" column="37" selection-start-line="6" selection-start-column="37" selection-end-line="6" selection-end-column="37" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Utils.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="283">
+          <caret line="33" column="24" selection-start-line="33" selection-start-column="24" selection-end-line="33" selection-end-column="24" />
+          <folding>
+            <element signature="e#0#14#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/WordEmbeddings/EmbedWithDBERT.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="75">
+          <caret line="59" column="102" selection-start-line="59" selection-start-column="92" selection-end-line="59" selection-end-column="102" />
           <folding>
             <element signature="e#0#9#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Filesystem.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="408">
+          <caret line="28" lean-forward="true" selection-start-line="28" selection-end-line="28" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/CreateGraphInput.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="390">
+          <caret line="58" column="31" selection-start-line="58" selection-start-column="15" selection-end-line="58" selection-end-column="31" />
+          <folding>
+            <element signature="e#0#22#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/PrepareGraphInput/PrepareInput.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="375">
+          <caret line="124" selection-start-line="124" selection-end-line="124" />
         </state>
       </provider>
     </entry>

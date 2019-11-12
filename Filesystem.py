@@ -3,7 +3,7 @@ import os
 FOLDER_INPUT = 'InputData'
 FOLDER_WORD_EMBEDDINGS = 'WordEmbeddings'
 FOLDER_VOCABULARY = 'Vocabulary'
-FOLDER_DISTILBERT_MODEL = 'Finetuned_DistilBERT'
+FOLDER_TEXT_CORPUSES = 'TextCorpuses'
 
 BN_WORD_INTROS = 'BabelNet_word_intros'
 BN_SYNSET_DATA = 'BabelNet_synset_data'
@@ -22,8 +22,11 @@ TEMPORARY_PHRASED_CORPUS = 'temp_phrased_training_corpus.txt'
 
 VOCAB_WT2_FILE = 'vocabulary_from_WikiText-2.h5'
 VOCAB_WT103_FILE = 'vocabulary_from_WikiText-103.h5'
+VOCAB_PHRASED = 'vocabulary_phrased.h5'
 
 VOCAB_CURRENT_INDEX_FILE = 'vocabulary_currentIndex.txt'
 
 
 ENCODER_MODEL = "Encoder_768to300_nn.model"
+
+

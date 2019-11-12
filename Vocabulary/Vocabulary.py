@@ -27,7 +27,7 @@ def convert_symbols(line_text):
     symbol_patterns_ls = [' @-@ ', ' @,@ ', ' @.@ ', ' @_@ ']
     for pat in symbol_patterns_ls:
         line_text = re.sub(pat, pat[2], line_text) #keep the symbol, and eliminate the spaces too
-    title_pattern = ' (= )+|'
+    title_pattern = ' (= ){2,}|'
     line_text = re.sub(title_pattern, "", line_text)
     return line_text
 
@@ -141,7 +141,6 @@ def build_vocabulary_from_corpus(corpus_txt_filepath):
 
     logging.info("Vocabulary created, after processing " + str(tot_tokens) + ' tokens')
     return vocab_dict
-
 
 
 # Entry function: if a vocabulary is already present in the specified path, load it. Otherwise, create it.
