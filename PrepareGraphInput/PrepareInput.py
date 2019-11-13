@@ -120,6 +120,6 @@ def prepare(vocabulary = ['move', 'light', 'for', 'sea']):
     create_senses_vocabulary_table(vocabulary)
 
     # Phase 4 - get the sentence embeddings for definitions and examples, using BERT, and store them
-    EWB.compute_sentence_embeddings(Utils.DEFINITIONS)
-    EWB.compute_sentence_embeddings(Utils.EXAMPLES)
+    EWB.compute_elements_embeddings(Utils.DEFINITIONS)
+    EWB.compute_elements_embeddings(Utils.EXAMPLES)
 

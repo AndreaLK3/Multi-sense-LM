@@ -6,7 +6,7 @@ import os
 import pandas as pd
 import Vocabulary.Vocabulary as VOC
 import Vocabulary.Phrases as PHR
-
+import WordEmbeddings.SinglePrototypeVectors as SPV
 
 # Before starting: clean all storage files; reset vocabulary index to 0
 def reset():
@@ -55,5 +55,7 @@ def exe(do_reset=False):
     VOC.get_vocabulary_df(os.path.join(F.FOLDER_VOCABULARY, F.VOCAB_WT2_FILE),
                           os.path.join(F.FOLDER_WT2, F.WT_TRAIN_FILE), min_count=5)
 
-    vocabulary_chunk = RID.continue_retrieving_data()
-    PI.prepare(vocabulary_chunk)
+    SPV.compute_single_prototype_embeddings(os.path.join(F.FOLDER_VOCABULARY, F.VOCAB_WT2_FILE))
+
+    kb_data_chunk = RID.continue_retrieving_data()
+    PI.prepare(kb_data_chunk)
