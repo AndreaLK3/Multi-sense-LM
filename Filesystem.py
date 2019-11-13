@@ -26,7 +26,6 @@ VOCAB_PHRASED = 'vocabulary_phrased.h5'
 
 VOCAB_CURRENT_INDEX_FILE = 'vocabulary_currentIndex.txt'
 
-
 FASTTEXT_EMBEDDINGS_FILE = 'cc.en.300.bin'
 ENCODER_MODEL = "Encoder_768to300_nn.model"
 
