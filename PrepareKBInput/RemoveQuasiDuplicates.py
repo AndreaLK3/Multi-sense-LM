@@ -7,7 +7,7 @@ import string
 import re
 
 NUM_INSTANCES_CHUNK = 1000
-STOPWORDS_CORENLP_FILEPATH = os.path.join("PrepareGraphInput",'stopwords_coreNLP.txt')
+STOPWORDS_CORENLP_FILEPATH = os.path.join("PrepareKBInput",'stopwords_coreNLP.txt')
 
 
 # Removing punctuation. Removing stopwords. It will be used to remove duplicates

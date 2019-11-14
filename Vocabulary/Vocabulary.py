@@ -112,7 +112,7 @@ def process_line(line, tot_tokens=0):
 
 
 def build_vocabulary_from_corpus(corpus_txt_filepath):
-    #Utils.init_logging(os.path.join("PrepareGraphInput", "Vocabulary.log"), logging.INFO)
+    #Utils.init_logging(os.path.join("PrepareKBInput", "Vocabulary.log"), logging.INFO)
     vocab_dict = {}
     tot_tokens = 0
     time_prev = time.time()

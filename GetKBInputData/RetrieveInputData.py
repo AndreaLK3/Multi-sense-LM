@@ -3,14 +3,14 @@ import pandas as pd
 import Filesystem
 import Utils
 import logging
-import GetInputData.GetWordData as GWD
-# import GetInputData.BabelNet as BabelNet
-import GetInputData.BabelNetRequests as BNR
+import GetKBInputData.GetWordData as GWD
+# import GetKBInputData.BabelNet as BabelNet
+import GetKBInputData.BabelNetRequests as BNR
 import os
 
 
 def continue_retrieving_data():
-    # Utils.init_logging(os.path.join("GetInputData", "RetrieveInputData.log"), logging.INFO)
+    # Utils.init_logging(os.path.join("GetKBInputData", "RetrieveInputData.log"), logging.INFO)
 
     BN_request_sender = BNR.BabelNetRequestSender()  # keeps track of the number of requests sent to BabelNet
     with open(os.path.join(Filesystem.FOLDER_VOCABULARY, Filesystem.VOCAB_CURRENT_INDEX_FILE), "r") as vi_file:
@@ -19,7 +19,7 @@ def continue_retrieving_data():
 
     # define and open (in 'append') the output archives for the KB data
     storage_filenames = [categ + ".h5" for categ in Utils.CATEGORIES]
-    storage_filepaths = list(map(lambda fn: os.path.join(Filesystem.FOLDER_INPUT, fn), storage_filenames))
+    storage_filepaths = list(map(lambda fn: os.path.join(Filesystem.FOLDER_INPUT_KB, fn), storage_filenames))
     open_storage_files = [pd.HDFStore(fname, mode='a') for fname in storage_filepaths]
 
     vocabulary_df = pd.read_hdf(os.path.join(Filesystem.FOLDER_VOCABULARY, Filesystem.VOCAB_WT2_FILE), mode='r')

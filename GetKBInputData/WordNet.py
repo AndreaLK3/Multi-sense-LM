@@ -43,7 +43,7 @@ def lookup_bndefs_dictionary(wn_def, bn_defs_dict):
 
 
 def retrieve_SA_bySenses(target_word, bn_defs_dict):
-    #Utils.init_logging(os.path.join("GetInputData", "WordNet.log"), logging.INFO)
+    #Utils.init_logging(os.path.join("GetKBInputData", "WordNet.log"), logging.INFO)
 
     synonyms_dict = {}
     antonyms_dict = {}

@@ -1,9 +1,8 @@
-INFO : Loading FastText vectors from text file... Line n.: 0
-INFO : Loading FastText vectors from text file... Line n.: 10000
-INFO : Loading FastText vectors from text file... Line n.: 20000
-INFO : Loading FastText vectors from text file... Line n.: 30000
-INFO : Loading FastText vectors from text file... Line n.: 40000
-INFO : Loading FastText vectors from text file... Line n.: 50000
-INFO : Loading FastText vectors from text file... Line n.: 60000
-INFO : Loading FastText vectors from text file... Line n.: 70000
-INFO : Loading FastText vectors from text file... Line n.: 80000
+INFO : loading 2000000 words for fastText model from WordEmbeddings/cc.en.300.bin
+INFO : resetting layer weights
+INFO : Updating model with new vocabulary
+INFO : New added 2000000 unique words (50% of original 4000000) and increased the count of 2000000 pre-existing words (50% of original 4000000)
+INFO : deleting the raw counts dictionary of 2000000 items
+INFO : sample=1e-05 downsamples 6996 most-common words
+INFO : downsampling leaves estimated 390315457935 word corpus (70.7% of prior 552001338161)
+INFO : loaded (4000000, 300) weight matrix for fastText model from WordEmbeddings/cc.en.300.bin

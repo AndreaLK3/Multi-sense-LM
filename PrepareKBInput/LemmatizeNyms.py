@@ -5,7 +5,7 @@ import os
 import nltk
 
 NUM_INSTANCES_CHUNK = 1000
-STOPWORDS_CORENLP_FILEPATH = os.path.join("PrepareGraphInput",'stopwords_coreNLP.txt')
+STOPWORDS_CORENLP_FILEPATH = os.path.join("PrepareKBInput",'stopwords_coreNLP.txt')
 
 # Utility function
 def get_wordnet_pos(word):

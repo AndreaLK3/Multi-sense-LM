@@ -76,7 +76,7 @@ def extract_antonyms(BN_request_sender, key, synset_edges):
 
 
 def retrieve_DESA(BN_request_sender, target_word):
-    #Utils.init_logging(os.path.join("GetInputData", "BabelNet.log"), logging.INFO)
+    #Utils.init_logging(os.path.join("GetKBInputData", "BabelNet.log"), logging.INFO)
 
     key = Utils.BABELNET_KEY
     accepted_sources = ['WIKI', 'WIKIDIS', 'OMWIKI', 'WN']

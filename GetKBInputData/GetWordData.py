@@ -1,8 +1,8 @@
 import Utils
 import logging
-import GetInputData.WordNet as WordNet
-import GetInputData.OmegaWiki as OmegaWiki
-import GetInputData.BabelNet as BabelNet
+import GetKBInputData.WordNet as WordNet
+import GetKBInputData.OmegaWiki as OmegaWiki
+import GetKBInputData.BabelNet as BabelNet
 import pandas as pd
 import os
 from itertools import cycle

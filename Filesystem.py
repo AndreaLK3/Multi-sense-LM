@@ -1,6 +1,6 @@
 import os
 
-FOLDER_INPUT = 'InputData'
+FOLDER_INPUT_KB = 'KBInputData'
 FOLDER_WORD_EMBEDDINGS = 'WordEmbeddings'
 FOLDER_VOCABULARY = 'Vocabulary'
 FOLDER_TEXT_CORPUSES = 'TextCorpuses'
@@ -24,9 +24,12 @@ VOCAB_WT2_FILE = 'vocabulary_from_WikiText-2.h5'
 VOCAB_WT103_FILE = 'vocabulary_from_WikiText-103.h5'
 VOCAB_PHRASED = 'vocabulary_phrased.h5'
 
-VOCAB_CURRENT_INDEX_FILE = 'vocabulary_currentIndex.txt'
+VOCAB_CURRENT_INDEX_FILE = 'vocabulary_currentIndex.txt' # used for BabelNet requests over several days
 
 FASTTEXT_EMBEDDINGS_FILE = 'cc.en.300.bin'
-ENCODER_MODEL = "Encoder_768to300_nn.model"
+SPVs_FASTTEXT_FILE = 'SinglePrototypes_withFastText.h5'
+SPVs_DISTILBERT_FILE = 'SinglePrototypes_withDistilBERT.h5'
+
+ENCODER_MODEL = "Encoder_768to300_nn.model" # not used in the current version
 
 

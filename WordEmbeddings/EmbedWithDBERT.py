@@ -53,10 +53,10 @@ def compute_elements_embeddings(elements_name):
     pretrained_model = transformers.DistilBertModel.from_pretrained('distilbert-base-uncased',
                                                                     output_hidden_states=True)
 
-    input_filepath = os.path.join(Filesystem.FOLDER_INPUT, Utils.DENOMINATED + '_' + elements_name + ".h5")
-    output_filepath = os.path.join(Filesystem.FOLDER_INPUT, Utils.VECTORIZED + '_'  + Utils.DISTILBERT + '_'
+    input_filepath = os.path.join(Filesystem.FOLDER_INPUT_KB, Utils.DENOMINATED + '_' + elements_name + ".h5")
+    output_filepath = os.path.join(Filesystem.FOLDER_INPUT_KB, Utils.VECTORIZED + '_' + Utils.DISTILBERT + '_'
                                    + elements_name + ".npy")
-    vocabTable_db_filepath = os.path.join(Filesystem.FOLDER_INPUT, Utils.INDICES_TABLE + ".sql")
+    vocabTable_db_filepath = os.path.join(Filesystem.FOLDER_INPUT_KB, Utils.INDICES_TABLE + ".sql")
 
     input_db = pd.HDFStore(input_filepath, mode='r')
     vocabTable_db = sqlite3.connect(vocabTable_db_filepath)
