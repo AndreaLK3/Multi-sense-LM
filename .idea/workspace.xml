@@ -3,45 +3,17 @@
   <component name="ChangeListManager">
     <list default="true" id="d35dca92-959c-489d-8a61-f337e4cce7fa" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CreateGraphInput.log" beforeDir="false" afterPath="$PROJECT_DIR$/CreateGraphInput.log" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/CreateGraphInput.py" beforeDir="false" afterPath="$PROJECT_DIR$/CreateGraphInput.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Filesystem.py" beforeDir="false" afterPath="$PROJECT_DIR$/Filesystem.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/GetInputData/.idea/GetInputData.iml" beforeDir="false" afterPath="$PROJECT_DIR$/GetKBInputData/.idea/GetInputData.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/GetInputData/.idea/libraries/R_User_Library.xml" beforeDir="false" afterPath="$PROJECT_DIR$/GetKBInputData/.idea/libraries/R_User_Library.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/GetInputData/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/GetKBInputData/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/GetInputData/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/GetKBInputData/.idea/modules.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/GetInputData/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/GetKBInputData/.idea/vcs.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/GetInputData/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/GetKBInputData/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/GetInputData/BabelNet.py" beforeDir="false" afterPath="$PROJECT_DIR$/GetKBInputData/BabelNet.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/GetInputData/BabelNetRequests.py" beforeDir="false" afterPath="$PROJECT_DIR$/GetKBInputData/BabelNetRequests.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/GetInputData/DBpedia.py" beforeDir="false" afterPath="$PROJECT_DIR$/GetKBInputData/DBpedia.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/GetInputData/GetWordData.py" beforeDir="false" afterPath="$PROJECT_DIR$/GetKBInputData/GetWordData.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/GetInputData/OmegaWiki.py" beforeDir="false" afterPath="$PROJECT_DIR$/GetKBInputData/OmegaWiki.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/GetInputData/RetrieveInputData.log" beforeDir="false" afterPath="$PROJECT_DIR$/GetKBInputData/RetrieveInputData.log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/GetInputData/RetrieveInputData.py" beforeDir="false" afterPath="$PROJECT_DIR$/GetKBInputData/RetrieveInputData.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/GetInputData/WordNet.py" beforeDir="false" afterPath="$PROJECT_DIR$/GetKBInputData/WordNet.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/GetKBInputData/RetrieveInputData.py" beforeDir="false" afterPath="$PROJECT_DIR$/GetKBInputData/RetrieveInputData.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Media/Task1_DeveloperDiary.docx" beforeDir="false" afterPath="$PROJECT_DIR$/Media/Task1_DeveloperDiary.docx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PrepareGraphInput/.idea/CreateEntities.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/PrepareGraphInput/.idea/libraries/R_User_Library.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/PrepareGraphInput/.idea/misc.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/PrepareGraphInput/.idea/modules.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/PrepareGraphInput/.idea/vcs.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/PrepareGraphInput/.idea/workspace.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/PrepareGraphInput/LemmatizeNyms.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/PrepareGraphInput/PrepareKBInput.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/PrepareGraphInput/RemoveQuasiDuplicates.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/PrepareGraphInput/SenseDenominations.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/PrepareGraphInput/TensorBoard/Training_loss:0/events.out.tfevents.1567419621.Drifts-MacBook-Pro.local" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/PrepareGraphInput/TensorBoard/Training_loss:0/events.out.tfevents.1567426036.Drifts-MacBook-Pro.local" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/PrepareGraphInput/TensorBoard/Training_loss:0/events.out.tfevents.1567426233.Drifts-MacBook-Pro.local" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/PrepareGraphInput/TensorBoard/Training_loss:0/events.out.tfevents.1567426341.Drifts-MacBook-Pro.local" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/PrepareGraphInput/TensorBoard/Training_loss:0/events.out.tfevents.1567426370.Drifts-MacBook-Pro.local" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/PrepareGraphInput/eval_results.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/PrepareGraphInput/stopwords_CoreNLP.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Vocabulary/Vocabulary.py" beforeDir="false" afterPath="$PROJECT_DIR$/Vocabulary/Vocabulary.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PrepareKBInput/PrepareKBInput.py" beforeDir="false" afterPath="$PROJECT_DIR$/PrepareKBInput/PrepareKBInput.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/Utils.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/WordEmbeddings/EmbedWithDBERT.py" beforeDir="false" afterPath="$PROJECT_DIR$/WordEmbeddings/EmbedWithDBERT.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WordEmbeddings/EmbedWithFastText.log" beforeDir="false" afterPath="$PROJECT_DIR$/WordEmbeddings/EmbedWithFastText.log" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/WordEmbeddings/EmbedWithFastText.py" beforeDir="false" afterPath="$PROJECT_DIR$/WordEmbeddings/EmbedWithFastText.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WordEmbeddings/SinglePrototypeVectors.py" beforeDir="false" afterPath="$PROJECT_DIR$/WordEmbeddings/SinglePrototypeVectors.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WordEmbeddings/SinglePrototypeVectors.py" beforeDir="false" afterPath="$PROJECT_DIR$/WordEmbeddings/ComputeEmbeddings.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templog01.txt" beforeDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -51,11 +23,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/CreateGraphInput.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="90">
-              <caret line="9" selection-start-line="9" selection-end-line="9" />
+            <state relative-caret-position="480">
+              <caret line="32" column="36" lean-forward="true" selection-start-line="32" selection-start-column="36" selection-end-line="32" selection-end-column="36" />
               <folding>
                 <element signature="e#0#22#0" expanded="true" />
               </folding>
@@ -66,8 +38,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/PrepareKBInput/PrepareKBInput.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="708">
-              <caret line="122" column="35" selection-start-line="122" selection-start-column="8" selection-end-line="122" selection-end-column="35" />
+            <state relative-caret-position="1905">
+              <caret line="127" column="70" selection-start-line="127" selection-start-column="70" selection-end-line="127" selection-end-column="70" />
               <folding>
                 <element signature="e#0#17#0" expanded="true" />
               </folding>
@@ -76,10 +48,19 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/GetKBInputData/RetrieveInputData.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="90">
+              <caret line="6" column="37" selection-start-line="6" selection-start-column="37" selection-end-line="6" selection-end-column="37" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/WordEmbeddings/EmbedWithDBERT.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="759">
-              <caret line="51" column="91" lean-forward="true" selection-start-line="51" selection-start-column="4" selection-end-line="51" selection-end-column="91" />
+            <state relative-caret-position="600">
+              <caret line="40" selection-start-line="40" selection-end-line="40" />
               <folding>
                 <element signature="e#0#9#0" expanded="true" />
               </folding>
@@ -90,8 +71,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/WordEmbeddings/EmbedWithFastText.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="150">
-              <caret line="10" selection-start-line="10" selection-end-line="10" />
+            <state relative-caret-position="495">
+              <caret line="33" selection-start-line="33" selection-end-line="33" />
               <folding>
                 <element signature="e#0#9#0" expanded="true" />
               </folding>
@@ -99,13 +80,25 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/WordEmbeddings/SinglePrototypeVectors.py">
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Utils.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="240">
-              <caret line="16" column="1" selection-start-line="16" selection-start-column="1" selection-end-line="16" selection-end-column="1" />
+            <state relative-caret-position="510">
+              <caret line="34" column="13" selection-start-line="34" selection-start-column="13" selection-end-line="34" selection-end-column="13" />
               <folding>
-                <element signature="e#0#43#0" expanded="true" />
+                <element signature="e#0#14#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/WordEmbeddings/ComputeEmbeddings.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="285">
+              <caret line="71" lean-forward="true" selection-start-line="71" selection-end-line="71" />
+              <folding>
+                <element signature="e#0#14#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -114,8 +107,20 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Vocabulary/Vocabulary.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2250">
-              <caret line="156" column="89" selection-start-line="156" selection-start-column="82" selection-end-line="156" selection-end-column="89" />
+            <state relative-caret-position="2280">
+              <caret line="158" column="29" lean-forward="true" selection-start-line="158" selection-start-column="29" selection-end-line="158" selection-end-column="29" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/GetKBInputData/BabelNetRequests.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="120">
+              <caret line="8" column="72" lean-forward="true" selection-start-line="8" selection-start-column="72" selection-end-line="8" selection-end-column="72" />
+              <folding>
+                <element signature="e#0#21#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -124,7 +129,7 @@
         <entry file="file://$PROJECT_DIR$/Filesystem.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="450">
-              <caret line="30" column="59" lean-forward="true" selection-start-line="30" selection-start-column="59" selection-end-line="30" selection-end-column="59" />
+              <caret line="30" column="59" selection-start-line="30" selection-start-column="59" selection-end-line="30" selection-end-column="59" />
             </state>
           </provider>
         </entry>
@@ -227,14 +232,16 @@
         <option value="$PROJECT_DIR$/WordEmbeddings/FastText.py" />
         <option value="$PROJECT_DIR$/WordEmbeddings/AutoEncoderDBERT.py" />
         <option value="$PROJECT_DIR$/GetInputData/RetrieveInputData.py" />
-        <option value="$PROJECT_DIR$/Utils.py" />
         <option value="$PROJECT_DIR$/PrepareGraphInput/PrepareInput.py" />
-        <option value="$PROJECT_DIR$/WordEmbeddings/EmbedWithDBERT.py" />
         <option value="$PROJECT_DIR$/Vocabulary/Vocabulary.py" />
-        <option value="$PROJECT_DIR$/CreateGraphInput.py" />
-        <option value="$PROJECT_DIR$/Filesystem.py" />
-        <option value="$PROJECT_DIR$/WordEmbeddings/EmbedWithFastText.py" />
         <option value="$PROJECT_DIR$/WordEmbeddings/SinglePrototypeVectors.py" />
+        <option value="$PROJECT_DIR$/Utils.py" />
+        <option value="$PROJECT_DIR$/WordEmbeddings/EmbedWithFastText.py" />
+        <option value="$PROJECT_DIR$/WordEmbeddings/EmbedWithDBERT.py" />
+        <option value="$PROJECT_DIR$/PrepareKBInput/PrepareKBInput.py" />
+        <option value="$PROJECT_DIR$/Filesystem.py" />
+        <option value="$PROJECT_DIR$/WordEmbeddings/ComputeEmbeddings.py" />
+        <option value="$PROJECT_DIR$/CreateGraphInput.py" />
       </list>
     </option>
   </component>
@@ -264,7 +271,7 @@
             <path>
               <item name="TASK1_Gbwe" type="b2602c69:ProjectViewProjectNode" />
               <item name="TASK1_Gbwe" type="462c0819:PsiDirectoryNode" />
-              <item name="KBInputData" type="462c0819:PsiDirectoryNode" />
+              <item name="InputData" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="TASK1_Gbwe" type="b2602c69:ProjectViewProjectNode" />
@@ -402,10 +409,9 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="23" width="1920" height="985" extended-state="6" />
-    <editor active="true" />
+    <frame x="0" y="23" width="1920" height="986" extended-state="6" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.12939297" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.14376996" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -418,7 +424,7 @@
       <window_info anchor="bottom" id="Version Control" order="7" weight="0.32913166" />
       <window_info anchor="bottom" id="Terminal" order="8" weight="0.3277311" />
       <window_info anchor="bottom" id="Event Log" order="9" side_tool="true" />
-      <window_info anchor="bottom" id="Python Console" order="10" weight="0.20604703" />
+      <window_info anchor="bottom" id="Python Console" order="10" visible="true" weight="0.20581655" />
       <window_info anchor="bottom" id="Inspection Results" order="11" weight="0.32922733" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
@@ -544,16 +550,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/GetKBInputData/BabelNetRequests.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="135">
-          <caret line="9" selection-start-line="9" selection-end-line="9" />
-          <folding>
-            <element signature="e#0#21#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/PrepareKBInput/RemoveQuasiDuplicates.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="261">
@@ -625,54 +621,11 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/GetKBInputData/RetrieveInputData.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="16">
-          <caret line="6" column="37" selection-start-line="6" selection-start-column="37" selection-end-line="6" selection-end-column="37" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Utils.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="283">
-          <caret line="33" column="24" selection-start-line="33" selection-start-column="24" selection-end-line="33" selection-end-column="24" />
-          <folding>
-            <element signature="e#0#14#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/WordEmbeddings/FastText_wiki-news-300d-1M.vec">
-      <provider selected="true" editor-type-id="LargeFileEditor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Vocabulary/Vocabulary.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2250">
-          <caret line="156" column="89" selection-start-line="156" selection-start-column="82" selection-end-line="156" selection-end-column="89" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/CreateGraphInput.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="90">
-          <caret line="9" selection-start-line="9" selection-end-line="9" />
-          <folding>
-            <element signature="e#0#22#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Filesystem.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="450">
-          <caret line="30" column="59" lean-forward="true" selection-start-line="30" selection-start-column="59" selection-end-line="30" selection-end-column="59" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/WordEmbeddings/FastText_wiki-news-300d-1M.vec" />
     <entry file="file://$PROJECT_DIR$/PrepareKBInput/PrepareKBInput.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="708">
-          <caret line="122" column="35" selection-start-line="122" selection-start-column="8" selection-end-line="122" selection-end-column="35" />
+        <state relative-caret-position="1905">
+          <caret line="127" column="70" selection-start-line="127" selection-start-column="70" selection-end-line="127" selection-end-column="70" />
           <folding>
             <element signature="e#0#17#0" expanded="true" />
           </folding>
@@ -681,8 +634,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/WordEmbeddings/EmbedWithDBERT.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="759">
-          <caret line="51" column="91" lean-forward="true" selection-start-line="51" selection-start-column="4" selection-end-line="51" selection-end-column="91" />
+        <state relative-caret-position="600">
+          <caret line="40" selection-start-line="40" selection-end-line="40" />
           <folding>
             <element signature="e#0#9#0" expanded="true" />
           </folding>
@@ -691,20 +644,71 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/WordEmbeddings/EmbedWithFastText.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="150">
-          <caret line="10" selection-start-line="10" selection-end-line="10" />
+        <state relative-caret-position="495">
+          <caret line="33" selection-start-line="33" selection-end-line="33" />
           <folding>
             <element signature="e#0#9#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/WordEmbeddings/SinglePrototypeVectors.py">
+    <entry file="file://$PROJECT_DIR$/Utils.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="240">
-          <caret line="16" column="1" selection-start-line="16" selection-start-column="1" selection-end-line="16" selection-end-column="1" />
+        <state relative-caret-position="510">
+          <caret line="34" column="13" selection-start-line="34" selection-start-column="13" selection-end-line="34" selection-end-column="13" />
           <folding>
-            <element signature="e#0#43#0" expanded="true" />
+            <element signature="e#0#14#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Vocabulary/Vocabulary.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2280">
+          <caret line="158" column="29" lean-forward="true" selection-start-line="158" selection-start-column="29" selection-end-line="158" selection-end-column="29" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/GetKBInputData/BabelNetRequests.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="120">
+          <caret line="8" column="72" lean-forward="true" selection-start-line="8" selection-start-column="72" selection-end-line="8" selection-end-column="72" />
+          <folding>
+            <element signature="e#0#21#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/GetKBInputData/RetrieveInputData.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="90">
+          <caret line="6" column="37" selection-start-line="6" selection-start-column="37" selection-end-line="6" selection-end-column="37" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/WordEmbeddings/ComputeEmbeddings.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="285">
+          <caret line="71" lean-forward="true" selection-start-line="71" selection-end-line="71" />
+          <folding>
+            <element signature="e#0#14#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Filesystem.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="450">
+          <caret line="30" column="59" selection-start-line="30" selection-start-column="59" selection-end-line="30" selection-end-column="59" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/CreateGraphInput.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="480">
+          <caret line="32" column="36" lean-forward="true" selection-start-line="32" selection-start-column="36" selection-end-line="32" selection-end-column="36" />
+          <folding>
+            <element signature="e#0#22#0" expanded="true" />
           </folding>
         </state>
       </provider>

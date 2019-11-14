@@ -1,6 +1,6 @@
 import os
 
-FOLDER_INPUT_KB = 'KBInputData'
+FOLDER_INPUT = 'InputData'
 FOLDER_WORD_EMBEDDINGS = 'WordEmbeddings'
 FOLDER_VOCABULARY = 'Vocabulary'
 FOLDER_TEXT_CORPUSES = 'TextCorpuses'
@@ -26,9 +26,9 @@ VOCAB_PHRASED = 'vocabulary_phrased.h5'
 
 VOCAB_CURRENT_INDEX_FILE = 'vocabulary_currentIndex.txt' # used for BabelNet requests over several days
 
-FASTTEXT_EMBEDDINGS_FILE = 'cc.en.300.bin'
-SPVs_FASTTEXT_FILE = 'SinglePrototypes_withFastText.h5'
-SPVs_DISTILBERT_FILE = 'SinglePrototypes_withDistilBERT.h5'
+FASTTEXT_PRETRAINED_EMBEDDINGS_FILE = 'cc.en.300.bin'
+SPVs_FASTTEXT_FILE = 'SinglePrototypes_withFastText.npy'
+SPVs_DISTILBERT_FILE = 'SinglePrototypes_withDistilBERT.npy'
 
 ENCODER_MODEL = "Encoder_768to300_nn.model" # not used in the current version
 

@@ -6,7 +6,7 @@ import os
 import pandas as pd
 import Vocabulary.Vocabulary as VOC
 import Vocabulary.Phrases as PHR
-import WordEmbeddings.SinglePrototypeVectors as SPV
+import WordEmbeddings.ComputeEmbeddings as CE
 
 # Before starting: clean all storage files; reset vocabulary index to 0
 def reset():
@@ -15,16 +15,18 @@ def reset():
     archives_core_filenames = Utils.CATEGORIES + list(map(lambda c: Utils.DENOMINATED + '_' + c, Utils.CATEGORIES)) + \
                     list(map(lambda c: Utils.PROCESSED + '_' + c, Utils.CATEGORIES))
     archives_filenames = list(map(lambda core_fname : core_fname + '.h5', archives_core_filenames))
-    archives_filepaths = list(map(lambda fname: os.path.join(F.FOLDER_INPUT_KB, fname), archives_filenames))
+    archives_filepaths = list(map(lambda fname: os.path.join(F.FOLDER_INPUT, fname), archives_filenames))
 
     # reset the modified training corpus, where we added the phrases
     phrased_corpus_filenames = [F.PHRASED_TRAINING_CORPUS, F.TEMPORARY_PHRASED_CORPUS]
     phrased_corpus_filepaths = list(map(lambda fname: os.path.join(F.FOLDER_TEXT_CORPUSES, fname), phrased_corpus_filenames))
 
     # reset the embeddings, both those for dictionary elements and those for single-prototype vectors
-    vectorized_inputs_filenames = list(filter(lambda fname: '.npy' in fname, os.listdir(F.FOLDER_INPUT_KB)))
-    vectorized_inputs_filepaths = list(map(lambda fname: os.path.join(F.FOLDER_INPUT_KB, fname),
+    vectorized_inputs_filenames = list(filter(lambda fname: '.npy' in fname, os.listdir(F.FOLDER_INPUT)))
+    print(vectorized_inputs_filenames)
+    vectorized_inputs_filepaths = list(map(lambda fname: os.path.join(F.FOLDER_INPUT, fname),
                                            vectorized_inputs_filenames))
+    # reset the vocabularies
     vocab_filepaths = list(map(lambda fname: os.path.join(F.FOLDER_VOCABULARY, fname),
                                [F.VOCAB_WT2_FILE, F.VOCAB_WT103_FILE, F.VOCAB_PHRASED]))
 
@@ -41,7 +43,7 @@ def reset():
         vi_file.close()
 
 
-def exe(do_reset=False):
+def exe(do_reset=False, compute_single_prototype=False):
     Utils.init_logging('CreateGraphInput.log')
     if do_reset:
         reset()
@@ -53,10 +55,17 @@ def exe(do_reset=False):
     # VOC.get_vocabulary_df(os.path.join(F.FOLDER_VOCABULARY, F.VOCAB_PHRASED),
     #                       os.path.join(F.FOLDER_TEXT_CORPUSES, F.PHRASED_TRAINING_CORPUS), min_count=5)
 
-    VOC.get_vocabulary_df(os.path.join(F.FOLDER_VOCABULARY, F.VOCAB_WT2_FILE),
+    vocabulary = VOC.get_vocabulary_df(os.path.join(F.FOLDER_VOCABULARY, F.VOCAB_WT2_FILE),
                           os.path.join(F.FOLDER_WT2, F.WT_TRAIN_FILE), min_count=5)
 
-    SPV.compute_single_prototype_embeddings(os.path.join(F.FOLDER_VOCABULARY, F.VOCAB_WT2_FILE))
+    if compute_single_prototype:
+        CE.compute_single_prototype_embeddings(vocabulary,
+                                               os.path.join(F.FOLDER_INPUT, F.SPVs_DISTILBERT_FILE),
+                                               CE.Method.DISTILBERT)
+
+        CE.compute_single_prototype_embeddings(vocabulary,
+                                               os.path.join(F.FOLDER_INPUT, F.SPVs_FASTTEXT_FILE),
+                                               CE.Method.FASTTEXT)
 
     kb_data_chunk = RID.continue_retrieving_data()
     PI.prepare(kb_data_chunk)

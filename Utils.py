@@ -32,6 +32,7 @@ DENOMINATED = 'denominated'
 PROCESSED = 'processed' # for defs and examples, it means: 'no duplicates'; for synonyms and antonyms: 'lemmatized'
 VECTORIZED = 'vectorized'
 DISTILBERT = "DistilBERT"
+FASTTEXT = "FastText"
 
 INDICES_TABLE = 'indices_table'
 

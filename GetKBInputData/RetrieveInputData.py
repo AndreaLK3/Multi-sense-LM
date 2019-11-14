@@ -19,7 +19,7 @@ def continue_retrieving_data():
 
     # define and open (in 'append') the output archives for the KB data
     storage_filenames = [categ + ".h5" for categ in Utils.CATEGORIES]
-    storage_filepaths = list(map(lambda fn: os.path.join(Filesystem.FOLDER_INPUT_KB, fn), storage_filenames))
+    storage_filepaths = list(map(lambda fn: os.path.join(Filesystem.FOLDER_INPUT, fn), storage_filenames))
     open_storage_files = [pd.HDFStore(fname, mode='a') for fname in storage_filepaths]
 
     vocabulary_df = pd.read_hdf(os.path.join(Filesystem.FOLDER_VOCABULARY, Filesystem.VOCAB_WT2_FILE), mode='r')
