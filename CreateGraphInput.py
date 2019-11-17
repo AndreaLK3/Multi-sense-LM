@@ -7,6 +7,7 @@ import pandas as pd
 import Vocabulary.Vocabulary as VOC
 import Vocabulary.Phrases as PHR
 import WordEmbeddings.ComputeEmbeddings as CE
+import tables
 
 # Before starting: clean all storage files; reset vocabulary index to 0
 def reset():
@@ -23,7 +24,6 @@ def reset():
 
     # reset the embeddings, both those for dictionary elements and those for single-prototype vectors
     vectorized_inputs_filenames = list(filter(lambda fname: '.npy' in fname, os.listdir(F.FOLDER_INPUT)))
-    print(vectorized_inputs_filenames)
     vectorized_inputs_filepaths = list(map(lambda fname: os.path.join(F.FOLDER_INPUT, fname),
                                            vectorized_inputs_filenames))
     # reset the vocabularies
@@ -69,3 +69,5 @@ def exe(do_reset=False, compute_single_prototype=False):
 
     kb_data_chunk = RID.continue_retrieving_data()
     PI.prepare(kb_data_chunk)
+
+    tables.file._open_files.close_all()

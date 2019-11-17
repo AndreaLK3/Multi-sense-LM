@@ -1,1 +1,588 @@
-INFO : *** The vocabulary was loaded from the file Vocabulary/vocabulary_from_WikiText-2.h5
+INFO : Building vocabulary. Reading in line n. : 0 ; number of tokens encountered: 0 ; time elapsed = 0.009 s
+INFO : Building vocabulary. Reading in line n. : 10000 ; number of tokens encountered: 563796 ; time elapsed = 8.0701 s
+INFO : Building vocabulary. Reading in line n. : 20000 ; number of tokens encountered: 1126535 ; time elapsed = 7.9727 s
+INFO : Building vocabulary. Reading in line n. : 30000 ; number of tokens encountered: 1687311 ; time elapsed = 7.9624 s
+INFO : Vocabulary created, after processing 2090745 tokens
+INFO : Removing from the vocabulary words with frequency < 5
+INFO : *** The vocabulary was created from the corpus file TextCorpuses/wikitext-2/wiki.train.tokens
+INFO : 0
+INFO : Retrieving Multisense data for word: Valkyria
+INFO : BN_request_sender.requests_counter= 0
+INFO : Retrieving Multisense data for word: III
+INFO : BN_request_sender.requests_counter= 3
+INFO : initializing identifier
+INFO : Not of language : en Element : '௩'
+INFO : Not of language : en Element : '٣'
+INFO : Not of language : en Element : '꤃'
+INFO : Not of language : en Element : '−3'
+INFO : Not of language : en Element : '୩'
+INFO : Not of language : en Element : '3️⃣'
+INFO : Not of language : en Element : '༣'
+INFO : Not of language : en Element : '᥉'
+INFO : Not of language : en Element : '𐡚'
+INFO : Not of language : en Element : '三'
+INFO : Not of language : en Element : '⑶'
+INFO : Not of language : en Element : '൩'
+INFO : Not of language : en Element : '৩'
+INFO : Not of language : en Element : '３'
+INFO : Not of language : en Element : '꣓'
+INFO : Not of language : en Element : '੩'
+INFO : Not of language : en Element : '౩'
+INFO : Not of language : en Element : '໓'
+INFO : Not of language : en Element : '⒊'
+INFO : Not of language : en Element : '③'
+INFO : Not of language : en Element : '➌'
+INFO : Not of language : en Element : '३'
+INFO : Not of language : en Element : '೩'
+INFO : Not of language : en Element : '៣'
+INFO : Not of language : en Element : '꧓'
+INFO : Not of language : en Element : 'ⅲ'
+INFO : Not of language : en Element : '૩'
+INFO : Not of language : en Element : '꩓'
+INFO : Not of language : en Element : '۳'
+INFO : Not of language : en Element : '𐒣'
+INFO : Not of language : en Element : '๓'
+INFO : Not of language : en Element : '❸'
+INFO : Not of language : en Element : '⓷'
+INFO : Retrieving Multisense data for word: Chronicles
+INFO : BN_request_sender.requests_counter= 50
+INFO : Not of language : en Element : 'paralipoménōn'
+INFO : Not of language : en Element : 'paralipoménōn'
+INFO : Not of language : en Element : 'paralipoménōn'
+INFO : Retrieving Multisense data for word: in
+INFO : BN_request_sender.requests_counter= 68
+INFO : Not of language : en Element : '㏌'
+INFO : Not of language : en Element : '″'
+INFO : Retrieving Multisense data for word: perform
+INFO : BN_request_sender.requests_counter= 94
+INFO : Retrieving Multisense data for word: developed
+INFO : BN_request_sender.requests_counter= 106
+INFO : Retrieving Multisense data for word: as
+INFO : BN_request_sender.requests_counter= 115
+INFO : Not of language : en Element : 'ôxômiya'
+INFO : Not of language : en Element : 'অসমীয়া'
+INFO : Not of language : en Element : '🜺'
+INFO : Not of language : en Element : '𐆚'
+INFO : Retrieving Multisense data for word: black
+INFO : BN_request_sender.requests_counter= 152
+INFO : Not of language : en Element : 'black deeds'
+INFO : Not of language : en Element : 'ñegro'
+INFO : Not of language : en Element : 'colоur'
+INFO : BN_request_sender.requests_counter= 260
+INFO : Eliminating quasi-duplicate definitions for the senses of the word: Valkyria
+INFO : Eliminating quasi-duplicate examples for the senses of the word: Valkyria
+INFO : Lemmatizing synonyms for the senses of the word: Valkyria
+INFO : Lemmatizing antonyms for the senses of the word: Valkyria
+INFO : Eliminating quasi-duplicate definitions for the senses of the word: III
+INFO : Eliminating quasi-duplicate examples for the senses of the word: III
+INFO : Lemmatizing synonyms for the senses of the word: III
+INFO : Lemmatizing antonyms for the senses of the word: III
+INFO : Eliminating quasi-duplicate definitions for the senses of the word: Chronicles
+INFO : Eliminating quasi-duplicate examples for the senses of the word: Chronicles
+INFO : Lemmatizing synonyms for the senses of the word: Chronicles
+INFO : Lemmatizing antonyms for the senses of the word: Chronicles
+INFO : Eliminating quasi-duplicate definitions for the senses of the word: in
+INFO : Eliminating quasi-duplicate examples for the senses of the word: in
+INFO : Lemmatizing synonyms for the senses of the word: in
+INFO : Lemmatizing antonyms for the senses of the word: in
+INFO : Eliminating quasi-duplicate definitions for the senses of the word: perform
+INFO : Eliminating quasi-duplicate examples for the senses of the word: perform
+INFO : Lemmatizing synonyms for the senses of the word: perform
+INFO : Lemmatizing antonyms for the senses of the word: perform
+INFO : Eliminating quasi-duplicate definitions for the senses of the word: developed
+INFO : Eliminating quasi-duplicate examples for the senses of the word: developed
+INFO : Lemmatizing synonyms for the senses of the word: developed
+INFO : Lemmatizing antonyms for the senses of the word: developed
+INFO : Eliminating quasi-duplicate definitions for the senses of the word: as
+INFO : Eliminating quasi-duplicate examples for the senses of the word: as
+INFO : Lemmatizing synonyms for the senses of the word: as
+INFO : Lemmatizing antonyms for the senses of the word: as
+INFO : Eliminating quasi-duplicate definitions for the senses of the word: black
+INFO : Duplicate element found: total absence of light
+INFO : Duplicate element found: marked by anger or resentment or hostility
+INFO : Duplicate element found: a person with dark skin who comes from africa (or whose ancestors came from africa)
+INFO : Eliminating quasi-duplicate examples for the senses of the word: black
+INFO : Lemmatizing synonyms for the senses of the word: black
+INFO : Lemmatizing antonyms for the senses of the word: black
+INFO : Selecting, sorting and naming the senses of the word: Valkyria
+INFO : Initial number of senses : 0
+INFO : Remaining senses: 0
+INFO : Selecting, sorting and naming the senses of the word: III
+INFO : Initial number of senses : 2
+INFO : Remaining senses: 2
+INFO :   word   sense                                        definitions
+0  III   adj.1                            being one more than two
+1  III  noun.1  the cardinal number that is the sum of one and...
+2  III  noun.1  grammatical number related to precisely 3 obje...
+3  III  noun.1                       a number, numeral, and glyph
+4  III  noun.1  the cardinal number occurring after two and be...
+5  III  noun.1                 3 is a number, numeral, and glyph.
+INFO : <class 'pandas.io.pytables.HDFStore'>
+File path: InputData/denominated_definitions.h5
+
+INFO : definitions
+INFO :    word   sense    synonyms
+0   III   adj.1           3
+1   III   adj.1         iii
+2   III   adj.1       three
+0   III  noun.1       leash
+1   III  noun.1           3
+2   III  noun.1     ternion
+3   III  noun.1     triplet
+4   III  noun.1           ➂
+5   III  noun.1           ႓
+6   III  noun.1           🄄
+7   III  noun.1           ₃
+8   III  noun.1         iii
+9   III  noun.1       triad
+10  III  noun.1      troika
+11  III  noun.1           ၃
+12  III  noun.1  three-ness
+13  III  noun.1       (iii)
+14  III  noun.1      tercet
+15  III  noun.1      tierce
+16  III  noun.1          m2
+17  III  noun.1         1/3
+18  III  noun.1   deuce-ace
+19  III  noun.1       trine
+20  III  noun.1    terzetto
+21  III  noun.1       three
+22  III  noun.1           ߃
+23  III  noun.1     ternary
+24  III  noun.1     trinity
+25  III  noun.1        trio
+26  III  noun.1       trial
+27  III  noun.1   threesome
+28  III  noun.1        trey
+29  III  noun.1     thirdly
+INFO : <class 'pandas.io.pytables.HDFStore'>
+File path: InputData/denominated_synonyms.h5
+
+INFO : synonyms
+INFO : Selecting, sorting and naming the senses of the word: Chronicles
+INFO : Initial number of senses : 3
+INFO : Remaining senses: 3
+INFO :          word   sense                                        definitions
+0  Chronicles  noun.1  the first of two old testament books telling t...
+1  Chronicles  noun.1  in the christian bible, the two books of chron...
+2  Chronicles  noun.1                                       in the bible
+3  Chronicles  noun.2  (old testament) an obsolete name for the old t...
+4  Chronicles  noun.2  in the christian bible, the two books of chron...
+5  Chronicles  noun.2                                       in the bible
+6  Chronicles  noun.3  in the christian bible, the two books of chron...
+7  Chronicles  noun.3                                       in the bible
+8  Chronicles  noun.3  the second of two old testament books telling ...
+INFO : <class 'pandas.io.pytables.HDFStore'>
+File path: InputData/denominated_definitions.h5
+
+INFO : definitions
+INFO :          word   sense       synonyms
+0  Chronicles  noun.1  paraleipomena
+1  Chronicles  noun.1  paraleipomana
+2  Chronicles  noun.1  paralipomenon
+3  Chronicles  noun.1    2chronicles
+4  Chronicles  noun.1      chronicle
+5  Chronicles  noun.1           1ch.
+6  Chronicles  noun.1    1chronicles
+7  Chronicles  noun.1           2ch.
+0  Chronicles  noun.2  paraleipomana
+1  Chronicles  noun.2  paralipomenon
+2  Chronicles  noun.2      chronicle
+3  Chronicles  noun.2  paraleipomena
+4  Chronicles  noun.2           1ch.
+5  Chronicles  noun.2    2chronicles
+6  Chronicles  noun.2    1chronicles
+7  Chronicles  noun.2           2ch.
+0  Chronicles  noun.3    1chronicles
+1  Chronicles  noun.3           2ch.
+2  Chronicles  noun.3           1ch.
+3  Chronicles  noun.3    2chronicles
+4  Chronicles  noun.3  paraleipomena
+5  Chronicles  noun.3  paralipomenon
+6  Chronicles  noun.3  paraleipomana
+7  Chronicles  noun.3      chronicle
+INFO : <class 'pandas.io.pytables.HDFStore'>
+File path: InputData/denominated_synonyms.h5
+
+INFO : synonyms
+INFO : Selecting, sorting and naming the senses of the word: in
+INFO : Initial number of senses : 7
+INFO : Remaining senses: 3
+INFO :    word   sense                                        definitions
+2    in  noun.1          chemical element with atomic number of 49
+3    in  noun.1  a rare soft silvery metallic element; occurs i...
+4    in  noun.1  indium is a chemical element with symbol in an...
+5    in  noun.1  a chemical element with symbol in and atomic n...
+6    in  noun.1                    the element of atomic number 49
+7    in  noun.2  the inch is a unit of length in the imperial a...
+8    in  noun.2    a unit of length equal to one twelfth of a foot
+9    in  noun.2        a unit of length equal to 2.54 centimetres.
+10   in  noun.2                                   a unit of length
+12   in   adv.1                         to or toward the inside of
+INFO : <class 'pandas.io.pytables.HDFStore'>
+File path: InputData/denominated_definitions.h5
+
+INFO : definitions
+INFO :   word  sense                                           examples
+5   in  adv.1                                  smash in the door
+6   in  adv.1  so much the rather, thou celestial light, shin...
+7   in  adv.1                                            come in
+INFO : <class 'pandas.io.pytables.HDFStore'>
+File path: InputData/denominated_examples.h5
+
+INFO : examples
+INFO :   word   sense synonyms
+0   in  noun.2     inch
+1   in  noun.2     ynch
+0   in   adv.1  inwards
+1   in   adv.1   inward
+0   in  noun.1  masrium
+1   in  noun.1   indium
+2   in  noun.1     49in
+INFO : <class 'pandas.io.pytables.HDFStore'>
+File path: InputData/denominated_synonyms.h5
+
+INFO : synonyms
+INFO : Selecting, sorting and naming the senses of the word: perform
+INFO : Initial number of senses : 5
+INFO : Remaining senses: 2
+INFO :       word   sense                                        definitions
+1  perform  verb.1  to perform an action, as in executing a progra...
+2  perform  verb.1           to perform (with obj. being the action).
+3  perform  verb.1                     carry out or perform an action
+5  perform  noun.1  performance is completion of a task with appli...
+6  perform  noun.1                a dramatic or musical entertainment
+7  perform  noun.1  an act where somebody performs music, theater ...
+INFO : <class 'pandas.io.pytables.HDFStore'>
+File path: InputData/denominated_definitions.h5
+
+INFO : definitions
+INFO :        word   sense                                           examples
+2   perform  verb.1                             she did a little dance
+3   perform  verb.1                        to execute a turn in ballet
+4   perform  verb.1  all you ever do is surf the internet;  what wi...
+5   perform  verb.1  to execute a difficult piece of music brilliantly
+6   perform  verb.1  john did the painting, the weeding, and he cle...
+7   perform  verb.1                        the horse ran a great race.
+8   perform  verb.1               he is running an expensive campaign.
+9   perform  verb.1             the skater executed a triple pirouette
+11  perform  noun.1        they listened to ten different performances
+12  perform  noun.1  the frequent performances of the symphony test...
+13  perform  noun.1                  the play ran for 100 performances
+INFO : <class 'pandas.io.pytables.HDFStore'>
+File path: InputData/denominated_examples.h5
+
+INFO : examples
+INFO :       word   sense     synonyms
+0  perform  noun.1      concert
+1  perform  noun.1  performance
+2  perform  noun.1      perform
+0  perform  verb.1          run
+1  perform  verb.1       launch
+2  perform  verb.1      execute
+3  perform  verb.1           do
+INFO : <class 'pandas.io.pytables.HDFStore'>
+File path: InputData/denominated_synonyms.h5
+
+INFO : synonyms
+INFO : Selecting, sorting and naming the senses of the word: developed
+INFO : Initial number of senses : 3
+INFO : Remaining senses: 3
+INFO :         word  sense                                        definitions
+0  developed  adj.1  being changed over time so as to be e.g. stron...
+1  developed  adj.3  (of real estate) made more useful and profitab...
+2  developed  adj.2  (used of societies) having high industrial dev...
+INFO : <class 'pandas.io.pytables.HDFStore'>
+File path: InputData/denominated_definitions.h5
+
+INFO : definitions
+INFO :         word  sense                                           examples
+0  developed  adj.1  they have very small limbs with only two fully...
+1  developed  adj.1    the developed qualities of the hellenic outlook
+2  developed  adj.3      condominiums were built on the developed site
+3  developed  adj.2                                developed countries
+INFO : <class 'pandas.io.pytables.HDFStore'>
+File path: InputData/denominated_examples.h5
+
+INFO : examples
+INFO :         word  sense          synonyms
+0  developed  adj.2  highly-developed
+INFO : <class 'pandas.io.pytables.HDFStore'>
+File path: InputData/denominated_synonyms.h5
+
+INFO : synonyms
+INFO :         word  sense     antonyms
+0  developed  adj.1  undeveloped
+INFO : <class 'pandas.io.pytables.HDFStore'>
+File path: InputData/denominated_antonyms.h5
+
+INFO : antonyms
+INFO : Selecting, sorting and naming the senses of the word: as
+INFO : Initial number of senses : 5
+INFO : Remaining senses: 5
+INFO :    word   sense                                        definitions
+0    as  noun.3  assamese or asamiya is an eastern indo-aryan l...
+1    as  noun.3  the magadhan language spoken by the assamese p...
+2    as  noun.3  an indic language spoken as the official langu...
+3    as  noun.3                    easternmost indo-aryan language
+4    as  noun.1  a toxic metalloid element with symbol as and a...
+5    as  noun.1  a very poisonous metallic element that has thr...
+6    as  noun.1  arsenic is a chemical element with symbol as a...
+7    as  noun.1                    the element of atomic number 33
+8    as  noun.1  the as, occasionally assarius was a bronze, an...
+9    as  noun.1                             a coin and weight unit
+10   as  noun.4  aortic stenosis is the narrowing of the exit o...
+11   as  noun.4  a constriction in the opening of the aortic va...
+12   as  noun.4             abnormal narrowing of the aortic valve
+13   as  noun.2  asperger syndrome, also known as asperger's, i...
+14   as  noun.2  a psychiatric disorder usually noted during ea...
+15   as  noun.2  a neuropsychiatric disorder whose major manife...
+16   as  noun.2  a neurobiological syndrome which affects socia...
+17   as   adv.1                      to the same extent or degree.
+18   as   adv.1        to the same degree (often followed by `as')
+INFO : <class 'pandas.io.pytables.HDFStore'>
+File path: InputData/denominated_definitions.h5
+
+INFO : definitions
+INFO :   word  sense                                           examples
+0   as  adv.1                        they were equally beautiful
+1   as  adv.1  you're not as tall as i am.   it's not as well...
+2   as  adv.1                  he is every bit as mean as she is
+3   as  adv.1  the gas stations are equally far from the high...
+4   as  adv.1   birds were singing and the child sang as sweetly
+5   as  adv.1  john suffered setbacks at his job. equally, fr...
+6   as  adv.1                   sang as sweetly as a nightingale
+INFO : <class 'pandas.io.pytables.HDFStore'>
+File path: InputData/denominated_examples.h5
+
+INFO : examples
+INFO :    word   sense           synonyms
+0    as  noun.3           assamese
+1    as  noun.3            axamiya
+2    as  noun.3  assamese-language
+3    as  noun.3            ahamiya
+4    as  noun.3            oxomiya
+5    as  noun.3            asamiya
+0    as  noun.1           assarion
+1    as  noun.1          arsenacho
+2    as  noun.1          arsenical
+3    as  noun.1             arsnic
+4    as  noun.1          7440-38-2
+5    as  noun.1                 as
+6    as  noun.1     scherbenkobalt
+7    as  noun.1            arsenic
+0    as  noun.2         auspergers
+1    as  noun.2          asbergers
+2    as  noun.2              aspie
+3    as  noun.2           asperger
+4    as  noun.2          spergling
+5    as  noun.2          aspergian
+6    as  noun.2           aspergic
+7    as  noun.2           aspurger
+8    as  noun.2           asberger
+9    as  noun.2         asperger's
+10   as  noun.2             aspies
+11   as  noun.2          aspergers
+12   as  noun.2          assberger
+13   as  noun.2         apserger's
+14   as  noun.2         asberger's
+15   as  noun.2           asburger
+16   as  noun.2          aspberger
+17   as  noun.2        aspberger's
+0    as   adv.1            equally
+INFO : <class 'pandas.io.pytables.HDFStore'>
+File path: InputData/denominated_synonyms.h5
+
+INFO : synonyms
+INFO : Selecting, sorting and naming the senses of the word: black
+INFO : Initial number of senses : 24
+INFO : Remaining senses: 12
+INFO :      word   sense                                        definitions
+4   black  noun.6  black is the darkest color, the result of the ...
+5   black  noun.6  the quality or state of the achromatic color o...
+6   black   adj.2   causing great distress or injury; bringing ruin.
+7   black   adj.2  (of events) having extremely unfortunate or di...
+8   black  noun.3  "black people" is a term used in certain count...
+9   black  noun.3    a population group identified in some countries
+10  black  noun.3                               a woman who is black
+11  black   adj.3  dark and colourless; not reflecting visible li...
+12  black   adj.3  being of the achromatic color of maximum darkn...
+13  black  noun.7                    (board games) the darker pieces
+14  black  noun.7  in chess, the player who moves first is referr...
+16  black  noun.4                            an african who is black
+17  black  noun.4  "black people" is a term used in certain count...
+18  black  noun.4    a population group identified in some countries
+19  black   adj.5  stemming from evil characteristics or forces; ...
+23  black  noun.2  the visual perceptual property corresponding i...
+24  black  noun.2                             the color of the face.
+25  black  noun.2  a colour (the colour of the sky at night and a...
+26  black  noun.2  a color (the color of the sky at night and a b...
+27  black  noun.2  color or colour is the characteristic of human...
+28  black  noun.2  an attribute of things that results from the l...
+29  black  noun.2  a visual attribute of things that results from...
+30  black   adj.1                    bringing or deserving disgrace.
+31  black   adj.1  (used of conduct or character) deserving or br...
+32  black   adj.1           deserving or bringing disgrace or shame.
+33  black  noun.1  "black people" is a term used in certain count...
+34  black  noun.1  as defined by johann friedrich blumenbach in h...
+35  black  noun.1  grouping of human beings historically regarded...
+36  black  noun.1  negroid is a grouping of human beings historic...
+37  black  noun.1    a population group identified in some countries
+38  black  noun.1  a person with dark skin who comes from africa ...
+39  black  noun.1  negro is an archaic term traditionally used to...
+43  black  noun.5  "black people" is a term used in certain count...
+44  black  noun.5    a population group identified in some countries
+45  black  noun.5                                 a man who is black
+46  black   adj.4  of or belonging to a racial group having dark ...
+47  black   adj.4  of or belonging to a racial group having dark ...
+INFO : <class 'pandas.io.pytables.HDFStore'>
+File path: InputData/denominated_definitions.h5
+
+INFO : definitions
+INFO :      word   sense                                           examples
+10  black  noun.6  the blackness of outerspace comes from the lac...
+11  black   adj.2  the battle was a disastrous end to a disastrou...
+12  black   adj.2  such doctrines, if true, would be absolutely f...
+13  black   adj.2  it is fatal to enter any war without the will ...
+14  black   adj.2                                    a fateful error
+15  black   adj.2           the stock market crashed on black friday
+16  black   adj.2                                a calamitous defeat
+17  black   adj.3                                    rich black soil
+18  black   adj.3                              black leather jackets
+19  black   adj.3                                   as black as coal
+20  black  noun.7       at this point black makes a disastrous move.
+22  black   adj.5                       darth vader of the dark side
+23  black   adj.5             dark undercurrents of ethnic hostility
+24  black   adj.5                                     a dark purpose
+25  black   adj.5  the scheme of some sinister intelligence bent ...
+26  black   adj.5                                        a black lie
+27  black   adj.5  his black heart has concocted yet another blac...
+33  black  noun.2               humans and birds can perceive color.
+34  black  noun.2  a white color is made up of many different wav...
+35  black   adj.1  man...has written one of his blackest records ...
+36  black   adj.1                             an ignominious retreat
+37  black   adj.1                    a shameful display of cowardice
+38  black   adj.1             an opprobrious monument to human greed
+39  black   adj.1                                  inglorious defeat
+49  black   adj.4  a great people--a black people--...injected ne...
+INFO : <class 'pandas.io.pytables.HDFStore'>
+File path: InputData/denominated_examples.h5
+
+INFO : examples
+INFO :      word   sense        synonyms
+0   black  noun.3  black-africans
+1   black  noun.3   negro-african
+2   black  noun.3           black
+3   black  noun.3           negro
+4   black  noun.3   african-negro
+..    ...     ...             ...
+1   black   adj.5            dark
+0   black   adj.2      disastrous
+1   black   adj.2         fateful
+2   black   adj.2           fatal
+3   black   adj.2      calamitous
+
+[78 rows x 3 columns]
+INFO : <class 'pandas.io.pytables.HDFStore'>
+File path: InputData/denominated_synonyms.h5
+
+INFO : synonyms
+INFO :     word   sense       antonyms
+0  black   adj.3          white
+0  black  noun.7          white
+0  black  noun.6          white
+0  black  noun.2  colorlessness
+0  black   adj.4          white
+INFO : <class 'pandas.io.pytables.HDFStore'>
+File path: InputData/denominated_antonyms.h5
+
+INFO : antonyms
+INFO : loading configuration file https://s3.amazonaws.com/models.huggingface.co/bert/distilbert-base-uncased-config.json from cache at /Users/andrea/.cache/torch/transformers/a41e817d5c0743e29e86ff85edc8c257e61bc8d88e4271bb1b243b6e7614c633.1ccd1a11c9ff276830e114ea477ea2407100f4a3be7bdc45d37be9e37fa71c7e
+INFO : Model config {
+  "activation": "gelu",
+  "attention_dropout": 0.1,
+  "dim": 768,
+  "dropout": 0.1,
+  "finetuning_task": null,
+  "hidden_dim": 3072,
+  "initializer_range": 0.02,
+  "max_position_embeddings": 512,
+  "n_heads": 12,
+  "n_layers": 6,
+  "num_labels": 2,
+  "output_attentions": false,
+  "output_hidden_states": true,
+  "output_past": true,
+  "pruned_heads": {},
+  "qa_dropout": 0.1,
+  "seq_classif_dropout": 0.2,
+  "sinusoidal_pos_embds": false,
+  "tie_weights_": true,
+  "torchscript": false,
+  "use_bfloat16": false,
+  "vocab_size": 30522
+}
+
+INFO : loading weights file https://s3.amazonaws.com/models.huggingface.co/bert/distilbert-base-uncased-pytorch_model.bin from cache at /Users/andrea/.cache/torch/transformers/7b8a8f0b21c4e7f6962451c9370a5d9af90372a5f64637a251f2de154d0fc72c.c2015533705b9dff680ae707e205a35e2860e8d148b45d35085419d74fe57ac5
+INFO : loading file https://s3.amazonaws.com/models.huggingface.co/bert/bert-base-uncased-vocab.txt from cache at /Users/andrea/.cache/torch/transformers/26bc1ad6c0ac742e9b52263248f6d0f00068293b33709fae12320c0e35ccfbbb.542ce4285a40d23a559526243235df47c5f75c197f04f37d1a0c124c32c9a084
+INFO : Computed the embeddings for the dictionary elements: definitions , saved at: InputData/vectorized_DistilBERT_definitions
+INFO : loading configuration file https://s3.amazonaws.com/models.huggingface.co/bert/distilbert-base-uncased-config.json from cache at /Users/andrea/.cache/torch/transformers/a41e817d5c0743e29e86ff85edc8c257e61bc8d88e4271bb1b243b6e7614c633.1ccd1a11c9ff276830e114ea477ea2407100f4a3be7bdc45d37be9e37fa71c7e
+INFO : Model config {
+  "activation": "gelu",
+  "attention_dropout": 0.1,
+  "dim": 768,
+  "dropout": 0.1,
+  "finetuning_task": null,
+  "hidden_dim": 3072,
+  "initializer_range": 0.02,
+  "max_position_embeddings": 512,
+  "n_heads": 12,
+  "n_layers": 6,
+  "num_labels": 2,
+  "output_attentions": false,
+  "output_hidden_states": true,
+  "output_past": true,
+  "pruned_heads": {},
+  "qa_dropout": 0.1,
+  "seq_classif_dropout": 0.2,
+  "sinusoidal_pos_embds": false,
+  "tie_weights_": true,
+  "torchscript": false,
+  "use_bfloat16": false,
+  "vocab_size": 30522
+}
+
+INFO : loading weights file https://s3.amazonaws.com/models.huggingface.co/bert/distilbert-base-uncased-pytorch_model.bin from cache at /Users/andrea/.cache/torch/transformers/7b8a8f0b21c4e7f6962451c9370a5d9af90372a5f64637a251f2de154d0fc72c.c2015533705b9dff680ae707e205a35e2860e8d148b45d35085419d74fe57ac5
+INFO : loading file https://s3.amazonaws.com/models.huggingface.co/bert/bert-base-uncased-vocab.txt from cache at /Users/andrea/.cache/torch/transformers/26bc1ad6c0ac742e9b52263248f6d0f00068293b33709fae12320c0e35ccfbbb.542ce4285a40d23a559526243235df47c5f75c197f04f37d1a0c124c32c9a084
+INFO : Computed the embeddings for the dictionary elements: examples , saved at: InputData/vectorized_DistilBERT_examples
+INFO : loading 2000000 words for fastText model from WordEmbeddings/cc.en.300.bin
+INFO : resetting layer weights
+INFO : Updating model with new vocabulary
+INFO : New added 2000000 unique words (50% of original 4000000) and increased the count of 2000000 pre-existing words (50% of original 4000000)
+INFO : deleting the raw counts dictionary of 2000000 items
+INFO : sample=1e-05 downsamples 6996 most-common words
+INFO : downsampling leaves estimated 390315457935 word corpus (70.7% of prior 552001338161)
+INFO : loaded (4000000, 300) weight matrix for fastText model from WordEmbeddings/cc.en.300.bin
+WARNING : could not extract any ngrams from '`', returning origin vector
+WARNING : could not extract any ngrams from '``', returning origin vector
+WARNING : could not extract any ngrams from "''", returning origin vector
+WARNING : could not extract any ngrams from '``', returning origin vector
+WARNING : could not extract any ngrams from "''", returning origin vector
+WARNING : could not extract any ngrams from '``', returning origin vector
+WARNING : could not extract any ngrams from "''", returning origin vector
+WARNING : could not extract any ngrams from '``', returning origin vector
+WARNING : could not extract any ngrams from "''", returning origin vector
+WARNING : could not extract any ngrams from '``', returning origin vector
+WARNING : could not extract any ngrams from "''", returning origin vector
+WARNING : could not extract any ngrams from '``', returning origin vector
+WARNING : could not extract any ngrams from "''", returning origin vector
+INFO : Computed the embeddings for the dictionary elements: definitions , saved at: InputData/vectorized_FastText_definitions
+INFO : loading 2000000 words for fastText model from WordEmbeddings/cc.en.300.bin
+INFO : resetting layer weights
+INFO : Updating model with new vocabulary
+INFO : New added 2000000 unique words (50% of original 4000000) and increased the count of 2000000 pre-existing words (50% of original 4000000)
+INFO : deleting the raw counts dictionary of 2000000 items
+INFO : sample=1e-05 downsamples 6996 most-common words
+INFO : downsampling leaves estimated 390315457935 word corpus (70.7% of prior 552001338161)
+INFO : loaded (4000000, 300) weight matrix for fastText model from WordEmbeddings/cc.en.300.bin
+INFO : Computed the embeddings for the dictionary elements: examples , saved at: InputData/vectorized_FastText_examples

@@ -29,13 +29,17 @@ def continue_retrieving_data():
     while BN_request_sender.requests_counter < BN_request_sender.requests_threshold:
 
         word = vocabulary_df.iloc[current_index]['word']
+        current_index = current_index + 1
+        if len(word) <= 1:
+            continue # do not retrieve dictionary data for punctuation symbols, e.g. '=', '(' etc.
+
         logging.info("Retrieving Multisense data for word: " + str(word))
         logging.info("BN_request_sender.requests_counter= " + str(BN_request_sender.requests_counter))
         vocabulary_chunk.append(word)
         # ********* core function invocation *********
         GWD.getAndSave_multisense_data(word, BN_request_sender, open_storage_files)
         # *********
-        current_index = current_index + 1
+
 
     logging.info("BN_request_sender.requests_counter= " + str(BN_request_sender.requests_counter))
     # stop; we are approaching the maximum number of BabelNet requests (currently 5000)

@@ -4,13 +4,15 @@ import logging
 
 # Keep only the relevant synsets for the target word.
 # Directives:
-# Exclude the synsets where the synsetType is NAMED_ENTITIES instead of CONCEPTS
-# Policy: Restrict to WordNet. If there isn’t any WordNet definition, drop
-# (drop also if the target word is not found among the lemmas of the synset)
+# A1) If the word is not capitalized: exclude the synsets where the synsetType is NAMED_ENTITIES instead of CONCEPTS
+# A2) If the word is capitalized: keep Named Entities (UK, Japan, Germany etc.)
+# B) Policy: Restrict to WordNet. If there isn’t any WordNet definition, drop
+#    (drop also if the target word is not found among the lemmas of the synset)
 def check_include_synset(target_word, synset_data):
-    if synset_data['synsetType'] != 'CONCEPT':
-        logging.debug("Named Entity. Ignoring.")
-        return False #we do not deal with Named Entities here
+    if target_word.islower(): # if the word is not capitalized. Otherwise, e.g. Japan, we include the Named Entities
+        if synset_data['synsetType'] != 'CONCEPT':
+            logging.debug("Named Entity. Ignoring.")
+            return False # we do not deal with Named Entities here
 
     defs = synset_data['glosses']
 

@@ -83,8 +83,8 @@ def create_senses_vocabulary_table(vocabulary_words_ls):
     start_examples_count = 0
 
     for word in vocabulary_words_ls:
-        word_defs_df = defs_input_db.select(key=Utils.DEFINITIONS, where="word == " + str(word))
-        word_examples_df = examples_input_db.select(key=Utils.EXAMPLES, where="word == " + str(word))
+        word_defs_df = Utils.select_from_hdf5(defs_input_db, Utils.DEFINITIONS, ["word"], [word])
+        word_examples_df = Utils.select_from_hdf5(examples_input_db, Utils.EXAMPLES, ["word"], [word])
 
         sense_names = set(word_defs_df['sense'])
         for sense in sense_names:
@@ -107,8 +107,8 @@ def create_senses_vocabulary_table(vocabulary_words_ls):
 
 
 # ['move', 'light']
-def prepare(vocabulary = ['move', 'light', 'for', 'sea']):
-    #Utils.init_logging(os.path.join("PrepareKBInput", "PrepareInput"))
+def prepare(vocabulary): #vocabulary = ['move', 'light', 'for', 'sea']
+    #Utils.init_logging(os.path.join("PrepareKBInput", "PrepareKBInput.log"))
 
     # Phase 1 - Preprocessing: eliminating quasi-duplicate definitions and examples, and lemmatizing synonyms & antonyms
     preprocess(vocabulary)

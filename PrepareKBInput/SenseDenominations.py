@@ -54,7 +54,7 @@ def eliminate_secondary_senses(word_element_df, bnids_denoms_dict):
 
 def assign_senses_to_word(word, input_dbs, output_dbs):
 
-    hdf5_min_itemsizes = {'word': Utils.HDF5_BASE_SIZE_512 / 4, 'sense': Utils.HDF5_BASE_SIZE_512 / 16,
+    hdf5_min_itemsizes = {'word': Utils.HDF5_BASE_SIZE_512 / 4, 'sense': Utils.HDF5_BASE_SIZE_512 / 8,
                           Utils.DEFINITIONS: Utils.HDF5_BASE_SIZE_512, Utils.EXAMPLES: Utils.HDF5_BASE_SIZE_512,
                           Utils.SYNONYMS: Utils.HDF5_BASE_SIZE_512 / 4, Utils.ANTONYMS: Utils.HDF5_BASE_SIZE_512 / 4}
 
@@ -89,7 +89,10 @@ def assign_senses_to_word(word, input_dbs, output_dbs):
 
     for i in range(len(word_dfs)):
         if not(word_dfs[i].empty):
-            word_dfs_named = [eliminate_secondary_senses(word_dfs[i], bnids_denoms_dict)]
+            word_dfs_named = eliminate_secondary_senses(word_dfs[i], bnids_denoms_dict)
+            logging.info(word_dfs_named)
+            logging.info(output_dbs[i])
+            logging.info(Utils.CATEGORIES[i])
             output_dbs[i].append(key=Utils.CATEGORIES[i], value=word_dfs_named,
                          min_itemsize={key:hdf5_min_itemsizes[key]
                                        for key in hdf5_min_itemsizes.keys() if key in ['word', 'sense', Utils.CATEGORIES[i]]})

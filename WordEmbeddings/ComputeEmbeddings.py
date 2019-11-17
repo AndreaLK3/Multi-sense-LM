@@ -51,7 +51,7 @@ def compute_single_prototype_embeddings(vocabulary_df, spvs_out_fpath, method):
             # reset
             i = 0
             word_vectors_lls = []
-
+    logging.info('Computed the single-prototype embeddings for the vocabulary tokens, at: ' + spvs_out_fpath)
 
 
 # In the previous step, we stored the start-and-end indices of elements in a Sqlite3 database.
@@ -66,7 +66,7 @@ def compute_elements_embeddings(elements_name, method):
         fasttext_vectors = EFT.load_fasttext_vectors()
 
     input_filepath = os.path.join(Filesystem.FOLDER_INPUT, Utils.DENOMINATED + '_' + elements_name + ".h5")
-    output_filepath = os.path.join(Filesystem.FOLDER_INPUT, Utils.VECTORIZED + '_' + method + '_'
+    output_filepath = os.path.join(Filesystem.FOLDER_INPUT, Utils.VECTORIZED + '_' + str(method.value) + '_'
                                    + elements_name) # + ".npy"
     vocabTable_db_filepath = os.path.join(Filesystem.FOLDER_INPUT, Utils.INDICES_TABLE + ".sql")
 
@@ -78,14 +78,17 @@ def compute_elements_embeddings(elements_name, method):
     vocabTable_db_c.execute("SELECT * FROM vocabulary_table")
 
     for row in vocabTable_db_c: # consuming the cursor iterator. Tuple returned: ('wide', 'adv.1', 2, 4, 5, 16, 18)
-        sense_df = input_db.select(key=elements_name, where="word == " + str(row[0]) + " & sense =='" + row[1] + "'")
+        sense_df = Utils.select_from_hdf5(input_db, elements_name, ["word", "sense"], [row[0], row[1]])
         element_text_series = sense_df[elements_name]
         for element_text in element_text_series:
             if method == Method.DISTILBERT:
-                vector = compute_sentence_dBert_vector(distilBERT_model, distilBERT_tokenizer, element_text).squeeze()
+                vector = compute_sentence_dBert_vector(distilBERT_model, distilBERT_tokenizer, element_text).squeeze().numpy()
             else: # i.e. elif method == Method_for_SPV.FASTTEXT:
                 vector = EFT.get_sentence_avg_vector(element_text, fasttext_vectors)
             matrix_of_sentence_embeddings.append(vector)
 
     embds_nparray = np.array(matrix_of_sentence_embeddings)
     np.save(output_filepath, embds_nparray)
+
+    logging.info('Computed the embeddings for the dictionary elements: ' + elements_name +
+                 " , saved at: " + output_filepath)

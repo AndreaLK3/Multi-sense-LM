@@ -129,3 +129,20 @@ def get_gpu_memory_map():
     gpu_memory = [int(x) for x in result.strip().split('\n')]
     gpu_memory_map = dict(zip(range(len(gpu_memory)), gpu_memory))
     return gpu_memory_map
+
+
+### Selecting from a HDF5 archive, and dealing with the possible syntax errors
+### e.g.: where word == and, or where word ==''s '
+def select_from_hdf5(input_db, table_key, field_names, values):
+    #word_df = input_db.select(key=elements_name, where="word == '" + str(word) + "'")
+    values = list(map(lambda v: v.replace("'", ""), values))
+    fields_values_lts = zip(field_names, values)
+    query = ""
+    for field_value_tpl in fields_values_lts:
+        query_part = field_value_tpl[0] + " == '" + field_value_tpl[1] + "'"
+        if len(query) == 0:
+            query = query_part
+        else:
+            query = query + " & " + query_part
+    df = input_db.select(key=table_key, where=query)
+    return df
