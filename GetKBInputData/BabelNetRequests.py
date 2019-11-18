@@ -5,7 +5,7 @@ import logging
 class BabelNetRequestSender:
 
     def __init__(self):
-        self.requests_threshold = 200 # 4500, based on the available amount of BabelCoins (for me currently 5000)
+        self.requests_threshold = 1200 # 4500, based on the available amount of BabelCoins (for me currently 5000)
         self.requests_counter = 0 # It is set when we create this object
 
     ########## HTTP Requests
