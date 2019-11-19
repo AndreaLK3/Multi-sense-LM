@@ -98,7 +98,11 @@ def store_data_to_hdf5(word, data_dict, elements_col_name, h5_outfile, h5_itemsi
 
     df_columns = ['word', 'bn_id', elements_col_name]
     df = pd.DataFrame(data=df_data_lang, columns=df_columns)
-    h5_outfile.append(key=elements_col_name, value=df, min_itemsize={key: h5_itemsizes[key] for key in df_columns})
+    try:
+        h5_outfile.append(key=elements_col_name, value=df, min_itemsize={key: h5_itemsizes[key] for key in df_columns})
+    except ValueError as exc:
+        logging.info(exc)
+        logging.info("Continuing...")
 
 
 
