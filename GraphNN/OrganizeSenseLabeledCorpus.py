@@ -4,7 +4,7 @@ import logging
 import Utils
 import lxml.etree
 import pandas as pd
-
+import time
 
 def load_NOAD_to_WordNet_mapping():
     manualmap_df = pd.read_csv(os.path.join(F.FOLDER_TEXT_CORPUSES, F.NOAD_WORDNET_MANUALMAP_FILE),
@@ -31,8 +31,12 @@ def load_NOAD_to_WordNet_mapping():
 
 
 def get_WordNet_sense(noad_sense, mapping_df):
-    wn_sense = mapping_df.loc[mapping_df[Utils.SENSE_NOAD] == noad_sense].values[0][1]
-    logging.debug(wn_sense)
+    try:
+        wn_sense = mapping_df.loc[mapping_df[Utils.SENSE_NOAD] == noad_sense].values[0][1]
+        logging.debug(wn_sense)
+    except IndexError:
+        logging.warning("A Sense from NOAD: " + str(noad_sense) + " was not found in the mapping. Skipping")
+        wn_sense = Utils.EMPTY
     return wn_sense
 
 
@@ -43,9 +47,7 @@ def get_breakspace_token(token_code):
         return '\n'
 
 
-def process_word(word_elem, out_archive, sense_mapping_df):
-    h5_itemsizes = {'token': Utils.HDF5_BASE_SIZE_512, 'lemma': Utils.HDF5_BASE_SIZE_512 / 2,
-                          'pos': Utils.HDF5_BASE_SIZE_512 / 16, Utils.SENSE_WORDNET: Utils.HDF5_BASE_SIZE_512}
+def process_word(word_elem, sense_mapping_df):
 
     attributes_dict = word_elem.attrib
     keys = attributes_dict.keys()
@@ -60,29 +62,35 @@ def process_word(word_elem, out_archive, sense_mapping_df):
         wn_sense = Utils.EMPTY
         lemma = Utils.EMPTY
         pos = Utils.EMPTY
-
     # if we have NO_BREAK, do not add anything
     if token == 'NO_BREAK':
         return
     # Otherwise:
     # first, write in the corpus archive the preceding break (space, tab, newline)
-    break_data = [(get_breakspace_token(preceding_break), Utils.EMPTY, Utils.EMPTY, Utils.EMPTY)]
-    new_df = pd.DataFrame(data=break_data, columns=['token', 'lemma', 'pos', Utils.SENSE_WORDNET])
-    out_archive.append(key='SenseLabeledCorpus', value=new_df, min_itemsize=h5_itemsizes)
+    break_data_tpl = (get_breakspace_token(preceding_break), Utils.EMPTY, Utils.EMPTY, Utils.EMPTY)
     # then, write the word (and its sense & co., if present)
-    token_data = [(token, lemma, pos, wn_sense)]
-    logging.debug(token_data)
-    new_df = pd.DataFrame(data=token_data, columns=['token', 'lemma', 'pos', Utils.SENSE_WORDNET])
-    out_archive.append(key='SenseLabeledCorpus', value=new_df, min_itemsize=h5_itemsizes)
+    token_data_tpl = (token, lemma, pos, wn_sense)
 
+
+    return break_data_tpl, token_data_tpl
 
 
 def process_xml_document(xml_fpath, out_archive, sense_mapping_df):
+    h5_itemsizes = {'token': Utils.HDF5_BASE_SIZE_512, 'lemma': Utils.HDF5_BASE_SIZE_512 / 2,
+                    'pos': Utils.HDF5_BASE_SIZE_512 / 16, Utils.SENSE_WORDNET: Utils.HDF5_BASE_SIZE_512}
+
     xml_docfile = open(xml_fpath, "rb")
+    data_tpl_ls = []
 
     for event, elem in lxml.etree.iterparse(xml_docfile):
         if elem.tag == "word":
-            process_word(elem,out_archive, sense_mapping_df)
+            break_data_tpl, token_data_tpl = process_word(elem, sense_mapping_df)
+            data_tpl_ls.append(break_data_tpl)
+            data_tpl_ls.append(token_data_tpl)
+
+    new_df = pd.DataFrame(data=data_tpl_ls, columns=['token', 'lemma', 'pos', Utils.SENSE_WORDNET])
+    out_archive.append(key='SenseLabeledCorpus', value=new_df, min_itemsize=h5_itemsizes)
+
 
 
 def process_corpus_subfiles(source_filepaths, destination_archive, sense_mapping_df):
@@ -93,8 +101,8 @@ def process_corpus_subfiles(source_filepaths, destination_archive, sense_mapping
         sub_xml_filenames = list(filter(lambda fname: 'xml' in fname, os.listdir(src_fpath)))
         sub_xml_filepaths = list(map(lambda fn: os.path.join(src_fpath, fn), sub_xml_filenames))
         for sub_xml_filepath in sub_xml_filepaths:
+            logging.info("Processing the sense-labeled document located at: " + str(sub_xml_filepath) + " ...")
             process_xml_document(sub_xml_filepath, destination_archive, sense_mapping_df)
-        logging.info("Processed the sense-labeled document located at: " + str(src_fpath))
 
 
 def exe_semcore_and_masc():
@@ -107,9 +115,6 @@ def exe_semcore_and_masc():
     semcor_source_fpath = os.path.join(F.FOLDER_TEXT_CORPUSES, F.FOLDER_SEMCOR)
     masc_base_fpath = os.path.join(F.FOLDER_TEXT_CORPUSES, F.FOLDER_MASC, F.FOLDER_MASC_WRITTEN)
     masc_source_fpaths = list(map(lambda dir_tpl: dir_tpl[0], os.walk(masc_base_fpath)))
-
-    semcor_destination_fpath = os.path.join(F.FOLDER_INPUT, F.SEMCOR_H5_FILE)
-    masc_destination_fpath = os.path.join(F.FOLDER_INPUT, F.MASC_H5_FILE)
 
     noad_to_Wordnet_mapping = load_NOAD_to_WordNet_mapping()
 

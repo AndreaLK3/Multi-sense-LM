@@ -67,10 +67,10 @@ def create_senses_vocabulary_table(vocabulary_words_ls):
     examples_input_db = pd.HDFStore(examples_input_filepath, mode='r')
 
     output_filepath = os.path.join(Filesystem.FOLDER_INPUT, Utils.INDICES_TABLE + ".sql")
-    outdb_reset = open(output_filepath, 'w'); outdb_reset.close()
     out_vocabTable_db = sqlite3.connect(output_filepath)
     out_vocabTable_db_c = out_vocabTable_db.cursor()
-    out_vocabTable_db_c.execute('''CREATE TABLE vocabulary_table (  word varchar(127),
+    out_vocabTable_db_c.execute('''CREATE TABLE IF NOT EXISTS
+                                                vocabulary_table (  word varchar(127),
                                                                     sense varchar(63),
                                                                     vocab_index int,
                                                                     start_defs int,

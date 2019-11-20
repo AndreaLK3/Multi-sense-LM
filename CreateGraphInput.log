@@ -1,78 +1,72 @@
-INFO : Building vocabulary. Reading in line n. : 0 ; number of tokens encountered: 0 ; time elapsed = 0.009 s
-INFO : Building vocabulary. Reading in line n. : 10000 ; number of tokens encountered: 563796 ; time elapsed = 8.0701 s
-INFO : Building vocabulary. Reading in line n. : 20000 ; number of tokens encountered: 1126535 ; time elapsed = 7.9727 s
-INFO : Building vocabulary. Reading in line n. : 30000 ; number of tokens encountered: 1687311 ; time elapsed = 7.9624 s
+INFO : Building vocabulary. Reading in line n. : 0 ; number of tokens encountered: 0 ; time elapsed = 0.0102 s
+INFO : Building vocabulary. Reading in line n. : 10000 ; number of tokens encountered: 563796 ; time elapsed = 8.229 s
+INFO : Building vocabulary. Reading in line n. : 20000 ; number of tokens encountered: 1126535 ; time elapsed = 8.2314 s
+INFO : Building vocabulary. Reading in line n. : 30000 ; number of tokens encountered: 1687311 ; time elapsed = 8.3014 s
 INFO : Vocabulary created, after processing 2090745 tokens
 INFO : Removing from the vocabulary words with frequency < 5
 INFO : *** The vocabulary was created from the corpus file TextCorpuses/wikitext-2/wiki.train.tokens
 INFO : 0
-INFO : Retrieving Multisense data for word: Valkyria
-INFO : BN_request_sender.requests_counter= 0
 INFO : Retrieving Multisense data for word: III
-INFO : BN_request_sender.requests_counter= 3
+INFO : BN_request_sender.requests_counter= 0
 INFO : initializing identifier
-INFO : Not of language : en Element : '௩'
-INFO : Not of language : en Element : '٣'
-INFO : Not of language : en Element : '꤃'
-INFO : Not of language : en Element : '−3'
-INFO : Not of language : en Element : '୩'
-INFO : Not of language : en Element : '3️⃣'
-INFO : Not of language : en Element : '༣'
 INFO : Not of language : en Element : '᥉'
-INFO : Not of language : en Element : '𐡚'
-INFO : Not of language : en Element : '三'
-INFO : Not of language : en Element : '⑶'
-INFO : Not of language : en Element : '൩'
-INFO : Not of language : en Element : '৩'
-INFO : Not of language : en Element : '３'
-INFO : Not of language : en Element : '꣓'
-INFO : Not of language : en Element : '੩'
-INFO : Not of language : en Element : '౩'
-INFO : Not of language : en Element : '໓'
-INFO : Not of language : en Element : '⒊'
-INFO : Not of language : en Element : '③'
-INFO : Not of language : en Element : '➌'
-INFO : Not of language : en Element : '३'
-INFO : Not of language : en Element : '೩'
+INFO : Not of language : en Element : '௩'
 INFO : Not of language : en Element : '៣'
-INFO : Not of language : en Element : '꧓'
-INFO : Not of language : en Element : 'ⅲ'
-INFO : Not of language : en Element : '૩'
-INFO : Not of language : en Element : '꩓'
-INFO : Not of language : en Element : '۳'
+INFO : Not of language : en Element : '੩'
+INFO : Not of language : en Element : '③'
 INFO : Not of language : en Element : '𐒣'
-INFO : Not of language : en Element : '๓'
+INFO : Not of language : en Element : '𐡚'
+INFO : Not of language : en Element : '౩'
+INFO : Not of language : en Element : '三'
+INFO : Not of language : en Element : '꣓'
+INFO : Not of language : en Element : '۳'
 INFO : Not of language : en Element : '❸'
+INFO : Not of language : en Element : '➌'
+INFO : Not of language : en Element : '૩'
+INFO : Not of language : en Element : '৩'
+INFO : Not of language : en Element : '꩓'
+INFO : Not of language : en Element : '٣'
+INFO : Not of language : en Element : '३'
+INFO : Not of language : en Element : '꤃'
+INFO : Not of language : en Element : 'ⅲ'
+INFO : Not of language : en Element : '೩'
+INFO : Not of language : en Element : '໓'
+INFO : Not of language : en Element : '༣'
+INFO : Not of language : en Element : '⑶'
+INFO : Not of language : en Element : '꧓'
+INFO : Not of language : en Element : '⒊'
 INFO : Not of language : en Element : '⓷'
+INFO : Not of language : en Element : '୩'
+INFO : Not of language : en Element : '３'
+INFO : Not of language : en Element : '൩'
+INFO : Not of language : en Element : '−3'
+INFO : Not of language : en Element : '3️⃣'
+INFO : Not of language : en Element : '๓'
 INFO : Retrieving Multisense data for word: Chronicles
-INFO : BN_request_sender.requests_counter= 50
+INFO : BN_request_sender.requests_counter= 47
 INFO : Not of language : en Element : 'paralipoménōn'
 INFO : Not of language : en Element : 'paralipoménōn'
 INFO : Not of language : en Element : 'paralipoménōn'
-INFO : Retrieving Multisense data for word: in
+INFO : Retrieving Multisense data for word: Valkyria
+INFO : BN_request_sender.requests_counter= 65
+INFO : Retrieving Multisense data for word: Raven
 INFO : BN_request_sender.requests_counter= 68
-INFO : Not of language : en Element : '㏌'
-INFO : Not of language : en Element : '″'
-INFO : Retrieving Multisense data for word: perform
-INFO : BN_request_sender.requests_counter= 94
-INFO : Retrieving Multisense data for word: developed
-INFO : BN_request_sender.requests_counter= 106
-INFO : Retrieving Multisense data for word: as
-INFO : BN_request_sender.requests_counter= 115
-INFO : Not of language : en Element : 'ôxômiya'
-INFO : Not of language : en Element : 'অসমীয়া'
-INFO : Not of language : en Element : '🜺'
-INFO : Not of language : en Element : '𐆚'
-INFO : Retrieving Multisense data for word: black
-INFO : BN_request_sender.requests_counter= 152
-INFO : Not of language : en Element : 'black deeds'
-INFO : Not of language : en Element : 'ñegro'
-INFO : Not of language : en Element : 'colоur'
-INFO : BN_request_sender.requests_counter= 260
-INFO : Eliminating quasi-duplicate definitions for the senses of the word: Valkyria
-INFO : Eliminating quasi-duplicate examples for the senses of the word: Valkyria
-INFO : Lemmatizing synonyms for the senses of the word: Valkyria
-INFO : Lemmatizing antonyms for the senses of the word: Valkyria
+INFO : Retrieving Multisense data for word: penal
+INFO : BN_request_sender.requests_counter= 119
+INFO : Retrieving Multisense data for word: unit
+INFO : BN_request_sender.requests_counter= 127
+INFO : Retrieving Multisense data for word: Sega
+INFO : BN_request_sender.requests_counter= 158
+INFO : Retrieving Multisense data for word: for
+INFO : BN_request_sender.requests_counter= 165
+INFO : Retrieving Multisense data for word: serving
+INFO : BN_request_sender.requests_counter= 170
+INFO : Retrieving Multisense data for word: during
+INFO : BN_request_sender.requests_counter= 176
+INFO : Retrieving Multisense data for word: game
+INFO : BN_request_sender.requests_counter= 178
+INFO : Not of language : en Element : '🎮'
+INFO : BN_request_sender.requests_counter= 245
 INFO : Eliminating quasi-duplicate definitions for the senses of the word: III
 INFO : Eliminating quasi-duplicate examples for the senses of the word: III
 INFO : Lemmatizing synonyms for the senses of the word: III
@@ -81,80 +75,91 @@ INFO : Eliminating quasi-duplicate definitions for the senses of the word: Chron
 INFO : Eliminating quasi-duplicate examples for the senses of the word: Chronicles
 INFO : Lemmatizing synonyms for the senses of the word: Chronicles
 INFO : Lemmatizing antonyms for the senses of the word: Chronicles
-INFO : Eliminating quasi-duplicate definitions for the senses of the word: in
-INFO : Eliminating quasi-duplicate examples for the senses of the word: in
-INFO : Lemmatizing synonyms for the senses of the word: in
-INFO : Lemmatizing antonyms for the senses of the word: in
-INFO : Eliminating quasi-duplicate definitions for the senses of the word: perform
-INFO : Eliminating quasi-duplicate examples for the senses of the word: perform
-INFO : Lemmatizing synonyms for the senses of the word: perform
-INFO : Lemmatizing antonyms for the senses of the word: perform
-INFO : Eliminating quasi-duplicate definitions for the senses of the word: developed
-INFO : Eliminating quasi-duplicate examples for the senses of the word: developed
-INFO : Lemmatizing synonyms for the senses of the word: developed
-INFO : Lemmatizing antonyms for the senses of the word: developed
-INFO : Eliminating quasi-duplicate definitions for the senses of the word: as
-INFO : Eliminating quasi-duplicate examples for the senses of the word: as
-INFO : Lemmatizing synonyms for the senses of the word: as
-INFO : Lemmatizing antonyms for the senses of the word: as
-INFO : Eliminating quasi-duplicate definitions for the senses of the word: black
-INFO : Duplicate element found: total absence of light
-INFO : Duplicate element found: marked by anger or resentment or hostility
-INFO : Duplicate element found: a person with dark skin who comes from africa (or whose ancestors came from africa)
-INFO : Eliminating quasi-duplicate examples for the senses of the word: black
-INFO : Lemmatizing synonyms for the senses of the word: black
-INFO : Lemmatizing antonyms for the senses of the word: black
-INFO : Selecting, sorting and naming the senses of the word: Valkyria
-INFO : Initial number of senses : 0
-INFO : Remaining senses: 0
+INFO : Eliminating quasi-duplicate definitions for the senses of the word: Valkyria
+INFO : Eliminating quasi-duplicate examples for the senses of the word: Valkyria
+INFO : Lemmatizing synonyms for the senses of the word: Valkyria
+INFO : Lemmatizing antonyms for the senses of the word: Valkyria
+INFO : Eliminating quasi-duplicate definitions for the senses of the word: Raven
+INFO : Duplicate element found: to prey on or hunt for.
+INFO : Eliminating quasi-duplicate examples for the senses of the word: Raven
+INFO : Lemmatizing synonyms for the senses of the word: Raven
+INFO : Lemmatizing antonyms for the senses of the word: Raven
+INFO : Eliminating quasi-duplicate definitions for the senses of the word: penal
+INFO : Eliminating quasi-duplicate examples for the senses of the word: penal
+INFO : Lemmatizing synonyms for the senses of the word: penal
+INFO : Lemmatizing antonyms for the senses of the word: penal
+INFO : Eliminating quasi-duplicate definitions for the senses of the word: unit
+INFO : Eliminating quasi-duplicate examples for the senses of the word: unit
+INFO : Lemmatizing synonyms for the senses of the word: unit
+INFO : Lemmatizing antonyms for the senses of the word: unit
+INFO : Eliminating quasi-duplicate definitions for the senses of the word: Sega
+INFO : Eliminating quasi-duplicate examples for the senses of the word: Sega
+INFO : Lemmatizing synonyms for the senses of the word: Sega
+INFO : Lemmatizing antonyms for the senses of the word: Sega
+INFO : Eliminating quasi-duplicate definitions for the senses of the word: for
+INFO : Eliminating quasi-duplicate examples for the senses of the word: for
+INFO : Lemmatizing synonyms for the senses of the word: for
+INFO : Lemmatizing antonyms for the senses of the word: for
+INFO : Eliminating quasi-duplicate definitions for the senses of the word: serving
+INFO : Eliminating quasi-duplicate examples for the senses of the word: serving
+INFO : Lemmatizing synonyms for the senses of the word: serving
+INFO : Lemmatizing antonyms for the senses of the word: serving
+INFO : Eliminating quasi-duplicate definitions for the senses of the word: during
+INFO : Eliminating quasi-duplicate examples for the senses of the word: during
+INFO : Lemmatizing synonyms for the senses of the word: during
+INFO : Lemmatizing antonyms for the senses of the word: during
+INFO : Eliminating quasi-duplicate definitions for the senses of the word: game
+INFO : Eliminating quasi-duplicate examples for the senses of the word: game
+INFO : Lemmatizing synonyms for the senses of the word: game
+INFO : Lemmatizing antonyms for the senses of the word: game
 INFO : Selecting, sorting and naming the senses of the word: III
 INFO : Initial number of senses : 2
 INFO : Remaining senses: 2
 INFO :   word   sense                                        definitions
-0  III   adj.1                            being one more than two
+0  III  noun.1                       a number, numeral, and glyph
 1  III  noun.1  the cardinal number that is the sum of one and...
-2  III  noun.1  grammatical number related to precisely 3 obje...
-3  III  noun.1                       a number, numeral, and glyph
-4  III  noun.1  the cardinal number occurring after two and be...
-5  III  noun.1                 3 is a number, numeral, and glyph.
+2  III  noun.1                 3 is a number, numeral, and glyph.
+3  III  noun.1  the cardinal number occurring after two and be...
+4  III  noun.1  grammatical number related to precisely 3 obje...
+5  III   adj.1                            being one more than two
 INFO : <class 'pandas.io.pytables.HDFStore'>
 File path: InputData/denominated_definitions.h5
 
 INFO : definitions
 INFO :    word   sense    synonyms
-0   III   adj.1           3
-1   III   adj.1         iii
-2   III   adj.1       three
-0   III  noun.1       leash
-1   III  noun.1           3
-2   III  noun.1     ternion
-3   III  noun.1     triplet
-4   III  noun.1           ➂
-5   III  noun.1           ႓
-6   III  noun.1           🄄
-7   III  noun.1           ₃
-8   III  noun.1         iii
-9   III  noun.1       triad
-10  III  noun.1      troika
-11  III  noun.1           ၃
-12  III  noun.1  three-ness
-13  III  noun.1       (iii)
-14  III  noun.1      tercet
-15  III  noun.1      tierce
-16  III  noun.1          m2
-17  III  noun.1         1/3
-18  III  noun.1   deuce-ace
-19  III  noun.1       trine
-20  III  noun.1    terzetto
-21  III  noun.1       three
-22  III  noun.1           ߃
-23  III  noun.1     ternary
-24  III  noun.1     trinity
-25  III  noun.1        trio
-26  III  noun.1       trial
-27  III  noun.1   threesome
-28  III  noun.1        trey
-29  III  noun.1     thirdly
+0   III  noun.1     ternion
+1   III  noun.1  three-ness
+2   III  noun.1           ၃
+3   III  noun.1   threesome
+4   III  noun.1           🄄
+5   III  noun.1     triplet
+6   III  noun.1         1/3
+7   III  noun.1       leash
+8   III  noun.1          m2
+9   III  noun.1           ߃
+10  III  noun.1           ₃
+11  III  noun.1     thirdly
+12  III  noun.1      tierce
+13  III  noun.1    terzetto
+14  III  noun.1       (iii)
+15  III  noun.1       three
+16  III  noun.1       trine
+17  III  noun.1     trinity
+18  III  noun.1         iii
+19  III  noun.1       triad
+20  III  noun.1           3
+21  III  noun.1     ternary
+22  III  noun.1      troika
+23  III  noun.1       trial
+24  III  noun.1        trey
+25  III  noun.1           ႓
+26  III  noun.1   deuce-ace
+27  III  noun.1           ➂
+28  III  noun.1        trio
+29  III  noun.1      tercet
+0   III   adj.1         iii
+1   III   adj.1       three
+2   III   adj.1           3
 INFO : <class 'pandas.io.pytables.HDFStore'>
 File path: InputData/denominated_synonyms.h5
 
@@ -163,340 +168,301 @@ INFO : Selecting, sorting and naming the senses of the word: Chronicles
 INFO : Initial number of senses : 3
 INFO : Remaining senses: 3
 INFO :          word   sense                                        definitions
-0  Chronicles  noun.1  the first of two old testament books telling t...
-1  Chronicles  noun.1  in the christian bible, the two books of chron...
-2  Chronicles  noun.1                                       in the bible
-3  Chronicles  noun.2  (old testament) an obsolete name for the old t...
-4  Chronicles  noun.2  in the christian bible, the two books of chron...
-5  Chronicles  noun.2                                       in the bible
-6  Chronicles  noun.3  in the christian bible, the two books of chron...
-7  Chronicles  noun.3                                       in the bible
-8  Chronicles  noun.3  the second of two old testament books telling ...
+0  Chronicles  noun.1                                       in the bible
+1  Chronicles  noun.1  the first of two old testament books telling t...
+2  Chronicles  noun.1  in the christian bible, the two books of chron...
+3  Chronicles  noun.2                                       in the bible
+4  Chronicles  noun.2  the second of two old testament books telling ...
+5  Chronicles  noun.2  in the christian bible, the two books of chron...
+6  Chronicles  noun.3                                       in the bible
+7  Chronicles  noun.3  in the christian bible, the two books of chron...
+8  Chronicles  noun.3  (old testament) an obsolete name for the old t...
 INFO : <class 'pandas.io.pytables.HDFStore'>
 File path: InputData/denominated_definitions.h5
 
 INFO : definitions
 INFO :          word   sense       synonyms
-0  Chronicles  noun.1  paraleipomena
-1  Chronicles  noun.1  paraleipomana
+0  Chronicles  noun.1    1chronicles
+1  Chronicles  noun.1    2chronicles
 2  Chronicles  noun.1  paralipomenon
-3  Chronicles  noun.1    2chronicles
-4  Chronicles  noun.1      chronicle
-5  Chronicles  noun.1           1ch.
-6  Chronicles  noun.1    1chronicles
-7  Chronicles  noun.1           2ch.
-0  Chronicles  noun.2  paraleipomana
-1  Chronicles  noun.2  paralipomenon
-2  Chronicles  noun.2      chronicle
-3  Chronicles  noun.2  paraleipomena
-4  Chronicles  noun.2           1ch.
+3  Chronicles  noun.1  paraleipomana
+4  Chronicles  noun.1           1ch.
+5  Chronicles  noun.1      chronicle
+6  Chronicles  noun.1           2ch.
+7  Chronicles  noun.1  paraleipomena
+0  Chronicles  noun.2  paraleipomena
+1  Chronicles  noun.2           1ch.
+2  Chronicles  noun.2           2ch.
+3  Chronicles  noun.2      chronicle
+4  Chronicles  noun.2  paralipomenon
 5  Chronicles  noun.2    2chronicles
 6  Chronicles  noun.2    1chronicles
-7  Chronicles  noun.2           2ch.
-0  Chronicles  noun.3    1chronicles
-1  Chronicles  noun.3           2ch.
-2  Chronicles  noun.3           1ch.
-3  Chronicles  noun.3    2chronicles
-4  Chronicles  noun.3  paraleipomena
-5  Chronicles  noun.3  paralipomenon
+7  Chronicles  noun.2  paraleipomana
+0  Chronicles  noun.3      chronicle
+1  Chronicles  noun.3    1chronicles
+2  Chronicles  noun.3  paraleipomena
+3  Chronicles  noun.3           2ch.
+4  Chronicles  noun.3  paralipomenon
+5  Chronicles  noun.3    2chronicles
 6  Chronicles  noun.3  paraleipomana
-7  Chronicles  noun.3      chronicle
+7  Chronicles  noun.3           1ch.
 INFO : <class 'pandas.io.pytables.HDFStore'>
 File path: InputData/denominated_synonyms.h5
 
 INFO : synonyms
-INFO : Selecting, sorting and naming the senses of the word: in
-INFO : Initial number of senses : 7
-INFO : Remaining senses: 3
-INFO :    word   sense                                        definitions
-2    in  noun.1          chemical element with atomic number of 49
-3    in  noun.1  a rare soft silvery metallic element; occurs i...
-4    in  noun.1  indium is a chemical element with symbol in an...
-5    in  noun.1  a chemical element with symbol in and atomic n...
-6    in  noun.1                    the element of atomic number 49
-7    in  noun.2  the inch is a unit of length in the imperial a...
-8    in  noun.2    a unit of length equal to one twelfth of a foot
-9    in  noun.2        a unit of length equal to 2.54 centimetres.
-10   in  noun.2                                   a unit of length
-12   in   adv.1                         to or toward the inside of
-INFO : <class 'pandas.io.pytables.HDFStore'>
-File path: InputData/denominated_definitions.h5
-
-INFO : definitions
-INFO :   word  sense                                           examples
-5   in  adv.1                                  smash in the door
-6   in  adv.1  so much the rather, thou celestial light, shin...
-7   in  adv.1                                            come in
-INFO : <class 'pandas.io.pytables.HDFStore'>
-File path: InputData/denominated_examples.h5
-
-INFO : examples
-INFO :   word   sense synonyms
-0   in  noun.2     inch
-1   in  noun.2     ynch
-0   in   adv.1  inwards
-1   in   adv.1   inward
-0   in  noun.1  masrium
-1   in  noun.1   indium
-2   in  noun.1     49in
-INFO : <class 'pandas.io.pytables.HDFStore'>
-File path: InputData/denominated_synonyms.h5
-
-INFO : synonyms
-INFO : Selecting, sorting and naming the senses of the word: perform
+INFO : Selecting, sorting and naming the senses of the word: Valkyria
+INFO : Initial number of senses : 0
+INFO : Remaining senses: 0
+INFO : Selecting, sorting and naming the senses of the word: Raven
 INFO : Initial number of senses : 5
 INFO : Remaining senses: 2
-INFO :       word   sense                                        definitions
-1  perform  verb.1  to perform an action, as in executing a progra...
-2  perform  verb.1           to perform (with obj. being the action).
-3  perform  verb.1                     carry out or perform an action
-5  perform  noun.1  performance is completion of a task with appli...
-6  perform  noun.1                a dramatic or musical entertainment
-7  perform  noun.1  an act where somebody performs music, theater ...
+INFO :     word   sense                                        definitions
+1  Raven  noun.1  the common raven, also known as the northern r...
+2  Raven  noun.1  a raven is one of several larger-bodied specie...
+3  Raven  noun.1    a bird that is usually black, very rarely white
+4  Raven  noun.1  a large black bird, similar to the crow, but l...
+5  Raven  noun.1  large black bird with a straight bill and long...
+8  Raven  verb.1                                       eat greedily
 INFO : <class 'pandas.io.pytables.HDFStore'>
 File path: InputData/denominated_definitions.h5
 
 INFO : definitions
-INFO :        word   sense                                           examples
-2   perform  verb.1                             she did a little dance
-3   perform  verb.1                        to execute a turn in ballet
-4   perform  verb.1  all you ever do is surf the internet;  what wi...
-5   perform  verb.1  to execute a difficult piece of music brilliantly
-6   perform  verb.1  john did the painting, the weeding, and he cle...
-7   perform  verb.1                        the horse ran a great race.
-8   perform  verb.1               he is running an expensive campaign.
-9   perform  verb.1             the skater executed a triple pirouette
-11  perform  noun.1        they listened to ten different performances
-12  perform  noun.1  the frequent performances of the symphony test...
-13  perform  noun.1                  the play ran for 100 performances
+INFO :     word   sense                      examples
+1  Raven  verb.1  he devoured three sandwiches
 INFO : <class 'pandas.io.pytables.HDFStore'>
 File path: InputData/denominated_examples.h5
 
 INFO : examples
-INFO :       word   sense     synonyms
-0  perform  noun.1      concert
-1  perform  noun.1  performance
-2  perform  noun.1      perform
-0  perform  verb.1          run
-1  perform  verb.1       launch
-2  perform  verb.1      execute
-3  perform  verb.1           do
+INFO :     word   sense synonyms
+0  Raven  noun.1     raen
+1  Raven  noun.1    raven
+2  Raven  noun.1    ravin
+3  Raven  noun.1  corbies
+4  Raven  noun.1   corbie
+0  Raven  verb.1      pig
+1  Raven  verb.1   guttle
+2  Raven  verb.1   devour
+3  Raven  verb.1    raven
 INFO : <class 'pandas.io.pytables.HDFStore'>
 File path: InputData/denominated_synonyms.h5
 
 INFO : synonyms
-INFO : Selecting, sorting and naming the senses of the word: developed
+INFO : Selecting, sorting and naming the senses of the word: penal
 INFO : Initial number of senses : 3
 INFO : Remaining senses: 3
-INFO :         word  sense                                        definitions
-0  developed  adj.1  being changed over time so as to be e.g. stron...
-1  developed  adj.3  (of real estate) made more useful and profitab...
-2  developed  adj.2  (used of societies) having high industrial dev...
+INFO :     word  sense                                  definitions
+0  penal  adj.2                 subject to punishment by law
+1  penal  adj.1                 of or relating to punishment
+2  penal  adj.3  serving as or designed to impose punishment
 INFO : <class 'pandas.io.pytables.HDFStore'>
 File path: InputData/denominated_definitions.h5
 
 INFO : definitions
-INFO :         word  sense                                           examples
-0  developed  adj.1  they have very small limbs with only two fully...
-1  developed  adj.1    the developed qualities of the hellenic outlook
-2  developed  adj.3      condominiums were built on the developed site
-3  developed  adj.2                                developed countries
+INFO :     word  sense         examples
+0  penal  adj.2  a penal offense
+1  penal  adj.2  a penal offence
+2  penal  adj.1       penal code
+3  penal  adj.1     penal reform
+4  penal  adj.1  penal servitude
+5  penal  adj.3   a penal colony
+6  penal  adj.3  penal servitude
 INFO : <class 'pandas.io.pytables.HDFStore'>
 File path: InputData/denominated_examples.h5
 
 INFO : examples
-INFO :         word  sense          synonyms
-0  developed  adj.2  highly-developed
+INFO :     word  sense    synonyms
+0  penal  adj.2  punishable
 INFO : <class 'pandas.io.pytables.HDFStore'>
 File path: InputData/denominated_synonyms.h5
 
 INFO : synonyms
-INFO :         word  sense     antonyms
-0  developed  adj.1  undeveloped
-INFO : <class 'pandas.io.pytables.HDFStore'>
-File path: InputData/denominated_antonyms.h5
-
-INFO : antonyms
-INFO : Selecting, sorting and naming the senses of the word: as
-INFO : Initial number of senses : 5
+INFO : Selecting, sorting and naming the senses of the word: unit
+INFO : Initial number of senses : 8
 INFO : Remaining senses: 5
-INFO :    word   sense                                        definitions
-0    as  noun.3  assamese or asamiya is an eastern indo-aryan l...
-1    as  noun.3  the magadhan language spoken by the assamese p...
-2    as  noun.3  an indic language spoken as the official langu...
-3    as  noun.3                    easternmost indo-aryan language
-4    as  noun.1  a toxic metalloid element with symbol as and a...
-5    as  noun.1  a very poisonous metallic element that has thr...
-6    as  noun.1  arsenic is a chemical element with symbol as a...
-7    as  noun.1                    the element of atomic number 33
-8    as  noun.1  the as, occasionally assarius was a bronze, an...
-9    as  noun.1                             a coin and weight unit
-10   as  noun.4  aortic stenosis is the narrowing of the exit o...
-11   as  noun.4  a constriction in the opening of the aortic va...
-12   as  noun.4             abnormal narrowing of the aortic valve
-13   as  noun.2  asperger syndrome, also known as asperger's, i...
-14   as  noun.2  a psychiatric disorder usually noted during ea...
-15   as  noun.2  a neuropsychiatric disorder whose major manife...
-16   as  noun.2  a neurobiological syndrome which affects socia...
-17   as   adv.1                      to the same extent or degree.
-18   as   adv.1        to the same degree (often followed by `as')
+INFO :     word   sense                                        definitions
+0   unit  noun.5  an individual or group or structure or other e...
+1   unit  noun.1               available code, not necessarily used
+2   unit  noun.1  a software component for accomplishing a parti...
+3   unit  noun.1  a software system is a system on intercommunic...
+4   unit  noun.1  (computer science) written programs or procedu...
+5   unit  noun.1  the general term used to describe all of the v...
+6   unit  noun.1  a software application, or a collection of sof...
+7   unit  noun.1  computer software, or simply software, is a pa...
+8   unit  noun.1  modular programming is a software design techn...
+9   unit  noun.3       a unit that is part of some military service
+10  unit  noun.3  an organised group of people that exerts power...
+11  unit  noun.3  military organization or military organisation...
+12  unit  noun.2  any division of quantity accepted as a standar...
+13  unit  noun.2  a unit of measurement is a definite magnitude ...
+14  unit  noun.2                  a standard measure of a quantity.
+17  unit  noun.4  the term "level of analysis" is used in the so...
+18  unit  noun.4  an organization regarded as part of a larger s...
 INFO : <class 'pandas.io.pytables.HDFStore'>
 File path: InputData/denominated_definitions.h5
 
 INFO : definitions
-INFO :   word  sense                                           examples
-0   as  adv.1                        they were equally beautiful
-1   as  adv.1  you're not as tall as i am.   it's not as well...
-2   as  adv.1                  he is every bit as mean as she is
-3   as  adv.1  the gas stations are equally far from the high...
-4   as  adv.1   birds were singing and the child sang as sweetly
-5   as  adv.1  john suffered setbacks at his job. equally, fr...
-6   as  adv.1                   sang as sweetly as a nightingale
+INFO :     word   sense                                           examples
+0   unit  noun.5          he was a member of a special police unit.
+1   unit  noun.5                the word is a basic linguistic unit
+2   unit  noun.5  the reduced the number of units and installations
+3   unit  noun.1      the market for software is expected to expand
+4   unit  noun.1  did you test the software package to ensure co...
+5   unit  noun.3         he sent caesar a force of six thousand men
+6   unit  noun.2   the dollar is the united states unit of currency
+7   unit  noun.2                the centimetre is a unit of length.
+8   unit  noun.2                             change per unit volume
+9   unit  noun.2                        a unit of wheat is a bushel
+13  unit  noun.4  after the battle the soldier had trouble rejoi...
+14  unit  noun.4   the coach said the offensive unit did a good job
 INFO : <class 'pandas.io.pytables.HDFStore'>
 File path: InputData/denominated_examples.h5
 
 INFO : examples
-INFO :    word   sense           synonyms
-0    as  noun.3           assamese
-1    as  noun.3            axamiya
-2    as  noun.3  assamese-language
-3    as  noun.3            ahamiya
-4    as  noun.3            oxomiya
-5    as  noun.3            asamiya
-0    as  noun.1           assarion
-1    as  noun.1          arsenacho
-2    as  noun.1          arsenical
-3    as  noun.1             arsnic
-4    as  noun.1          7440-38-2
-5    as  noun.1                 as
-6    as  noun.1     scherbenkobalt
-7    as  noun.1            arsenic
-0    as  noun.2         auspergers
-1    as  noun.2          asbergers
-2    as  noun.2              aspie
-3    as  noun.2           asperger
-4    as  noun.2          spergling
-5    as  noun.2          aspergian
-6    as  noun.2           aspergic
-7    as  noun.2           aspurger
-8    as  noun.2           asberger
-9    as  noun.2         asperger's
-10   as  noun.2             aspies
-11   as  noun.2          aspergers
-12   as  noun.2          assberger
-13   as  noun.2         apserger's
-14   as  noun.2         asberger's
-15   as  noun.2           asburger
-16   as  noun.2          aspberger
-17   as  noun.2        aspberger's
-0    as   adv.1            equally
+INFO :     word   sense          synonyms
+0   unit  noun.3         formation
+1   unit  noun.3             force
+0   unit  noun.1         networked
+1   unit  noun.1         soft-ware
+2   unit  noun.1           modular
+3   unit  noun.1        modularity
+4   unit  noun.1          software
+5   unit  noun.1  computersoftware
+6   unit  noun.1           package
+7   unit  noun.1           program
+8   unit  noun.1       softography
+9   unit  noun.1            module
+10  unit  noun.1              pack
+11  unit  noun.1         software.
 INFO : <class 'pandas.io.pytables.HDFStore'>
 File path: InputData/denominated_synonyms.h5
 
 INFO : synonyms
-INFO : Selecting, sorting and naming the senses of the word: black
-INFO : Initial number of senses : 24
-INFO : Remaining senses: 12
-INFO :      word   sense                                        definitions
-4   black  noun.6  black is the darkest color, the result of the ...
-5   black  noun.6  the quality or state of the achromatic color o...
-6   black   adj.2   causing great distress or injury; bringing ruin.
-7   black   adj.2  (of events) having extremely unfortunate or di...
-8   black  noun.3  "black people" is a term used in certain count...
-9   black  noun.3    a population group identified in some countries
-10  black  noun.3                               a woman who is black
-11  black   adj.3  dark and colourless; not reflecting visible li...
-12  black   adj.3  being of the achromatic color of maximum darkn...
-13  black  noun.7                    (board games) the darker pieces
-14  black  noun.7  in chess, the player who moves first is referr...
-16  black  noun.4                            an african who is black
-17  black  noun.4  "black people" is a term used in certain count...
-18  black  noun.4    a population group identified in some countries
-19  black   adj.5  stemming from evil characteristics or forces; ...
-23  black  noun.2  the visual perceptual property corresponding i...
-24  black  noun.2                             the color of the face.
-25  black  noun.2  a colour (the colour of the sky at night and a...
-26  black  noun.2  a color (the color of the sky at night and a b...
-27  black  noun.2  color or colour is the characteristic of human...
-28  black  noun.2  an attribute of things that results from the l...
-29  black  noun.2  a visual attribute of things that results from...
-30  black   adj.1                    bringing or deserving disgrace.
-31  black   adj.1  (used of conduct or character) deserving or br...
-32  black   adj.1           deserving or bringing disgrace or shame.
-33  black  noun.1  "black people" is a term used in certain count...
-34  black  noun.1  as defined by johann friedrich blumenbach in h...
-35  black  noun.1  grouping of human beings historically regarded...
-36  black  noun.1  negroid is a grouping of human beings historic...
-37  black  noun.1    a population group identified in some countries
-38  black  noun.1  a person with dark skin who comes from africa ...
-39  black  noun.1  negro is an archaic term traditionally used to...
-43  black  noun.5  "black people" is a term used in certain count...
-44  black  noun.5    a population group identified in some countries
-45  black  noun.5                                 a man who is black
-46  black   adj.4  of or belonging to a racial group having dark ...
-47  black   adj.4  of or belonging to a racial group having dark ...
-INFO : <class 'pandas.io.pytables.HDFStore'>
-File path: InputData/denominated_definitions.h5
-
-INFO : definitions
-INFO :      word   sense                                           examples
-10  black  noun.6  the blackness of outerspace comes from the lac...
-11  black   adj.2  the battle was a disastrous end to a disastrou...
-12  black   adj.2  such doctrines, if true, would be absolutely f...
-13  black   adj.2  it is fatal to enter any war without the will ...
-14  black   adj.2                                    a fateful error
-15  black   adj.2           the stock market crashed on black friday
-16  black   adj.2                                a calamitous defeat
-17  black   adj.3                                    rich black soil
-18  black   adj.3                              black leather jackets
-19  black   adj.3                                   as black as coal
-20  black  noun.7       at this point black makes a disastrous move.
-22  black   adj.5                       darth vader of the dark side
-23  black   adj.5             dark undercurrents of ethnic hostility
-24  black   adj.5                                     a dark purpose
-25  black   adj.5  the scheme of some sinister intelligence bent ...
-26  black   adj.5                                        a black lie
-27  black   adj.5  his black heart has concocted yet another blac...
-33  black  noun.2               humans and birds can perceive color.
-34  black  noun.2  a white color is made up of many different wav...
-35  black   adj.1  man...has written one of his blackest records ...
-36  black   adj.1                             an ignominious retreat
-37  black   adj.1                    a shameful display of cowardice
-38  black   adj.1             an opprobrious monument to human greed
-39  black   adj.1                                  inglorious defeat
-49  black   adj.4  a great people--a black people--...injected ne...
-INFO : <class 'pandas.io.pytables.HDFStore'>
-File path: InputData/denominated_examples.h5
-
-INFO : examples
-INFO :      word   sense        synonyms
-0   black  noun.3  black-africans
-1   black  noun.3   negro-african
-2   black  noun.3           black
-3   black  noun.3           negro
-4   black  noun.3   african-negro
-..    ...     ...             ...
-1   black   adj.5            dark
-0   black   adj.2      disastrous
-1   black   adj.2         fateful
-2   black   adj.2           fatal
-3   black   adj.2      calamitous
-
-[78 rows x 3 columns]
-INFO : <class 'pandas.io.pytables.HDFStore'>
-File path: InputData/denominated_synonyms.h5
-
-INFO : synonyms
-INFO :     word   sense       antonyms
-0  black   adj.3          white
-0  black  noun.7          white
-0  black  noun.6          white
-0  black  noun.2  colorlessness
-0  black   adj.4          white
+INFO :    word   sense  antonyms
+0  unit  noun.1  hardware
 INFO : <class 'pandas.io.pytables.HDFStore'>
 File path: InputData/denominated_antonyms.h5
 
 INFO : antonyms
+INFO : Selecting, sorting and naming the senses of the word: Sega
+INFO : Initial number of senses : 0
+INFO : Remaining senses: 0
+INFO : Selecting, sorting and naming the senses of the word: for
+INFO : Initial number of senses : 0
+INFO : Remaining senses: 0
+INFO : Selecting, sorting and naming the senses of the word: serving
+INFO : Initial number of senses : 2
+INFO : Remaining senses: 2
+INFO :       word   sense                                        definitions
+0  serving  noun.1  the act of delivering a writ or summons upon s...
+1  serving  noun.1  the procedure for delivering a legal or admini...
+2  serving  noun.1  service of process is the procedure by which a...
+3  serving  noun.2  a predetermined amount of a food given to a pe...
+4  serving  noun.2  an individual quantity of food or drink taken ...
+INFO : <class 'pandas.io.pytables.HDFStore'>
+File path: InputData/denominated_definitions.h5
+
+INFO : definitions
+INFO :       word   sense                              examples
+0  serving  noun.1   he accepted service of the subpoena
+1  serving  noun.1       the service happened yesterday.
+2  serving  noun.2  there's enough for two servings each
+3  serving  noun.2           the helpings were all small
+4  serving  noun.2      his portion was larger than hers
+INFO : <class 'pandas.io.pytables.HDFStore'>
+File path: InputData/denominated_examples.h5
+
+INFO : examples
+INFO :       word   sense synonyms
+0  serving  noun.1  service
+0  serving  noun.2     help
+1  serving  noun.2  portion
+INFO : <class 'pandas.io.pytables.HDFStore'>
+File path: InputData/denominated_synonyms.h5
+
+INFO : synonyms
+INFO : Selecting, sorting and naming the senses of the word: during
+INFO : Initial number of senses : 0
+INFO : Remaining senses: 0
+INFO : Selecting, sorting and naming the senses of the word: game
+INFO : Initial number of senses : 16
+INFO : Remaining senses: 7
+INFO :     word   sense                                        definitions
+2   game  noun.4  wild animals, including birds and fish, hunted...
+3   game  noun.4  game or quarry is any animal hunted for sport ...
+4   game  noun.4                    animal hunted for food or sport
+8   game   adj.1  unable to walk properly because of a problem w...
+9   game   adj.1                       disabled in the feet or legs
+10  game  noun.3  the enticement of one person by another, calle...
+11  game  noun.3        enticing someone astray from right behavior
+12  game  noun.3  seduction is the process of deliberately entic...
+14  game  noun.1  pc games, also known as computer games or pers...
+15  game  noun.1  one of the player's chances to play, lost when...
+16  game  noun.1  a game that involves interaction with a user i...
+17  game  noun.1                   a game played against a computer
+18  game  noun.1  a video game is an electronic game that involv...
+19  game  noun.1         a video game played on a personal computer
+22  game  noun.2         a contest with rules to determine a winner
+23  game  noun.2  a pursuit or activity with rules performed eit...
+24  game  noun.2  a game is a structured form of play, usually u...
+26  game  noun.6    the flesh of wild animals that is used for food
+27  game  noun.6  the flesh of wild animals that is consumed as ...
+28  game  noun.5                            an amusement or pastime
+29  game  noun.5                an amusement or pastime; diversion.
+INFO : <class 'pandas.io.pytables.HDFStore'>
+File path: InputData/denominated_definitions.h5
+
+INFO : definitions
+INFO :     word   sense                                           examples
+5   game   adj.1                                 a crippled soldier
+6   game   adj.1                                         a game leg
+9   game  noun.1  scoring 1000 points is rewarded with an extra ...
+10  game  noun.1                   my biggest hobby is videogaming.
+14  game  noun.2             you need four people to play this game
+15  game  noun.2      games in the classroom can make learning fun.
+18  game  noun.6                     the forest has plenty of game.
+19  game  noun.5                     his life was all fun and games
+20  game  noun.5  he thought of his painting as a game that fill...
+21  game  noun.5                             they played word games
+22  game  noun.5                being a child is all fun and games.
+INFO : <class 'pandas.io.pytables.HDFStore'>
+File path: InputData/denominated_examples.h5
+
+INFO : examples
+INFO :     word   sense        synonyms
+0   game  noun.4          quarry
+1   game  noun.4        gamebird
+2   game  noun.4       gamebirds
+3   game  noun.4           gamey
+0   game   adj.1         cripple
+1   game   adj.1            halt
+2   game   adj.1           gimpy
+3   game   adj.1            lame
+0   game  noun.3       seductive
+1   game  noun.3      seductress
+2   game  noun.3     seductively
+3   game  noun.3         seduces
+4   game  noun.3          seduce
+5   game  noun.3       seduction
+0   game  noun.1    computergame
+1   game  noun.1  computer-games
+2   game  noun.1   computergames
+3   game  noun.1     videogaming
+4   game  noun.1   graphenspiele
+5   game  noun.1       videogame
+6   game  noun.1            life
+7   game  noun.1  games/computer
+8   game  noun.1   computer-game
+9   game  noun.1     video-games
+10  game  noun.1      video-game
+11  game  noun.1      videogames
+0   game  noun.2       freegamer
+1   game  noun.2            game
+2   game  noun.2           match
+3   game  noun.2            play
+INFO : <class 'pandas.io.pytables.HDFStore'>
+File path: InputData/denominated_synonyms.h5
+
+INFO : synonyms
 INFO : loading configuration file https://s3.amazonaws.com/models.huggingface.co/bert/distilbert-base-uncased-config.json from cache at /Users/andrea/.cache/torch/transformers/a41e817d5c0743e29e86ff85edc8c257e61bc8d88e4271bb1b243b6e7614c633.1ccd1a11c9ff276830e114ea477ea2407100f4a3be7bdc45d37be9e37fa71c7e
 INFO : Model config {
   "activation": "gelu",
@@ -563,17 +529,6 @@ INFO : deleting the raw counts dictionary of 2000000 items
 INFO : sample=1e-05 downsamples 6996 most-common words
 INFO : downsampling leaves estimated 390315457935 word corpus (70.7% of prior 552001338161)
 INFO : loaded (4000000, 300) weight matrix for fastText model from WordEmbeddings/cc.en.300.bin
-WARNING : could not extract any ngrams from '`', returning origin vector
-WARNING : could not extract any ngrams from '``', returning origin vector
-WARNING : could not extract any ngrams from "''", returning origin vector
-WARNING : could not extract any ngrams from '``', returning origin vector
-WARNING : could not extract any ngrams from "''", returning origin vector
-WARNING : could not extract any ngrams from '``', returning origin vector
-WARNING : could not extract any ngrams from "''", returning origin vector
-WARNING : could not extract any ngrams from '``', returning origin vector
-WARNING : could not extract any ngrams from "''", returning origin vector
-WARNING : could not extract any ngrams from '``', returning origin vector
-WARNING : could not extract any ngrams from "''", returning origin vector
 WARNING : could not extract any ngrams from '``', returning origin vector
 WARNING : could not extract any ngrams from "''", returning origin vector
 INFO : Computed the embeddings for the dictionary elements: definitions , saved at: InputData/vectorized_FastText_definitions
