@@ -30,6 +30,16 @@ FASTTEXT_PRETRAINED_EMBEDDINGS_FILE = 'cc.en.300.bin'
 SPVs_FASTTEXT_FILE = 'SinglePrototypes_withFastText.npy'
 SPVs_DISTILBERT_FILE = 'SinglePrototypes_withDistilBERT.npy'
 
+FOLDER_MASC = 'masc'
+FOLDER_MASC_WRITTEN = 'written'
+FOLDER_SEMCOR = 'semcor'
+
+NOAD_WORDNET_AUTOMAP_FILE = 'algorithmic_map.txt'
+NOAD_WORDNET_MANUALMAP_FILE = 'manual_map.txt'
+SEMCOR_H5_FILE = 'semcor_all.hdf5'
+MASC_H5_FILE = 'masc_written.hdf5'
+#SENSELABELED_CORPUS_FILE = 'SenseLabeledCorpus.h5'
+
 ENCODER_MODEL = "Encoder_768to300_nn.model" # not used in the current version
 
 

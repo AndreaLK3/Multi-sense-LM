@@ -39,6 +39,10 @@ INDICES_TABLE = 'indices_table'
 UNK_TOKEN = '<unk>'
 NUM_TOKEN = '<num>'
 
+SENSE_NOAD = 'Sense_NOAD'
+SENSE_WORDNET = 'Sense_WordNet'
+EMPTY = 'EMPTY'
+
 ########## Functions ##########
 
 def init_logging(logfilename, loglevel=logging.INFO):
