@@ -4,6 +4,7 @@ import logging
 import os
 import re
 import string
+import pandas as pd
 
 # We examine here one synset, that was found by searching for the target word.
 # Objectives:
@@ -21,10 +22,10 @@ def process_synset(synset):
             antonyms_to_add = list(map(lambda a_lemma: a_lemma.name(),l.antonyms()))
             all_antonyms.extend(antonyms_to_add)
 
-    #definition = synset.definition()
-    # examples = synset.examples()
+    definition = synset.definition()
+    examples = synset.examples()
 
-    return all_synonyms, all_antonyms
+    return definition, examples, all_synonyms, all_antonyms
 
 
 def lookup_bndefs_dictionary(wn_def, bn_defs_dict):
@@ -60,3 +61,24 @@ def retrieve_SA_bySenses(target_word, bn_defs_dict):
             antonyms_dict[bn_id] = antonyms
 
     return synonyms_dict, antonyms_dict
+
+
+
+def retrieve_senses_desa(target_word):
+
+    syns_ls = wn.synsets(target_word)
+    # e.g. [Synset('sea.n.01'), Synset('ocean.n.02'), Synset('sea.n.03')]
+    # note: only those synsets where the word appears first can be considered as belonging to the word.
+    # Otherwise, the words is a synonym
+    syns_ls = list(filter(lambda synset: target_word in synset.name(), syns_ls))
+
+    data_lts = []
+
+    for synset in syns_ls:
+        d,e,s,a = process_synset(synset)
+        data_lts.append((synset.name(),d,e,s,a))
+
+    data_df = pd.DataFrame(data=data_lts, columns=[Utils.SENSE_WN_ID, Utils.DEFINITIONS, Utils.EXAMPLES,
+                                    Utils.SYNONYMS, Utils.ANTONYMS])
+
+    return data_df

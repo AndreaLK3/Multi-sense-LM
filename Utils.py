@@ -28,6 +28,8 @@ ANTONYMS = 'antonyms'
 ENCYCLOPEDIA_DEF = 'encyclopedia_def'
 CATEGORIES = [DEFINITIONS, EXAMPLES, SYNONYMS, ANTONYMS] # , Utils.ENCYCLOPEDIA_DEF
 
+SENSE_WN_ID = 'sense_wn_id'
+
 DENOMINATED = 'denominated'
 PROCESSED = 'processed' # for defs and examples, it means: 'no duplicates'; for synonyms and antonyms: 'lemmatized'
 VECTORIZED = 'vectorized'
