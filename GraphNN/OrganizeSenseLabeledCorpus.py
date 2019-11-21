@@ -7,9 +7,11 @@ import pandas as pd
 import sqlite3
 
 def load_NOAD_to_WordNet_mapping():
-    manualmap_df = pd.read_csv(os.path.join(F.FOLDER_TEXT_CORPUSES, F.NOAD_WORDNET_MANUALMAP_FILE),
+    manualmap_df = pd.read_csv(os.path.join(F.FOLDER_TEXT_CORPUSES, F.FOLDER_SENSEANNOTATED,
+                                       F.FOLDER_GOOGLE_MASC_SEMCOR, F.NOAD_WORDNET_MANUALMAP_FILE),
                                names=[Utils.SENSE_NOAD,Utils.SENSE_WORDNET], sep='\t')
-    algorithmicmap_df = pd.read_csv(os.path.join(F.FOLDER_TEXT_CORPUSES, F.NOAD_WORDNET_AUTOMAP_FILE),
+    algorithmicmap_df = pd.read_csv(os.path.join(F.FOLDER_TEXT_CORPUSES,F.FOLDER_SENSEANNOTATED,
+                                       F.FOLDER_GOOGLE_MASC_SEMCOR, F.NOAD_WORDNET_AUTOMAP_FILE),
                                names=[Utils.SENSE_NOAD,Utils.SENSE_WORDNET], sep='\t')
     manually_covered_noad_senses_ls = manualmap_df.loc[:,Utils.SENSE_NOAD].to_list()
     map_rows_toadd_ls = []
@@ -62,16 +64,15 @@ def process_word(word_elem, sense_mapping_df):
         wn_sense = Utils.EMPTY
         lemma = Utils.EMPTY
         pos = Utils.EMPTY
-    # if we have NO_BREAK, do not add anything
-    if token == 'NO_BREAK':
-        return
-    # Otherwise:
     # first, write in the corpus archive the preceding break (space, tab, newline)
     break_data_tpl = (get_breakspace_token(preceding_break), Utils.EMPTY, Utils.EMPTY, Utils.EMPTY)
     # then, write the word (and its sense & co., if present)
-    token_data_tpl = (token, lemma, pos, wn_sense)
-
-    return break_data_tpl, token_data_tpl
+    # if we have NO_BREAK, do not add anything
+    if token == 'NO_BREAK':
+        return break_data_tpl, None
+    else:
+        token_data_tpl = (token, lemma, pos, wn_sense)
+        return break_data_tpl, token_data_tpl
 
 
 def process_xml_document(xml_fpath, out_db, sense_mapping_df):
@@ -84,20 +85,13 @@ def process_xml_document(xml_fpath, out_db, sense_mapping_df):
         if elem.tag == "word":
             break_data_tpl, token_data_tpl = process_word(elem, sense_mapping_df)
             data_tpl_ls.append(break_data_tpl)
-            data_tpl_ls.append(token_data_tpl)
+            if token_data_tpl is not None:
+                data_tpl_ls.append(token_data_tpl)
 
     new_df = pd.DataFrame(data=data_tpl_ls, columns=['token', 'lemma', 'pos', Utils.SENSE_WORDNET])
     new_df.to_sql(name=doc_name, con=out_db, if_exists='replace',
                      dtype={'token':'varchar(255)', 'lemma':'varchar(255)',
                             'pos':'varchar(15)', Utils.SENSE_WORDNET:'varchar(511)'})
-    # We do not need a manual insert if we use Pandas's
-    # c = out_db.cursor()
-    # c.execute("CREATE TABLE IF NOT EXISTS " + doc_name +
-    #           ''' (  token varchar(255),
-    #                  lemma varchar(255),
-    #                  pos varchar(15), ''' +
-    #                  Utils.SENSE_WORDNET + " varchar(511) )" )
-
 
 
 def process_corpus_subfiles(source_filepaths, destination_db, sense_mapping_df):
@@ -115,7 +109,7 @@ def exe():
 
     # -- dbs filepaths
     semcor_outdb_fpath = os.path.join(F.FOLDER_INPUT, F.SEMCOR_DB)
-    #masc_outdb_fpath = os.path.join(F.FOLDER_INPUT, F.SEMCOR_H5_DB)
+    # masc_outdb_fpath = os.path.join(F.FOLDER_INPUT, F.SEMCOR_H5_DB)
     # -- resetting from last time - but if I "create table if not exists" or "replace", this is actually not necessary
     # semcor_outdb_file = open(semcor_outdb_fpath, mode='w'); semcor_outdb_file.close()
     # masc_outdb_file = open(masc_outdb_fpath, mode='w'); masc_outdb_file.close()
@@ -123,16 +117,17 @@ def exe():
     semcor_out_db = sqlite3.connect(semcor_outdb_fpath)
     #outdb_masc = sqlite3.connect(masc_outdb_file)
 
-    semcor_source_fpath = os.path.join(F.FOLDER_TEXT_CORPUSES, F.FOLDER_SEMCOR)
+    semcor_source_fpath = os.path.join(F.FOLDER_TEXT_CORPUSES, F.FOLDER_SENSEANNOTATED,
+                                       F.FOLDER_GOOGLE_MASC_SEMCOR, F.FOLDER_SEMCOR)
     # masc_base_fpath = os.path.join(F.FOLDER_TEXT_CORPUSES, F.FOLDER_MASC, F.FOLDER_MASC_WRITTEN)
     # masc_source_fpaths = list(map(lambda dir_tpl: dir_tpl[0], os.walk(masc_base_fpath)))
 
     noad_to_Wordnet_mapping = load_NOAD_to_WordNet_mapping()
 
     process_corpus_subfiles([semcor_source_fpath], semcor_out_db, noad_to_Wordnet_mapping)
-    #process_corpus_subfiles(masc_source_fpaths, outdb_masc, noad_to_Wordnet_mapping)
+    # process_corpus_subfiles(masc_source_fpaths, outdb_masc, noad_to_Wordnet_mapping)
 
     semcor_out_db.close()
-    #outdb_masc.close()
+    # outdb_masc.close()
 
 

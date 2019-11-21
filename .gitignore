@@ -1,6 +1,7 @@
 *.bin
 *.h5
 *.vec
+*.db
 WikiText-103/
 runs/
 GraphNN/pyGAT

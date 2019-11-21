@@ -4,6 +4,8 @@ FOLDER_INPUT = 'InputData'
 FOLDER_WORD_EMBEDDINGS = 'WordEmbeddings'
 FOLDER_VOCABULARY = 'Vocabulary'
 FOLDER_TEXT_CORPUSES = 'TextCorpuses'
+FOLDER_SENSEANNOTATED = 'SenseAnnotated'
+FOLDER_GOOGLE_MASC_SEMCOR = 'Google_Masc&SemCor'
 
 BN_WORD_INTROS = 'BabelNet_word_intros'
 BN_SYNSET_DATA = 'BabelNet_synset_data'

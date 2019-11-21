@@ -2,12 +2,759 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="d35dca92-959c-489d-8a61-f337e4cce7fa" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Filesystem.py" beforeDir="false" afterPath="$PROJECT_DIR$/Filesystem.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/GraphNN/OrganizeSenseLabeledCorpus.py" beforeDir="false" afterPath="$PROJECT_DIR$/GraphNN/OrganizeSenseLabeledCorpus.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/InputData/semcor_all.db" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/Media/Task1_DeveloperDiary.docx" beforeDir="false" afterPath="$PROJECT_DIR$/Media/Task1_DeveloperDiary.docx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/masc_written_archive.hdf5" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/semcor_all_archive.hdf5" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/temp.log" beforeDir="false" afterPath="$PROJECT_DIR$/temp.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/algorithmic_map.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/annotated_readme.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/manual_map.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/simple-wsd-doc.dtd" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/spoken/court-transcript/Day3PMSession.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/spoken/court-transcript/Lessig-court-transcript.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/spoken/debate-transcript/2nd_Gore-Bush.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/spoken/debate-transcript/3rd_Bush-Kerry.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/spoken/face-to-face/Bed012.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/spoken/face-to-face/Bmr021.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/spoken/face-to-face/NapierDianne.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/spoken/face-to-face/PolkMaria.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/spoken/face-to-face/ReidSandra.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/spoken/face-to-face/RindnerBonnie.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/spoken/telephone/sw2014-ms98-a-trans.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/spoken/telephone/sw2015-ms98-a-trans.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/spoken/telephone/sw2025-ms98-a-trans.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/spoken/telephone/sw2071-ms98-a-trans.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/spoken/telephone/sw2078-ms98-a-trans.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/blog/Acephalous-Cant-believe.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/blog/Acephalous-Internet.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/blog/Anti-Terrorist.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/blog/Effing-Idiot.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/blog/Fermentation_Eminent-Domain.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/blog/Fermentation_HR5034.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/blog/How_soon-Fans.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/blog/How_soon-Lebron-James.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/blog/Italy.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/blog/Seedbombing.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/blog/Tupelo-Honey-Cafe.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/blog/Uprooted_Bike.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/blog/Uprooted_Farming-on-Sand.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/blog/blog-jet-lag.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/blog/blog-monastery.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/blog/blog-new-year's-resolutions.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/blog/blog-varsity-athletics.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/blog/detroit.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/blog/lessig_blog-carbon.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/blog/sucker.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/blog/vampires.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/email/12030.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/email/12174.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/email/12176.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/email/173252.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/email/173906.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/email/174124.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/email/175448.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/email/175814.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/email/175816.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/email/175841.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/email/176581.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/email/210343.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/email/211401.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/email/211402.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/email/21257.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/email/218920.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/email/219122.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/email/219123.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/email/219257.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/email/221197.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/email/230685.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/email/234267.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/email/234783.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/email/23559.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/email/49059.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/email/50307.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/email/52201.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/email/52555.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/email/52713.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/email/52998.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/email/52999.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/email/53536.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/email/53555.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/email/54261.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/email/54262.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/email/54263.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/email/54536.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/email/54537.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/email/8885.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/email/9066.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/email/9085.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/email/9159.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/email/9191.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/email/ENRON-pearson-email-25jul02.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/email/enron-thread-159550.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/email/lists-003-2114716.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/email/lists-003-2121270.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/email/lists-003-2125109.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/email/lists-003-2129640.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/email/lists-003-2133315.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/email/lists-003-2137010.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/email/lists-003-2144868.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/email/lists-003-2148080.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/email/lists-003-2152883.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/email/lists-003-2171003.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/email/lists-003-2173878.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/email/lists-003-2180740.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/email/lists-003-2183485.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/email/lists-003-2205935.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/email/lists-034-10062451.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/email/lists-034-10066763.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/email/lists-034-10069772.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/email/lists-034-10073419.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/email/lists-034-10077455.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/email/lists-034-10082707.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/email/lists-046-11485666.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/email/lists-046-11489622.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/email/lists-046-11493928.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/email/lists-046-11506817.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/email/lists-046-12119260.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/email/lists-046-12122969.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/email/lists-046-12130258.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/email/lists-046-12133410.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/email/lists-046-12139072.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/email/lists-046-12142206.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/email/lists-046-12146425.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/email/lists-046-12151335.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/email/lists-046-12155427.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/email/lists-046-12158926.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/email/lists-046-12162937.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/essays/A_defense_of_Michael_Moore.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/essays/Ant_Robot.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/essays/Bartok.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/essays/Black_and_white.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/essays/Homosexuality.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/essays/Madame_White_Snake.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/essays/Ohio_Steel.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/essays/anth_essay_4.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/ficlets/1399.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/ficlets/1400.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/ficlets/1401.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/ficlets/1402.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/ficlets/1403.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/fiction/A_Wasted_Day.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/fiction/Nathans_Bylichka.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/fiction/The_Black_Willow.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/fiction/captured_moments.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/fiction/hotel-california.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/fiction/lw1.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/govt-docs/Env_Prot_Agency-nov1.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/govt-docs/Postal_Rate_Comm-ReportToCongress2002WEB.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/govt-docs/Protocol_Regarding_Access.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/govt-docs/chapter-10.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/govt-docs/fcic_final_report_conclusions.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/jokes/jokes1.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/jokes/jokes10.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/jokes/jokes11.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/jokes/jokes12.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/jokes/jokes13.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/jokes/jokes14.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/jokes/jokes15.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/jokes/jokes16.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/jokes/jokes2.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/jokes/jokes3.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/jokes/jokes4.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/jokes/jokes5.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/jokes/jokes6.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/jokes/jokes7.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/jokes/jokes8.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/jokes/jokes9.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/journal/Article247_327.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/journal/Article247_328.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/journal/Article247_3500.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/journal/Article247_400.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/journal/Article247_500.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/journal/Article247_66.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/journal/ArticleIP_1059.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/journal/ArticleIP_1060.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/journal/VOL15_3.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/letters/110CYL067.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/letters/110CYL068.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/letters/110CYL069.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/letters/110CYL070.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/letters/110CYL071.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/letters/110CYL072.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/letters/110CYL200.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/letters/112C-L012.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/letters/112C-L013.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/letters/112C-L014.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/letters/112C-L015.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/letters/112C-L016.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/letters/113CWL017.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/letters/113CWL018.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/letters/114CUL057.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/letters/114CUL058.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/letters/114CUL059.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/letters/114CUL060.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/letters/115CVL035.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/letters/115CVL036.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/letters/115CVL037.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/letters/116CUL032.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/letters/116CUL033.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/letters/116CUL034.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/letters/117CWL008.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/letters/117CWL009.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/letters/118CWL048.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/letters/118CWL049.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/letters/118CWL050.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/letters/119CWL041.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/letters/602CZL285.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/letters/AMC2.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/letters/IFAW1.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/letters/NWF1.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/letters/alumnifund1.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/letters/appalachian1.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/letters/aspca1.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/letters/att2.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/letters/audubon1.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/letters/audubon2.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/letters/defenders5.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/letters/guidedogs1.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/letters/hsus4.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/letters/littleshelter2.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/letters/marine1.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/letters/united1.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/letters/warner1.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/letters/wildelifewatch1.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/letters/wwf12.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/movie-script/JurassicParkIV-INT.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/movie-script/JurassicParkIV-Scene_1.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/movie-script/JurassicParkIV-Scene_3.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/movie-script/JurassicParkIV-Scene_4.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/movie-script/JurassicParkIV-Scene_5.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/movie-script/pirates.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/newspaper:newswire/20000410_nyt-NEW.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/newspaper:newswire/20000415_apw_eng-NEW.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/newspaper:newswire/20000419_apw_eng-NEW.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/newspaper:newswire/20000424_nyt-NEW.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/newspaper:newswire/20020731-nyt.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/newspaper:newswire/A1.E1-NEW.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/newspaper:newswire/A1.E2-NEW.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/newspaper:newswire/NYTnewswire1.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/newspaper:newswire/NYTnewswire2.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/newspaper:newswire/NYTnewswire3.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/newspaper:newswire/NYTnewswire4.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/newspaper:newswire/NYTnewswire5.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/newspaper:newswire/NYTnewswire6.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/newspaper:newswire/NYTnewswire7.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/newspaper:newswire/NYTnewswire8.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/newspaper:newswire/NYTnewswire9.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/newspaper:newswire/wsj_0006.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/newspaper:newswire/wsj_0026.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/newspaper:newswire/wsj_0027.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/newspaper:newswire/wsj_0032.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/newspaper:newswire/wsj_0068.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/newspaper:newswire/wsj_0073.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/newspaper:newswire/wsj_0106.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/newspaper:newswire/wsj_0120.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/newspaper:newswire/wsj_0124.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/newspaper:newswire/wsj_0127.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/newspaper:newswire/wsj_0132.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/newspaper:newswire/wsj_0135.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/newspaper:newswire/wsj_0136.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/newspaper:newswire/wsj_0144.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/newspaper:newswire/wsj_0150.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/newspaper:newswire/wsj_0151.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/newspaper:newswire/wsj_0152.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/newspaper:newswire/wsj_0157.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/newspaper:newswire/wsj_0158.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/newspaper:newswire/wsj_0159.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/newspaper:newswire/wsj_0160.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/newspaper:newswire/wsj_0161.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/newspaper:newswire/wsj_0165.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/newspaper:newswire/wsj_0167.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/newspaper:newswire/wsj_0168.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/newspaper:newswire/wsj_0169.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/newspaper:newswire/wsj_0171.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/newspaper:newswire/wsj_0172.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/newspaper:newswire/wsj_0173.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/newspaper:newswire/wsj_0175.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/newspaper:newswire/wsj_0176.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/newspaper:newswire/wsj_0184.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/newspaper:newswire/wsj_0187.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/newspaper:newswire/wsj_0189.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/newspaper:newswire/wsj_1640.mrg-NEW.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/newspaper:newswire/wsj_2465.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/non-fiction/CUP1.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/non-fiction/CUP2.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/non-fiction/ch5.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/non-fiction/chZ.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/non-fiction/rybczynski-ch3.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/spam/111344.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/spam/111348.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/spam/111349.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/spam/111359.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/spam/111363.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/spam/111364.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/spam/111367.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/spam/111369.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/spam/111371.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/spam/111373.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/spam/111375.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/spam/111377.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/spam/111380.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/spam/111381.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/spam/111382.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/spam/111393.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/spam/111394.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/spam/111399.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/spam/111400.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/spam/111404.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/spam/111406.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/spam/111410.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/spam/111414.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/spam/111422.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/spam/111424.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/spam/111425.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/spam/111428.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/spam/114423.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/spam/114424.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/spam/114428.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/spam/114433.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/spam/114435.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/spam/114439.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/spam/114440.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/spam/114441.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/spam/114442.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/spam/114445.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/spam/114446.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/spam/114447.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/spam/114448.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/spam/114450.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/spam/114452.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/spam/Apply.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/spam/Cartoonist_services.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/spam/Dear_e-mail_user.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/spam/Earnings_Season_Underway.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/spam/FBI_urgent.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/spam/Fastest_Reader.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/spam/Globa_Professional_Directory.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/spam/Laptop_Bags.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/spam/Mailbox_Upgrade.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/spam/Re_Job_Offer.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/spam/SEO.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/spam/Secret_Shopper.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/spam/SgtCassandra.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/spam/new_clients.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/spam/record_volume.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/spam/ucb1.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/spam/ucb10.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/spam/ucb11.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/spam/ucb12.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/spam/ucb14.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/spam/ucb15.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/spam/ucb2.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/spam/ucb20.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/spam/ucb21.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/spam/ucb22.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/spam/ucb23.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/spam/ucb24.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/spam/ucb25.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/spam/ucb26.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/spam/ucb27.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/spam/ucb28.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/spam/ucb29.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/spam/ucb3.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/spam/ucb30.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/spam/ucb31.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/spam/ucb4.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/spam/ucb40.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/spam/ucb41.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/spam/ucb42.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/spam/ucb43.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/spam/ucb44.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/spam/ucb45.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/spam/ucb46.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/spam/ucb47.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/spam/ucb48.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/spam/ucb49.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/spam/ucb50.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/spam/ucb51.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/spam/ucb52.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/spam/ucb53.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/spam/ucb54.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/spam/ucb6.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/spam/ucb8.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/spam/ucb9.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/technical/1468-6708-3-1.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/technical/1468-6708-3-3.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/technical/1471-2091-2-9.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/technical/1471-213X-1-1.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/technical/1471-230X-2-21.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/technical/journal.pbio.0020001.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/technical/pmed.0010029.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/technical/rr166.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/travel-guides/HistoryGreek.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/travel-guides/HistoryJerusalem.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/travel-guides/HistoryLasVegas.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/travel-guides/IntroDublin.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/travel-guides/IntroHongKong.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/travel-guides/WhatToHongKong.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/travel-guides/WhereToHongKong.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/twitter/tweets1.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/masc/written/twitter/tweets2.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-a01.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-a02.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-a03.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-a04.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-a05.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-a06.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-a07.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-a08.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-a09.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-a10.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-a11.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-a12.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-a13.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-a14.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-a15.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-a16.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-a17.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-a18.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-a19.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-a20.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-a21.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-a22.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-a23.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-a24.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-a25.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-a26.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-a27.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-a28.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-a29.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-a30.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-a31.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-a32.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-a33.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-a34.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-a35.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-a36.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-a37.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-a38.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-a39.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-a40.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-a41.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-a42.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-a43.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-a44.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-b01.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-b02.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-b03.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-b04.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-b05.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-b06.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-b07.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-b08.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-b09.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-b10.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-b11.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-b12.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-b13.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-b14.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-b15.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-b16.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-b17.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-b18.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-b19.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-b20.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-b21.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-b22.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-b23.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-b24.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-b25.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-b26.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-b27.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-c01.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-c02.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-c03.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-c04.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-c05.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-c06.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-c07.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-c08.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-c09.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-c10.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-c11.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-c12.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-c13.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-c14.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-c15.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-c16.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-c17.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-d01.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-d02.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-d03.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-d04.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-d05.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-d06.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-d07.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-d08.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-d09.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-d10.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-d11.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-d12.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-d13.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-d14.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-d15.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-d16.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-d17.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-e01.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-e02.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-e03.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-e04.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-e05.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-e06.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-e07.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-e08.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-e09.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-e10.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-e11.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-e12.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-e13.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-e14.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-e15.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-e16.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-e17.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-e18.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-e19.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-e20.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-e21.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-e22.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-e23.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-e24.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-e25.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-e26.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-e27.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-e28.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-e29.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-e30.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-e31.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-f01.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-f02.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-f03.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-f04.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-f05.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-f06.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-f07.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-f08.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-f09.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-f10.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-f11.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-f12.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-f13.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-f14.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-f15.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-f16.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-f17.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-f18.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-f19.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-f20.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-f21.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-f22.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-f23.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-f24.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-f25.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-f33.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-f43.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-f44.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-g01.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-g02.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-g03.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-g04.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-g05.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-g06.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-g07.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-g08.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-g09.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-g10.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-g11.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-g12.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-g13.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-g14.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-g15.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-g16.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-g17.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-g18.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-g19.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-g20.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-g21.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-g22.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-g23.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-g28.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-g31.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-g39.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-g43.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-g44.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-h01.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-h02.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-h03.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-h04.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-h05.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-h06.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-h07.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-h08.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-h09.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-h10.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-h11.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-h12.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-h13.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-h14.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-h15.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-h16.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-h17.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-h18.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-h21.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-h24.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-j01.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-j02.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-j03.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-j04.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-j05.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-j06.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-j07.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-j08.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-j09.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-j10.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-j11.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-j12.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-j13.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-j14.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-j15.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-j16.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-j17.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-j18.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-j19.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-j20.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-j21.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-j22.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-j23.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-j24.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-j25.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-j26.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-j27.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-j28.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-j29.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-j30.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-j31.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-j32.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-j33.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-j34.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-j35.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-j37.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-j38.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-j41.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-j42.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-j52.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-j53.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-j54.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-j55.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-j56.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-j57.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-j58.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-j59.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-j60.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-j70.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-k01.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-k02.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-k03.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-k04.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-k05.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-k06.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-k07.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-k08.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-k09.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-k10.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-k11.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-k12.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-k13.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-k14.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-k15.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-k16.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-k17.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-k18.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-k19.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-k20.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-k21.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-k22.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-k23.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-k24.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-k25.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-k26.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-k27.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-k28.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-k29.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-l01.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-l02.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-l03.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-l04.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-l05.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-l06.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-l07.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-l08.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-l09.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-l10.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-l11.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-l12.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-l13.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-l14.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-l15.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-l16.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-l17.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-l18.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-m01.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-m02.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-m03.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-m04.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-m05.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-m06.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-n01.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-n02.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-n03.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-n04.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-n05.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-n06.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-n07.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-n08.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-n09.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-n10.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-n11.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-n12.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-n14.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-n15.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-n16.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-n17.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-n20.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-p01.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-p02.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-p03.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-p04.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-p05.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-p06.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-p07.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-p08.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-p09.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-p10.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-p12.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-p24.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-r01.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-r02.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-r03.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-r04.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-r05.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-r06.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-r07.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-r08.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/br-r09.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/simple-wsd-doc.dtd" beforeDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -32,19 +779,91 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Filesystem.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="379">
-              <caret line="41" column="67" selection-start-line="41" selection-start-column="67" selection-end-line="41" selection-end-column="67" />
+            <state relative-caret-position="60">
+              <caret line="4" column="32" selection-start-line="4" selection-start-column="32" selection-end-line="4" selection-end-column="32" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/GetKBInputData/BabelNetRequests.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-17">
+              <caret line="6" column="23" selection-start-line="6" selection-start-column="23" selection-end-line="6" selection-end-column="23" />
+              <folding>
+                <element signature="e#0#21#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/GetKBInputData/OmegaWiki.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="1110">
+              <caret line="79" column="109" selection-start-line="79" selection-start-column="109" selection-end-line="79" selection-end-column="109" />
+              <folding>
+                <element signature="e#0#12#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/GetKBInputData/WordNet.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="585">
+              <caret line="44" column="13" selection-start-line="44" selection-start-column="13" selection-end-line="44" selection-end-column="13" />
+              <folding>
+                <element signature="e#0#37#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/GraphNN/OrganizeSenseLabeledCorpus.py">
+        <entry file="file://$PROJECT_DIR$/GetKBInputData/BabelNet.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="477">
-              <caret line="133" selection-start-line="133" selection-end-line="133" />
+            <state relative-caret-position="142">
+              <caret line="88" column="22" lean-forward="true" selection-start-line="88" selection-start-column="22" selection-end-line="88" selection-end-column="22" />
               <folding>
-                <element signature="e#0#9#0" expanded="true" />
+                <element signature="e#0#12#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/GetKBInputData/DBpedia.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="116">
+              <caret line="14" column="45" selection-start-line="14" selection-start-column="45" selection-end-line="14" selection-end-column="45" />
+              <folding>
+                <element signature="e#0#26#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/GetKBInputData/RetrieveInputData.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="225">
+              <caret line="15" column="26" selection-start-line="15" selection-start-column="26" selection-end-line="15" selection-end-column="26" />
+              <folding>
+                <element signature="e#0#19#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/GetKBInputData/GetWordData.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="178">
+              <caret line="95" column="27" selection-start-line="95" selection-start-column="27" selection-end-line="95" selection-end-column="27" />
+              <folding>
+                <element signature="e#0#12#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -157,8 +976,8 @@
         <option value="$PROJECT_DIR$/Utils.py" />
         <option value="$PROJECT_DIR$/PrepareKBInput/PrepareKBInput.py" />
         <option value="$PROJECT_DIR$/GetKBInputData/BabelNetRequests.py" />
-        <option value="$PROJECT_DIR$/GraphNN/OrganizeSenseLabeledCorpus.py" />
         <option value="$PROJECT_DIR$/Filesystem.py" />
+        <option value="$PROJECT_DIR$/GraphNN/OrganizeSenseLabeledCorpus.py" />
       </list>
     </option>
   </component>
@@ -210,6 +1029,12 @@
               <item name="TASK1_Gbwe" type="b2602c69:ProjectViewProjectNode" />
               <item name="TASK1_Gbwe" type="462c0819:PsiDirectoryNode" />
               <item name="TextCorpuses" type="462c0819:PsiDirectoryNode" />
+              <item name="SenseAnnotated" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="TASK1_Gbwe" type="b2602c69:ProjectViewProjectNode" />
+              <item name="TASK1_Gbwe" type="462c0819:PsiDirectoryNode" />
+              <item name="TextCorpuses" type="462c0819:PsiDirectoryNode" />
               <item name="wikitext-2" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
@@ -243,13 +1068,14 @@
     </option>
   </component>
   <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/CreateEntities" />
+    </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/TextCorpuses/SenseAnnotated" />
       <recent name="$PROJECT_DIR$/WordEmbeddings" />
       <recent name="$PROJECT_DIR$/Vocabulary" />
       <recent name="$PROJECT_DIR$/" />
-    </key>
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/CreateEntities" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -365,8 +1191,9 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1920" height="986" extended-state="6" />
+    <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.23109691" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.23109691" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -379,7 +1206,7 @@
       <window_info anchor="bottom" id="Version Control" order="7" weight="0.32913166" />
       <window_info anchor="bottom" id="Terminal" order="8" weight="0.3277311" />
       <window_info anchor="bottom" id="Event Log" order="9" side_tool="true" />
-      <window_info active="true" anchor="bottom" id="Python Console" order="10" visible="true" weight="0.3691275" />
+      <window_info anchor="bottom" id="Python Console" order="10" visible="true" weight="0.3691275" />
       <window_info anchor="bottom" id="Inspection Results" order="11" weight="0.32922733" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
@@ -442,40 +1269,10 @@
     <entry file="file://$PROJECT_DIR$/PrepareGraphInput/PreprocessInput.log" />
     <entry file="file://$USER_HOME$/anaconda3/lib/python3.7/site-packages/nltk/corpus/reader/wordnet.py" />
     <entry file="file://$USER_HOME$/anaconda3/lib/python3.7/site-packages/nltk/data.py" />
-    <entry file="file://$PROJECT_DIR$/GetKBInputData/DBpedia.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="570">
-          <caret line="40" column="26" selection-start-line="40" selection-start-column="26" selection-end-line="40" selection-end-column="26" />
-          <folding>
-            <element signature="e#0#26#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$USER_HOME$/Library/Caches/PyCharmCE2019.1/python_stubs/-1795138643/builtins.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="195">
           <caret line="352" column="4" selection-start-line="352" selection-start-column="4" selection-end-line="352" selection-end-column="4" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/GetKBInputData/WordNet.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="660">
-          <caret line="44" column="13" selection-start-line="44" selection-start-column="13" selection-end-line="44" selection-end-column="13" />
-          <folding>
-            <element signature="e#0#37#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/GetKBInputData/OmegaWiki.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1185">
-          <caret line="79" column="109" selection-start-line="79" selection-start-column="109" selection-end-line="79" selection-end-column="109" />
-          <folding>
-            <element signature="e#0#12#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -548,26 +1345,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/GetKBInputData/RetrieveInputData.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="255">
-          <caret line="31" column="41" selection-start-line="31" selection-start-column="41" selection-end-line="31" selection-end-column="41" />
-          <folding>
-            <element signature="e#0#19#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/GetKBInputData/BabelNet.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-60">
-          <caret line="79" column="17" selection-start-line="79" selection-start-column="4" selection-end-line="79" selection-end-column="17" />
-          <folding>
-            <element signature="e#0#12#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/GraphNN/pyGAT/README.md" />
     <entry file="file://$PROJECT_DIR$/GraphNN/pyGAT/train.py" />
     <entry file="file://$PROJECT_DIR$/GraphNN/pyGAT/utils.py" />
@@ -608,16 +1385,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-40">
           <caret line="61" column="54" selection-start-line="61" selection-start-column="54" selection-end-line="61" selection-end-column="54" />
-          <folding>
-            <element signature="e#0#12#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/GetKBInputData/GetWordData.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="178">
-          <caret line="95" column="27" selection-start-line="95" selection-start-column="27" selection-end-line="95" selection-end-column="27" />
           <folding>
             <element signature="e#0#12#0" expanded="true" />
           </folding>
@@ -705,16 +1472,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/GetKBInputData/BabelNetRequests.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="60">
-          <caret line="6" column="23" selection-start-line="6" selection-start-column="23" selection-end-line="6" selection-end-column="23" />
-          <folding>
-            <element signature="e#0#21#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Vocabulary/Vocabulary.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="2107">
@@ -722,19 +1479,89 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Filesystem.py">
+    <entry file="file://$PROJECT_DIR$/GraphNN/OrganizeSenseLabeledCorpus.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="379">
-          <caret line="41" column="67" selection-start-line="41" selection-start-column="67" selection-end-line="41" selection-end-column="67" />
+        <state relative-caret-position="300">
+          <caret line="20" column="43" selection-start-line="20" selection-start-column="43" selection-end-line="20" selection-end-column="43" />
+          <folding>
+            <element signature="e#0#9#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/GraphNN/OrganizeSenseLabeledCorpus.py">
+    <entry file="file://$PROJECT_DIR$/Filesystem.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="477">
-          <caret line="133" selection-start-line="133" selection-end-line="133" />
+        <state relative-caret-position="60">
+          <caret line="4" column="32" selection-start-line="4" selection-start-column="32" selection-end-line="4" selection-end-column="32" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/GetKBInputData/DBpedia.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="116">
+          <caret line="14" column="45" selection-start-line="14" selection-start-column="45" selection-end-line="14" selection-end-column="45" />
           <folding>
-            <element signature="e#0#9#0" expanded="true" />
+            <element signature="e#0#26#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/GetKBInputData/BabelNetRequests.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-17">
+          <caret line="6" column="23" selection-start-line="6" selection-start-column="23" selection-end-line="6" selection-end-column="23" />
+          <folding>
+            <element signature="e#0#21#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/GetKBInputData/OmegaWiki.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1110">
+          <caret line="79" column="109" selection-start-line="79" selection-start-column="109" selection-end-line="79" selection-end-column="109" />
+          <folding>
+            <element signature="e#0#12#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/GetKBInputData/WordNet.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="585">
+          <caret line="44" column="13" selection-start-line="44" selection-start-column="13" selection-end-line="44" selection-end-column="13" />
+          <folding>
+            <element signature="e#0#37#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/GetKBInputData/GetWordData.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="178">
+          <caret line="95" column="27" selection-start-line="95" selection-start-column="27" selection-end-line="95" selection-end-column="27" />
+          <folding>
+            <element signature="e#0#12#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/GetKBInputData/RetrieveInputData.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="225">
+          <caret line="15" column="26" selection-start-line="15" selection-start-column="26" selection-end-line="15" selection-end-column="26" />
+          <folding>
+            <element signature="e#0#19#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/GetKBInputData/BabelNet.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="142">
+          <caret line="88" column="22" lean-forward="true" selection-start-line="88" selection-start-column="22" selection-end-line="88" selection-end-column="22" />
+          <folding>
+            <element signature="e#0#12#0" expanded="true" />
           </folding>
         </state>
       </provider>
