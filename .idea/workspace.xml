@@ -2,10 +2,12 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="d35dca92-959c-489d-8a61-f337e4cce7fa" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Filesystem.py" beforeDir="false" afterPath="$PROJECT_DIR$/Filesystem.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/GraphNN/OrganizeSenseLabeledCorpus.py" beforeDir="false" afterPath="$PROJECT_DIR$/GraphNN/OrganizeSenseLabeledCorpus.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Media/Task1_DeveloperDiary.docx" beforeDir="false" afterPath="$PROJECT_DIR$/Media/Task1_DeveloperDiary.docx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/masc_written_archive.hdf5" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextCorpuses/semcor/semcor_all_archive.hdf5" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/temp.log" beforeDir="false" afterPath="$PROJECT_DIR$/temp.log" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -30,8 +32,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Filesystem.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="165">
-              <caret line="11" column="58" lean-forward="true" selection-start-line="11" selection-start-column="58" selection-end-line="11" selection-end-column="58" />
+            <state relative-caret-position="379">
+              <caret line="41" column="67" selection-start-line="41" selection-start-column="67" selection-end-line="41" selection-end-column="67" />
             </state>
           </provider>
         </entry>
@@ -39,8 +41,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/GraphNN/OrganizeSenseLabeledCorpus.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="447">
-              <caret line="124" column="28" lean-forward="true" selection-start-line="124" selection-start-column="28" selection-end-line="124" selection-end-column="28" />
+            <state relative-caret-position="477">
+              <caret line="133" selection-start-line="133" selection-end-line="133" />
               <folding>
                 <element signature="e#0#9#0" expanded="true" />
               </folding>
@@ -59,8 +61,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>load_a</find>
-      <find>runs</find>
       <find>514</find>
       <find>512</find>
       <find>512510</find>
@@ -89,6 +89,8 @@
       <find>itemsize</find>
       <find>data_to_add</find>
       <find>logging</find>
+      <find>CREATE TABLE</find>
+      <find>insert</find>
     </findStrings>
     <replaceStrings>
       <replace>F</replace>
@@ -363,7 +365,6 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1920" height="986" extended-state="6" />
-    <editor active="true" />
     <layout>
       <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.23109691" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
@@ -567,13 +568,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Vocabulary/Vocabulary.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="525">
-          <caret line="158" column="29" selection-start-line="158" selection-start-column="29" selection-end-line="158" selection-end-column="29" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/GraphNN/pyGAT/README.md" />
     <entry file="file://$PROJECT_DIR$/GraphNN/pyGAT/train.py" />
     <entry file="file://$PROJECT_DIR$/GraphNN/pyGAT/utils.py" />
@@ -721,17 +715,24 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/Vocabulary/Vocabulary.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2107">
+          <caret line="158" column="29" selection-start-line="158" selection-start-column="29" selection-end-line="158" selection-end-column="29" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/Filesystem.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="165">
-          <caret line="11" column="58" lean-forward="true" selection-start-line="11" selection-start-column="58" selection-end-line="11" selection-end-column="58" />
+        <state relative-caret-position="379">
+          <caret line="41" column="67" selection-start-line="41" selection-start-column="67" selection-end-line="41" selection-end-column="67" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/GraphNN/OrganizeSenseLabeledCorpus.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="447">
-          <caret line="124" column="28" lean-forward="true" selection-start-line="124" selection-start-column="28" selection-end-line="124" selection-end-column="28" />
+        <state relative-caret-position="477">
+          <caret line="133" selection-start-line="133" selection-end-line="133" />
           <folding>
             <element signature="e#0#9#0" expanded="true" />
           </folding>

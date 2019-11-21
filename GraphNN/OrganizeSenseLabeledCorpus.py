@@ -4,7 +4,7 @@ import logging
 import Utils
 import lxml.etree
 import pandas as pd
-import time
+import sqlite3
 
 def load_NOAD_to_WordNet_mapping():
     manualmap_df = pd.read_csv(os.path.join(F.FOLDER_TEXT_CORPUSES, F.NOAD_WORDNET_MANUALMAP_FILE),
@@ -71,15 +71,13 @@ def process_word(word_elem, sense_mapping_df):
     # then, write the word (and its sense & co., if present)
     token_data_tpl = (token, lemma, pos, wn_sense)
 
-
     return break_data_tpl, token_data_tpl
 
 
-def process_xml_document(xml_fpath, out_archive, sense_mapping_df):
-    h5_itemsizes = {'token': Utils.HDF5_BASE_SIZE_512, 'lemma': Utils.HDF5_BASE_SIZE_512 / 2,
-                    'pos': Utils.HDF5_BASE_SIZE_512 / 16, Utils.SENSE_WORDNET: Utils.HDF5_BASE_SIZE_512}
+def process_xml_document(xml_fpath, out_db, sense_mapping_df):
 
     xml_docfile = open(xml_fpath, "rb")
+    doc_name = os.path.basename(xml_fpath)
     data_tpl_ls = []
 
     for event, elem in lxml.etree.iterparse(xml_docfile):
@@ -89,39 +87,52 @@ def process_xml_document(xml_fpath, out_archive, sense_mapping_df):
             data_tpl_ls.append(token_data_tpl)
 
     new_df = pd.DataFrame(data=data_tpl_ls, columns=['token', 'lemma', 'pos', Utils.SENSE_WORDNET])
-    out_archive.append(key='SenseLabeledCorpus', value=new_df, min_itemsize=h5_itemsizes)
+    new_df.to_sql(name=doc_name, con=out_db, if_exists='replace',
+                     dtype={'token':'varchar(255)', 'lemma':'varchar(255)',
+                            'pos':'varchar(15)', Utils.SENSE_WORDNET:'varchar(511)'})
+    # We do not need a manual insert if we use Pandas's
+    # c = out_db.cursor()
+    # c.execute("CREATE TABLE IF NOT EXISTS " + doc_name +
+    #           ''' (  token varchar(255),
+    #                  lemma varchar(255),
+    #                  pos varchar(15), ''' +
+    #                  Utils.SENSE_WORDNET + " varchar(511) )" )
 
 
 
-def process_corpus_subfiles(source_filepaths, destination_archive, sense_mapping_df):
+def process_corpus_subfiles(source_filepaths, destination_db, sense_mapping_df):
 
     for src_fpath in source_filepaths:
-        logging.debug(src_fpath)
-        logging.debug(os.listdir(src_fpath))
         sub_xml_filenames = list(filter(lambda fname: 'xml' in fname, os.listdir(src_fpath)))
         sub_xml_filepaths = list(map(lambda fn: os.path.join(src_fpath, fn), sub_xml_filenames))
         for sub_xml_filepath in sub_xml_filepaths:
             logging.info("Processing the sense-labeled document located at: " + str(sub_xml_filepath) + " ...")
-            process_xml_document(sub_xml_filepath, destination_archive, sense_mapping_df)
+            process_xml_document(sub_xml_filepath, destination_db, sense_mapping_df)
 
 
-def exe_semcore_and_masc():
+def exe():
     Utils.init_logging('temp.log')
 
-    # --resetting from last time
-    out_archive_semcor = pd.HDFStore(os.path.join(F.FOLDER_INPUT, F.SEMCOR_H5_FILE), mode='w')
-    out_archive_masc =pd.HDFStore(os.path.join(F.FOLDER_INPUT, F.MASC_H5_FILE), mode='w')
+    # -- dbs filepaths
+    semcor_outdb_fpath = os.path.join(F.FOLDER_INPUT, F.SEMCOR_DB)
+    #masc_outdb_fpath = os.path.join(F.FOLDER_INPUT, F.SEMCOR_H5_DB)
+    # -- resetting from last time - but if I "create table if not exists" or "replace", this is actually not necessary
+    # semcor_outdb_file = open(semcor_outdb_fpath, mode='w'); semcor_outdb_file.close()
+    # masc_outdb_file = open(masc_outdb_fpath, mode='w'); masc_outdb_file.close()
+    # -- opening the connection with the db
+    semcor_out_db = sqlite3.connect(semcor_outdb_fpath)
+    #outdb_masc = sqlite3.connect(masc_outdb_file)
 
     semcor_source_fpath = os.path.join(F.FOLDER_TEXT_CORPUSES, F.FOLDER_SEMCOR)
-    masc_base_fpath = os.path.join(F.FOLDER_TEXT_CORPUSES, F.FOLDER_MASC, F.FOLDER_MASC_WRITTEN)
-    masc_source_fpaths = list(map(lambda dir_tpl: dir_tpl[0], os.walk(masc_base_fpath)))
+    # masc_base_fpath = os.path.join(F.FOLDER_TEXT_CORPUSES, F.FOLDER_MASC, F.FOLDER_MASC_WRITTEN)
+    # masc_source_fpaths = list(map(lambda dir_tpl: dir_tpl[0], os.walk(masc_base_fpath)))
 
     noad_to_Wordnet_mapping = load_NOAD_to_WordNet_mapping()
 
-    process_corpus_subfiles([semcor_source_fpath], out_archive_semcor, noad_to_Wordnet_mapping)
-    process_corpus_subfiles(masc_source_fpaths, out_archive_masc, noad_to_Wordnet_mapping)
+    process_corpus_subfiles([semcor_source_fpath], semcor_out_db, noad_to_Wordnet_mapping)
+    #process_corpus_subfiles(masc_source_fpaths, outdb_masc, noad_to_Wordnet_mapping)
 
-    out_archive_semcor.close()
-    out_archive_masc.close()
+    semcor_out_db.close()
+    #outdb_masc.close()
 
 
