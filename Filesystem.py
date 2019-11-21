@@ -38,7 +38,6 @@ NOAD_WORDNET_AUTOMAP_FILE = 'algorithmic_map.txt'
 NOAD_WORDNET_MANUALMAP_FILE = 'manual_map.txt'
 SEMCOR_H5_FILE = 'semcor_all.h5'
 MASC_H5_FILE = 'masc_written.h5'
-#SENSELABELED_CORPUS_FILE = 'SenseLabeledCorpus.h5'
 
 ENCODER_MODEL = "Encoder_768to300_nn.model" # not used in the current version
 
