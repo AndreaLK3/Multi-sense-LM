@@ -8,30 +8,30 @@ import os
 from itertools import cycle
 
 
-# note: we assume that {dict_2.keys} \subsetOf {dict_1.keys}
-def merge_dictionaries_withlists(dict_1, dict_2):
-    merged_dict = {}
-
-    for key in dict_1.keys():
-        ls_1 = dict_1[key]
-        ls_2 = []
-        try:
-            ls_2 = dict_2[key]
-        except KeyError:
-            pass
-        merged_dict[key] = ls_1 + ls_2
-
-    return merged_dict
-
-# transforms a dictonary with K1:[a,b], K2:[] into [(K1,a),(K1,b)]
-def unpack_elemsdict_into_columns(dict):
-    wn_ids = []
-    elems = []
-    for k_bnId, v_elemsLs in dict.items():
-        for i in range(len(v_elemsLs)):
-            wn_ids.append(k_bnId)
-            elems.append(v_elemsLs[i])
-    return wn_ids, elems
+# # note: we assume that {dict_2.keys} \subsetOf {dict_1.keys}
+# def merge_dictionaries_withlists(dict_1, dict_2):
+#     merged_dict = {}
+#
+#     for key in dict_1.keys():
+#         ls_1 = dict_1[key]
+#         ls_2 = []
+#         try:
+#             ls_2 = dict_2[key]
+#         except KeyError:
+#             pass
+#         merged_dict[key] = ls_1 + ls_2
+#
+#     return merged_dict
+#
+# # transforms a dictonary with K1:[a,b], K2:[] into [(K1,a),(K1,b)]
+# def unpack_elemsdict_into_columns(dict):
+#     wn_ids = []
+#     elems = []
+#     for k_bnId, v_elemsLs in dict.items():
+#         for i in range(len(v_elemsLs)):
+#             wn_ids.append(k_bnId)
+#             elems.append(v_elemsLs[i])
+#     return wn_ids, elems
 
 
 def unpack_ls_in_tpls(lts):
