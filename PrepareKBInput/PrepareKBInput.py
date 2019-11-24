@@ -36,33 +36,14 @@ def preprocess(vocabulary):
     Utils.close_list_of_files(input_dbs + processed_dbs)
 
 
-# Phase 2 - Selecting, sorting and naming (noun.1, verb.4, etc.) the senses of each word
-def assign_sense_names(vocabulary):
-    #Utils.init_logging('AssignSenseNames.log', logging.INFO)
-
-    hdf5_input_filepaths = [os.path.join(Filesystem.FOLDER_INPUT, Utils.PROCESSED + '_' + categ + ".h5")
-                             for categ in Utils.CATEGORIES]
-    hdf5_output_filepaths = [os.path.join(Filesystem.FOLDER_INPUT, Utils.DENOMINATED + '_' + categ + ".h5")
-                            for categ in Utils.CATEGORIES]
-
-    input_dbs = [pd.HDFStore(input_filepath, mode='r') for input_filepath in hdf5_input_filepaths]
-    denominated_dbs = [pd.HDFStore(output_filepath, mode='a') for output_filepath in hdf5_output_filepaths]
-
-    for word in vocabulary:
-        logging.info("Selecting, sorting and naming the senses of the word: " + word)
-        SD.assign_senses_to_word(word, input_dbs, denominated_dbs)
-
-    Utils.close_list_of_files(input_dbs + denominated_dbs)
-
-
-# Phase 3 - Considering the wordSenses in the vocabulary, located in the archive of denominated definitions,
+# Phase 2 - Considering the wordSenses in the vocabulary, located in the archive of processed definitions,
 # establish a correspondence with an integer index.
 # Moreover, counting the number of defs and examples, define start&end indices for the matrix of word embeddings.
 def create_senses_vocabulary_table(vocabulary_words_ls):
     #Utils.init_logging('CreateSensesVocabularyTable.log', logging.INFO)
 
-    defs_input_filepath = os.path.join(Filesystem.FOLDER_INPUT, Utils.DENOMINATED + '_' + Utils.DEFINITIONS + ".h5")
-    examples_input_filepath = os.path.join(Filesystem.FOLDER_INPUT, Utils.DENOMINATED + '_' + Utils.EXAMPLES + ".h5")
+    defs_input_filepath = os.path.join(Filesystem.FOLDER_INPUT, Utils.PROCESSED + '_' + Utils.DEFINITIONS + ".h5")
+    examples_input_filepath = os.path.join(Filesystem.FOLDER_INPUT, Utils.PROCESSED + '_' + Utils.EXAMPLES + ".h5")
     defs_input_db = pd.HDFStore(defs_input_filepath, mode='r')
     examples_input_db = pd.HDFStore(examples_input_filepath, mode='r')
 
@@ -71,7 +52,7 @@ def create_senses_vocabulary_table(vocabulary_words_ls):
     out_vocabTable_db_c = out_vocabTable_db.cursor()
     out_vocabTable_db_c.execute('''CREATE TABLE IF NOT EXISTS
                                                 vocabulary_table (  word varchar(127),
-                                                                    sense varchar(63),
+                                                                    sense varchar(127),
                                                                     vocab_index int,
                                                                     start_defs int,
                                                                     end_defs int,
@@ -113,16 +94,13 @@ def prepare(vocabulary): #vocabulary = ['move', 'light', 'for', 'sea']
     # Phase 1 - Preprocessing: eliminating quasi-duplicate definitions and examples, and lemmatizing synonyms & antonyms
     preprocess(vocabulary)
 
-    # Phase 2 - Selecting, sorting and naming (noun.1, verb.4, etc.) the senses of each word
-    assign_sense_names(vocabulary)
-
-    # Phase 3 - Create the Vocabulary table with the correspondences (wordSense, integer index).
+    # Phase 2 - Create the Vocabulary table with the correspondences (wordSense, integer index).
     create_senses_vocabulary_table(vocabulary)
 
-    # Phase 4a - get the sentence embeddings for definitions and examples, using BERT, and store them
+    # Phase 3a - get the sentence embeddings for definitions and examples, using BERT, and store them
     CE.compute_elements_embeddings(Utils.DEFINITIONS, CE.Method.DISTILBERT)
     CE.compute_elements_embeddings(Utils.EXAMPLES, CE.Method.DISTILBERT)
 
-    # Phase 4b - get the sentence embeddings for definitions and examples, using FastText, and store them
+    # Phase 3b - get the sentence embeddings for definitions and examples, using FastText, and store them
     CE.compute_elements_embeddings(Utils.DEFINITIONS, CE.Method.FASTTEXT)
     CE.compute_elements_embeddings(Utils.EXAMPLES, CE.Method.FASTTEXT)

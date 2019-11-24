@@ -19,27 +19,30 @@ def process_def_or_example(element_text, stopwords_ls):
     return elem_newtext
 
 
-# The objective is to  use stopwords removal and punctuation removal to eliminate quasi-duplicates
+# The objective is to use stopwords removal and punctuation removal to eliminate quasi-duplicates
 # – those elements that differ for a “to” or for a comma
 # elements_name must be one of: 'definitions', 'examples'
 def eliminate_duplicates_in_word(word, elements_name, input_db, output_db, extended_lang_id='english'):
 
     stopwords_ls = nltk.corpus.stopwords.words(extended_lang_id)
 
-    hdf5_min_itemsizes = {'word': Utils.HDF5_BASE_SIZE_512 / 4, 'bn_id': Utils.HDF5_BASE_SIZE_512 / 4,
+    hdf5_min_itemsizes = {'word': Utils.HDF5_BASE_SIZE_512 / 4, Utils.SENSE_WN_ID: Utils.HDF5_BASE_SIZE_512 / 4,
                           Utils.DEFINITIONS: Utils.HDF5_BASE_SIZE_512 , Utils.EXAMPLES: Utils.HDF5_BASE_SIZE_512 }
-    min_itemsize_dict = {key: hdf5_min_itemsizes[key] for key in ['word', 'bn_id', elements_name]}
+    min_itemsize_dict = {key: hdf5_min_itemsizes[key] for key in ['word', Utils.SENSE_WN_ID, elements_name]}
 
     try:
-        word_df = Utils.select_from_hdf5(input_db, elements_name, ["word"], [word])
+        logging.info(word)
+        word = word.replace("'", "")
+        logging.info(Utils.SENSE_WN_ID + " LIKE '" + str(word) + "%'")
+        word_df = input_db.select(key=elements_name, where=Utils.SENSE_WN_ID + " LIKE '" + str(word) + "%'")
     except KeyError: # We have no elements of this kind for the word (e.g. no examples)'
         logging.info("Did not found any " + elements_name + " for word: " + word + ". Moving on")
         return
-    bn_ids = set(word_df['bn_id'])
+    wn_ids = set(word_df[Utils.SENSE_WN_ID])
     new_data = []
 
-    for bn_id in bn_ids:
-        sense_df = word_df.loc[word_df['bn_id'] == bn_id]
+    for wn_id in wn_ids:
+        sense_df = word_df.loc[word_df[Utils.SENSE_WN_ID] == wn_id]
         # a tuple contains; bn_id, def/example, processed def/example
         processed_elements = list(map(lambda elem_text: process_def_or_example(elem_text, stopwords_ls),
                                       sense_df[elements_name]))

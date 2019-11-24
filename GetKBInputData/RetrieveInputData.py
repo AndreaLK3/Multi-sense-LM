@@ -23,23 +23,25 @@ def retrieve_data_WordNet():
         current_index = int(vi_file.readline().strip())   # where were we?
     logging.info(current_index)
 
-    requests_segment_size = 1000
+    requests_segment_size = 30
     requests_counter = 0
 
     # define and open (in 'append') the output archives for the KB data
     storage_filenames = [categ + ".h5" for categ in Utils.CATEGORIES]
     storage_filepaths = list(map(lambda fn: os.path.join(Filesystem.FOLDER_INPUT, fn), storage_filenames))
-    open_storage_files = [pd.HDFStore(fname, mode='w') for fname in storage_filepaths] # must be 'a' when calling multiple times
+    open_storage_files = [pd.HDFStore(fname, mode='a') for fname in storage_filepaths]
 
     vocabulary_df = pd.read_hdf(os.path.join(Filesystem.FOLDER_VOCABULARY, Filesystem.VOCAB_WT2_FILE), mode='r')
     vocabulary_chunk = []
 
     while requests_counter < requests_segment_size:
-        word = vocabulary_df.iloc[current_index]['word']
+
+        word = vocabulary_df.iloc[current_index]['word'] # causes exception when we finish reading the vocabulary
+
         requests_counter = requests_counter+1
         current_index = current_index + 1
         if is_only_punctuation(word):
-            continue  # do not retrieve dictionary data for punctuation symbols, e.g. '=', '(' etc.
+            continue  # do not retrieve dictionary data for punctuation symbols, e.g. '==', '(' etc.
         if requests_counter % 100 == 0:
             logging.info("Retrieving WordNet senses data for word: " + str(word) + " - n." + str(requests_counter))
 

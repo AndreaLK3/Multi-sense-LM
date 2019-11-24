@@ -7,33 +7,6 @@ import pandas as pd
 import os
 from itertools import cycle
 
-
-# # note: we assume that {dict_2.keys} \subsetOf {dict_1.keys}
-# def merge_dictionaries_withlists(dict_1, dict_2):
-#     merged_dict = {}
-#
-#     for key in dict_1.keys():
-#         ls_1 = dict_1[key]
-#         ls_2 = []
-#         try:
-#             ls_2 = dict_2[key]
-#         except KeyError:
-#             pass
-#         merged_dict[key] = ls_1 + ls_2
-#
-#     return merged_dict
-#
-# # transforms a dictonary with K1:[a,b], K2:[] into [(K1,a),(K1,b)]
-# def unpack_elemsdict_into_columns(dict):
-#     wn_ids = []
-#     elems = []
-#     for k_bnId, v_elemsLs in dict.items():
-#         for i in range(len(v_elemsLs)):
-#             wn_ids.append(k_bnId)
-#             elems.append(v_elemsLs[i])
-#     return wn_ids, elems
-
-
 def unpack_ls_in_tpls(lts):
     unpacked_lts = []
     for tpl in lts:
@@ -42,33 +15,6 @@ def unpack_ls_in_tpls(lts):
         for elem in ls:
             unpacked_lts.append((id, elem))
     return unpacked_lts
-
-
-# For all: lowercase, and eliminate duplicates.
-# For synonyms and antonyms: removes the target word itself, and eliminates multi-word elements if we so choose
-def refine_bnid_elements_dict(target_word, elems_dict, exclude_multiword=False):
-
-    new_elems_dict = {}
-    space_characters = ['_', ' ']
-
-    for k in elems_dict.keys():
-        values_ls = []
-        all_values_lowercased = list(map(lambda s: s.lower(), elems_dict[k]))
-        values_set = set(all_values_lowercased)
-        try:
-            values_set.remove(target_word)
-        except KeyError:
-            pass
-
-        if exclude_multiword:
-            for syn in values_set:
-                if not(any([c in syn for c in space_characters])):
-                    values_ls.append(syn)
-        else:
-            values_ls = list(values_set)
-        new_elems_dict[k] = values_ls
-
-    return new_elems_dict
 
 
 ############### Append to HDF5 tables on disk

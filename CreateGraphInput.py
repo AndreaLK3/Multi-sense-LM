@@ -13,7 +13,7 @@ import tables
 def reset():
 
     # reset the hdf5 archives for dictionary information: definitions, examples, synonyms, antonyms
-    archives_core_filenames = Utils.CATEGORIES + list(map(lambda c: Utils.DENOMINATED + '_' + c, Utils.CATEGORIES)) + \
+    archives_core_filenames = Utils.CATEGORIES + \
                     list(map(lambda c: Utils.PROCESSED + '_' + c, Utils.CATEGORIES))
     archives_filenames = list(map(lambda core_fname : core_fname + '.h5', archives_core_filenames))
     archives_filepaths = list(map(lambda fname: os.path.join(F.FOLDER_INPUT, fname), archives_filenames))
@@ -67,7 +67,7 @@ def exe(do_reset=False, compute_single_prototype=False):
                                                os.path.join(F.FOLDER_INPUT, F.SPVs_FASTTEXT_FILE),
                                                CE.Method.FASTTEXT)
 
-    kb_data_chunk = RID.continue_retrieving_data()
+    kb_data_chunk = RID.retrieve_data_WordNet()
     PI.prepare(kb_data_chunk)
 
     tables.file._open_files.close_all()

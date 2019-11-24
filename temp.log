@@ -1,25 +1,5 @@
-INFO : 1014
-INFO : NumExpr defaulting to 8 threads.
+INFO : 60
 INFO : initializing identifier
-INFO : Not of language : en Element : 'a civil day begins at mean midnight'
-INFO : Not of language : en Element : 'civil peoples'
-INFO : Not of language : en Element : 'do-or-die revolutionaries'
-INFO : Retrieving WordNet senses data for word: Artillery - n.100
-INFO : Not of language : en Element : 'man's ultimate destiny'
-INFO : Not of language : en Element : 'half_a_dozen'
-INFO : Not of language : en Element : 'half_dozen'
-INFO : Not of language : en Element : 'half-dozen'
-INFO : Not of language : en Element : 'ten miles long'
-INFO : Retrieving WordNet senses data for word: away - n.200
-INFO : Retrieving WordNet senses data for word: campaign - n.300
-INFO : Retrieving WordNet senses data for word: pay - n.400
-INFO : Not of language : en Element : 'open drains'
-INFO : Retrieving WordNet senses data for word: Joseph - n.500
-INFO : Not of language : en Element : 'we invited several young marrieds'
-INFO : Not of language : en Element : 'side fences'
-INFO : Not of language : en Element : 'significant details'
-INFO : Retrieving WordNet senses data for word: headquartered - n.600
-INFO : Retrieving WordNet senses data for word: collaboration - n.700
-INFO : Retrieving WordNet senses data for word: poster - n.800
-INFO : Retrieving WordNet senses data for word: church - n.900
-INFO : Retrieving WordNet senses data for word: covers - n.1000
+INFO : Eliminating quasi-duplicate definitions for the senses of the word: follows
+INFO : follows
+INFO : sense_wn_id LIKE 'follows%'

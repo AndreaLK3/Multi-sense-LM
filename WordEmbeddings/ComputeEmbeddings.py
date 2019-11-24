@@ -65,7 +65,7 @@ def compute_elements_embeddings(elements_name, method):
     else:  # i.e. elif method == Method_for_SPV.FASTTEXT:
         fasttext_vectors = EFT.load_fasttext_vectors()
 
-    input_filepath = os.path.join(Filesystem.FOLDER_INPUT, Utils.DENOMINATED + '_' + elements_name + ".h5")
+    input_filepath = os.path.join(Filesystem.FOLDER_INPUT, Utils.PROCESSED + '_' + elements_name + ".h5")
     output_filepath = os.path.join(Filesystem.FOLDER_INPUT, Utils.VECTORIZED + '_' + str(method.value) + '_'
                                    + elements_name) # + ".npy"
     vocabTable_db_filepath = os.path.join(Filesystem.FOLDER_INPUT, Utils.INDICES_TABLE + ".sql")
