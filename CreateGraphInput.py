@@ -22,11 +22,7 @@ def reset():
     phrased_corpus_filenames = [F.PHRASED_TRAINING_CORPUS, F.TEMPORARY_PHRASED_CORPUS]
     phrased_corpus_filepaths = list(map(lambda fname: os.path.join(F.FOLDER_TEXT_CORPUSES, fname), phrased_corpus_filenames))
 
-    # reset the embeddings, both those for dictionary elements and those for single-prototype vectors
-    vectorized_inputs_filenames = list(filter(lambda fname: '.npy' in fname, os.listdir(F.FOLDER_INPUT)))
-    vectorized_inputs_filepaths = list(map(lambda fname: os.path.join(F.FOLDER_INPUT, fname),
-                                           vectorized_inputs_filenames))
-    # reset the vocabularies
+        # reset the vocabularies
     vocab_filepaths = list(map(lambda fname: os.path.join(F.FOLDER_VOCABULARY, fname),
                                [F.VOCAB_WT2_FILE, F.VOCAB_WT103_FILE, F.VOCAB_PHRASED]))
 
@@ -34,13 +30,24 @@ def reset():
         f = pd.HDFStore(fpath, mode='w')
         f.close()
 
-    for fpath in vectorized_inputs_filepaths + vocab_filepaths + phrased_corpus_filepaths:
+    for fpath in vocab_filepaths + phrased_corpus_filepaths:
         if os.path.exists(fpath):
             os.remove(fpath)
 
     with open(os.path.join(F.FOLDER_VOCABULARY, F.VOCAB_CURRENT_INDEX_FILE), 'w') as vi_file:
         vi_file.write("0")
         vi_file.close()
+
+
+def reset_embeddings():
+    # reset the embeddings, both those for dictionary elements and those for single-prototype vectors
+    vectorized_inputs_filenames = list(filter(lambda fname: '.npy' in fname, os.listdir(F.FOLDER_INPUT)))
+    vectorized_inputs_filepaths = list(map(lambda fname: os.path.join(F.FOLDER_INPUT, fname),
+                                           vectorized_inputs_filenames))
+    for fpath in vectorized_inputs_filepaths:
+        if os.path.exists(fpath):
+            os.remove(fpath)
+
 
 
 def exe(do_reset=False, compute_single_prototype=False):
@@ -59,6 +66,7 @@ def exe(do_reset=False, compute_single_prototype=False):
                           os.path.join(F.FOLDER_WT2, F.WT_TRAIN_FILE), min_count=5)
 
     if compute_single_prototype:
+        reset_embeddings()
         CE.compute_single_prototype_embeddings(vocabulary,
                                                os.path.join(F.FOLDER_INPUT, F.SPVs_DISTILBERT_FILE),
                                                CE.Method.DISTILBERT)

@@ -152,3 +152,10 @@ def select_from_hdf5(input_db, table_key, field_names, values):
             query = query + " & " + query_part
     df = input_db.select(key=table_key, where=query)
     return df
+
+
+# e.g.: from 'sea.n.01' get 'sea'
+def get_word_from_sense(sense_str):
+    pattern = '[^.]+'
+    mtc = re.match(pattern, sense_str)
+    return mtc.group()

@@ -1,5 +1,6 @@
-INFO : 60
+INFO : 0
 INFO : initializing identifier
-INFO : Eliminating quasi-duplicate definitions for the senses of the word: follows
-INFO : follows
-INFO : sense_wn_id LIKE 'follows%'
+INFO : Eliminating quasi-duplicate definitions for the current vocabulary subset.
+INFO : Eliminating quasi-duplicate examples for the current vocabulary subset.
+INFO : Lemmatizing synonyms.
+INFO : Lemmatizing antonyms.
