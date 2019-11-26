@@ -77,10 +77,13 @@ def compute_elements_embeddings(elements_name, method):
     matrix_of_sentence_embeddings = []
     vocabTable_db_c.execute("SELECT * FROM vocabulary_table")
 
-    for row in vocabTable_db_c: # consuming the cursor iterator. Tuple returned: ('wide', 'adv.1', 2, 4, 5, 16, 18)
-        sense_df = Utils.select_from_hdf5(input_db, elements_name, ["word", "sense"], [row[0], row[1]])
+    for row in vocabTable_db_c: # consuming the cursor iterator. Tuple returned: ('wide.a.1', 2, 4,5, 16,18)
+        sense_df = Utils.select_from_hdf5(input_db, elements_name, [Utils.SENSE_WN_ID], [row[0]])
         element_text_series = sense_df[elements_name]
         for element_text in element_text_series:
+            logging.debug("ComputeEmbeddings.compute_elements_embeddings(elements_name, method) > " +
+                         " wn_id=row[0]=" + str(row[0]) + " ;  elements_name=" + str(elements_name) +
+                         " ; element_text=" + str(element_text))
             if method == Method.DISTILBERT:
                 vector = compute_sentence_dBert_vector(distilBERT_model, distilBERT_tokenizer, element_text).squeeze().numpy()
             else: # i.e. elif method == Method_for_SPV.FASTTEXT:

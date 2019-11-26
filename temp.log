@@ -4,3 +4,79 @@ INFO : Eliminating quasi-duplicate definitions for the current vocabulary subset
 INFO : Eliminating quasi-duplicate examples for the current vocabulary subset.
 INFO : Lemmatizing synonyms.
 INFO : Lemmatizing antonyms.
+INFO : loading configuration file https://s3.amazonaws.com/models.huggingface.co/bert/distilbert-base-uncased-config.json from cache at /Users/andrea/.cache/torch/transformers/a41e817d5c0743e29e86ff85edc8c257e61bc8d88e4271bb1b243b6e7614c633.1ccd1a11c9ff276830e114ea477ea2407100f4a3be7bdc45d37be9e37fa71c7e
+INFO : Model config {
+  "activation": "gelu",
+  "attention_dropout": 0.1,
+  "dim": 768,
+  "dropout": 0.1,
+  "finetuning_task": null,
+  "hidden_dim": 3072,
+  "initializer_range": 0.02,
+  "max_position_embeddings": 512,
+  "n_heads": 12,
+  "n_layers": 6,
+  "num_labels": 2,
+  "output_attentions": false,
+  "output_hidden_states": true,
+  "output_past": true,
+  "pruned_heads": {},
+  "qa_dropout": 0.1,
+  "seq_classif_dropout": 0.2,
+  "sinusoidal_pos_embds": false,
+  "tie_weights_": true,
+  "torchscript": false,
+  "use_bfloat16": false,
+  "vocab_size": 30522
+}
+
+INFO : loading weights file https://s3.amazonaws.com/models.huggingface.co/bert/distilbert-base-uncased-pytorch_model.bin from cache at /Users/andrea/.cache/torch/transformers/7b8a8f0b21c4e7f6962451c9370a5d9af90372a5f64637a251f2de154d0fc72c.c2015533705b9dff680ae707e205a35e2860e8d148b45d35085419d74fe57ac5
+INFO : loading file https://s3.amazonaws.com/models.huggingface.co/bert/bert-base-uncased-vocab.txt from cache at /Users/andrea/.cache/torch/transformers/26bc1ad6c0ac742e9b52263248f6d0f00068293b33709fae12320c0e35ccfbbb.542ce4285a40d23a559526243235df47c5f75c197f04f37d1a0c124c32c9a084
+INFO : Computed the embeddings for the dictionary elements: definitions , saved at: InputData/vectorized_DistilBERT_definitions
+INFO : loading configuration file https://s3.amazonaws.com/models.huggingface.co/bert/distilbert-base-uncased-config.json from cache at /Users/andrea/.cache/torch/transformers/a41e817d5c0743e29e86ff85edc8c257e61bc8d88e4271bb1b243b6e7614c633.1ccd1a11c9ff276830e114ea477ea2407100f4a3be7bdc45d37be9e37fa71c7e
+INFO : Model config {
+  "activation": "gelu",
+  "attention_dropout": 0.1,
+  "dim": 768,
+  "dropout": 0.1,
+  "finetuning_task": null,
+  "hidden_dim": 3072,
+  "initializer_range": 0.02,
+  "max_position_embeddings": 512,
+  "n_heads": 12,
+  "n_layers": 6,
+  "num_labels": 2,
+  "output_attentions": false,
+  "output_hidden_states": true,
+  "output_past": true,
+  "pruned_heads": {},
+  "qa_dropout": 0.1,
+  "seq_classif_dropout": 0.2,
+  "sinusoidal_pos_embds": false,
+  "tie_weights_": true,
+  "torchscript": false,
+  "use_bfloat16": false,
+  "vocab_size": 30522
+}
+
+INFO : loading weights file https://s3.amazonaws.com/models.huggingface.co/bert/distilbert-base-uncased-pytorch_model.bin from cache at /Users/andrea/.cache/torch/transformers/7b8a8f0b21c4e7f6962451c9370a5d9af90372a5f64637a251f2de154d0fc72c.c2015533705b9dff680ae707e205a35e2860e8d148b45d35085419d74fe57ac5
+INFO : loading file https://s3.amazonaws.com/models.huggingface.co/bert/bert-base-uncased-vocab.txt from cache at /Users/andrea/.cache/torch/transformers/26bc1ad6c0ac742e9b52263248f6d0f00068293b33709fae12320c0e35ccfbbb.542ce4285a40d23a559526243235df47c5f75c197f04f37d1a0c124c32c9a084
+INFO : Computed the embeddings for the dictionary elements: examples , saved at: InputData/vectorized_DistilBERT_examples
+INFO : loading 2000000 words for fastText model from WordEmbeddings/cc.en.300.bin
+INFO : resetting layer weights
+INFO : Updating model with new vocabulary
+INFO : New added 2000000 unique words (50% of original 4000000) and increased the count of 2000000 pre-existing words (50% of original 4000000)
+INFO : deleting the raw counts dictionary of 2000000 items
+INFO : sample=1e-05 downsamples 6996 most-common words
+INFO : downsampling leaves estimated 390315457935 word corpus (70.7% of prior 552001338161)
+INFO : loaded (4000000, 300) weight matrix for fastText model from WordEmbeddings/cc.en.300.bin
+INFO : Computed the embeddings for the dictionary elements: definitions , saved at: InputData/vectorized_FastText_definitions
+INFO : loading 2000000 words for fastText model from WordEmbeddings/cc.en.300.bin
+INFO : resetting layer weights
+INFO : Updating model with new vocabulary
+INFO : New added 2000000 unique words (50% of original 4000000) and increased the count of 2000000 pre-existing words (50% of original 4000000)
+INFO : deleting the raw counts dictionary of 2000000 items
+INFO : sample=1e-05 downsamples 6996 most-common words
+INFO : downsampling leaves estimated 390315457935 word corpus (70.7% of prior 552001338161)
+INFO : loaded (4000000, 300) weight matrix for fastText model from WordEmbeddings/cc.en.300.bin
+INFO : Computed the embeddings for the dictionary elements: examples , saved at: InputData/vectorized_FastText_examples

@@ -8,6 +8,7 @@ import Vocabulary.Vocabulary as VOC
 import Vocabulary.Phrases as PHR
 import WordEmbeddings.ComputeEmbeddings as CE
 import tables
+import logging
 
 # Before starting: clean all storage files; reset vocabulary index to 0
 def reset():
@@ -22,15 +23,16 @@ def reset():
     phrased_corpus_filenames = [F.PHRASED_TRAINING_CORPUS, F.TEMPORARY_PHRASED_CORPUS]
     phrased_corpus_filepaths = list(map(lambda fname: os.path.join(F.FOLDER_TEXT_CORPUSES, fname), phrased_corpus_filenames))
 
-        # reset the vocabularies
+    # reset the vocabularies, and the SQL DB with the indices for the embedding matrices
     vocab_filepaths = list(map(lambda fname: os.path.join(F.FOLDER_VOCABULARY, fname),
                                [F.VOCAB_WT2_FILE, F.VOCAB_WT103_FILE, F.VOCAB_PHRASED]))
+    db_filepaths = [os.path.join(F.FOLDER_INPUT,Utils.INDICES_TABLE + ".sql")]
 
     for fpath in archives_filepaths:
         f = pd.HDFStore(fpath, mode='w')
         f.close()
 
-    for fpath in vocab_filepaths + phrased_corpus_filepaths:
+    for fpath in vocab_filepaths + phrased_corpus_filepaths + db_filepaths:
         if os.path.exists(fpath):
             os.remove(fpath)
 
@@ -76,6 +78,7 @@ def exe(do_reset=False, compute_single_prototype=False):
                                                CE.Method.FASTTEXT)
 
     kb_data_chunk = RID.retrieve_data_WordNet()
+    logging.info("CreateGraphInput.exe() > "
+                 + " Words included in the vocabulary chunk, to be prepared: " + str(kb_data_chunk))
     PI.prepare(kb_data_chunk)
-
     tables.file._open_files.close_all()

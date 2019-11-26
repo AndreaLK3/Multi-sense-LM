@@ -1,7 +1,375 @@
-INFO : Building vocabulary. Reading in line n. : 0 ; number of tokens encountered: 0 ; time elapsed = 0.0071 s
-INFO : Building vocabulary. Reading in line n. : 10000 ; number of tokens encountered: 563796 ; time elapsed = 8.2613 s
-INFO : Building vocabulary. Reading in line n. : 20000 ; number of tokens encountered: 1126535 ; time elapsed = 8.0014 s
-INFO : Building vocabulary. Reading in line n. : 30000 ; number of tokens encountered: 1687311 ; time elapsed = 7.9783 s
+INFO : Building vocabulary. Reading in line n. : 0 ; number of tokens encountered: 0 ; time elapsed = 0.011 s
+INFO : Building vocabulary. Reading in line n. : 10000 ; number of tokens encountered: 563796 ; time elapsed = 8.4079 s
+INFO : Building vocabulary. Reading in line n. : 20000 ; number of tokens encountered: 1126535 ; time elapsed = 8.3185 s
+INFO : Building vocabulary. Reading in line n. : 30000 ; number of tokens encountered: 1687311 ; time elapsed = 8.5001 s
 INFO : Vocabulary created, after processing 2090745 tokens
 INFO : Removing from the vocabulary words with frequency < 5
 INFO : *** The vocabulary was created from the corpus file TextCorpuses/wikitext-2/wiki.train.tokens
+INFO : 0
+INFO : RetrieveInputData.retrieve_data_WordNet() > word = vocabulary_df.iloc[current_index]['word']. >> Word=Valkyria
+INFO : WordNet.retrieve_senses_desa(target_word) >  synsets where the target_word word appears first syns_ls=[]
+INFO : RetrieveInputData.retrieve_data_WordNet() > word = vocabulary_df.iloc[current_index]['word']. >> Word=Chronicles
+INFO : WordNet.retrieve_senses_desa(target_word) >  synsets where the target_word word appears first syns_ls=[]
+INFO : RetrieveInputData.retrieve_data_WordNet() > word = vocabulary_df.iloc[current_index]['word']. >> Word=III
+INFO : WordNet.retrieve_senses_desa(target_word) >  synsets where the target_word word appears first syns_ls=[]
+INFO : RetrieveInputData.retrieve_data_WordNet() > word = vocabulary_df.iloc[current_index]['word']. >> Word==
+INFO : RetrieveInputData.retrieve_data_WordNet() > word = vocabulary_df.iloc[current_index]['word']. >> Word=serving
+INFO : WordNet.retrieve_senses_desa(target_word) >  synsets where the target_word word appears first syns_ls=[]
+INFO : RetrieveInputData.retrieve_data_WordNet() > word = vocabulary_df.iloc[current_index]['word']. >> Word=developed
+INFO : WordNet.retrieve_senses_desa(target_word) >  synsets where the target_word word appears first syns_ls=[Synset('developed.a.01'), Synset('developed.s.02'), Synset('developed.s.03')]
+INFO : WordNet.retrieve_senses_desa(target_word) >  for synset=developed.a.01 we retrieved the definition, 2 examples, 0 synonyms and 1 antonyms
+INFO : WordNet.retrieve_senses_desa(target_word) >  for synset=developed.s.02 we retrieved the definition, 1 examples, 1 synonyms and 0 antonyms
+INFO : WordNet.retrieve_senses_desa(target_word) >  for synset=developed.s.03 we retrieved the definition, 1 examples, 0 synonyms and 0 antonyms
+INFO : initializing identifier
+INFO : RetrieveInputData.retrieve_data_WordNet() > word = vocabulary_df.iloc[current_index]['word']. >> Word=PlayStation
+INFO : WordNet.retrieve_senses_desa(target_word) >  synsets where the target_word word appears first syns_ls=[]
+INFO : RetrieveInputData.retrieve_data_WordNet() > word = vocabulary_df.iloc[current_index]['word']. >> Word=follows
+INFO : WordNet.retrieve_senses_desa(target_word) >  synsets where the target_word word appears first syns_ls=[]
+INFO : RetrieveInputData.retrieve_data_WordNet() > word = vocabulary_df.iloc[current_index]['word']. >> Word=Nameless
+INFO : WordNet.retrieve_senses_desa(target_word) >  synsets where the target_word word appears first syns_ls=[]
+INFO : RetrieveInputData.retrieve_data_WordNet() > word = vocabulary_df.iloc[current_index]['word']. >> Word=Japanese
+INFO : WordNet.retrieve_senses_desa(target_word) >  synsets where the target_word word appears first syns_ls=[]
+INFO : RetrieveInputData.retrieve_data_WordNet() > word = vocabulary_df.iloc[current_index]['word']. >> Word=and
+INFO : WordNet.retrieve_senses_desa(target_word) >  synsets where the target_word word appears first syns_ls=[]
+INFO : RetrieveInputData.retrieve_data_WordNet() > word = vocabulary_df.iloc[current_index]['word']. >> Word=a
+INFO : RetrieveInputData.retrieve_data_WordNet() > word = vocabulary_df.iloc[current_index]['word']. >> Word=parallel
+INFO : WordNet.retrieve_senses_desa(target_word) >  synsets where the target_word word appears first syns_ls=[Synset('parallel.n.03'), Synset('parallel.v.01'), Synset('parallel.v.02'), Synset('parallel.a.01'), Synset('parallel.s.02')]
+INFO : WordNet.retrieve_senses_desa(target_word) >  for synset=parallel.n.03 we retrieved the definition, 1 examples, 0 synonyms and 0 antonyms
+INFO : WordNet.retrieve_senses_desa(target_word) >  for synset=parallel.v.01 we retrieved the definition, 1 examples, 0 synonyms and 0 antonyms
+INFO : WordNet.retrieve_senses_desa(target_word) >  for synset=parallel.v.02 we retrieved the definition, 1 examples, 1 synonyms and 0 antonyms
+INFO : WordNet.retrieve_senses_desa(target_word) >  for synset=parallel.a.01 we retrieved the definition, 3 examples, 0 synonyms and 2 antonyms
+INFO : WordNet.retrieve_senses_desa(target_word) >  for synset=parallel.s.02 we retrieved the definition, 1 examples, 0 synonyms and 0 antonyms
+INFO : RetrieveInputData.retrieve_data_WordNet() > word = vocabulary_df.iloc[current_index]['word']. >> Word=January
+INFO : WordNet.retrieve_senses_desa(target_word) >  synsets where the target_word word appears first syns_ls=[]
+INFO : RetrieveInputData.retrieve_data_WordNet() > word = vocabulary_df.iloc[current_index]['word']. >> Word=runs
+INFO : WordNet.retrieve_senses_desa(target_word) >  synsets where the target_word word appears first syns_ls=[]
+INFO : RetrieveInputData.retrieve_data_WordNet() > word = vocabulary_df.iloc[current_index]['word']. >> Word=,
+INFO : RetrieveInputData.retrieve_data_WordNet() > word = vocabulary_df.iloc[current_index]['word']. >> Word=2011
+INFO : WordNet.retrieve_senses_desa(target_word) >  synsets where the target_word word appears first syns_ls=[]
+INFO : RetrieveInputData.retrieve_data_WordNet() > word = vocabulary_df.iloc[current_index]['word']. >> Word=Imperial
+INFO : WordNet.retrieve_senses_desa(target_word) >  synsets where the target_word word appears first syns_ls=[]
+INFO : RetrieveInputData.retrieve_data_WordNet() > word = vocabulary_df.iloc[current_index]['word']. >> Word=perform
+INFO : WordNet.retrieve_senses_desa(target_word) >  synsets where the target_word word appears first syns_ls=[Synset('perform.v.01'), Synset('perform.v.02'), Synset('perform.v.03')]
+INFO : WordNet.retrieve_senses_desa(target_word) >  for synset=perform.v.01 we retrieved the definition, 3 examples, 2 synonyms and 0 antonyms
+INFO : WordNet.retrieve_senses_desa(target_word) >  for synset=perform.v.02 we retrieved the definition, 1 examples, 0 synonyms and 0 antonyms
+INFO : WordNet.retrieve_senses_desa(target_word) >  for synset=perform.v.03 we retrieved the definition, 2 examples, 0 synonyms and 0 antonyms
+INFO : RetrieveInputData.retrieve_data_WordNet() > word = vocabulary_df.iloc[current_index]['word']. >> Word=tactical
+INFO : WordNet.retrieve_senses_desa(target_word) >  synsets where the target_word word appears first syns_ls=[Synset('tactical.a.01')]
+INFO : WordNet.retrieve_senses_desa(target_word) >  for synset=tactical.a.01 we retrieved the definition, 1 examples, 0 synonyms and 0 antonyms
+INFO : RetrieveInputData.retrieve_data_WordNet() > word = vocabulary_df.iloc[current_index]['word']. >> Word=referred
+INFO : WordNet.retrieve_senses_desa(target_word) >  synsets where the target_word word appears first syns_ls=[]
+INFO : RetrieveInputData.retrieve_data_WordNet() > word = vocabulary_df.iloc[current_index]['word']. >> Word=:
+INFO : RetrieveInputData.retrieve_data_WordNet() > word = vocabulary_df.iloc[current_index]['word']. >> Word=3
+INFO : RetrieveInputData.retrieve_data_WordNet() > word = vocabulary_df.iloc[current_index]['word']. >> Word=<unk>
+INFO : WordNet.retrieve_senses_desa(target_word) >  synsets where the target_word word appears first syns_ls=[]
+INFO : RetrieveInputData.retrieve_data_WordNet() > word = vocabulary_df.iloc[current_index]['word']. >> Word=War
+INFO : WordNet.retrieve_senses_desa(target_word) >  synsets where the target_word word appears first syns_ls=[]
+INFO : RetrieveInputData.retrieve_data_WordNet() > word = vocabulary_df.iloc[current_index]['word']. >> Word=to
+INFO : WordNet.retrieve_senses_desa(target_word) >  synsets where the target_word word appears first syns_ls=[]
+INFO : RetrieveInputData.retrieve_data_WordNet() > word = vocabulary_df.iloc[current_index]['word']. >> Word=no
+INFO : WordNet.retrieve_senses_desa(target_word) >  synsets where the target_word word appears first syns_ls=[Synset('no.n.01'), Synset('no.a.01'), Synset('no.r.01'), Synset('no.r.02'), Synset('no.r.03')]
+INFO : WordNet.retrieve_senses_desa(target_word) >  for synset=no.n.01 we retrieved the definition, 1 examples, 0 synonyms and 1 antonyms
+INFO : WordNet.retrieve_senses_desa(target_word) >  for synset=no.a.01 we retrieved the definition, 5 examples, 0 synonyms and 2 antonyms
+INFO : WordNet.retrieve_senses_desa(target_word) >  for synset=no.r.01 we retrieved the definition, 1 examples, 1 synonyms and 0 antonyms
+INFO : WordNet.retrieve_senses_desa(target_word) >  for synset=no.r.02 we retrieved the definition, 1 examples, 0 synonyms and 0 antonyms
+INFO : WordNet.retrieve_senses_desa(target_word) >  for synset=no.r.03 we retrieved the definition, 1 examples, 0 synonyms and 0 antonyms
+INFO : RetrieveInputData.retrieve_data_WordNet() > word = vocabulary_df.iloc[current_index]['word']. >> Word=in
+INFO : WordNet.retrieve_senses_desa(target_word) >  synsets where the target_word word appears first syns_ls=[Synset('in.s.01'), Synset('in.s.02'), Synset('in.s.03'), Synset('in.r.01')]
+INFO : WordNet.retrieve_senses_desa(target_word) >  for synset=in.s.01 we retrieved the definition, 1 examples, 0 synonyms and 0 antonyms
+INFO : WordNet.retrieve_senses_desa(target_word) >  for synset=in.s.02 we retrieved the definition, 2 examples, 0 synonyms and 0 antonyms
+INFO : WordNet.retrieve_senses_desa(target_word) >  for synset=in.s.03 we retrieved the definition, 2 examples, 0 synonyms and 0 antonyms
+INFO : WordNet.retrieve_senses_desa(target_word) >  for synset=in.r.01 we retrieved the definition, 2 examples, 2 synonyms and 0 antonyms
+INFO : RetrieveInputData.retrieve_data_WordNet() > word = vocabulary_df.iloc[current_index]['word']. >> Word=Japan
+INFO : WordNet.retrieve_senses_desa(target_word) >  synsets where the target_word word appears first syns_ls=[]
+INFO : RetrieveInputData.retrieve_data_WordNet() > word = vocabulary_df.iloc[current_index]['word']. >> Word=fusion
+INFO : WordNet.retrieve_senses_desa(target_word) >  synsets where the target_word word appears first syns_ls=[Synset('fusion.n.01'), Synset('fusion.n.03'), Synset('fusion.n.04'), Synset('fusion.n.05'), Synset('fusion.n.06'), Synset('fusion.n.07')]
+INFO : WordNet.retrieve_senses_desa(target_word) >  for synset=fusion.n.01 we retrieved the definition, 0 examples, 2 synonyms and 0 antonyms
+INFO : WordNet.retrieve_senses_desa(target_word) >  for synset=fusion.n.03 we retrieved the definition, 0 examples, 0 synonyms and 0 antonyms
+INFO : WordNet.retrieve_senses_desa(target_word) >  for synset=fusion.n.04 we retrieved the definition, 0 examples, 2 synonyms and 0 antonyms
+INFO : WordNet.retrieve_senses_desa(target_word) >  for synset=fusion.n.05 we retrieved the definition, 0 examples, 1 synonyms and 0 antonyms
+INFO : WordNet.retrieve_senses_desa(target_word) >  for synset=fusion.n.06 we retrieved the definition, 0 examples, 1 synonyms and 0 antonyms
+INFO : WordNet.retrieve_senses_desa(target_word) >  for synset=fusion.n.07 we retrieved the definition, 0 examples, 0 synonyms and 0 antonyms
+INFO : CreateGraphInput.exe() >  Words included in the vocabulary chunk, to be prepared: ['Valkyria', 'Chronicles', 'III', 'serving', 'developed', 'PlayStation', 'follows', 'Nameless', 'Japanese', 'and', 'parallel', 'January', 'runs', '2011', 'Imperial', 'perform', 'tactical', 'referred', '<unk>', 'War', 'to', 'no', 'in', 'Japan', 'fusion']
+INFO : Eliminating quasi-duplicate definitions for the current vocabulary subset.
+INFO : Eliminating quasi-duplicate examples for the current vocabulary subset.
+INFO : Lemmatizing synonyms for the current vocabulary subset.
+INFO : Lemmatizing antonyms for the current vocabulary subset.
+INFO : PrepareKBInput.create_senses_vocabulary_table(vocabulary_words_ls) > word_senses_toprocess >  current wn_id=developed.a.01
+INFO : Vocabulary index of the sense developed.a.01 = 0
+INFO : start_defs_count=0 ; end_defs_count=1 ; start_examples_count0 ; end_examples_count=2
+INFO : PrepareKBInput.create_senses_vocabulary_table(vocabulary_words_ls) > word_senses_toprocess >  current wn_id=developed.s.02
+INFO : Vocabulary index of the sense developed.s.02 = 1
+INFO : start_defs_count=1 ; end_defs_count=2 ; start_examples_count2 ; end_examples_count=3
+INFO : PrepareKBInput.create_senses_vocabulary_table(vocabulary_words_ls) > word_senses_toprocess >  current wn_id=developed.s.03
+INFO : Vocabulary index of the sense developed.s.03 = 2
+INFO : start_defs_count=2 ; end_defs_count=3 ; start_examples_count3 ; end_examples_count=4
+INFO : PrepareKBInput.create_senses_vocabulary_table(vocabulary_words_ls) > word_senses_toprocess >  current wn_id=fusion.n.01
+INFO : Vocabulary index of the sense fusion.n.01 = 3
+INFO : start_defs_count=3 ; end_defs_count=4 ; start_examples_count4 ; end_examples_count=4
+INFO : PrepareKBInput.create_senses_vocabulary_table(vocabulary_words_ls) > word_senses_toprocess >  current wn_id=fusion.n.03
+INFO : Vocabulary index of the sense fusion.n.03 = 4
+INFO : start_defs_count=4 ; end_defs_count=5 ; start_examples_count4 ; end_examples_count=4
+INFO : PrepareKBInput.create_senses_vocabulary_table(vocabulary_words_ls) > word_senses_toprocess >  current wn_id=fusion.n.04
+INFO : Vocabulary index of the sense fusion.n.04 = 5
+INFO : start_defs_count=5 ; end_defs_count=6 ; start_examples_count4 ; end_examples_count=4
+INFO : PrepareKBInput.create_senses_vocabulary_table(vocabulary_words_ls) > word_senses_toprocess >  current wn_id=fusion.n.05
+INFO : Vocabulary index of the sense fusion.n.05 = 6
+INFO : start_defs_count=6 ; end_defs_count=7 ; start_examples_count4 ; end_examples_count=4
+INFO : PrepareKBInput.create_senses_vocabulary_table(vocabulary_words_ls) > word_senses_toprocess >  current wn_id=fusion.n.06
+INFO : Vocabulary index of the sense fusion.n.06 = 7
+INFO : start_defs_count=7 ; end_defs_count=8 ; start_examples_count4 ; end_examples_count=4
+INFO : PrepareKBInput.create_senses_vocabulary_table(vocabulary_words_ls) > word_senses_toprocess >  current wn_id=fusion.n.07
+INFO : Vocabulary index of the sense fusion.n.07 = 8
+INFO : start_defs_count=8 ; end_defs_count=9 ; start_examples_count4 ; end_examples_count=4
+INFO : PrepareKBInput.create_senses_vocabulary_table(vocabulary_words_ls) > word_senses_toprocess >  current wn_id=in.r.01
+INFO : Vocabulary index of the sense in.r.01 = 9
+INFO : start_defs_count=9 ; end_defs_count=10 ; start_examples_count4 ; end_examples_count=6
+INFO : PrepareKBInput.create_senses_vocabulary_table(vocabulary_words_ls) > word_senses_toprocess >  current wn_id=in.s.01
+INFO : Vocabulary index of the sense in.s.01 = 10
+INFO : start_defs_count=10 ; end_defs_count=11 ; start_examples_count6 ; end_examples_count=7
+INFO : PrepareKBInput.create_senses_vocabulary_table(vocabulary_words_ls) > word_senses_toprocess >  current wn_id=in.s.02
+INFO : Vocabulary index of the sense in.s.02 = 11
+INFO : start_defs_count=11 ; end_defs_count=12 ; start_examples_count7 ; end_examples_count=9
+INFO : PrepareKBInput.create_senses_vocabulary_table(vocabulary_words_ls) > word_senses_toprocess >  current wn_id=in.s.03
+INFO : Vocabulary index of the sense in.s.03 = 12
+INFO : start_defs_count=12 ; end_defs_count=13 ; start_examples_count9 ; end_examples_count=11
+INFO : PrepareKBInput.create_senses_vocabulary_table(vocabulary_words_ls) > word_senses_toprocess >  current wn_id=no.a.01
+INFO : Vocabulary index of the sense no.a.01 = 13
+INFO : start_defs_count=13 ; end_defs_count=14 ; start_examples_count11 ; end_examples_count=16
+INFO : PrepareKBInput.create_senses_vocabulary_table(vocabulary_words_ls) > word_senses_toprocess >  current wn_id=no.n.01
+INFO : Vocabulary index of the sense no.n.01 = 14
+INFO : start_defs_count=14 ; end_defs_count=15 ; start_examples_count16 ; end_examples_count=17
+INFO : PrepareKBInput.create_senses_vocabulary_table(vocabulary_words_ls) > word_senses_toprocess >  current wn_id=no.r.01
+INFO : Vocabulary index of the sense no.r.01 = 15
+INFO : start_defs_count=15 ; end_defs_count=16 ; start_examples_count17 ; end_examples_count=18
+INFO : PrepareKBInput.create_senses_vocabulary_table(vocabulary_words_ls) > word_senses_toprocess >  current wn_id=no.r.02
+INFO : Vocabulary index of the sense no.r.02 = 16
+INFO : start_defs_count=16 ; end_defs_count=17 ; start_examples_count18 ; end_examples_count=19
+INFO : PrepareKBInput.create_senses_vocabulary_table(vocabulary_words_ls) > word_senses_toprocess >  current wn_id=no.r.03
+INFO : Vocabulary index of the sense no.r.03 = 17
+INFO : start_defs_count=17 ; end_defs_count=18 ; start_examples_count19 ; end_examples_count=20
+INFO : PrepareKBInput.create_senses_vocabulary_table(vocabulary_words_ls) > word_senses_toprocess >  current wn_id=parallel.a.01
+INFO : Vocabulary index of the sense parallel.a.01 = 18
+INFO : start_defs_count=18 ; end_defs_count=19 ; start_examples_count20 ; end_examples_count=23
+INFO : PrepareKBInput.create_senses_vocabulary_table(vocabulary_words_ls) > word_senses_toprocess >  current wn_id=parallel.n.03
+INFO : Vocabulary index of the sense parallel.n.03 = 19
+INFO : start_defs_count=19 ; end_defs_count=20 ; start_examples_count23 ; end_examples_count=24
+INFO : PrepareKBInput.create_senses_vocabulary_table(vocabulary_words_ls) > word_senses_toprocess >  current wn_id=parallel.s.02
+INFO : Vocabulary index of the sense parallel.s.02 = 20
+INFO : start_defs_count=20 ; end_defs_count=21 ; start_examples_count24 ; end_examples_count=25
+INFO : PrepareKBInput.create_senses_vocabulary_table(vocabulary_words_ls) > word_senses_toprocess >  current wn_id=parallel.v.01
+INFO : Vocabulary index of the sense parallel.v.01 = 21
+INFO : start_defs_count=21 ; end_defs_count=22 ; start_examples_count25 ; end_examples_count=26
+INFO : PrepareKBInput.create_senses_vocabulary_table(vocabulary_words_ls) > word_senses_toprocess >  current wn_id=parallel.v.02
+INFO : Vocabulary index of the sense parallel.v.02 = 22
+INFO : start_defs_count=22 ; end_defs_count=23 ; start_examples_count26 ; end_examples_count=27
+INFO : PrepareKBInput.create_senses_vocabulary_table(vocabulary_words_ls) > word_senses_toprocess >  current wn_id=perform.v.01
+INFO : Vocabulary index of the sense perform.v.01 = 23
+INFO : start_defs_count=23 ; end_defs_count=24 ; start_examples_count27 ; end_examples_count=30
+INFO : PrepareKBInput.create_senses_vocabulary_table(vocabulary_words_ls) > word_senses_toprocess >  current wn_id=perform.v.02
+INFO : Vocabulary index of the sense perform.v.02 = 24
+INFO : start_defs_count=24 ; end_defs_count=25 ; start_examples_count30 ; end_examples_count=31
+INFO : PrepareKBInput.create_senses_vocabulary_table(vocabulary_words_ls) > word_senses_toprocess >  current wn_id=perform.v.03
+INFO : Vocabulary index of the sense perform.v.03 = 25
+INFO : start_defs_count=25 ; end_defs_count=26 ; start_examples_count31 ; end_examples_count=33
+INFO : PrepareKBInput.create_senses_vocabulary_table(vocabulary_words_ls) > word_senses_toprocess >  current wn_id=tactical.a.01
+INFO : Vocabulary index of the sense tactical.a.01 = 26
+INFO : start_defs_count=26 ; end_defs_count=27 ; start_examples_count33 ; end_examples_count=34
+INFO : loading configuration file https://s3.amazonaws.com/models.huggingface.co/bert/distilbert-base-uncased-config.json from cache at /Users/andrea/.cache/torch/transformers/a41e817d5c0743e29e86ff85edc8c257e61bc8d88e4271bb1b243b6e7614c633.1ccd1a11c9ff276830e114ea477ea2407100f4a3be7bdc45d37be9e37fa71c7e
+INFO : Model config {
+  "activation": "gelu",
+  "attention_dropout": 0.1,
+  "dim": 768,
+  "dropout": 0.1,
+  "finetuning_task": null,
+  "hidden_dim": 3072,
+  "initializer_range": 0.02,
+  "max_position_embeddings": 512,
+  "n_heads": 12,
+  "n_layers": 6,
+  "num_labels": 2,
+  "output_attentions": false,
+  "output_hidden_states": true,
+  "output_past": true,
+  "pruned_heads": {},
+  "qa_dropout": 0.1,
+  "seq_classif_dropout": 0.2,
+  "sinusoidal_pos_embds": false,
+  "tie_weights_": true,
+  "torchscript": false,
+  "use_bfloat16": false,
+  "vocab_size": 30522
+}
+
+INFO : loading weights file https://s3.amazonaws.com/models.huggingface.co/bert/distilbert-base-uncased-pytorch_model.bin from cache at /Users/andrea/.cache/torch/transformers/7b8a8f0b21c4e7f6962451c9370a5d9af90372a5f64637a251f2de154d0fc72c.c2015533705b9dff680ae707e205a35e2860e8d148b45d35085419d74fe57ac5
+INFO : loading file https://s3.amazonaws.com/models.huggingface.co/bert/bert-base-uncased-vocab.txt from cache at /Users/andrea/.cache/torch/transformers/26bc1ad6c0ac742e9b52263248f6d0f00068293b33709fae12320c0e35ccfbbb.542ce4285a40d23a559526243235df47c5f75c197f04f37d1a0c124c32c9a084
+INFO : ComputeEmbeddings.compute_elements_embeddings(elements_name, method) >  wn_id=row[0]=developed.a.01 ;  elements_name=definitions ; element_text=being changed over time so as to be e.g. stronger or more complete or more useful
+INFO : ComputeEmbeddings.compute_elements_embeddings(elements_name, method) >  wn_id=row[0]=developed.s.02 ;  elements_name=definitions ; element_text=(used of societies) having high industrial development
+INFO : ComputeEmbeddings.compute_elements_embeddings(elements_name, method) >  wn_id=row[0]=developed.s.03 ;  elements_name=definitions ; element_text=(of real estate) made more useful and profitable as by building or laying out roads
+INFO : ComputeEmbeddings.compute_elements_embeddings(elements_name, method) >  wn_id=row[0]=fusion.n.01 ;  elements_name=definitions ; element_text=an occurrence that involves the production of a union
+INFO : ComputeEmbeddings.compute_elements_embeddings(elements_name, method) >  wn_id=row[0]=fusion.n.03 ;  elements_name=definitions ; element_text=the merging of adjacent sounds or syllables or words
+INFO : ComputeEmbeddings.compute_elements_embeddings(elements_name, method) >  wn_id=row[0]=fusion.n.04 ;  elements_name=definitions ; element_text=a nuclear reaction in which nuclei combine to form more massive nuclei with the simultaneous release of energy
+INFO : ComputeEmbeddings.compute_elements_embeddings(elements_name, method) >  wn_id=row[0]=fusion.n.05 ;  elements_name=definitions ; element_text=the combining of images from the two eyes to form a single visual percept
+INFO : ComputeEmbeddings.compute_elements_embeddings(elements_name, method) >  wn_id=row[0]=fusion.n.06 ;  elements_name=definitions ; element_text=correction of an unstable part of the spine by joining two or more vertebrae; usually done surgically but sometimes done by traction or immobilization
+INFO : ComputeEmbeddings.compute_elements_embeddings(elements_name, method) >  wn_id=row[0]=fusion.n.07 ;  elements_name=definitions ; element_text=the act of fusing (or melting) together
+INFO : ComputeEmbeddings.compute_elements_embeddings(elements_name, method) >  wn_id=row[0]=in.r.01 ;  elements_name=definitions ; element_text=to or toward the inside of
+INFO : ComputeEmbeddings.compute_elements_embeddings(elements_name, method) >  wn_id=row[0]=in.s.01 ;  elements_name=definitions ; element_text=holding office
+INFO : ComputeEmbeddings.compute_elements_embeddings(elements_name, method) >  wn_id=row[0]=in.s.02 ;  elements_name=definitions ; element_text=directed or bound inward
+INFO : ComputeEmbeddings.compute_elements_embeddings(elements_name, method) >  wn_id=row[0]=in.s.03 ;  elements_name=definitions ; element_text=currently fashionable
+INFO : ComputeEmbeddings.compute_elements_embeddings(elements_name, method) >  wn_id=row[0]=no.a.01 ;  elements_name=definitions ; element_text=quantifier; used with either mass nouns or plural count nouns for indicating a complete or almost complete lack or zero quantity of
+INFO : ComputeEmbeddings.compute_elements_embeddings(elements_name, method) >  wn_id=row[0]=no.n.01 ;  elements_name=definitions ; element_text=a negative
+INFO : ComputeEmbeddings.compute_elements_embeddings(elements_name, method) >  wn_id=row[0]=no.r.01 ;  elements_name=definitions ; element_text=referring to the degree to which a certain quality is present
+INFO : ComputeEmbeddings.compute_elements_embeddings(elements_name, method) >  wn_id=row[0]=no.r.02 ;  elements_name=definitions ; element_text=not in any degree or manner; not at all
+INFO : ComputeEmbeddings.compute_elements_embeddings(elements_name, method) >  wn_id=row[0]=no.r.03 ;  elements_name=definitions ; element_text=used to express refusal or denial or disagreement etc or especially to emphasize a negative statement
+INFO : ComputeEmbeddings.compute_elements_embeddings(elements_name, method) >  wn_id=row[0]=parallel.a.01 ;  elements_name=definitions ; element_text=being everywhere equidistant and not intersecting
+INFO : ComputeEmbeddings.compute_elements_embeddings(elements_name, method) >  wn_id=row[0]=parallel.n.03 ;  elements_name=definitions ; element_text=(mathematics) one of a set of parallel geometric figures (parallel lines or planes)
+INFO : ComputeEmbeddings.compute_elements_embeddings(elements_name, method) >  wn_id=row[0]=parallel.s.02 ;  elements_name=definitions ; element_text=of or relating to the simultaneous performance of multiple operations
+INFO : ComputeEmbeddings.compute_elements_embeddings(elements_name, method) >  wn_id=row[0]=parallel.v.01 ;  elements_name=definitions ; element_text=be parallel to
+INFO : ComputeEmbeddings.compute_elements_embeddings(elements_name, method) >  wn_id=row[0]=parallel.v.02 ;  elements_name=definitions ; element_text=make or place parallel to something
+INFO : ComputeEmbeddings.compute_elements_embeddings(elements_name, method) >  wn_id=row[0]=perform.v.01 ;  elements_name=definitions ; element_text=carry out or perform an action
+INFO : ComputeEmbeddings.compute_elements_embeddings(elements_name, method) >  wn_id=row[0]=perform.v.02 ;  elements_name=definitions ; element_text=perform a function
+INFO : ComputeEmbeddings.compute_elements_embeddings(elements_name, method) >  wn_id=row[0]=perform.v.03 ;  elements_name=definitions ; element_text=give a performance (of something)
+INFO : ComputeEmbeddings.compute_elements_embeddings(elements_name, method) >  wn_id=row[0]=tactical.a.01 ;  elements_name=definitions ; element_text=of or pertaining to tactic or tactics
+INFO : Computed the embeddings for the dictionary elements: definitions , saved at: InputData/vectorized_DistilBERT_definitions
+INFO : loading configuration file https://s3.amazonaws.com/models.huggingface.co/bert/distilbert-base-uncased-config.json from cache at /Users/andrea/.cache/torch/transformers/a41e817d5c0743e29e86ff85edc8c257e61bc8d88e4271bb1b243b6e7614c633.1ccd1a11c9ff276830e114ea477ea2407100f4a3be7bdc45d37be9e37fa71c7e
+INFO : Model config {
+  "activation": "gelu",
+  "attention_dropout": 0.1,
+  "dim": 768,
+  "dropout": 0.1,
+  "finetuning_task": null,
+  "hidden_dim": 3072,
+  "initializer_range": 0.02,
+  "max_position_embeddings": 512,
+  "n_heads": 12,
+  "n_layers": 6,
+  "num_labels": 2,
+  "output_attentions": false,
+  "output_hidden_states": true,
+  "output_past": true,
+  "pruned_heads": {},
+  "qa_dropout": 0.1,
+  "seq_classif_dropout": 0.2,
+  "sinusoidal_pos_embds": false,
+  "tie_weights_": true,
+  "torchscript": false,
+  "use_bfloat16": false,
+  "vocab_size": 30522
+}
+
+INFO : loading weights file https://s3.amazonaws.com/models.huggingface.co/bert/distilbert-base-uncased-pytorch_model.bin from cache at /Users/andrea/.cache/torch/transformers/7b8a8f0b21c4e7f6962451c9370a5d9af90372a5f64637a251f2de154d0fc72c.c2015533705b9dff680ae707e205a35e2860e8d148b45d35085419d74fe57ac5
+INFO : loading file https://s3.amazonaws.com/models.huggingface.co/bert/bert-base-uncased-vocab.txt from cache at /Users/andrea/.cache/torch/transformers/26bc1ad6c0ac742e9b52263248f6d0f00068293b33709fae12320c0e35ccfbbb.542ce4285a40d23a559526243235df47c5f75c197f04f37d1a0c124c32c9a084
+INFO : ComputeEmbeddings.compute_elements_embeddings(elements_name, method) >  wn_id=row[0]=developed.a.01 ;  elements_name=examples ; element_text=the developed qualities of the Hellenic outlook
+INFO : ComputeEmbeddings.compute_elements_embeddings(elements_name, method) >  wn_id=row[0]=developed.a.01 ;  elements_name=examples ; element_text=they have very small limbs with only two fully developed toes on each
+INFO : ComputeEmbeddings.compute_elements_embeddings(elements_name, method) >  wn_id=row[0]=developed.s.02 ;  elements_name=examples ; element_text=developed countries
+INFO : ComputeEmbeddings.compute_elements_embeddings(elements_name, method) >  wn_id=row[0]=developed.s.03 ;  elements_name=examples ; element_text=condominiums were built on the developed site
+INFO : ComputeEmbeddings.compute_elements_embeddings(elements_name, method) >  wn_id=row[0]=in.r.01 ;  elements_name=examples ; element_text=come in
+INFO : ComputeEmbeddings.compute_elements_embeddings(elements_name, method) >  wn_id=row[0]=in.r.01 ;  elements_name=examples ; element_text=smash in the door
+INFO : ComputeEmbeddings.compute_elements_embeddings(elements_name, method) >  wn_id=row[0]=in.s.01 ;  elements_name=examples ; element_text=the in party
+INFO : ComputeEmbeddings.compute_elements_embeddings(elements_name, method) >  wn_id=row[0]=in.s.02 ;  elements_name=examples ; element_text=took the in bus
+INFO : ComputeEmbeddings.compute_elements_embeddings(elements_name, method) >  wn_id=row[0]=in.s.02 ;  elements_name=examples ; element_text=the in basket
+INFO : ComputeEmbeddings.compute_elements_embeddings(elements_name, method) >  wn_id=row[0]=in.s.03 ;  elements_name=examples ; element_text=the in thing to do
+INFO : ComputeEmbeddings.compute_elements_embeddings(elements_name, method) >  wn_id=row[0]=in.s.03 ;  elements_name=examples ; element_text=large shoulder pads are in
+INFO : ComputeEmbeddings.compute_elements_embeddings(elements_name, method) >  wn_id=row[0]=no.a.01 ;  elements_name=examples ; element_text=we have no bananas
+INFO : ComputeEmbeddings.compute_elements_embeddings(elements_name, method) >  wn_id=row[0]=no.a.01 ;  elements_name=examples ; element_text=no eggs left and no money to buy any
+INFO : ComputeEmbeddings.compute_elements_embeddings(elements_name, method) >  wn_id=row[0]=no.a.01 ;  elements_name=examples ; element_text=have you no decency?
+INFO : ComputeEmbeddings.compute_elements_embeddings(elements_name, method) >  wn_id=row[0]=no.a.01 ;  elements_name=examples ; element_text=did it with no help
+INFO : ComputeEmbeddings.compute_elements_embeddings(elements_name, method) >  wn_id=row[0]=no.a.01 ;  elements_name=examples ; element_text=I'll get you there in no time
+INFO : ComputeEmbeddings.compute_elements_embeddings(elements_name, method) >  wn_id=row[0]=no.n.01 ;  elements_name=examples ; element_text=his no was loud and clear
+INFO : ComputeEmbeddings.compute_elements_embeddings(elements_name, method) >  wn_id=row[0]=no.r.01 ;  elements_name=examples ; element_text=he was no heavier than a child
+INFO : ComputeEmbeddings.compute_elements_embeddings(elements_name, method) >  wn_id=row[0]=no.r.02 ;  elements_name=examples ; element_text=he is no better today
+INFO : ComputeEmbeddings.compute_elements_embeddings(elements_name, method) >  wn_id=row[0]=no.r.03 ;  elements_name=examples ; element_text=no, you are wrong
+INFO : ComputeEmbeddings.compute_elements_embeddings(elements_name, method) >  wn_id=row[0]=parallel.a.01 ;  elements_name=examples ; element_text=parallel lines never converge
+INFO : ComputeEmbeddings.compute_elements_embeddings(elements_name, method) >  wn_id=row[0]=parallel.a.01 ;  elements_name=examples ; element_text=concentric circles are parallel
+INFO : ComputeEmbeddings.compute_elements_embeddings(elements_name, method) >  wn_id=row[0]=parallel.a.01 ;  elements_name=examples ; element_text=dancers in two parallel rows
+INFO : ComputeEmbeddings.compute_elements_embeddings(elements_name, method) >  wn_id=row[0]=parallel.n.03 ;  elements_name=examples ; element_text=parallels never meet
+INFO : ComputeEmbeddings.compute_elements_embeddings(elements_name, method) >  wn_id=row[0]=parallel.s.02 ;  elements_name=examples ; element_text=parallel processing
+INFO : ComputeEmbeddings.compute_elements_embeddings(elements_name, method) >  wn_id=row[0]=parallel.v.01 ;  elements_name=examples ; element_text=Their roles are paralleled by ours
+INFO : ComputeEmbeddings.compute_elements_embeddings(elements_name, method) >  wn_id=row[0]=parallel.v.02 ;  elements_name=examples ; element_text=They paralleled the ditch to the highway
+INFO : ComputeEmbeddings.compute_elements_embeddings(elements_name, method) >  wn_id=row[0]=perform.v.01 ;  elements_name=examples ; element_text=John did the painting, the weeding, and he cleaned out the gutters
+INFO : ComputeEmbeddings.compute_elements_embeddings(elements_name, method) >  wn_id=row[0]=perform.v.01 ;  elements_name=examples ; element_text=the skater executed a triple pirouette
+INFO : ComputeEmbeddings.compute_elements_embeddings(elements_name, method) >  wn_id=row[0]=perform.v.01 ;  elements_name=examples ; element_text=she did a little dance
+INFO : ComputeEmbeddings.compute_elements_embeddings(elements_name, method) >  wn_id=row[0]=perform.v.02 ;  elements_name=examples ; element_text=Who will perform the wedding?
+INFO : ComputeEmbeddings.compute_elements_embeddings(elements_name, method) >  wn_id=row[0]=perform.v.03 ;  elements_name=examples ; element_text=Horowitz is performing at Carnegie Hall tonight
+INFO : ComputeEmbeddings.compute_elements_embeddings(elements_name, method) >  wn_id=row[0]=perform.v.03 ;  elements_name=examples ; element_text=We performed a popular Gilbert and Sullivan opera
+INFO : ComputeEmbeddings.compute_elements_embeddings(elements_name, method) >  wn_id=row[0]=tactical.a.01 ;  elements_name=examples ; element_text=a tactical error
+INFO : Computed the embeddings for the dictionary elements: examples , saved at: InputData/vectorized_DistilBERT_examples
+INFO : loading 2000000 words for fastText model from WordEmbeddings/cc.en.300.bin
+INFO : resetting layer weights
+INFO : Updating model with new vocabulary
+INFO : New added 2000000 unique words (50% of original 4000000) and increased the count of 2000000 pre-existing words (50% of original 4000000)
+INFO : deleting the raw counts dictionary of 2000000 items
+INFO : sample=1e-05 downsamples 6996 most-common words
+INFO : downsampling leaves estimated 390315457935 word corpus (70.7% of prior 552001338161)
+INFO : loaded (4000000, 300) weight matrix for fastText model from WordEmbeddings/cc.en.300.bin
+INFO : ComputeEmbeddings.compute_elements_embeddings(elements_name, method) >  wn_id=row[0]=developed.a.01 ;  elements_name=definitions ; element_text=being changed over time so as to be e.g. stronger or more complete or more useful
+INFO : ComputeEmbeddings.compute_elements_embeddings(elements_name, method) >  wn_id=row[0]=developed.s.02 ;  elements_name=definitions ; element_text=(used of societies) having high industrial development
+INFO : ComputeEmbeddings.compute_elements_embeddings(elements_name, method) >  wn_id=row[0]=developed.s.03 ;  elements_name=definitions ; element_text=(of real estate) made more useful and profitable as by building or laying out roads
+INFO : ComputeEmbeddings.compute_elements_embeddings(elements_name, method) >  wn_id=row[0]=fusion.n.01 ;  elements_name=definitions ; element_text=an occurrence that involves the production of a union
+INFO : ComputeEmbeddings.compute_elements_embeddings(elements_name, method) >  wn_id=row[0]=fusion.n.03 ;  elements_name=definitions ; element_text=the merging of adjacent sounds or syllables or words
+INFO : ComputeEmbeddings.compute_elements_embeddings(elements_name, method) >  wn_id=row[0]=fusion.n.04 ;  elements_name=definitions ; element_text=a nuclear reaction in which nuclei combine to form more massive nuclei with the simultaneous release of energy
+INFO : ComputeEmbeddings.compute_elements_embeddings(elements_name, method) >  wn_id=row[0]=fusion.n.05 ;  elements_name=definitions ; element_text=the combining of images from the two eyes to form a single visual percept
+INFO : ComputeEmbeddings.compute_elements_embeddings(elements_name, method) >  wn_id=row[0]=fusion.n.06 ;  elements_name=definitions ; element_text=correction of an unstable part of the spine by joining two or more vertebrae; usually done surgically but sometimes done by traction or immobilization
+INFO : ComputeEmbeddings.compute_elements_embeddings(elements_name, method) >  wn_id=row[0]=fusion.n.07 ;  elements_name=definitions ; element_text=the act of fusing (or melting) together
+INFO : ComputeEmbeddings.compute_elements_embeddings(elements_name, method) >  wn_id=row[0]=in.r.01 ;  elements_name=definitions ; element_text=to or toward the inside of
+INFO : ComputeEmbeddings.compute_elements_embeddings(elements_name, method) >  wn_id=row[0]=in.s.01 ;  elements_name=definitions ; element_text=holding office
+INFO : ComputeEmbeddings.compute_elements_embeddings(elements_name, method) >  wn_id=row[0]=in.s.02 ;  elements_name=definitions ; element_text=directed or bound inward
+INFO : ComputeEmbeddings.compute_elements_embeddings(elements_name, method) >  wn_id=row[0]=in.s.03 ;  elements_name=definitions ; element_text=currently fashionable
+INFO : ComputeEmbeddings.compute_elements_embeddings(elements_name, method) >  wn_id=row[0]=no.a.01 ;  elements_name=definitions ; element_text=quantifier; used with either mass nouns or plural count nouns for indicating a complete or almost complete lack or zero quantity of
+INFO : ComputeEmbeddings.compute_elements_embeddings(elements_name, method) >  wn_id=row[0]=no.n.01 ;  elements_name=definitions ; element_text=a negative
+INFO : ComputeEmbeddings.compute_elements_embeddings(elements_name, method) >  wn_id=row[0]=no.r.01 ;  elements_name=definitions ; element_text=referring to the degree to which a certain quality is present
+INFO : ComputeEmbeddings.compute_elements_embeddings(elements_name, method) >  wn_id=row[0]=no.r.02 ;  elements_name=definitions ; element_text=not in any degree or manner; not at all
+INFO : ComputeEmbeddings.compute_elements_embeddings(elements_name, method) >  wn_id=row[0]=no.r.03 ;  elements_name=definitions ; element_text=used to express refusal or denial or disagreement etc or especially to emphasize a negative statement
+INFO : ComputeEmbeddings.compute_elements_embeddings(elements_name, method) >  wn_id=row[0]=parallel.a.01 ;  elements_name=definitions ; element_text=being everywhere equidistant and not intersecting
+INFO : ComputeEmbeddings.compute_elements_embeddings(elements_name, method) >  wn_id=row[0]=parallel.n.03 ;  elements_name=definitions ; element_text=(mathematics) one of a set of parallel geometric figures (parallel lines or planes)
+INFO : ComputeEmbeddings.compute_elements_embeddings(elements_name, method) >  wn_id=row[0]=parallel.s.02 ;  elements_name=definitions ; element_text=of or relating to the simultaneous performance of multiple operations
+INFO : ComputeEmbeddings.compute_elements_embeddings(elements_name, method) >  wn_id=row[0]=parallel.v.01 ;  elements_name=definitions ; element_text=be parallel to
+INFO : ComputeEmbeddings.compute_elements_embeddings(elements_name, method) >  wn_id=row[0]=parallel.v.02 ;  elements_name=definitions ; element_text=make or place parallel to something
+INFO : ComputeEmbeddings.compute_elements_embeddings(elements_name, method) >  wn_id=row[0]=perform.v.01 ;  elements_name=definitions ; element_text=carry out or perform an action
+INFO : ComputeEmbeddings.compute_elements_embeddings(elements_name, method) >  wn_id=row[0]=perform.v.02 ;  elements_name=definitions ; element_text=perform a function
+INFO : ComputeEmbeddings.compute_elements_embeddings(elements_name, method) >  wn_id=row[0]=perform.v.03 ;  elements_name=definitions ; element_text=give a performance (of something)
+INFO : ComputeEmbeddings.compute_elements_embeddings(elements_name, method) >  wn_id=row[0]=tactical.a.01 ;  elements_name=definitions ; element_text=of or pertaining to tactic or tactics
+INFO : Computed the embeddings for the dictionary elements: definitions , saved at: InputData/vectorized_FastText_definitions
+INFO : loading 2000000 words for fastText model from WordEmbeddings/cc.en.300.bin
+INFO : resetting layer weights
+INFO : Updating model with new vocabulary
+INFO : New added 2000000 unique words (50% of original 4000000) and increased the count of 2000000 pre-existing words (50% of original 4000000)
+INFO : deleting the raw counts dictionary of 2000000 items
+INFO : sample=1e-05 downsamples 6996 most-common words
+INFO : downsampling leaves estimated 390315457935 word corpus (70.7% of prior 552001338161)
+INFO : loaded (4000000, 300) weight matrix for fastText model from WordEmbeddings/cc.en.300.bin
+INFO : ComputeEmbeddings.compute_elements_embeddings(elements_name, method) >  wn_id=row[0]=developed.a.01 ;  elements_name=examples ; element_text=the developed qualities of the Hellenic outlook
+INFO : ComputeEmbeddings.compute_elements_embeddings(elements_name, method) >  wn_id=row[0]=developed.a.01 ;  elements_name=examples ; element_text=they have very small limbs with only two fully developed toes on each
+INFO : ComputeEmbeddings.compute_elements_embeddings(elements_name, method) >  wn_id=row[0]=developed.s.02 ;  elements_name=examples ; element_text=developed countries
+INFO : ComputeEmbeddings.compute_elements_embeddings(elements_name, method) >  wn_id=row[0]=developed.s.03 ;  elements_name=examples ; element_text=condominiums were built on the developed site
+INFO : ComputeEmbeddings.compute_elements_embeddings(elements_name, method) >  wn_id=row[0]=in.r.01 ;  elements_name=examples ; element_text=come in
+INFO : ComputeEmbeddings.compute_elements_embeddings(elements_name, method) >  wn_id=row[0]=in.r.01 ;  elements_name=examples ; element_text=smash in the door
+INFO : ComputeEmbeddings.compute_elements_embeddings(elements_name, method) >  wn_id=row[0]=in.s.01 ;  elements_name=examples ; element_text=the in party
+INFO : ComputeEmbeddings.compute_elements_embeddings(elements_name, method) >  wn_id=row[0]=in.s.02 ;  elements_name=examples ; element_text=took the in bus
+INFO : ComputeEmbeddings.compute_elements_embeddings(elements_name, method) >  wn_id=row[0]=in.s.02 ;  elements_name=examples ; element_text=the in basket
+INFO : ComputeEmbeddings.compute_elements_embeddings(elements_name, method) >  wn_id=row[0]=in.s.03 ;  elements_name=examples ; element_text=the in thing to do
+INFO : ComputeEmbeddings.compute_elements_embeddings(elements_name, method) >  wn_id=row[0]=in.s.03 ;  elements_name=examples ; element_text=large shoulder pads are in
+INFO : ComputeEmbeddings.compute_elements_embeddings(elements_name, method) >  wn_id=row[0]=no.a.01 ;  elements_name=examples ; element_text=we have no bananas
+INFO : ComputeEmbeddings.compute_elements_embeddings(elements_name, method) >  wn_id=row[0]=no.a.01 ;  elements_name=examples ; element_text=no eggs left and no money to buy any
+INFO : ComputeEmbeddings.compute_elements_embeddings(elements_name, method) >  wn_id=row[0]=no.a.01 ;  elements_name=examples ; element_text=have you no decency?
+INFO : ComputeEmbeddings.compute_elements_embeddings(elements_name, method) >  wn_id=row[0]=no.a.01 ;  elements_name=examples ; element_text=did it with no help
+INFO : ComputeEmbeddings.compute_elements_embeddings(elements_name, method) >  wn_id=row[0]=no.a.01 ;  elements_name=examples ; element_text=I'll get you there in no time
+INFO : ComputeEmbeddings.compute_elements_embeddings(elements_name, method) >  wn_id=row[0]=no.n.01 ;  elements_name=examples ; element_text=his no was loud and clear
+INFO : ComputeEmbeddings.compute_elements_embeddings(elements_name, method) >  wn_id=row[0]=no.r.01 ;  elements_name=examples ; element_text=he was no heavier than a child
+INFO : ComputeEmbeddings.compute_elements_embeddings(elements_name, method) >  wn_id=row[0]=no.r.02 ;  elements_name=examples ; element_text=he is no better today
+INFO : ComputeEmbeddings.compute_elements_embeddings(elements_name, method) >  wn_id=row[0]=no.r.03 ;  elements_name=examples ; element_text=no, you are wrong
+INFO : ComputeEmbeddings.compute_elements_embeddings(elements_name, method) >  wn_id=row[0]=parallel.a.01 ;  elements_name=examples ; element_text=parallel lines never converge
+INFO : ComputeEmbeddings.compute_elements_embeddings(elements_name, method) >  wn_id=row[0]=parallel.a.01 ;  elements_name=examples ; element_text=concentric circles are parallel
+INFO : ComputeEmbeddings.compute_elements_embeddings(elements_name, method) >  wn_id=row[0]=parallel.a.01 ;  elements_name=examples ; element_text=dancers in two parallel rows
+INFO : ComputeEmbeddings.compute_elements_embeddings(elements_name, method) >  wn_id=row[0]=parallel.n.03 ;  elements_name=examples ; element_text=parallels never meet
+INFO : ComputeEmbeddings.compute_elements_embeddings(elements_name, method) >  wn_id=row[0]=parallel.s.02 ;  elements_name=examples ; element_text=parallel processing
+INFO : ComputeEmbeddings.compute_elements_embeddings(elements_name, method) >  wn_id=row[0]=parallel.v.01 ;  elements_name=examples ; element_text=Their roles are paralleled by ours
+INFO : ComputeEmbeddings.compute_elements_embeddings(elements_name, method) >  wn_id=row[0]=parallel.v.02 ;  elements_name=examples ; element_text=They paralleled the ditch to the highway
+INFO : ComputeEmbeddings.compute_elements_embeddings(elements_name, method) >  wn_id=row[0]=perform.v.01 ;  elements_name=examples ; element_text=John did the painting, the weeding, and he cleaned out the gutters
+INFO : ComputeEmbeddings.compute_elements_embeddings(elements_name, method) >  wn_id=row[0]=perform.v.01 ;  elements_name=examples ; element_text=the skater executed a triple pirouette
+INFO : ComputeEmbeddings.compute_elements_embeddings(elements_name, method) >  wn_id=row[0]=perform.v.01 ;  elements_name=examples ; element_text=she did a little dance
+INFO : ComputeEmbeddings.compute_elements_embeddings(elements_name, method) >  wn_id=row[0]=perform.v.02 ;  elements_name=examples ; element_text=Who will perform the wedding?
+INFO : ComputeEmbeddings.compute_elements_embeddings(elements_name, method) >  wn_id=row[0]=perform.v.03 ;  elements_name=examples ; element_text=Horowitz is performing at Carnegie Hall tonight
+INFO : ComputeEmbeddings.compute_elements_embeddings(elements_name, method) >  wn_id=row[0]=perform.v.03 ;  elements_name=examples ; element_text=We performed a popular Gilbert and Sullivan opera
+INFO : ComputeEmbeddings.compute_elements_embeddings(elements_name, method) >  wn_id=row[0]=tactical.a.01 ;  elements_name=examples ; element_text=a tactical error
+INFO : Computed the embeddings for the dictionary elements: examples , saved at: InputData/vectorized_FastText_examples

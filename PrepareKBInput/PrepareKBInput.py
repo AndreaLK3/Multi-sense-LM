@@ -26,9 +26,9 @@ def preprocess(vocabulary_ls):
     RQD.eliminate_duplicates_in_table(vocabulary_ls, Utils.DEFINITIONS, input_dbs[0], processed_dbs[0])
     logging.info("Eliminating quasi-duplicate examples for the current vocabulary subset.")
     RQD.eliminate_duplicates_in_table(vocabulary_ls, Utils.EXAMPLES, input_dbs[1], processed_dbs[1])
-    logging.info("Lemmatizing synonyms.")
+    logging.info("Lemmatizing synonyms for the current vocabulary subset.")
     LN.lemmatize_nyms_in_word(vocabulary_ls, Utils.SYNONYMS, input_dbs[2], processed_dbs[2])
-    logging.info("Lemmatizing antonyms.")
+    logging.info("Lemmatizing antonyms for the current vocabulary subset.")
     LN.lemmatize_nyms_in_word(vocabulary_ls, Utils.ANTONYMS, input_dbs[3], processed_dbs[3])
 
     Utils.close_list_of_files(input_dbs + processed_dbs)
@@ -60,10 +60,12 @@ def create_senses_vocabulary_table(vocabulary_words_ls):
     start_defs_count = 0
     start_examples_count = 0
 
-    all_word_senses = list(set(defs_input_db[Utils.DEFINITIONS][Utils.SENSE_WN_ID]))
+    all_word_senses = defs_input_db[Utils.DEFINITIONS][Utils.SENSE_WN_ID]
     word_senses_toprocess = [sense_str for sense_str in all_word_senses if
                              Utils.get_word_from_sense(sense_str) in vocabulary_words_ls]
     for wn_id in word_senses_toprocess:
+        logging.debug('PrepareKBInput.create_senses_vocabulary_table(vocabulary_words_ls) > word_senses_toprocess > '
+                     + ' current wn_id=' + wn_id)
         sense_defs_df = Utils.select_from_hdf5(defs_input_db, Utils.DEFINITIONS, [Utils.SENSE_WN_ID], [wn_id])
         sense_examples_df = Utils.select_from_hdf5(examples_input_db, Utils.EXAMPLES, [Utils.SENSE_WN_ID], [wn_id])
 
@@ -72,6 +74,10 @@ def create_senses_vocabulary_table(vocabulary_words_ls):
         out_vocabTable_db_c.execute("INSERT INTO vocabulary_table VALUES (?,?,?,?,?,?)", (wn_id, my_vocabulary_index,
                                                                             start_defs_count, end_defs_count,
                                                                             start_examples_count, end_examples_count))
+
+        logging.info("Vocabulary index of the sense " + wn_id + " = " + str(my_vocabulary_index))
+        logging.info("start_defs_count=" + str(start_defs_count) + " ; end_defs_count=" + str(end_defs_count) +
+                     " ; start_examples_count=" + str(start_examples_count) + " ; end_examples_count=" + str(end_examples_count))
 
         # update counters
         my_vocabulary_index = my_vocabulary_index + 1

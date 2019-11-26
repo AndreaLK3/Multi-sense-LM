@@ -17,7 +17,6 @@ def is_only_punctuation(word_token):
 
 
 def retrieve_data_WordNet():
-    Utils.init_logging('temp.log')
 
     with open(os.path.join(Filesystem.FOLDER_VOCABULARY, Filesystem.VOCAB_CURRENT_INDEX_FILE), "r") as vi_file:
         current_index = int(vi_file.readline().strip())   # where were we?
@@ -37,6 +36,8 @@ def retrieve_data_WordNet():
     while requests_counter < requests_segment_size:
 
         word = vocabulary_df.iloc[current_index]['word'] # causes exception when we finish reading the vocabulary
+        logging.debug("RetrieveInputData.retrieve_data_WordNet() > " +
+                     "word = vocabulary_df.iloc[current_index]['word']. >> Word="+str(word))
 
         requests_counter = requests_counter+1
         current_index = current_index + 1

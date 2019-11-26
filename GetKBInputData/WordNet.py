@@ -35,12 +35,18 @@ def retrieve_senses_desa(target_word):
     # e.g. [Synset('sea.n.01'), Synset('ocean.n.02'), Synset('sea.n.03')]
     # note: only those synsets where the word appears first can be considered as belonging to the word.
     # Otherwise, the words is a synonym
-    syns_ls = list(filter(lambda synset: target_word in synset.name(), syns_ls))
+    syns_ls = list(filter(
+        lambda synset: target_word.lower() == (Utils.get_word_from_sense(synset.name())).lower(), syns_ls))
+    logging.info("WordNet.retrieve_senses_desa(target_word) > " + " synsets where the target_word word appears first " +
+                 "syns_ls=" + str(syns_ls))
 
     data_lts = []
 
     for synset in syns_ls:
         d,e,s,a = process_synset(target_word, synset)
+        logging.info("WordNet.retrieve_senses_desa(target_word) > " + " for synset=" + synset.name() +
+                     " we retrieved the definition, " + str(len(e)) + " examples, " + str(len(s)) + " synonyms and " +
+                     str(len(a)) + " antonyms")
         data_lts.append((synset.name(),d,e,s,a))
 
     data_df = pd.DataFrame(data=data_lts, columns=[Utils.SENSE_WN_ID, Utils.DEFINITIONS, Utils.EXAMPLES,
