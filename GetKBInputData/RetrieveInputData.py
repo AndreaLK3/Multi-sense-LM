@@ -22,7 +22,7 @@ def retrieve_data_WordNet():
         current_index = int(vi_file.readline().strip())   # where were we?
     logging.info(current_index)
 
-    requests_segment_size = 30
+    requests_segment_size = 10000
     requests_counter = 0
 
     # define and open (in 'append') the output archives for the KB data
