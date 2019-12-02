@@ -5,7 +5,6 @@ import Utils
 import logging
 import GetKBInputData.GetWordData as GWD
 # import GetKBInputData.BabelNet as BabelNet
-import GetKBInputData.BabelNetRequests as BNR
 import os
 
 def is_only_punctuation(word_token):

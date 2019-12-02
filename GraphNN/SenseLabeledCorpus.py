@@ -3,6 +3,7 @@ import Filesystem as F
 import logging
 import Utils
 import lxml.etree
+import sys
 
 ##### Organizing each subcorpus into Training, Validation and Test splits (80-10-10)
 ##### We do not rewrite the Training part of a corpus: we save separately Validation and Test,
@@ -21,19 +22,16 @@ def count_elements(elements_tag, xml_fpath):
 # Writing to files
 def write_splits_subcorpus(xml_fpath, train_root, valid_root, test_root):
 
-    logging.info("Creating ElementTree for train_root...")
     train_tree = lxml.etree.ElementTree(train_root)
-    logging.info("Writing to XML file...")
+    logging.info("Writing train_root ElementTree to XML file...")
     train_tree.write(os.path.join(os.path.dirname(xml_fpath), F.FOLDER_TRAIN, os.path.basename(xml_fpath)))
 
-    logging.info("Creating ElementTree for valid_root...")
     valid_tree = lxml.etree.ElementTree(valid_root)
-    logging.info("Writing to XML file...")
+    logging.info("Writing valid_root ElementTree to XML file...")
     valid_tree.write(os.path.join(os.path.dirname(xml_fpath),F.FOLDER_VALIDATION, os.path.basename(xml_fpath)))
 
-    logging.info("Creating ElementTree for test_root...")
     test_tree = lxml.etree.ElementTree(test_root)
-    logging.info("Writing to XML file...")
+    logging.info("Writing test_root ElementTree to XML file...")
     test_tree.write(os.path.join(os.path.dirname(xml_fpath), F.FOLDER_TEST, os.path.basename(xml_fpath)))
 
 
@@ -68,17 +66,18 @@ def organize_subcorpus(xml_fpath, train_fraction):
             superelements_counter = superelements_counter + 1
             if superelements_counter < num_for_training:
                 train_root.append(elem)
-                if superelements_counter % 100 == 0:
+                if superelements_counter % 1000 == 0:
                     logging.info("Appending " + str(superelements_counter) + "-th element to train_root...")
             else:
                 if superelements_counter < (num_for_training + num_for_validation):
                     valid_root.append(elem)
-                    if superelements_counter % 100 == 0:
+                    if superelements_counter % 1000 == 0:
                         logging.info("Appending " + str(superelements_counter) + "-th element to valid_root...")
                 else:
                     test_root.append(elem)
-                    if superelements_counter % 100 == 0:
+                    if superelements_counter % 1000 == 0:
                         logging.info("Appending " + str(superelements_counter) + "-th element to test_root...")
+            elem.clear()
     return train_root, valid_root, test_root
 
 
@@ -97,6 +96,7 @@ def organize_splits():
             os.makedirs(dirpath)
 
     for xml_fpath in xml_fpaths:
+        logging.info("Organizing subcorpus at: " + xml_fpath)
         train_root, valid_root, test_root = organize_subcorpus(xml_fpath, 0.8)
         write_splits_subcorpus(xml_fpath, train_root, valid_root, test_root)
 
