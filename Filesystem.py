@@ -4,7 +4,6 @@ FOLDER_INPUT = 'InputData'
 FOLDER_WORD_EMBEDDINGS = 'WordEmbeddings'
 FOLDER_VOCABULARY = 'Vocabulary'
 FOLDER_TEXT_CORPUSES = 'TextCorpuses'
-FOLDER_SENSEANNOTATED = 'SenseAnnotated'
 FOLDER_UFSAC = 'ufsac-public-2.1'
 
 BN_WORD_INTROS = 'BabelNet_word_intros'
@@ -32,9 +31,9 @@ FASTTEXT_PRETRAINED_EMBEDDINGS_FILE = 'cc.en.300.bin'
 SPVs_FASTTEXT_FILE = 'SinglePrototypes_withFastText.npy'
 SPVs_DISTILBERT_FILE = 'SinglePrototypes_withDistilBERT.npy'
 
-FOLDER_MASC = 'masc'
-FOLDER_MASC_WRITTEN = 'written'
-FOLDER_SEMCOR = 'semcor'
+FOLDER_TRAIN = 'Training'
+FOLDER_VALIDATION = 'Validation'
+FOLDER_TEST= 'Test'
 
 
 SEMCOR_DB = 'semcor_all.db'

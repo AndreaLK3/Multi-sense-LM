@@ -4,29 +4,7 @@
     <list default="true" id="d35dca92-959c-489d-8a61-f337e4cce7fa" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Filesystem.py" beforeDir="false" afterPath="$PROJECT_DIR$/Filesystem.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/GetKBInputData/BabelNet.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/GetKBInputData/BabelNetRequests.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/GetKBInputData/GetWordData.py" beforeDir="false" afterPath="$PROJECT_DIR$/GetKBInputData/GetWordData.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/GetKBInputData/OmegaWiki.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/GetKBInputData/RetrieveInputData.log" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/GetKBInputData/RetrieveInputData.py" beforeDir="false" afterPath="$PROJECT_DIR$/GetKBInputData/RetrieveInputData.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/GetKBInputData/WordNet.py" beforeDir="false" afterPath="$PROJECT_DIR$/GetKBInputData/WordNet.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/GraphNN/OrganizeSenseLabeledCorpus.py" beforeDir="false" afterPath="$PROJECT_DIR$/GraphNN/OrganizeSenseLabeledCorpus.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/InputData/SinglePrototypes_withDistilBERT.npy" beforeDir="false" afterPath="$PROJECT_DIR$/InputData/SinglePrototypes_withDistilBERT.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/InputData/SinglePrototypes_withFastText.npy" beforeDir="false" afterPath="$PROJECT_DIR$/InputData/SinglePrototypes_withFastText.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/InputData/indices_table.sql" beforeDir="false" afterPath="$PROJECT_DIR$/InputData/indices_table.sql" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/InputData/vectorized_DistilBERT_definitions.npy" beforeDir="false" afterPath="$PROJECT_DIR$/InputData/vectorized_DistilBERT_definitions.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/InputData/vectorized_DistilBERT_examples.npy" beforeDir="false" afterPath="$PROJECT_DIR$/InputData/vectorized_DistilBERT_examples.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/InputData/vectorized_FastText_definitions.npy" beforeDir="false" afterPath="$PROJECT_DIR$/InputData/vectorized_FastText_definitions.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/InputData/vectorized_FastText_examples.npy" beforeDir="false" afterPath="$PROJECT_DIR$/InputData/vectorized_FastText_examples.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Media/Task1_DeveloperDiary.docx" beforeDir="false" afterPath="$PROJECT_DIR$/Media/Task1_DeveloperDiary.docx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/TextCorpuses/wikitext-2/cached_lm_510_wiki.train.tokens" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/TextCorpuses/wikitext-2/cached_lm_512_wiki.train.tokens" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/Utils.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Vocabulary/vocabulary_currentIndex.txt" beforeDir="false" afterPath="$PROJECT_DIR$/Vocabulary/vocabulary_currentIndex.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WordEmbeddings/AutoEncoderDBert.log" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/WordEmbeddings/EmbedWithFastText.log" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/compute_single_prototype_embeddings.log" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/GraphNN/OrganizeSenseLabeledCorpus.py" beforeDir="false" afterPath="$PROJECT_DIR$/GraphNN/SenseLabeledCorpus.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/temp.log" beforeDir="false" afterPath="$PROJECT_DIR$/temp.log" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -40,8 +18,20 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Filesystem.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="165">
-              <caret line="11" column="24" selection-start-line="11" selection-start-column="24" selection-end-line="11" selection-end-column="24" />
+            <state relative-caret-position="-2">
+              <caret line="3" column="41" selection-start-line="3" selection-start-column="41" selection-end-line="3" selection-end-column="41" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Utils.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="15">
+              <caret line="42" column="18" selection-start-line="42" selection-start-column="18" selection-end-line="42" selection-end-column="18" />
+              <folding>
+                <element signature="e#0#14#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -76,10 +66,10 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/GraphNN/OrganizeSenseLabeledCorpus.py">
+        <entry file="file://$PROJECT_DIR$/GraphNN/SenseLabeledCorpus.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="465">
-              <caret line="31" column="14" selection-start-line="31" selection-start-column="4" selection-end-line="31" selection-end-column="14" />
+            <state relative-caret-position="190">
+              <caret line="100" column="64" selection-start-line="99" selection-start-column="8" selection-end-line="100" selection-end-column="64" />
               <folding>
                 <element signature="e#0#9#0" expanded="true" />
               </folding>
@@ -88,13 +78,10 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Utils.py">
+        <entry file="file://$USER_HOME$/opt/anaconda3/lib/python3.7/posixpath.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="232">
-              <caret line="42" column="18" selection-start-line="42" selection-start-column="18" selection-end-line="42" selection-end-column="18" />
-              <folding>
-                <element signature="e#0#14#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="403">
+              <caret line="95" selection-start-line="95" selection-end-line="95" />
             </state>
           </provider>
         </entry>
@@ -110,7 +97,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>mask_</find>
       <find>tokenizer</find>
       <find>[SEP]</find>
       <find>torch.nn</find>
@@ -140,6 +126,7 @@
       <find>DENOMI</find>
       <find>init_lo</find>
       <find>name</find>
+      <find>FOLDER_SEN</find>
     </findStrings>
     <replaceStrings>
       <replace>F</replace>
@@ -157,7 +144,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/CreateEntities/PreprocessInput.py" />
         <option value="$PROJECT_DIR$/CreateEntities/SenseDenominations.py" />
         <option value="$PROJECT_DIR$/CreateEntities/ProcessInput.py" />
         <option value="$PROJECT_DIR$/PrepareGraphInput/ProcessInput.py" />
@@ -203,11 +189,12 @@
         <option value="$PROJECT_DIR$/PrepareKBInput/PrepareKBInput.py" />
         <option value="$PROJECT_DIR$/WordEmbeddings/ComputeEmbeddings.py" />
         <option value="$PROJECT_DIR$/GetKBInputData/WordNet.py" />
-        <option value="$PROJECT_DIR$/Filesystem.py" />
         <option value="$PROJECT_DIR$/GetKBInputData/RetrieveInputData.py" />
         <option value="$PROJECT_DIR$/GetKBInputData/GetWordData.py" />
         <option value="$PROJECT_DIR$/Utils.py" />
         <option value="$PROJECT_DIR$/GraphNN/OrganizeSenseLabeledCorpus.py" />
+        <option value="$PROJECT_DIR$/Filesystem.py" />
+        <option value="$PROJECT_DIR$/GraphNN/SenseLabeledCorpus.py" />
       </list>
     </option>
   </component>
@@ -253,12 +240,6 @@
               <item name="TASK1_Gbwe" type="b2602c69:ProjectViewProjectNode" />
               <item name="TASK1_Gbwe" type="462c0819:PsiDirectoryNode" />
               <item name="TextCorpuses" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="TASK1_Gbwe" type="b2602c69:ProjectViewProjectNode" />
-              <item name="TASK1_Gbwe" type="462c0819:PsiDirectoryNode" />
-              <item name="TextCorpuses" type="462c0819:PsiDirectoryNode" />
-              <item name="SenseAnnotated" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="TASK1_Gbwe" type="b2602c69:ProjectViewProjectNode" />
@@ -429,14 +410,14 @@
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.31543624" />
       <window_info anchor="bottom" id="Run" order="2" />
-      <window_info anchor="bottom" id="Debug" order="3" weight="0.39635855" />
+      <window_info active="true" anchor="bottom" id="Debug" order="3" visible="true" weight="0.39597315" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" weight="0.32913166" />
       <window_info anchor="bottom" id="Version Control" order="7" weight="0.32913166" />
       <window_info anchor="bottom" id="Terminal" order="8" weight="0.3277311" />
       <window_info anchor="bottom" id="Event Log" order="9" side_tool="true" />
-      <window_info active="true" anchor="bottom" id="Python Console" order="10" visible="true" weight="0.29306486" />
+      <window_info anchor="bottom" id="Python Console" order="10" weight="0.29306486" />
       <window_info anchor="bottom" id="Inspection Results" order="11" weight="0.32922733" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
@@ -472,6 +453,17 @@
       <path value="$PROJECT_DIR$/GraphNN/pyGAT" />
     </ignored-roots>
   </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/GraphNN/SenseLabeledCorpus.py</url>
+          <line>33</line>
+          <option name="timeStamp" value="3" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
   <component name="debuggerHistoryManager">
     <expressions id="setValue">
       <expression>
@@ -492,7 +484,6 @@
     </expressions>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$USER_HOME$/anaconda3/lib/python3.7/site-packages/pandas/io/pytables.py" />
     <entry file="file://$USER_HOME$/anaconda3/lib/python3.7/site-packages/pandas/core/internals/construction.py" />
     <entry file="file://$USER_HOME$/anaconda3/lib/python3.7/codecs.py" />
     <entry file="file://$PROJECT_DIR$/PrepareGraphInput/PreprocessInput.log" />
@@ -714,13 +705,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Filesystem.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="165">
-          <caret line="11" column="24" selection-start-line="11" selection-start-column="24" selection-end-line="11" selection-end-column="24" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/GraphNN/OnLoadingTheGraphDataset.py">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
@@ -746,7 +730,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Utils.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="232">
+        <state relative-caret-position="15">
           <caret line="42" column="18" selection-start-line="42" selection-start-column="18" selection-end-line="42" selection-end-column="18" />
           <folding>
             <element signature="e#0#14#0" expanded="true" />
@@ -754,10 +738,24 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/GraphNN/OrganizeSenseLabeledCorpus.py">
+    <entry file="file://$PROJECT_DIR$/Filesystem.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="465">
-          <caret line="31" column="14" selection-start-line="31" selection-start-column="4" selection-end-line="31" selection-end-column="14" />
+        <state relative-caret-position="-2">
+          <caret line="3" column="41" selection-start-line="3" selection-start-column="41" selection-end-line="3" selection-end-column="41" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/opt/anaconda3/lib/python3.7/posixpath.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="403">
+          <caret line="95" selection-start-line="95" selection-end-line="95" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/GraphNN/SenseLabeledCorpus.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="190">
+          <caret line="100" column="64" selection-start-line="99" selection-start-column="8" selection-end-line="100" selection-end-column="64" />
           <folding>
             <element signature="e#0#9#0" expanded="true" />
           </folding>
