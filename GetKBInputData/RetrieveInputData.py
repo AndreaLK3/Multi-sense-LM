@@ -22,7 +22,7 @@ def retrieve_data_WordNet():
         current_index = int(vi_file.readline().strip())   # where were we?
     logging.info(current_index)
 
-    requests_segment_size = 10000
+    requests_segment_size = 32000
     requests_counter = 0
 
     # define and open (in 'append') the output archives for the KB data
@@ -35,7 +35,12 @@ def retrieve_data_WordNet():
 
     while requests_counter < requests_segment_size:
 
-        word = vocabulary_df.iloc[current_index]['word'] # causes exception when we finish reading the vocabulary
+        try:
+            word = vocabulary_df.iloc[current_index]['word'] # causes exception when we finish reading the vocabulary
+        except IndexError:
+            logging.info("Finished retrieving input data for the " + str(requests_counter) +
+                         "words of the vocabulary.")
+            break
         logging.debug("RetrieveInputData.retrieve_data_WordNet() > " +
                      "word = vocabulary_df.iloc[current_index]['word']. >> Word="+str(word))
 

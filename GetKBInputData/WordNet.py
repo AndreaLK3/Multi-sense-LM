@@ -37,14 +37,14 @@ def retrieve_senses_desa(target_word):
     # Otherwise, the words is a synonym
     syns_ls = list(filter(
         lambda synset: target_word.lower() == (Utils.get_word_from_sense(synset.name())).lower(), syns_ls))
-    logging.info("WordNet.retrieve_senses_desa(target_word) > " + " synsets where the target_word word appears first " +
+    logging.debug("WordNet.retrieve_senses_desa(target_word) > " + " synsets where the target_word word appears first " +
                  "syns_ls=" + str(syns_ls))
 
     data_lts = []
 
     for synset in syns_ls:
         d,e,s,a = process_synset(target_word, synset)
-        logging.info("WordNet.retrieve_senses_desa(target_word) > " + " for synset=" + synset.name() +
+        logging.debug("WordNet.retrieve_senses_desa(target_word) > " + " for synset=" + synset.name() +
                      " we retrieved the definition, " + str(len(e)) + " examples, " + str(len(s)) + " synonyms and " +
                      str(len(a)) + " antonyms")
         data_lts.append((synset.name(),d,e,s,a))

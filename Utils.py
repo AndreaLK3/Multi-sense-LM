@@ -40,6 +40,7 @@ INDICES_TABLE = 'indices_table'
 
 UNK_TOKEN = '<unk>'
 NUM_TOKEN = '<num>'
+EOS_TOKEN = '<eos>'
 
 SENSE_NOAD = 'Sense_NOAD'
 SENSE_WORDNET = 'Sense_WordNet'

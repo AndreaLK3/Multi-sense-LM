@@ -5,7 +5,7 @@ FOLDER_WORD_EMBEDDINGS = 'WordEmbeddings'
 FOLDER_VOCABULARY = 'Vocabulary'
 FOLDER_TEXT_CORPUSES = 'TextCorpuses'
 FOLDER_SENSEANNOTATED = 'SenseAnnotated'
-FOLDER_GOOGLE_MASC_SEMCOR = 'Google_Masc&SemCor'
+FOLDER_UFSAC = 'ufsac-public-2.1'
 
 BN_WORD_INTROS = 'BabelNet_word_intros'
 BN_SYNSET_DATA = 'BabelNet_synset_data'
@@ -36,8 +36,7 @@ FOLDER_MASC = 'masc'
 FOLDER_MASC_WRITTEN = 'written'
 FOLDER_SEMCOR = 'semcor'
 
-NOAD_WORDNET_AUTOMAP_FILE = 'algorithmic_map.txt'
-NOAD_WORDNET_MANUALMAP_FILE = 'manual_map.txt'
+
 SEMCOR_DB = 'semcor_all.db'
 MASC_DB = 'masc_written.db'
 
