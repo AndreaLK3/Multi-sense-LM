@@ -65,7 +65,7 @@ def exe(do_reset=False, compute_single_prototype=False):
     #                       os.path.join(F.FOLDER_TEXT_CORPUSES, F.PHRASED_TRAINING_CORPUS), min_count=5)
 
     vocabulary = VOC.get_vocabulary_df(os.path.join(F.FOLDER_VOCABULARY, F.VOCAB_WT2_FILE),
-                          os.path.join(F.FOLDER_WT2, F.WT_TRAIN_FILE), min_count=5)
+                          os.path.join(F.FOLDER_WT2, F.WT_TRAIN_FILE), min_count=3)
 
     if compute_single_prototype:
         reset_embeddings()

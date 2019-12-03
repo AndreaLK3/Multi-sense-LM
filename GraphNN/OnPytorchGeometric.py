@@ -49,7 +49,7 @@ class Net(torch.nn.Module):
 
         return F.log_softmax(x, dim=1)
 # The constructor defines two GCNConv layers which get called in the forward pass of our network.
-# Note that the non-linearity  /here, ReLU) is not integrated in the conv calls and hence needs to be applied afterwards
+# Note that the non-linearity (here, ReLU) is not integrated in the conv calls and hence needs to be applied afterwards
 # Finally, the output is a softmax distribution over the number of classes
 
 # Let’s train this model on the train nodes for 200 epochs:

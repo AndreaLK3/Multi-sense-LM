@@ -3,7 +3,7 @@ import Filesystem as F
 import logging
 import Utils
 import lxml.etree
-import sys
+import copy
 
 ##### Organizing each subcorpus into Training, Validation and Test splits (80-10-10)
 ##### We do not rewrite the Training part of a corpus: we save separately Validation and Test,
@@ -65,18 +65,12 @@ def organize_subcorpus(xml_fpath, train_fraction):
         if elem.tag == superelements_tag:
             superelements_counter = superelements_counter + 1
             if superelements_counter < num_for_training:
-                train_root.append(elem)
-                if superelements_counter % 1000 == 0:
-                    logging.info("Appending " + str(superelements_counter) + "-th element to train_root...")
+                train_root.append(copy.deepcopy(elem))
             else:
                 if superelements_counter < (num_for_training + num_for_validation):
-                    valid_root.append(elem)
-                    if superelements_counter % 1000 == 0:
-                        logging.info("Appending " + str(superelements_counter) + "-th element to valid_root...")
+                    valid_root.append(copy.deepcopy(elem))
                 else:
-                    test_root.append(elem)
-                    if superelements_counter % 1000 == 0:
-                        logging.info("Appending " + str(superelements_counter) + "-th element to test_root...")
+                    test_root.append(copy.deepcopy(elem))
             elem.clear()
     return train_root, valid_root, test_root
 
@@ -106,9 +100,41 @@ def organize_splits():
 # read an XML in UFSAC sense-labeled format. __next__() returns the dictionary of attributes of a <word> element
 def dataset_generator(xml_fpath):
     xml_docfile = open(xml_fpath, "rb")
-
+    Utils.init_logging('temp.log')
+    logging.info("Generator over subcorpus at " + xml_fpath)
     for event, elem in lxml.etree.iterparse(xml_docfile):
         if elem.tag == "sentence":
             yield({'surface_form':Utils.EOS_TOKEN}) # following the format
         if elem.tag == "word":
             yield(elem.attrib)
+
+
+def readgenerator_senselabeled_corpuses(dataset_split):
+    Utils.init_logging('temp.log')
+    logging.info("Invoking")
+    if dataset_split.lower() == Utils.TRAINING:
+        training_subcorpuses_folder = os.path.join(F.FOLDER_TEXT_CORPUSES, F.FOLDER_UFSAC, F.FOLDER_TRAIN)
+        full_fpaths = list(map(lambda fname: os.path.join(training_subcorpuses_folder, fname),
+                               os.listdir(training_subcorpuses_folder)))
+    elif dataset_split.lower() == Utils.VALIDATION:
+        validation_subcorpuses_folder = os.path.join(F.FOLDER_TEXT_CORPUSES, F.FOLDER_UFSAC, F.FOLDER_VALIDATION)
+        full_fpaths = list(map(lambda fname: os.path.join(validation_subcorpuses_folder, fname),
+                               os.listdir(validation_subcorpuses_folder)))
+    else: # elif dataset_split.lower() == Utils.TEST:
+        test_subcorpuses_folder = os.path.join(F.FOLDER_TEXT_CORPUSES, F.FOLDER_UFSAC, F.FOLDER_VALIDATION)
+        full_fpaths = list(map(lambda fname: os.path.join(test_subcorpuses_folder, fname),
+                               os.listdir(test_subcorpuses_folder)))
+
+    for xml_fpath in full_fpaths: # n: when using the readgenerator, I have to invoke .__next__().__next__() ,
+        try:                      # and catch a StopIteration exception
+            yield dataset_generator(xml_fpath)
+        except StopIteration:
+            logging.info("Generator over the subcorpus at " + xml_fpath + " exhausted.")
+            return
+
+
+def example():
+    validation_subcorpuses_folder = os.path.join(F.FOLDER_TEXT_CORPUSES, F.FOLDER_UFSAC, F.FOLDER_VALIDATION)
+    xml_fpath = os.path.join(validation_subcorpuses_folder, 'semcor.xml')
+    gen = dataset_generator(xml_fpath)
+    return gen

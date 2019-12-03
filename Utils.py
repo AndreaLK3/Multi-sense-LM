@@ -36,6 +36,10 @@ VECTORIZED = 'vectorized'
 DISTILBERT = "DistilBERT"
 FASTTEXT = "FastText"
 
+TRAINING = 'training'
+VALIDATION = 'validation'
+TEST = 'test'
+
 INDICES_TABLE = 'indices_table'
 
 UNK_TOKEN = '<unk>'
