@@ -2,38 +2,52 @@ import torch
 from torch_geometric.nn import RGCNConv
 import torch.nn.functional as F
 from WordEmbeddings.ComputeEmbeddings import Method
-
+import random
+import numpy as np
 
 # In this example, we do not extract the node features, word and sense vocabulary indices, etc.
 # We use Random Number Generation to create a small structure.
 
 # 1 definition (or example) refers to only 1 sense. 1 sense can have multiple definitions or examples
-def setrandomedges_d_or_e():
-    pass
+def setrandomedges_d_or_e(senses_low, senses_high, elements_low, elements_high):
+    num_elements = elements_high - elements_low
+    possible_elements_ls = list(range(elements_low, elements_high))
+    sense_deflinks_dict = {}
+    for sense_index in range(senses_low, senses_high):
+        num_defs_for_sense = random.randint(1,1+num_elements//4)
+        sense_defs_ls = np.random.choice(possible_elements_ls, num_defs_for_sense, replace=False)
+        possible_elements_ls = list( set(possible_elements_ls).difference(set(sense_defs_ls)))
+        sense_deflinks_dict[sense_index] = sense_defs_ls
+    return sense_deflinks_dict
 
 # 1 sense refers to only 1 global. 1 global can have multiple senses
-def setrandomedges_sc():
-    pass
+def setrandomedges_sc(senses_low, senses_high, global_low, global_high):
+    # same case, just with senses in the other place:
+    return setrandomedges_d_or_e(global_low, global_high, senses_low, senses_high)
+
 
 # Any global can have multiple synonyms (or antonyms). However, they must be symmetrical (a,b) ==> (b,a).
-def setrandomedges_syn_or_ant():
+def setrandomedges_syn_or_ant(global_low, global_high):
+    for global_index in range(global_low, global_high):
+
     pass
 
 
 
 def createInputGraph():
 
-    num_sense = 10
+    num_senses = 10
     num_sp = 3
     num_def = 15
     num_exs = 10
+    NUM_NODES = num_senses + num_sp + num_def + num_exs
     NUM_NODE_FEATURES = 30
     # X (Tensor, optional) – Node feature matrix with shape [num_nodes, num_node_features]. (default: None)
     #
     # The nodes are: all the sense embeddings + all the single-prototype embeddings
     #               + all the sentence embeddings from the definitions and examples.
     # All the nodes must have an index, from 0 to num_nodes -1, and the same dimensionality, num_node_features.
-    X_senses = torch.rand((num_sense, NUM_NODE_FEATURES))
+    X_senses = torch.rand((num_senses, NUM_NODE_FEATURES))
     X_sp = torch.rand((num_sp, NUM_NODE_FEATURES))
     X_defs = torch.rand((num_def, NUM_NODE_FEATURES))
     X_exs = torch.rand((num_exs, NUM_NODE_FEATURES))
@@ -59,11 +73,10 @@ def createInputGraph():
     # For this example, however, we initialized randomly the features of the vectors, and we proceed by
     # randomly determining connections between different kinds of nodes, in the way the task allows.
     # definitions -> senses : [se+sp, se+sp+d) -> [0,se)
-    edges_defs_senses = [torch.randint(num_sense+num_sp,num_sense+num_sp+num_def,(num_def,)),
-                         torch.randint(0,num_sense,(num_sense,))]
-    # examples --> senses :
-    edges_exs_senses = [torch.randint(num_sense + num_sp + num_def, num_sense + num_sp + num_def + num_exs, (num_exs,)),
-                        torch.randint(0, num_sense, (num_sense,))]
+    edges_defs_senses = setrandomedges_d_or_e(0, num_senses, num_senses+num_sp, num_senses+num_sp+num_def)
+
+    # examples --> senses : [se+sp+d, e==num_nodes) -> [0,se)
+    edges_exs_senses = setrandomedges_d_or_e(0, num_senses, num_senses+num_sp+num_def, NUM_NODES)
 
     # global (a.k.a. single-prototype) -> senses : [se,se+sp) -> [0,se)
     edges_sp_senses = [torch.randint(num_sense, num_sense + num_sp, (num_sp,)),
