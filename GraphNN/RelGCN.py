@@ -1,6 +1,6 @@
 import torch
 from torch_geometric.nn import RGCNConv
-import torch.nn.functional as F
+import torch.nn.functional as torchF
 from WordEmbeddings.ComputeEmbeddings import Method
 
 # classRGCNConv(in_channels, out_channels, num_relations, num_bases, root_weight=True, bias=True, **kwargs)
@@ -40,9 +40,9 @@ class Net_RGCN(torch.nn.Module):
         #     data.num_nodes, self.node_state_units, NUM_RELATIONS, num_bases=NUM_RELATIONS)
 
     def forward(self, edge_index, edge_type, edge_norm):
-        x = F.relu(self.conv1(None, edge_index, edge_type))
+        x = torchF.relu(self.conv1(None, edge_index, edge_type))
         # x = self.conv2(x, edge_index, edge_type)
-        return F.log_softmax(x, dim=1)
+        return torchF.log_softmax(x, dim=1)
 
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
@@ -53,7 +53,7 @@ def train():
     model.train()
     optimizer.zero_grad()
     out = model(data.edge_index, data.edge_type, data.edge_norm)
-    F.nll_loss(out[data.train_idx], data.train_y).backward()
+    torchF.nll_loss(out[data.train_idx], data.train_y).backward()
     optimizer.step()
 
 

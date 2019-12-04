@@ -2,8 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="d35dca92-959c-489d-8a61-f337e4cce7fa" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/GraphNN/ExampleRelGCN.py" beforeDir="false" afterPath="$PROJECT_DIR$/GraphNN/ExampleRelGCN.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/GraphNN/RelGCN.py" beforeDir="false" afterPath="$PROJECT_DIR$/GraphNN/RelGCN.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Media/Task1_DeveloperDiary.docx" beforeDir="false" afterPath="$PROJECT_DIR$/Media/Task1_DeveloperDiary.docx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/temp.log" beforeDir="false" afterPath="$PROJECT_DIR$/temp.log" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -28,20 +30,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/GraphNN/OnPytorchGeometric.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state>
+            <state relative-caret-position="-201">
               <caret column="12" selection-start-column="12" selection-end-column="12" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/GraphNN/RelGCN.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="75">
-              <caret line="8" column="38" selection-start-line="8" selection-start-column="38" selection-end-line="8" selection-end-column="38" />
-              <folding>
-                <element signature="e#0#12#0" expanded="true" />
-              </folding>
             </state>
           </provider>
         </entry>
@@ -49,8 +39,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/GraphNN/ExampleRelGCN.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="477">
-              <caret line="33" lean-forward="true" selection-start-line="33" selection-end-line="33" />
+            <state relative-caret-position="377">
+              <caret line="79" column="26" selection-start-line="79" selection-start-column="26" selection-end-line="79" selection-end-column="26" />
               <folding>
                 <element signature="e#0#12#0" expanded="true" />
               </folding>
@@ -128,7 +118,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/CreateEntities/ProcessInput.py" />
         <option value="$PROJECT_DIR$/PrepareGraphInput/ProcessInput.py" />
         <option value="$PROJECT_DIR$/PrepareGraphInput/Vocabulary.py" />
         <option value="$PROJECT_DIR$/GetInputData/OmegaWiki.py" />
@@ -178,6 +167,7 @@
         <option value="$PROJECT_DIR$/Utils.py" />
         <option value="$PROJECT_DIR$/GraphNN/SenseLabeledCorpus.py" />
         <option value="$PROJECT_DIR$/GraphNN/OnPytorchGeometric.py" />
+        <option value="$PROJECT_DIR$/GraphNN/RelGCN.py" />
         <option value="$PROJECT_DIR$/GraphNN/ExampleRelGCN.py" />
       </list>
     </option>
@@ -380,7 +370,7 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="23" width="1920" height="986" extended-state="6" />
+    <frame x="0" y="23" width="1920" height="986" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.13258786" />
@@ -452,8 +442,6 @@
     </expressions>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/PrepareGraphInput/PreprocessInput.log" />
-    <entry file="file://$USER_HOME$/anaconda3/lib/python3.7/site-packages/nltk/corpus/reader/wordnet.py" />
     <entry file="file://$USER_HOME$/anaconda3/lib/python3.7/site-packages/nltk/data.py" />
     <entry file="file://$USER_HOME$/Library/Caches/PyCharmCE2019.1/python_stubs/-1795138643/builtins.py">
       <provider selected="true" editor-type-id="text-editor">
@@ -565,13 +553,6 @@
     <entry file="file://$PROJECT_DIR$/GetKBInputData/BabelNetRequests.py" />
     <entry file="file://$PROJECT_DIR$/GetKBInputData/OmegaWiki.py" />
     <entry file="file://$PROJECT_DIR$/GetKBInputData/BabelNet.py" />
-    <entry file="file://$USER_HOME$/opt/anaconda3/lib/python3.7/site-packages/IPython/core/interactiveshell.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="127">
-          <caret line="2854" selection-start-line="2854" selection-end-line="2854" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$USER_HOME$/opt/anaconda3/lib/python3.7/site-packages/IPython/core/async_helpers.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="134">
@@ -703,23 +684,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/GraphNN/OnPytorchGeometric.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <caret column="12" selection-start-column="12" selection-end-column="12" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/GraphNN/RelGCN.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="75">
-          <caret line="8" column="38" selection-start-line="8" selection-start-column="38" selection-end-line="8" selection-end-column="38" />
-          <folding>
-            <element signature="e#0#12#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/GraphNN/SenseLabeledCorpus.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1830">
@@ -730,10 +694,50 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$USER_HOME$/opt/anaconda3/lib/python3.7/site-packages/IPython/core/interactiveshell.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="170">
+          <caret line="3325" selection-start-line="3325" selection-end-line="3325" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/opt/anaconda3/lib/python3.7/site-packages/torch_geometric/utils/convert.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="201">
+          <caret line="61" selection-start-line="61" selection-end-line="61" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/opt/anaconda3/lib/python3.7/site-packages/torch_geometric/__init__.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <folding>
+            <element signature="e#0#53#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/GraphNN/RelGCN.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="433">
+          <caret line="38" column="32" lean-forward="true" selection-start-line="38" selection-start-column="32" selection-end-line="38" selection-end-column="32" />
+          <folding>
+            <element signature="e#0#12#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/GraphNN/OnPytorchGeometric.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-201">
+          <caret column="12" selection-start-column="12" selection-end-column="12" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/GraphNN/ExampleRelGCN.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="477">
-          <caret line="33" lean-forward="true" selection-start-line="33" selection-end-line="33" />
+        <state relative-caret-position="377">
+          <caret line="79" column="26" selection-start-line="79" selection-start-column="26" selection-end-line="79" selection-end-column="26" />
           <folding>
             <element signature="e#0#12#0" expanded="true" />
           </folding>
