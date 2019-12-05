@@ -75,17 +75,19 @@ class NetRGCN(torch.nn.Module):
     def __init__(self, data):
         super(NetRGCN, self).__init__()
         # self.conv1 = RGCNConv(
-        #     data.num_nodes, 16, dataset.num_relations, num_bases=30)
+        #     data.num_nodes, 16, data.num_relations, num_bases=data.num_relations)
         # self.conv2 = RGCNConv(
-        #     16, dataset.num_classes, dataset.num_relations, num_bases=30)
-        self.conv1 = RGCNConv(
-            in_channels=data.num_nodes, out_channels=16, num_relations=data.num_relations,
-            num_bases=data.num_relations)
+        #     16, dataset.num_classes, data.num_relations, num_bases=data.num_relations)
+        self.conv1 = RGCNConv(in_channels=data.x.shape[0], # number of rows in X
+                              out_channels=data.x.shape[0], num_relations=data.num_relations, num_bases=data.num_relations)
+        self.senses_to_global_indexpoint = data.node_types.tolist.index(1)
 
     def forward(self, edge_index, edge_type, edge_norm):
         # x = F.relu(self.conv1(None, edge_index, edge_type))
         # x = self.conv2(x, edge_index, edge_type)
         # return F.log_softmax(x, dim=1)
+        x = self.conv1(None, edge_index, edge_type)
+
 
 
 
@@ -160,9 +162,14 @@ def createInputGraph():
     all_edges_lts = torch.tensor(edges_defs + edges_exs + edges_sc + edges_syn + edges_ant)
     edge_types = torch.tensor([0] * len(edges_defs) + [1] * len(edges_exs) + [2] * len(edges_sc) +
                               [3] * len(edges_syn) + [4] * len(edges_ant))
+    node_types = torch.tensor([0]*num_senses + [1]*num_sp + [2]*num_def + [3]*num_exs)
 
     all_edges = all_edges_lts.t().contiguous()
-    graph = torch_geometric.data.Data(x=X, edge_index=all_edges, edge_type=edge_types, num_relations=NUM_RELATIONS)
+    graph = torch_geometric.data.Data(x=X,
+                                      edge_index=all_edges,
+                                      edge_type=edge_types,
+                                      node_types = node_types,
+                                      num_relations=NUM_RELATIONS)
 
     ##### Printing
     netx_graph = convert.to_networkx(graph)
