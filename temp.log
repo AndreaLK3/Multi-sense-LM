@@ -1,9 +1,6 @@
-INFO : Senses : [ 0 , 4)
-INFO : Global single-prototypes : [ 4 , 6)
-INFO : Definitions : [ 6 , 14)
-INFO : Examples : [ 14 , 22)
-INFO : Edges - def . Connections:[(12, 0), (8, 1), (11, 1), (7, 2), (6, 3)]
-INFO : Edges - exs . Connections:[(16, 0), (15, 0), (17, 1), (19, 1), (20, 2), (18, 3), (21, 3)]
-INFO : Edges - sc . Connections:[(5, 0), (4, 1), (4, 2), (4, 3)]
-INFO : Edges - syn . Connections:[(5, 4), (4, 5)]
-INFO : Edges - ant . Connections:[]
+INFO : Senses : [ 0 , 10)
+INFO : Global single-prototypes : [ 10 , 15)
+INFO : Definitions : [ 15 , 35)
+INFO : Examples : [ 35 , 55)
+INFO : Training dataset = [12, 11, 10, 12, 10, 12, 11, 13, 10, 10, 11, 12, 12, 13, 14, 13, 14, 11, 14, 13]
+INFO : torch.Size([55, 10])
