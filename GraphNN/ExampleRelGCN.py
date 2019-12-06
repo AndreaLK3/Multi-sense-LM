@@ -196,21 +196,25 @@ class NetRGCN(torch.nn.Module):
         self.last_idx_globals = data.node_types.tolist().index(2)
         self.conv1 = RGCNConv(in_channels=data.x.shape[1], # doc: "Size of each input sample "
                               # although, if I followed the example, it should be num_nodes
-                              out_channels=32, # doc: "Size of each output sample "
+                              out_channels=data.x.shape[1], # doc: "Size of each output sample "
                               num_relations=data.num_relations,
                               num_bases=data.num_relations)
-        self.conv2 = RGCNConv(in_channels=32, out_channels=self.last_idx_globals - self.last_idx_senses,
+        self.conv2global = RGCNConv(in_channels=data.x.shape[1], out_channels=self.last_idx_globals - self.last_idx_senses,
                               num_relations=data.num_relations, num_bases=data.num_relations)
+        self.conv2sense = RGCNConv(in_channels=data.x.shape[1],
+                                    out_channels=self.last_idx_senses,
+                                    num_relations=data.num_relations, num_bases=data.num_relations)
 
     def forward(self, x, edge_index, edge_type):
-        x = tF.relu(self.conv1(x, edge_index, edge_type))
-        x = self.conv2(x, edge_index, edge_type)
+        x_Lplus1 = tF.relu(self.conv1(x, edge_index, edge_type))
+        x_toglobal = self.conv2global(x_Lplus1, edge_index, edge_type)
+        x_tosense = self.conv2sense(x_Lplus1, edge_index, edge_type)
 
         # current output: shape [55,5]: for every node, the probability to belong to each one of the Global classes
         # i.e. to be followed by each one of the global words.
         # using softmax on dimension=1 gives sensible probabilities
 
-        return tF.log_softmax(x, dim=1)
+        return (tF.log_softmax(x_toglobal, dim=1), tF.log_softmax(x_tosense, dim=1))
 
 
 
@@ -225,16 +229,16 @@ def train():
     optimizer = torch.optim.Adam(model.parameters(), lr=0.01, weight_decay=0.0005)
 
     #out = model(data.edge_index, data.edge_type, data.edge_norm)
-    training_dataset_length = 100
-    training_dataset = torch.randint(low=RGCN_modelobject.last_idx_senses, # only globals for now
-                                     high=RGCN_modelobject.last_idx_globals-1, size = (training_dataset_length,))
+    training_dataset = torch.Tensor([(10,-1),(11,5),(12,-1),(13,3),(14,-1),(10,9),(11,-1),(12,-1),(13,-1),(14,-1),
+                        (10,-1),(11,5),(12,-1),(13,3),(14,-1),(10,9),(11,5),(12,-1),(13,3),(14,-1)]).type(torch.int64)
     logging.info("Training dataset = " + str(training_dataset))
     logging.info("Graph, data.x.shape=" + str(data.x.shape))
     training_dataset.to(device, dtype=torch.int64)
-    log_steps = 100
-    num_epochs = 200
+    num_epochs = 10
     model.train()
     losses = []
+    loss = 0
+
     for epoch in range(1,num_epochs+1):
         logging.info("\nEpoch n."+str(epoch) +":" )
 
@@ -244,22 +248,41 @@ def train():
             # shape [55,5]: for every node, the probability to belong to each one of the Global classes
             # i.e. to be followed by each one of the global words.
 
-            current_word = training_dataset[i]
-            y_nextWordClass = torch.Tensor([training_dataset[i+1] - model.last_idx_senses]).long()
+            (current_input_global, current_input_sense) = training_dataset[i] # so we decide which row of the graph-output we use for the prediction
+            if current_input_sense == -1:
+                current_token_index = current_input_global
+            else:
+                current_token_index = current_input_sense
 
-            logging.debug("current_word=" + str(current_word) + " ; y_nextWordClass=" + str(y_nextWordClass))
-            loss_global = tF.nll_loss(predicted_global_forEachNode[current_word].unsqueeze(0), y_nextWordClass)
-            loss_global.backward()
+            global_raw_idx = training_dataset[i + 1][0]
+            sense_idx =  training_dataset[i + 1][1]
+            (y_labelnext_global,y_labelnext_sense) = (torch.Tensor([global_raw_idx - model.last_idx_senses]).type(torch.int64),
+                                                      torch.Tensor([sense_idx]).type(torch.int64))
+
+            if y_labelnext_sense == -1:
+                is_label_senseLevel = False
+            else:
+                is_label_senseLevel = True
+
+            loss_global = tF.nll_loss(predicted_global_forEachNode[current_token_index].unsqueeze(0), y_labelnext_global)
+
+
+            if is_label_senseLevel:
+                loss_sense = tF.nll_loss(predicted_sense_forEachNode[current_token_index].unsqueeze(0),
+                                          y_labelnext_sense)
+            else:
+                loss_sense = 0
+            loss = loss_global + loss_sense
+            loss.backward()
             optimizer.step()
-            if i % log_steps == 0:
-                logging.info(loss_global)
-                losses.append(loss_global)
 
+        logging.info(loss)
+        losses.append(loss)
 
     getLossGraph(losses)
 
-def getLossGraph(source):
-    plt.plot(source, color='red', marker='o')
+def getLossGraph(source1):
+    plt.plot(source1, color='red', marker='o')
 
 
 
