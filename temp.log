@@ -2,5 +2,611 @@ INFO : Senses : [ 0 , 10)
 INFO : Global single-prototypes : [ 10 , 15)
 INFO : Definitions : [ 15 , 35)
 INFO : Examples : [ 35 , 55)
-INFO : Training dataset = [12, 11, 10, 12, 10, 12, 11, 13, 10, 10, 11, 12, 12, 13, 14, 13, 14, 11, 14, 13]
-INFO : torch.Size([55, 10])
+INFO : Total number of edges = 56
+INFO : Training dataset = tensor([13, 11, 13, 13, 11, 13, 10, 12, 11, 12, 13, 10, 11, 11, 10, 12, 11, 13,
+        13, 11, 10, 12, 13, 12, 12, 12, 12, 10, 11, 10, 10, 11, 11, 10, 11, 10,
+        10, 11, 11, 12, 11, 11, 10, 11, 13, 12, 12, 10, 10, 12, 12, 11, 11, 12,
+        11, 11, 10, 11, 11, 10, 10, 12, 11, 12, 11, 11, 12, 12, 12, 13, 11, 13,
+        12, 13, 11, 13, 13, 11, 12, 10, 12, 12, 13, 10, 12, 13, 12, 13, 13, 13,
+        13, 11, 12, 12, 13, 11, 10, 12, 10, 12])
+INFO : Graph, data.x.shape=torch.Size([55, 100])
+INFO : 
+Epoch n.1:
+INFO : tensor(1.7015, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.2:
+INFO : tensor(1.4592, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.3:
+INFO : tensor(1.5109, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.4:
+INFO : tensor(1.4394, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.5:
+INFO : tensor(1.4209, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.6:
+INFO : tensor(1.3450, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.7:
+INFO : tensor(1.2580, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.8:
+INFO : tensor(1.2348, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.9:
+INFO : tensor(1.2234, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.10:
+INFO : tensor(1.2172, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.11:
+INFO : tensor(1.2131, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.12:
+INFO : tensor(1.2113, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.13:
+INFO : tensor(1.2102, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.14:
+INFO : tensor(1.2094, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.15:
+INFO : tensor(1.2260, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.16:
+INFO : tensor(1.2171, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.17:
+INFO : tensor(1.2126, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.18:
+INFO : tensor(1.1661, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.19:
+INFO : tensor(1.1751, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.20:
+INFO : tensor(1.1906, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.21:
+INFO : tensor(1.1988, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.22:
+INFO : tensor(1.2031, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.23:
+INFO : tensor(1.2054, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.24:
+INFO : tensor(1.2066, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.25:
+INFO : tensor(1.2072, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.26:
+INFO : tensor(1.2094, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.27:
+INFO : tensor(1.2363, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.28:
+INFO : tensor(1.2078, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.29:
+INFO : tensor(1.2079, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.30:
+INFO : tensor(1.2079, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.31:
+INFO : tensor(1.2079, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.32:
+INFO : tensor(1.2338, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.33:
+INFO : tensor(1.2276, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.34:
+INFO : tensor(1.2181, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.35:
+INFO : tensor(1.2132, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.36:
+INFO : tensor(1.2106, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.37:
+INFO : tensor(1.2093, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.38:
+INFO : tensor(1.2087, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.39:
+INFO : tensor(1.2083, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.40:
+INFO : tensor(1.2081, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.41:
+INFO : tensor(1.2188, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.42:
+INFO : tensor(1.2137, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.43:
+INFO : tensor(1.2110, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.44:
+INFO : tensor(1.2103, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.45:
+INFO : tensor(1.2077, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.46:
+INFO : tensor(1.2077, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.47:
+INFO : tensor(1.2077, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.48:
+INFO : tensor(1.2078, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.49:
+INFO : tensor(1.2078, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.50:
+INFO : tensor(1.2079, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.51:
+INFO : tensor(1.2079, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.52:
+INFO : tensor(1.2079, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.53:
+INFO : tensor(1.1949, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.54:
+INFO : tensor(1.2240, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.55:
+INFO : tensor(1.2169, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.56:
+INFO : tensor(1.2128, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.57:
+INFO : tensor(1.2106, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.58:
+INFO : tensor(1.2094, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.59:
+INFO : tensor(1.2087, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.60:
+INFO : tensor(1.2084, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.61:
+INFO : tensor(1.2082, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.62:
+INFO : tensor(1.2086, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.63:
+INFO : tensor(1.2083, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.64:
+INFO : tensor(1.2082, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.65:
+INFO : tensor(1.2082, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.66:
+INFO : tensor(1.2081, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.67:
+INFO : tensor(1.2080, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.68:
+INFO : tensor(1.2020, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.69:
+INFO : tensor(1.2034, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.70:
+INFO : tensor(1.2100, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.71:
+INFO : tensor(1.2088, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.72:
+INFO : tensor(1.2082, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.73:
+INFO : tensor(1.2080, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.74:
+INFO : tensor(1.2371, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.75:
+INFO : tensor(1.2249, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.76:
+INFO : tensor(1.2167, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.77:
+INFO : tensor(1.2138, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.78:
+INFO : tensor(1.2073, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.79:
+INFO : tensor(1.2077, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.80:
+INFO : tensor(1.2079, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.81:
+INFO : tensor(1.2080, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.82:
+INFO : tensor(1.2080, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.83:
+INFO : tensor(1.2080, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.84:
+INFO : tensor(1.2080, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.85:
+INFO : tensor(1.2285, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.86:
+INFO : tensor(1.2190, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.87:
+INFO : tensor(1.2138, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.88:
+INFO : tensor(1.2111, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.89:
+INFO : tensor(1.2096, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.90:
+INFO : tensor(1.2088, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.91:
+INFO : tensor(1.2083, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.92:
+INFO : tensor(1.2081, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.93:
+INFO : tensor(1.2080, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.94:
+INFO : tensor(1.2048, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.95:
+INFO : tensor(1.2061, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.96:
+INFO : tensor(1.2070, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.97:
+INFO : tensor(1.2074, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.98:
+INFO : tensor(1.2077, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.99:
+INFO : tensor(1.2078, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.100:
+INFO : tensor(1.2144, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.101:
+INFO : tensor(1.2118, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.102:
+INFO : tensor(1.2235, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.103:
+INFO : tensor(1.2160, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.104:
+INFO : tensor(1.2121, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.105:
+INFO : tensor(1.1945, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.106:
+INFO : tensor(1.1920, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.107:
+INFO : tensor(1.1994, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.108:
+INFO : tensor(1.2034, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.109:
+INFO : tensor(1.2056, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.110:
+INFO : tensor(1.2067, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.111:
+INFO : tensor(1.2073, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.112:
+INFO : tensor(1.2076, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.113:
+INFO : tensor(1.2077, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.114:
+INFO : tensor(1.2078, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.115:
+INFO : tensor(1.2079, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.116:
+INFO : tensor(1.2079, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.117:
+INFO : tensor(1.2079, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.118:
+INFO : tensor(1.2078, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.119:
+INFO : tensor(1.2078, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.120:
+INFO : tensor(1.2079, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.121:
+INFO : tensor(1.4132, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.122:
+INFO : tensor(1.2429, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.123:
+INFO : tensor(1.2263, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.124:
+INFO : tensor(1.2175, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.125:
+INFO : tensor(1.2130, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.126:
+INFO : tensor(1.2106, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.127:
+INFO : tensor(1.2093, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.128:
+INFO : tensor(1.2087, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.129:
+INFO : tensor(1.2082, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.130:
+INFO : tensor(1.2081, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.131:
+INFO : tensor(1.2167, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.132:
+INFO : tensor(1.2081, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.133:
+INFO : tensor(1.2077, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.134:
+INFO : tensor(1.2077, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.135:
+INFO : tensor(1.2078, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.136:
+INFO : tensor(1.2078, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.137:
+INFO : tensor(1.2079, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.138:
+INFO : tensor(1.2079, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.139:
+INFO : tensor(1.2079, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.140:
+INFO : tensor(1.2078, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.141:
+INFO : tensor(1.2079, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.142:
+INFO : tensor(1.2079, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.143:
+INFO : tensor(1.2079, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.144:
+INFO : tensor(1.2079, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.145:
+INFO : tensor(1.2261, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.146:
+INFO : tensor(1.2184, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.147:
+INFO : tensor(1.2136, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.148:
+INFO : tensor(1.2124, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.149:
+INFO : tensor(1.2103, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.150:
+INFO : tensor(1.2092, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.151:
+INFO : tensor(1.2086, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.152:
+INFO : tensor(1.2170, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.153:
+INFO : tensor(1.2123, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.154:
+INFO : tensor(1.2097, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.155:
+INFO : tensor(1.2087, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.156:
+INFO : tensor(1.2123, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.157:
+INFO : tensor(1.2102, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.158:
+INFO : tensor(1.2091, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.159:
+INFO : tensor(1.2085, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.160:
+INFO : tensor(1.2082, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.161:
+INFO : tensor(1.2081, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.162:
+INFO : tensor(1.2080, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.163:
+INFO : tensor(1.2079, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.164:
+INFO : tensor(1.2079, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.165:
+INFO : tensor(1.2079, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.166:
+INFO : tensor(1.2079, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.167:
+INFO : tensor(1.2079, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.168:
+INFO : tensor(1.2079, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.169:
+INFO : tensor(1.2578, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.170:
+INFO : tensor(1.2075, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.171:
+INFO : tensor(1.2077, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.172:
+INFO : tensor(1.2078, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.173:
+INFO : tensor(1.2079, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.174:
+INFO : tensor(1.2003, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.175:
+INFO : tensor(1.2042, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.176:
+INFO : tensor(1.2061, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.177:
+INFO : tensor(1.2099, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.178:
+INFO : tensor(1.2087, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.179:
+INFO : tensor(1.2489, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.180:
+INFO : tensor(1.2300, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.181:
+INFO : tensor(1.2195, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.182:
+INFO : tensor(1.2133, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.183:
+INFO : tensor(1.2107, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.184:
+INFO : tensor(1.2094, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.185:
+INFO : tensor(1.2070, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.186:
+INFO : tensor(1.2073, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.187:
+INFO : tensor(1.2072, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.188:
+INFO : tensor(1.2075, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.189:
+INFO : tensor(1.2050, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.190:
+INFO : tensor(1.2061, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.191:
+INFO : tensor(1.2009, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.192:
+INFO : tensor(1.2039, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.193:
+INFO : tensor(1.2058, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.194:
+INFO : tensor(1.2068, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.195:
+INFO : tensor(1.2073, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.196:
+INFO : tensor(1.2076, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.197:
+INFO : tensor(1.2077, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.198:
+INFO : tensor(1.2078, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.199:
+INFO : tensor(1.2078, grad_fn=<NllLossBackward>)
+INFO : 
+Epoch n.200:
+INFO : tensor(1.2079, grad_fn=<NllLossBackward>)

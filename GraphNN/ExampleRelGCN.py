@@ -10,6 +10,7 @@ import Utils
 import logging
 from torch_geometric.utils import convert
 import networkx
+import matplotlib.pyplot as plt
 
 # In this example, we do not extract the node features, word and sense vocabulary indices, etc.
 # We use Random Number Generation to create a small structure.
@@ -21,7 +22,7 @@ def createInputGraph():
     num_def = 20
     num_exs = 20
     NUM_NODES = num_senses + num_sp + num_def + num_exs
-    NUM_NODE_FEATURES = 10
+    NUM_NODE_FEATURES = 100
     NUM_RELATIONS = 5
     # X (Tensor, optional) – Node feature matrix with shape [num_nodes, num_node_features]. (default: None)
     #
@@ -77,6 +78,8 @@ def createInputGraph():
     edges_ant = setrandomedges_syn_or_ant(num_senses, num_senses+num_sp,
                                                      restrict=True, opposite_connections_lts=edges_syn)
     logging.debug("Edges - ant . Connections:" + str(edges_ant))
+    logging.info("Total number of edges = " + str(len(edges_defs)+len(edges_exs)+
+                                                  len(edges_sc)+len(edges_syn)+len(edges_ant)) )
 
 
     ##### Reuniting the components of the graph
@@ -155,7 +158,7 @@ def setrandomedges_syn_or_ant(global_low, global_high, restrict=False, opposite_
 
 ######
 
-##### The RGCN
+##### The GNN
 # From the GCN example at: https://pytorch-geometric.readthedocs.io/en/latest/notes/introduction.html
 # class Net(torch.nn.Module):
 #     def __init__(self):
@@ -172,7 +175,7 @@ def setrandomedges_syn_or_ant(global_low, global_high, restrict=False, opposite_
 #         x = self.conv2(x, edge_index)
 #
 #         return F.log_softmax(x, dim=1)
-# From the example at: https://github.com/rusty1s/pytorch_geometric/blob/master/examples/rgcn.py
+# From the RGCN example at: https://github.com/rusty1s/pytorch_geometric/blob/master/examples/rgcn.py
 # class Net(torch.nn.Module):
 #     def __init__(self):
 #         super(Net, self).__init__()
@@ -185,27 +188,30 @@ def setrandomedges_syn_or_ant(global_low, global_high, restrict=False, opposite_
 #         x = F.relu(self.conv1(None, edge_index, edge_type))
 #         x = self.conv2(x, edge_index, edge_type)
 #         return F.log_softmax(x, dim=1)
+
 class NetRGCN(torch.nn.Module):
     def __init__(self, data):
         super(NetRGCN, self).__init__()
-        self.conv1 = RGCNConv(in_channels=data.x.shape[1], # the number of features of a node
-                              out_channels=data.x.shape[1], # representation at layer L+1
-                              num_relations=data.num_relations, num_bases=data.num_relations)
         self.last_idx_senses = data.node_types.tolist().index(1)
         self.last_idx_globals = data.node_types.tolist().index(2)
-        self.conv2global = RGCNConv(in_channels=data.x.shape[1],  # the number of features of a node
-                                    out_channels=self.last_idx_globals,  # the number of global/sp nodes, to predict one of them
-                                    num_relations=data.num_relations, num_bases=data.num_relations)
-        self.conv2senses = RGCNConv(in_channels=data.x.shape[1],  # the number of features of a node
-                                    out_channels=self.last_idx_senses,  # the number of senses nodes, to predict one of them
-                                    num_relations=data.num_relations, num_bases=data.num_relations)
+        self.conv1 = RGCNConv(in_channels=data.x.shape[1], # doc: "Size of each input sample "
+                              # although, if I followed the example, it should be num_nodes
+                              out_channels=32, # doc: "Size of each output sample "
+                              num_relations=data.num_relations,
+                              num_bases=data.num_relations)
+        self.conv2 = RGCNConv(in_channels=32, out_channels=self.last_idx_globals - self.last_idx_senses,
+                              num_relations=data.num_relations, num_bases=data.num_relations)
 
-    # observation: the RGCNConv's forward has the signature: forward(x, edge_index, edge_type, edge_norm=None, size=None)
-    def forward(self, node_vector, edge_index, edge_type):
-        x = tF.relu(self.conv1(node_vector, edge_index, edge_type))
-        logits_globals = self.conv2global(x, edge_index, edge_type)
-        logits_senses = self.conv2senses(x, edge_index, edge_type)
-        return (tF.log_softmax(logits_globals, dim=1), tF.log_softmax(logits_senses, dim=1))
+    def forward(self, x, edge_index, edge_type):
+        x = tF.relu(self.conv1(x, edge_index, edge_type))
+        x = self.conv2(x, edge_index, edge_type)
+
+        # current output: shape [55,5]: for every node, the probability to belong to each one of the Global classes
+        # i.e. to be followed by each one of the global words.
+        # using softmax on dimension=1 gives sensible probabilities
+
+        return tF.log_softmax(x, dim=1)
+
 
 
 def train():
@@ -215,22 +221,45 @@ def train():
     RGCN_modelobject = NetRGCN(inputgraph_dataobject)
 
     data, model = inputgraph_dataobject.to(device), RGCN_modelobject.to(device)
-    model.train()
 
     optimizer = torch.optim.Adam(model.parameters(), lr=0.01, weight_decay=0.0005)
-    optimizer.zero_grad()
 
     #out = model(data.edge_index, data.edge_type, data.edge_norm)
-    training_dataset_length = 20
-    training_dataset = [random.randint(RGCN_modelobject.last_idx_senses, RGCN_modelobject.last_idx_globals-1)
-                        for i in range(training_dataset_length)] # only globals for now
+    training_dataset_length = 100
+    training_dataset = torch.randint(low=RGCN_modelobject.last_idx_senses, # only globals for now
+                                     high=RGCN_modelobject.last_idx_globals-1, size = (training_dataset_length,))
     logging.info("Training dataset = " + str(training_dataset))
+    logging.info("Graph, data.x.shape=" + str(data.x.shape))
+    training_dataset.to(device, dtype=torch.int64)
+    log_steps = 100
+    num_epochs = 200
+    model.train()
+    losses = []
+    for epoch in range(1,num_epochs+1):
+        logging.info("\nEpoch n."+str(epoch) +":" )
 
-    for train_idx in training_dataset:
-        logging.info(data.x.shape)
-        predicted_global, predicted_sense = model(data.x[train_idx], data.edge_index[train_idx], data.edge_type[train_idx])
-        tF.nll_loss(predicted_global, training_dataset[train_idx+1]).backward()
-    optimizer.step()
+        for i in range(len(training_dataset)-1):
+            optimizer.zero_grad()
+            predicted_global_forEachNode, predicted_sense_forEachNode = model(data.x, data.edge_index, data.edge_type)
+            # shape [55,5]: for every node, the probability to belong to each one of the Global classes
+            # i.e. to be followed by each one of the global words.
+
+            current_word = training_dataset[i]
+            y_nextWordClass = torch.Tensor([training_dataset[i+1] - model.last_idx_senses]).long()
+
+            logging.debug("current_word=" + str(current_word) + " ; y_nextWordClass=" + str(y_nextWordClass))
+            loss_global = tF.nll_loss(predicted_global_forEachNode[current_word].unsqueeze(0), y_nextWordClass)
+            loss_global.backward()
+            optimizer.step()
+            if i % log_steps == 0:
+                logging.info(loss_global)
+                losses.append(loss_global)
+
+
+    getLossGraph(losses)
+
+def getLossGraph(source):
+    plt.plot(source, color='red', marker='o')
 
 
 
