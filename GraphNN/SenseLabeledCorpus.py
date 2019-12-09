@@ -109,14 +109,14 @@ def dataset_generator(xml_fpath):
             yield(elem.attrib)
 
 
-def readgenerator_senselabeled_corpuses(dataset_split):
+def readgenerator_senselabeled_corpuses(split_name):
     Utils.init_logging('temp.log')
     logging.info("Invoking")
-    if dataset_split.lower() == Utils.TRAINING:
+    if split_name.lower() == Utils.TRAINING:
         training_subcorpuses_folder = os.path.join(F.FOLDER_TEXT_CORPUSES, F.FOLDER_UFSAC, F.FOLDER_TRAIN)
         full_fpaths = list(map(lambda fname: os.path.join(training_subcorpuses_folder, fname),
                                os.listdir(training_subcorpuses_folder)))
-    elif dataset_split.lower() == Utils.VALIDATION:
+    elif split_name.lower() == Utils.VALIDATION:
         validation_subcorpuses_folder = os.path.join(F.FOLDER_TEXT_CORPUSES, F.FOLDER_UFSAC, F.FOLDER_VALIDATION)
         full_fpaths = list(map(lambda fname: os.path.join(validation_subcorpuses_folder, fname),
                                os.listdir(validation_subcorpuses_folder)))
@@ -133,8 +133,9 @@ def readgenerator_senselabeled_corpuses(dataset_split):
             return
 
 
-def example():
-    validation_subcorpuses_folder = os.path.join(F.FOLDER_TEXT_CORPUSES, F.FOLDER_UFSAC, F.FOLDER_VALIDATION)
-    xml_fpath = os.path.join(validation_subcorpuses_folder, 'semcor.xml')
-    gen = dataset_generator(xml_fpath)
-    return gen
+
+def read_split(split_name):
+    gen_over_split = readgenerator_senselabeled_corpuses(split_name)
+    for gen_over_corpus in gen_over_split:
+        for elem in gen_over_corpus:
+            yield elem

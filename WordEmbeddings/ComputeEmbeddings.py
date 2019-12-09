@@ -68,7 +68,7 @@ def compute_elements_embeddings(elements_name, method):
     input_filepath = os.path.join(Filesystem.FOLDER_INPUT, Utils.PROCESSED + '_' + elements_name + ".h5")
     output_filepath = os.path.join(Filesystem.FOLDER_INPUT, Utils.VECTORIZED + '_' + str(method.value) + '_'
                                    + elements_name) # + ".npy"
-    vocabTable_db_filepath = os.path.join(Filesystem.FOLDER_INPUT, Utils.INDICES_TABLE + ".sql")
+    vocabTable_db_filepath = os.path.join(Filesystem.FOLDER_INPUT, Utils.INDICES_TABLE_DB)
 
     input_db = pd.HDFStore(input_filepath, mode='r')
     vocabTable_db = sqlite3.connect(vocabTable_db_filepath)

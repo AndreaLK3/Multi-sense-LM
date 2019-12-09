@@ -40,7 +40,7 @@ TRAINING = 'training'
 VALIDATION = 'validation'
 TEST = 'test'
 
-INDICES_TABLE = 'indices_table'
+INDICES_TABLE_DB = 'indices_table.sql'
 
 UNK_TOKEN = '<unk>'
 NUM_TOKEN = '<num>'

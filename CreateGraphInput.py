@@ -26,7 +26,7 @@ def reset():
     # reset the vocabularies, and the SQL DB with the indices for the embedding matrices
     vocab_filepaths = list(map(lambda fname: os.path.join(F.FOLDER_VOCABULARY, fname),
                                [F.VOCAB_WT2_FILE, F.VOCAB_WT103_FILE, F.VOCAB_PHRASED]))
-    db_filepaths = [os.path.join(F.FOLDER_INPUT,Utils.INDICES_TABLE + ".sql")]
+    db_filepaths = [os.path.join(F.FOLDER_INPUT, Utils.INDICES_TABLE_DB)]
 
     for fpath in archives_filepaths:
         f = pd.HDFStore(fpath, mode='w')

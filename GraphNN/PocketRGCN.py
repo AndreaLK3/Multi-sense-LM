@@ -24,7 +24,7 @@ def createInputGraph():
     NUM_NODES = num_senses + num_sp + num_def + num_exs
     NUM_NODE_FEATURES = 100
     NUM_RELATIONS = 5
-    # X (Tensor, optional) – Node feature matrix with shape [num_nodes, num_node_features]. (default: None)
+    # X (Tensor, optional) – Node feature matrix with shape [num_nodes, num_node_features].
     #
     # The nodes are: all the sense embeddings + all the single-prototype embeddings
     #               + all the sentence embeddings from the definitions and examples.
