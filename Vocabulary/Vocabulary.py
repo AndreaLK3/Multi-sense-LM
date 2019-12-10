@@ -31,29 +31,19 @@ def build_vocabulary_from_text(corpus_txt_filepath):
     logging.info("Vocabulary created, after processing " + str(tot_tokens) + ' tokens')
     return vocab_dict
 
+
+
+
 def build_vocabulary_from_senselabeled(slc_split_name):
     vocab_dict = {}
 
     for token_dict in SLC.read_split(slc_split_name):
-        token_text = html.unescape(token_dict['surface_form'])
-        if token_text == Utils.EOS_TOKEN:
-            continue # we do not register <eos>
-
-        if token_text == token_text.upper():  # if ALL CAPITALS -> must lowercase
-            token_text = token_text.lower()
-        if token_text == token_text.lower(): # if all lowercase
-            token_ls = token_text.split('_') # -> must split the phrases that do not contain Capitalized names
-        else:
-            token_ls = [token_text.replace('_', ' ')] # if we keep phrases, we should write 'Mr. Barcus' not Mr._Barcus
-
-        token_ls_latinorgreek = VocabUtils.replace_nonLatinGreek_words(token_ls)
-        token_ls_final = VocabUtils.replace_numbers(token_ls_latinorgreek)
-        for token in token_ls_final:
-            try:
-                prev_freq = vocab_dict[token]
-                vocab_dict[token] = prev_freq + 1
-            except KeyError:
-                vocab_dict[token] = 1
+        token = VocabUtils.process_slc_token(token_dict)
+        try:
+            prev_freq = vocab_dict[token]
+            vocab_dict[token] = prev_freq + 1
+        except KeyError:
+            vocab_dict[token] = 1
     return vocab_dict
 
 # Entry function: if a vocabulary is already present in the specified path, load it. Otherwise, create it.

@@ -1,4 +1,4 @@
-import time
+import html
 import os
 import logging
 import nltk
@@ -106,3 +106,18 @@ def process_line(line, tot_tokens=0):
     line_tokens_03_replNumbers = replace_numbers(line_tokens_02_onlyLatinOrGreek)
 
     return line_tokens_03_replNumbers, tot_tokens
+
+
+######### When we build a vocabulary from the sense-labeled corpus(es), to transform a token:
+
+def process_slc_token(token_dict):
+    token_text = html.unescape(token_dict['surface_form'])
+
+    if token_text == token_text.upper():  # if ALL CAPITALS -> must lowercase
+        token_text = token_text.lower()
+    token_text = token_text.replace('_', ' ')  # we keep phrases, but we should write 'Mr. Barcus' not Mr._Barcus
+
+    token_latinorgreek = replace_nonLatinGreek_words([token_text])[0]
+    token_final = replace_numbers([token_latinorgreek])[0]
+    return token_final
+

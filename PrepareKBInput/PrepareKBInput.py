@@ -46,9 +46,9 @@ def create_senses_indices_table(vocabulary_words_ls):
     examples_input_db = pd.HDFStore(examples_input_filepath, mode='r')
 
     output_filepath = os.path.join(Filesystem.FOLDER_INPUT, Utils.INDICES_TABLE_DB)
-    out_vocabTable_db = sqlite3.connect(output_filepath)
-    out_vocabTable_db_c = out_vocabTable_db.cursor()
-    out_vocabTable_db_c.execute('''CREATE TABLE IF NOT EXISTS
+    out_indicesTable_db = sqlite3.connect(output_filepath)
+    out_indicesTable_db_c = out_indicesTable_db.cursor()
+    out_indicesTable_db_c.execute('''CREATE TABLE IF NOT EXISTS
                                                 indices_table (  word_sense varchar(127),
                                                                     vocab_index int,
                                                                     start_defs int,
@@ -71,7 +71,7 @@ def create_senses_indices_table(vocabulary_words_ls):
 
         end_defs_count = start_defs_count + len(sense_defs_df.index)
         end_examples_count = start_examples_count + len(sense_examples_df.index)
-        out_vocabTable_db_c.execute("INSERT INTO indices_table VALUES (?,?,?,?,?,?)", (wn_id, my_vocabulary_index,
+        out_indicesTable_db_c.execute("INSERT INTO indices_table VALUES (?,?,?,?,?,?)", (wn_id, my_vocabulary_index,
                                                                             start_defs_count, end_defs_count,
                                                                             start_examples_count, end_examples_count))
 
@@ -84,8 +84,8 @@ def create_senses_indices_table(vocabulary_words_ls):
         start_defs_count = end_defs_count
         start_examples_count = end_examples_count
 
-    out_vocabTable_db.commit()
-    out_vocabTable_db.close()
+    out_indicesTable_db.commit()
+    out_indicesTable_db.close()
 
 
 # ['move', 'light']

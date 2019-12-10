@@ -7,6 +7,10 @@ import torch.nn.functional as tF
 import GraphNN.DefineGraph as DG
 import GraphNN.SenseLabeledCorpus as SLC
 from nltk.corpus import wordnet as wn
+import Vocabulary.Vocabulary_Utilities as VocabUtils
+import sqlite3
+import os
+import pandas as pd
 
 class NetRGCN(torch.nn.Module):
     def __init__(self, data):
@@ -38,7 +42,6 @@ class NetRGCN(torch.nn.Module):
 
 # sense = [0,se) ; single prototype = [se,se+sp) ; definitions = [se+sp, se+sp+d) ; examples = [se+sp+d, e==num_nodes)
 
-
 def convert_tokendict_to_tpl(token_dict, senseindices_db_c, globals_vocabulary_h5, last_idx_senses):
     keys = token_dict.keys()
 
@@ -48,76 +51,82 @@ def convert_tokendict_to_tpl(token_dict, senseindices_db_c, globals_vocabulary_h
                                                 "WHERE word_sense=="+wordnet_sense)
     else:
         sense_index = -1
-    word = token_dict['surface_form']
-    Utils.select_from_hdf5(globals_vocabulary_h5, 'vocabulary', ['word'])
+    word = VocabUtils.process_slc_token(token_dict)
+    global_absolute_index = Utils.select_from_hdf5(globals_vocabulary_h5, 'vocabulary', ['word'], [word]).index[0]
+    global_index = global_absolute_index + last_idx_senses
+    return (global_index, sense_index)
 
 
 
 def train():
     Utils.init_logging('temp.log')
+
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     inputgraph_dataobject = DG.get_graph_dataobject()
     RGCN_modelobject = NetRGCN(inputgraph_dataobject)
-
     data, model = inputgraph_dataobject.to(device), RGCN_modelobject.to(device)
+
+    senseindices_db_filepath = os.path.join(F.FOLDER_INPUT, Utils.INDICES_TABLE_DB)
+    senseindices_db = sqlite3.connect(senseindices_db_filepath)
+    senseindices_db_c = senseindices_db.cursor()
+
+    globals_vocabulary_fpath = os.path.join(F.FOLDER_VOCABULARY, F.VOCAB_FROMSLC_FILE)
+    vocab_h5 = pd.HDFStore(globals_vocabulary_fpath, mode='r')
 
     optimizer = torch.optim.Adam(model.parameters(), lr=0.01, weight_decay=0.0005)
 
-    training_elements_generator = SLC.read_split('training')
-
-
-
-
-    #out = model(data.edge_index, data.edge_type, data.edge_norm)
-    training_dataset = torch.Tensor([(10,-1),(11,5),(12,-1),(13,3),(14,-1),(10,9),(11,-1),(12,-1),(13,-1),(14,-1),
-                        (10,-1),(11,5),(12,-1),(13,3),(14,-1),(10,9),(11,5),(12,-1),(13,3),(14,-1)]).type(torch.int64)
-    logging.info("Training dataset = " + str(training_dataset))
-    logging.info("Graph, data.x.shape=" + str(data.x.shape))
-    training_dataset.to(device, dtype=torch.int64)
     num_epochs = 10
     model.train()
     losses = []
-    loss = 0
+    batch_size = 1
 
     for epoch in range(1,num_epochs+1):
         logging.info("\nEpoch n."+str(epoch) +":" )
+        train_generator = SLC.read_split('training')
+        next_token_tpl = None
+        try:
+            while(True):
+                if next_token_tpl is None:
+                    current_token_tpl = convert_tokendict_to_tpl(train_generator.__next__(),
+                                                                 senseindices_db_c, vocab_h5, model.last_idx_senses)
+                    next_token_tpl = convert_tokendict_to_tpl(train_generator.__next__(),
+                                                              senseindices_db_c, vocab_h5, model.last_idx_senses)
+                else:
+                    current_token_tpl = next_token_tpl
+                    next_token_tpl = convert_tokendict_to_tpl(train_generator.__next__(),
+                                                              senseindices_db_c, vocab_h5, model.last_idx_senses)
 
-        for i in range(len(training_dataset)-1):
-            optimizer.zero_grad()
-            predicted_global_forEachNode, predicted_sense_forEachNode = model(data.x, data.edge_index, data.edge_type)
-            # shape [55,5]: for every node, the probability to belong to each one of the Global classes
-            # i.e. to be followed by each one of the global words.
+                optimizer.zero_grad()
+                predicted_global_forEachNode, predicted_sense_forEachNode = model(data.x, data.edge_index, data.edge_type)
 
-            (current_input_global, current_input_sense) = training_dataset[i] # so we decide which row of the graph-output we use for the prediction
-            if current_input_sense == -1:
-                current_token_index = current_input_global
-            else:
-                current_token_index = current_input_sense
+                (current_input_global, current_input_sense) = current_token_tpl
+                if current_input_sense == -1:
+                    current_token_index = current_input_global
+                else:
+                    current_token_index = current_input_sense
 
-            global_raw_idx = training_dataset[i + 1][0]
-            sense_idx =  training_dataset[i + 1][1]
-            (y_labelnext_global,y_labelnext_sense) = (torch.Tensor([global_raw_idx - model.last_idx_senses]).type(torch.int64),
-                                                      torch.Tensor([sense_idx]).type(torch.int64))
+                (y_labelnext_global,y_labelnext_sense) = next_token_tpl# (torch.Tensor().type(torch.int64),
 
-            if y_labelnext_sense == -1:
-                is_label_senseLevel = False
-            else:
-                is_label_senseLevel = True
+                if y_labelnext_sense == -1:
+                    is_label_senseLevel = False
+                else:
+                    is_label_senseLevel = True
 
-            loss_global = tF.nll_loss(predicted_global_forEachNode[current_token_index].unsqueeze(0), y_labelnext_global)
+                loss_global = tF.nll_loss(predicted_global_forEachNode[current_token_index].unsqueeze(0), y_labelnext_global)
 
 
-            if is_label_senseLevel:
-                loss_sense = tF.nll_loss(predicted_sense_forEachNode[current_token_index].unsqueeze(0),
-                                          y_labelnext_sense)
-            else:
-                loss_sense = 0
-            loss = loss_global + loss_sense
-            loss.backward()
-            optimizer.step()
-
-        logging.info(loss)
-        losses.append(loss)
+                if is_label_senseLevel:
+                    loss_sense = tF.nll_loss(predicted_sense_forEachNode[current_token_index].unsqueeze(0),
+                                              y_labelnext_sense)
+                else:
+                    loss_sense = 0
+                loss = loss_global + loss_sense
+                loss.backward()
+                optimizer.step()
+                logging.info(loss)
+                losses.append(loss)
+        except StopIteration:
+            continue # next epoch
 
     getLossGraph(losses)
 
