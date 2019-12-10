@@ -23,6 +23,7 @@ TEMPORARY_PHRASED_CORPUS = 'temp_phrased_training_corpus.txt'
 
 VOCAB_WT2_FILE = 'vocabulary_from_WikiText-2.h5'
 VOCAB_WT103_FILE = 'vocabulary_from_WikiText-103.h5'
+VOCAB_FROMSLC_FILE = 'vocabulary_from_SenseLabeledCorpus.h5'
 VOCAB_PHRASED = 'vocabulary_phrased.h5'
 
 VOCAB_CURRENT_INDEX_FILE = 'vocabulary_currentIndex.txt' # used for BabelNet requests over several days
@@ -35,9 +36,10 @@ FOLDER_TRAIN = 'Training'
 FOLDER_VALIDATION = 'Validation'
 FOLDER_TEST= 'Test'
 
-
 SEMCOR_DB = 'semcor_all.db'
 MASC_DB = 'masc_written.db'
+
+KBGRAPH_FILE = 'kbGraph.dataobject'
 
 ENCODER_MODEL = "Encoder_768to300_nn.model" # not used in the current version
 

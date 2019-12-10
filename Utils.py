@@ -68,8 +68,9 @@ def init_logging(logfilename, loglevel=logging.INFO):
 ### Note: must add the vocabularies of other languages
 def check_language(text, lang_id):
 
+    text = text.replace('_', ' ')
     languages_lts = langid.rank(text)
-    possible_match = (lang_id.lower() in [lang_tuple[0] for lang_tuple in languages_lts[0:5]])
+    possible_match = (lang_id.lower() in [lang_tuple[0] for lang_tuple in languages_lts[0:9]])
 
     text_tokens = nltk.tokenize.word_tokenize(text.lower())
     text_tokens_nopunct = list(filter(lambda t: t not in string.punctuation, text_tokens))
@@ -163,4 +164,12 @@ def select_from_hdf5(input_db, table_key, field_names, values):
 def get_word_from_sense(sense_str):
     pattern = '[^.]+'
     mtc = re.match(pattern, sense_str)
-    return mtc.group()
+    # Temporary check for debugging
+    try:
+        word = mtc.group()
+    except AttributeError:
+        logging.info("sense_str= " + sense_str)
+        pattern_2 = '.[^.]+'
+        mtc = re.match(pattern_2, sense_str)
+        word = mtc.group()
+    return word

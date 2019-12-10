@@ -4,7 +4,7 @@ import PrepareKBInput.PrepareKBInput as PI
 import Utils
 import os
 import pandas as pd
-import Vocabulary.Vocabulary as VOC
+import Vocabulary.Vocabulary as V
 import Vocabulary.Phrases as PHR
 import WordEmbeddings.ComputeEmbeddings as CE
 import tables
@@ -25,7 +25,7 @@ def reset():
 
     # reset the vocabularies, and the SQL DB with the indices for the embedding matrices
     vocab_filepaths = list(map(lambda fname: os.path.join(F.FOLDER_VOCABULARY, fname),
-                               [F.VOCAB_WT2_FILE, F.VOCAB_WT103_FILE, F.VOCAB_PHRASED]))
+                               [F.VOCAB_WT2_FILE, F.VOCAB_WT103_FILE, F.VOCAB_PHRASED, F.VOCAB_FROMSLC_FILE]))
     db_filepaths = [os.path.join(F.FOLDER_INPUT, Utils.INDICES_TABLE_DB)]
 
     for fpath in archives_filepaths:
@@ -57,27 +57,28 @@ def exe(do_reset=False, compute_single_prototype=False):
     if do_reset:
         reset()
 
-    # NOTE: For the sake of 1) Building a Version 1.0 ; 2) Simplicity and streamlining ; -> we ignore Phrases for now
+    # NOTE: If the source of our vocabulary is a text corpus, for simplicity and streamlining we ignore Phrases for now
+    # If the source is the sense-labeled corpus, it already has phrases (e.g. breaking_even, great_powers)
     # PHR.setup_phrased_corpus(os.path.join(F.FOLDER_WT2, F.WT_TRAIN_FILE),
     #                          os.path.join(F.FOLDER_INPUT, F.PHRASED_TRAINING_CORPUS),
     #                          min_freq=40, score_threshold=120) # bigrams of phrases
-    # VOC.get_vocabulary_df(os.path.join(F.FOLDER_VOCABULARY, F.VOCAB_PHRASED),
-    #                       os.path.join(F.FOLDER_TEXT_CORPUSES, F.PHRASED_TRAINING_CORPUS), min_count=5)
+    # V.get_vocabulary_df(...)
 
-    vocabulary = VOC.get_vocabulary_df(os.path.join(F.FOLDER_VOCABULARY, F.VOCAB_WT2_FILE),
-                          os.path.join(F.FOLDER_WT2, F.WT_TRAIN_FILE), min_count=3)
+    vocab_filepath = os.path.join(F.FOLDER_VOCABULARY, F.VOCAB_FROMSLC_FILE)
+    vocabulary = V.get_vocabulary_df(senselabeled_or_text=True, slc_split_name='training', corpus_txt_filepath=None,
+                                     out_vocabulary_h5_filepath=vocab_filepath, min_count=3)
 
     if compute_single_prototype:
         reset_embeddings()
-        CE.compute_single_prototype_embeddings(vocabulary,
-                                               os.path.join(F.FOLDER_INPUT, F.SPVs_DISTILBERT_FILE),
-                                               CE.Method.DISTILBERT)
+        # CE.compute_single_prototype_embeddings(vocabulary,
+        #                                        os.path.join(F.FOLDER_INPUT, F.SPVs_DISTILBERT_FILE),
+        #                                        CE.Method.DISTILBERT)
 
         CE.compute_single_prototype_embeddings(vocabulary,
                                                os.path.join(F.FOLDER_INPUT, F.SPVs_FASTTEXT_FILE),
                                                CE.Method.FASTTEXT)
 
-    kb_data_chunk = RID.retrieve_data_WordNet()
+    kb_data_chunk = RID.retrieve_data_WordNet(vocabulary)
     logging.info("CreateGraphInput.exe() > "
                  + " Words included in the vocabulary chunk, to be prepared: " + str(kb_data_chunk))
     PI.prepare(kb_data_chunk)

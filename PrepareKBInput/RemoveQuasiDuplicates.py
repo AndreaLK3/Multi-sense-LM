@@ -47,7 +47,7 @@ def eliminate_duplicates_in_table(vocabulary_ls, elements_name, input_db, output
             if processed_elements.count(tpl[1]) < 2:
                 sense_lts_01_no_duplicates.append(tpl)
             else:
-                logging.info("Duplicate element found: " + str(tpl[1]))
+                logging.info("Duplicate element (" + elements_name+ ") found for '" +wn_id+ "' : " + str(tpl[1]))
                 processed_elements.remove(tpl[1])
 
         data_to_add = list(map(lambda tpl: (wn_id, tpl[0]) , sense_lts_01_no_duplicates))

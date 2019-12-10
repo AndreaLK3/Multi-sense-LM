@@ -37,7 +37,7 @@ def preprocess(vocabulary_ls):
 # Phase 2 - Considering the wordSenses in the vocabulary, located in the archive of processed definitions,
 # establish a correspondence with an integer index.
 # Moreover, counting the number of defs and examples, define start&end indices for the matrix of word embeddings.
-def create_senses_vocabulary_table(vocabulary_words_ls):
+def create_senses_indices_table(vocabulary_words_ls):
     #Utils.init_logging('CreateSensesVocabularyTable.log', logging.INFO)
 
     defs_input_filepath = os.path.join(Filesystem.FOLDER_INPUT, Utils.PROCESSED + '_' + Utils.DEFINITIONS + ".h5")
@@ -49,7 +49,7 @@ def create_senses_vocabulary_table(vocabulary_words_ls):
     out_vocabTable_db = sqlite3.connect(output_filepath)
     out_vocabTable_db_c = out_vocabTable_db.cursor()
     out_vocabTable_db_c.execute('''CREATE TABLE IF NOT EXISTS
-                                                vocabulary_table (  word_sense varchar(127),
+                                                indices_table (  word_sense varchar(127),
                                                                     vocab_index int,
                                                                     start_defs int,
                                                                     end_defs int,
@@ -71,7 +71,7 @@ def create_senses_vocabulary_table(vocabulary_words_ls):
 
         end_defs_count = start_defs_count + len(sense_defs_df.index)
         end_examples_count = start_examples_count + len(sense_examples_df.index)
-        out_vocabTable_db_c.execute("INSERT INTO vocabulary_table VALUES (?,?,?,?,?,?)", (wn_id, my_vocabulary_index,
+        out_vocabTable_db_c.execute("INSERT INTO indices_table VALUES (?,?,?,?,?,?)", (wn_id, my_vocabulary_index,
                                                                             start_defs_count, end_defs_count,
                                                                             start_examples_count, end_examples_count))
 
@@ -96,7 +96,7 @@ def prepare(vocabulary): #vocabulary = ['move', 'light', 'for', 'sea']
     preprocess(vocabulary)
 
     # Phase 2 - Create the Vocabulary table with the correspondences (wordSense, integer index).
-    create_senses_vocabulary_table(vocabulary)
+    create_senses_indices_table(vocabulary)
 
     # Phase 3a - get the sentence embeddings for definitions and examples, using BERT, and store them
     CE.compute_elements_embeddings(Utils.DEFINITIONS, CE.Method.DISTILBERT)

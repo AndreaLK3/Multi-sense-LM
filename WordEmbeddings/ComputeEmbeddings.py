@@ -75,7 +75,7 @@ def compute_elements_embeddings(elements_name, method):
     vocabTable_db_c = vocabTable_db.cursor()
 
     matrix_of_sentence_embeddings = []
-    vocabTable_db_c.execute("SELECT * FROM vocabulary_table")
+    vocabTable_db_c.execute("SELECT * FROM indices_table")
 
     for row in vocabTable_db_c: # consuming the cursor iterator. Tuple returned: ('wide.a.1', 2, 4,5, 16,18)
         sense_df = Utils.select_from_hdf5(input_db, elements_name, [Utils.SENSE_WN_ID], [row[0]])

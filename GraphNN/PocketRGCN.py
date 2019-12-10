@@ -38,7 +38,7 @@ def createInputGraph():
     # sense = [0,se) ; single prototype = [se,se+sp) ; definitions = [se+sp, se+sp+d) ; examples = [se+sp+d, e==num_nodes)
     # The index will be the row number in the matrix X
 
-    # edge_index (LongTensor, optional) – Graph connectivity in COO format with shape [2, num_edges]. (default: None)
+    # edge_index (LongTensor, optional) – Graph connectivity in COO format with shape [2, num_edges].
     # We can operate with a list of S-D tuples, adding t().contiguous()
     # The Procedure to set up both X and edge_index will be:
     # - read the archive of processed definitions. We encounter the sense_wn_id (e.g. active.n.03), and the def. text

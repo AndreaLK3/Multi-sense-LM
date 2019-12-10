@@ -16,7 +16,7 @@ def unpack_ls_in_tpls(lts):
 
 
 ############### Append to HDF5 tables on disk
-def store_data_to_hdf5(data_df, h5_outfiles, h5_itemsizes, lang_id='en'):
+def store_data_to_hdf5(data_df, h5_outfiles, h5_itemsizes, check_language=False, lang_id='en'):
 
     for i in range(len(Utils.CATEGORIES)):
         category = Utils.CATEGORIES[i]
@@ -31,11 +31,12 @@ def store_data_to_hdf5(data_df, h5_outfiles, h5_itemsizes, lang_id='en'):
         # removing trailing whitespace
         sensenames_elements_lts_01 = list(map(lambda tpl: (tpl[0], tpl[1].strip()), sensenames_elements_lts))
 
-        sensenames_elements_lts_02 = list(filter(lambda tpl: Utils.check_language(tpl[1], lang_id), sensenames_elements_lts_01))
+        if check_language:
+            sensenames_elements_lts_01 = list(filter(lambda tpl: Utils.check_language(tpl[1], lang_id), sensenames_elements_lts_01))
 
         df_columns = [Utils.SENSE_WN_ID, category]
-        df = pd.DataFrame(data=sensenames_elements_lts_02, columns=df_columns)
-        logging.debug(str(len(sensenames_elements_lts_02)))
+        df = pd.DataFrame(data=sensenames_elements_lts_01, columns=df_columns)
+        logging.debug(str(len(sensenames_elements_lts_01)))
         try:
             h5_outfiles[i].append(key=category, value=df, min_itemsize={key: h5_itemsizes[key] for key in df_columns})
         except ValueError as exc:

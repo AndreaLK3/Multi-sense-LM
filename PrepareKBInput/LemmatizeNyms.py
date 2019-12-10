@@ -11,7 +11,12 @@ STOPWORDS_CORENLP_FILEPATH = os.path.join("PrepareKBInput",'stopwords_coreNLP.tx
 # Utility function
 def get_wordnet_pos(word):
     """Map POS tag to the first character, that nltk.stemlemmatize() accepts"""
-    tag = nltk.pos_tag([word])[0][1][0].upper()
+    try:
+        tag = nltk.pos_tag([word])[0][1][0].upper()
+    except TypeError as e:
+        logging.warning("word=" + word)
+        logging.warning(e)
+        tag = 'n'
     tag_dict = {"J": 'a',# wordnet.ADJ,
                 "N": 'n',# wordnet.NOUN,
                 "V": 'v',# wordnet.VERB,

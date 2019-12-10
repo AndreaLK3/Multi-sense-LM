@@ -15,7 +15,7 @@ def is_only_punctuation(word_token):
     return False
 
 
-def retrieve_data_WordNet():
+def retrieve_data_WordNet(vocabulary_df):
 
     with open(os.path.join(Filesystem.FOLDER_VOCABULARY, Filesystem.VOCAB_CURRENT_INDEX_FILE), "r") as vi_file:
         current_index = int(vi_file.readline().strip())   # where were we?
@@ -29,7 +29,6 @@ def retrieve_data_WordNet():
     storage_filepaths = list(map(lambda fn: os.path.join(Filesystem.FOLDER_INPUT, fn), storage_filenames))
     open_storage_files = [pd.HDFStore(fname, mode='a') for fname in storage_filepaths]
 
-    vocabulary_df = pd.read_hdf(os.path.join(Filesystem.FOLDER_VOCABULARY, Filesystem.VOCAB_WT2_FILE), mode='r')
     vocabulary_chunk = []
 
     while requests_counter < requests_segment_size:
