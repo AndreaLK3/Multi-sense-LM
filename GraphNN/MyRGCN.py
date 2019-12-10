@@ -11,6 +11,8 @@ import Vocabulary.Vocabulary_Utilities as VocabUtils
 import sqlite3
 import os
 import pandas as pd
+import matplotlib.pyplot as plt
+from math import inf
 
 class NetRGCN(torch.nn.Module):
     def __init__(self, data):
@@ -58,6 +60,49 @@ def convert_tokendict_to_tpl(token_dict, senseindices_db_c, globals_vocabulary_h
 
 
 
+
+def compute_loss_iteration(data, model, current_token_tpl, next_token_tpl):
+
+    predicted_global_forEachNode, predicted_sense_forEachNode = model(data.x, data.edge_index, data.edge_type)
+
+    (current_input_global, current_input_sense) = current_token_tpl
+    if current_input_sense == -1:
+        current_token_index = current_input_global
+    else:
+        current_token_index = current_input_sense
+
+    (y_labelnext_global, y_labelnext_sense) = next_token_tpl  # (torch.Tensor().type(torch.int64),
+
+    if y_labelnext_sense == -1:
+        is_label_senseLevel = False
+    else:
+        is_label_senseLevel = True
+
+    loss_global = tF.nll_loss(predicted_global_forEachNode[current_token_index].unsqueeze(0), y_labelnext_global)
+
+    if is_label_senseLevel:
+        loss_sense = tF.nll_loss(predicted_sense_forEachNode[current_token_index].unsqueeze(0),
+                                 y_labelnext_sense)
+    else:
+        loss_sense = 0
+
+    loss = loss_global + loss_sense
+    return loss
+
+
+def get_tokens_tpls(next_token_tpl, split_datagenerator, senseindices_db_c, vocab_h5, model):
+    if next_token_tpl is None:
+        current_token_tpl = convert_tokendict_to_tpl(split_datagenerator.__next__(),
+                                                     senseindices_db_c, vocab_h5, model.last_idx_senses)
+        next_token_tpl = convert_tokendict_to_tpl(split_datagenerator.__next__(),
+                                                  senseindices_db_c, vocab_h5, model.last_idx_senses)
+    else:
+        current_token_tpl = next_token_tpl
+        next_token_tpl = convert_tokendict_to_tpl(split_datagenerator.__next__(),
+                                                  senseindices_db_c, vocab_h5, model.last_idx_senses)
+    return (current_token_tpl, next_token_tpl)
+
+
 def train():
     Utils.init_logging('temp.log')
 
@@ -84,47 +129,18 @@ def train():
         logging.info("\nEpoch n."+str(epoch) +":" )
         train_generator = SLC.read_split('training')
         next_token_tpl = None
+        valid_generator = SLC.read_split('validation')
+        epoch_valid_loss = inf
         try:
             while(True):
-                if next_token_tpl is None:
-                    current_token_tpl = convert_tokendict_to_tpl(train_generator.__next__(),
-                                                                 senseindices_db_c, vocab_h5, model.last_idx_senses)
-                    next_token_tpl = convert_tokendict_to_tpl(train_generator.__next__(),
-                                                              senseindices_db_c, vocab_h5, model.last_idx_senses)
-                else:
-                    current_token_tpl = next_token_tpl
-                    next_token_tpl = convert_tokendict_to_tpl(train_generator.__next__(),
-                                                              senseindices_db_c, vocab_h5, model.last_idx_senses)
-
+                current_token_tpl, next_token_tpl = get_tokens_tpls(next_token_tpl, train_generator, senseindices_db_c,
+                                                                    vocab_h5, model.last_idx_senses)
                 optimizer.zero_grad()
-                predicted_global_forEachNode, predicted_sense_forEachNode = model(data.x, data.edge_index, data.edge_type)
-
-                (current_input_global, current_input_sense) = current_token_tpl
-                if current_input_sense == -1:
-                    current_token_index = current_input_global
-                else:
-                    current_token_index = current_input_sense
-
-                (y_labelnext_global,y_labelnext_sense) = next_token_tpl# (torch.Tensor().type(torch.int64),
-
-                if y_labelnext_sense == -1:
-                    is_label_senseLevel = False
-                else:
-                    is_label_senseLevel = True
-
-                loss_global = tF.nll_loss(predicted_global_forEachNode[current_token_index].unsqueeze(0), y_labelnext_global)
-
-
-                if is_label_senseLevel:
-                    loss_sense = tF.nll_loss(predicted_sense_forEachNode[current_token_index].unsqueeze(0),
-                                              y_labelnext_sense)
-                else:
-                    loss_sense = 0
-                loss = loss_global + loss_sense
+                loss = compute_loss_iteration(data, model, current_token_tpl, next_token_tpl)
                 loss.backward()
                 optimizer.step()
-                logging.info(loss)
                 losses.append(loss)
+
         except StopIteration:
             continue # next epoch
 

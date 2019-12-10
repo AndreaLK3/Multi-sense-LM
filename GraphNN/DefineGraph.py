@@ -148,6 +148,7 @@ def create_graph():
     X_senses = initialize_senses(X_definitions, X_examples, average_or_random=True)
     X_globals = np.load(os.path.join(F.FOLDER_INPUT, F.SPVs_FASTTEXT_FILE))
 
+    logging.info("Constructing X, matrix of node features")
     logging.info(X_definitions.shape)
     logging.info(X_examples.shape)
     logging.info(X_senses.shape)
@@ -159,11 +160,13 @@ def create_graph():
 
     # edge_index (LongTensor, optional) – Graph connectivity in COO format with shape [2, num_edges].
     # We can operate with a list of S-D tuples, adding t().contiguous()
+    logging.info("Defining the edges: def, exs")
     def_edges_se = get_edges_elements(Utils.DEFINITIONS, X_senses.shape[0] + X_globals.shape[0])
     exs_edges_se = get_edges_elements(Utils.EXAMPLES, X_senses.shape[0] + X_globals.shape[0]+ X_definitions.shape[0])
-
+    logging.info("Defining the edges: sc")
     globals_vocabulary_fpath = os.path.join(F.FOLDER_VOCABULARY, F.VOCAB_FROMSLC_FILE)
     sc_edges = get_edges_sensechildren(globals_vocabulary_fpath, X_senses.shape[0])
+    logging.info("Defining the edges: syn, ant")
     syn_edges = get_edges_nyms(Utils.SYNONYMS, globals_vocabulary_fpath, X_senses.shape[0])
     ant_edges = get_edges_nyms(Utils.ANTONYMS, globals_vocabulary_fpath, X_senses.shape[0])
 
