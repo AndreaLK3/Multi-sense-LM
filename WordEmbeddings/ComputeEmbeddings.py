@@ -23,8 +23,7 @@ class Method(Enum):
 # The main function of the module: iterate over the vocabulary that we previously did build from the training corpus,
 # and use either DistilBERT or FastText to compute d=768 or d=300 single-prototype word embeddings.
 def compute_single_prototype_embeddings(vocabulary_df, spvs_out_fpath, method):
-    Utils.init_logging('compute_elements_embeddings.log')
-    logging.info('*')
+
     if method == Method.DISTILBERT:
         distilBERT_model = transformers.DistilBertModel.from_pretrained('distilbert-base-uncased',
                                                                     output_hidden_states=True)

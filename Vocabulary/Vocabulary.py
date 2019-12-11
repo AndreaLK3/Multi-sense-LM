@@ -46,8 +46,8 @@ def build_vocabulary_from_senselabeled(slc_split_name):
             except KeyError:
                 vocab_dict[token] = 1
     if Utils.UNK_TOKEN not in vocab_dict.keys():
-        vocab_dict[Utils.UNK_TOKEN] = 1 # add it manually
-    return vocab_dict
+        vocab_dict[Utils.UNK_TOKEN] = 100 # add it manually
+        return vocab_dict
 
 # Entry function: if a vocabulary is already present in the specified path, load it. Otherwise, create it.
 def get_vocabulary_df(senselabeled_or_text, slc_split_name, corpus_txt_filepath, out_vocabulary_h5_filepath, min_count):

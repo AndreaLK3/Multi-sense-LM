@@ -66,7 +66,7 @@ def exe(do_reset=False, compute_single_prototype=False):
 
     vocab_filepath = os.path.join(F.FOLDER_VOCABULARY, F.VOCAB_FROMSLC_FILE)
     vocabulary = V.get_vocabulary_df(senselabeled_or_text=True, slc_split_name='training', corpus_txt_filepath=None,
-                                     out_vocabulary_h5_filepath=vocab_filepath, min_count=3)
+                                     out_vocabulary_h5_filepath=vocab_filepath, min_count=10) # temporary, it should be 3 or 5
 
     if compute_single_prototype:
         reset_embeddings()

@@ -27,7 +27,7 @@ class NetRGCN(torch.nn.Module):
                               num_relations=data.num_relations, num_bases=data.num_relations)
         self.conv2sense = RGCNConv(in_channels=data.x.shape[1],
                                     out_channels=self.last_idx_senses,
-                                    num_relations=data.num_relations, num_bases=data.num_relations)
+                                    num_relations=data.num_relations, num_bases=data.num_relations) # 5
 
     def forward(self, x, edge_index, edge_type):
         x_Lplus1 = tF.relu(self.conv1(x, edge_index, edge_type))
@@ -48,9 +48,9 @@ def convert_tokendict_to_tpl(token_dict, senseindices_db_c, globals_vocabulary_h
     keys = token_dict.keys()
 
     if 'wn30_key' in keys:
-        wordnet_sense = wn.lemma_from_key(token_dict['wn30_key'])
-        sense_index = senseindices_db_c.execute("SELECT vocab_index FROM indices_table "+
-                                                "WHERE word_sense=="+wordnet_sense)
+        wordnet_sense = wn.lemma_from_key(token_dict['wn30_key']).name()
+        query = "SELECT vocab_index FROM indices_table "+ "WHERE word_sense='"+wordnet_sense+"'"
+        sense_index = senseindices_db_c.execute(query).fetchone()
     else:
         sense_index = -1
     word = VocabUtils.process_slc_token(token_dict)
@@ -65,17 +65,16 @@ def convert_tokendict_to_tpl(token_dict, senseindices_db_c, globals_vocabulary_h
 
 
 
-def get_tokens_tpls(next_token_tpl, split_datagenerator, senseindices_db_c, vocab_h5, model):
+def get_tokens_tpls(next_token_tpl, split_datagenerator, senseindices_db_c, vocab_h5, last_idx_senses):
     if next_token_tpl is None:
         current_token_tpl = convert_tokendict_to_tpl(split_datagenerator.__next__(),
-                                                     senseindices_db_c, vocab_h5, model.last_idx_senses)
+                                                     senseindices_db_c, vocab_h5, last_idx_senses)
         next_token_tpl = convert_tokendict_to_tpl(split_datagenerator.__next__(),
-                                                  senseindices_db_c, vocab_h5, model.last_idx_senses)
+                                                  senseindices_db_c, vocab_h5, last_idx_senses)
     else:
         current_token_tpl = next_token_tpl
-        next_token_tpl = convert_tokendict_to_tpl(split_datagenerator.__next__(),
-                                                  senseindices_db_c, vocab_h5, model.last_idx_senses)
-    return (current_token_tpl, next_token_tpl)
+        next_token_tpl = convert_tokendict_to_tpl(split_datagenerator.__next__(),senseindices_db_c, vocab_h5, last_idx_senses)
+    return current_token_tpl, next_token_tpl
 
 
 def compute_loss_iteration(data, model, current_token_tpl, next_token_tpl):
@@ -88,7 +87,7 @@ def compute_loss_iteration(data, model, current_token_tpl, next_token_tpl):
     else:
         current_token_index = current_input_sense
 
-    (y_labelnext_global, y_labelnext_sense) = next_token_tpl  # (torch.Tensor().type(torch.int64),
+    (y_labelnext_global, y_labelnext_sense) = next_token_tpl
 
     if y_labelnext_sense == -1:
         is_label_senseLevel = False
@@ -111,9 +110,10 @@ def train():
     Utils.init_logging('temp.log')
 
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-    inputgraph_dataobject = DG.get_graph_dataobject()
-    RGCN_modelobject = NetRGCN(inputgraph_dataobject)
-    data, model = inputgraph_dataobject.to(device), RGCN_modelobject.to(device)
+    data = DG.get_graph_dataobject(new=False)
+    model = NetRGCN(data)
+    logging.info("Graph-data object loaded, model initialized. Moving them to GPU device(s) if present.")
+    data.to(device), model.to(device)
 
     senseindices_db_filepath = os.path.join(F.FOLDER_INPUT, Utils.INDICES_TABLE_DB)
     senseindices_db = sqlite3.connect(senseindices_db_filepath)
@@ -128,15 +128,18 @@ def train():
     model.train()
     losses = []
     batch_size = 1
+    steps_logging = 100
 
     for epoch in range(1,num_epochs+1):
-        logging.info("\nEpoch n."+str(epoch) +":" )
+        logging.info("\nTraining epoch n."+str(epoch) +":" )
         train_generator = SLC.read_split('training')
         next_token_tpl = None
         valid_generator = SLC.read_split('validation')
         epoch_valid_loss = inf
+        step = 0
         try:
             while(True):
+                logging.info("Step n." + str(step))
                 current_token_tpl, next_token_tpl = get_tokens_tpls(next_token_tpl, train_generator, senseindices_db_c,
                                                                     vocab_h5, model.last_idx_senses)
                 optimizer.zero_grad()
@@ -144,6 +147,11 @@ def train():
                 loss.backward()
                 optimizer.step()
                 losses.append(loss)
+
+                step = step +1
+                if step % steps_logging == 0:
+                    logging.info("Step n." + str(step))
+
 
         except StopIteration:
             continue # next epoch
