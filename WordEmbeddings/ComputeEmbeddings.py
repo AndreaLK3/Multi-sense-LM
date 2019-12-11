@@ -23,7 +23,8 @@ class Method(Enum):
 # The main function of the module: iterate over the vocabulary that we previously did build from the training corpus,
 # and use either DistilBERT or FastText to compute d=768 or d=300 single-prototype word embeddings.
 def compute_single_prototype_embeddings(vocabulary_df, spvs_out_fpath, method):
-
+    Utils.init_logging('compute_elements_embeddings.log')
+    logging.info('*')
     if method == Method.DISTILBERT:
         distilBERT_model = transformers.DistilBertModel.from_pretrained('distilbert-base-uncased',
                                                                     output_hidden_states=True)
@@ -31,7 +32,6 @@ def compute_single_prototype_embeddings(vocabulary_df, spvs_out_fpath, method):
     else:  # i.e. elif method == Method_for_SPV.FASTTEXT:
         fasttext_vectors = EFT.load_fasttext_vectors()
 
-    num_vectors_dump = 100
     i = 0
     word_vectors_lls = []
 
@@ -45,12 +45,10 @@ def compute_single_prototype_embeddings(vocabulary_df, spvs_out_fpath, method):
 
         word_vectors_lls.append(word_vector)
         i = i+1
-        if i % num_vectors_dump == 0:
-            embds_nparray = np.array(word_vectors_lls)
-            np.save(spvs_out_fpath, embds_nparray)
-            # reset
-            i = 0
-            word_vectors_lls = []
+
+    embds_nparray = np.array(word_vectors_lls)
+    np.save(spvs_out_fpath, embds_nparray)
+
     logging.info('Computed the single-prototype embeddings for the vocabulary tokens, at: ' + spvs_out_fpath)
 
 
@@ -62,7 +60,7 @@ def compute_elements_embeddings(elements_name, method):
         distilBERT_model = transformers.DistilBertModel.from_pretrained('distilbert-base-uncased',
                                                                         output_hidden_states=True)
         distilBERT_tokenizer = transformers.DistilBertTokenizer.from_pretrained('distilbert-base-uncased')
-    else:  # i.e. elif method == Method_for_SPV.FASTTEXT:
+    else:  # i.e. elif method == Method.FASTTEXT:
         fasttext_vectors = EFT.load_fasttext_vectors()
 
     input_filepath = os.path.join(Filesystem.FOLDER_INPUT, Utils.PROCESSED + '_' + elements_name + ".h5")
@@ -91,6 +89,7 @@ def compute_elements_embeddings(elements_name, method):
             matrix_of_sentence_embeddings.append(vector)
 
     embds_nparray = np.array(matrix_of_sentence_embeddings)
+    logging.info("ComputeEmbeddings > embds_nparray.shape=" + str(embds_nparray.shape))
     np.save(output_filepath, embds_nparray)
 
     logging.info('Computed the embeddings for the dictionary elements: ' + elements_name +

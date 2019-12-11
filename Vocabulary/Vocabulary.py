@@ -1,4 +1,4 @@
-import html
+import string
 import Utils
 import Filesystem as F
 import os
@@ -36,14 +36,17 @@ def build_vocabulary_from_text(corpus_txt_filepath):
 
 def build_vocabulary_from_senselabeled(slc_split_name):
     vocab_dict = {}
-
+    tokens_toexclude = [Utils.EOS_TOKEN] + list(string.punctuation)
     for token_dict in SLC.read_split(slc_split_name):
         token = VocabUtils.process_slc_token(token_dict)
-        try:
-            prev_freq = vocab_dict[token]
-            vocab_dict[token] = prev_freq + 1
-        except KeyError:
-            vocab_dict[token] = 1
+        if token not in tokens_toexclude:
+            try:
+                prev_freq = vocab_dict[token]
+                vocab_dict[token] = prev_freq + 1
+            except KeyError:
+                vocab_dict[token] = 1
+    if Utils.UNK_TOKEN not in vocab_dict.keys():
+        vocab_dict[Utils.UNK_TOKEN] = 1 # add it manually
     return vocab_dict
 
 # Entry function: if a vocabulary is already present in the specified path, load it. Otherwise, create it.

@@ -25,8 +25,6 @@ def initialize_senses(X_defs, X_examples, average_or_random):
     indicesTable_db_c.execute("SELECT * FROM indices_table")
     current_row_idx = 0
     X_senses_ls = []
-    logging.info("X_defs.shape=" + str(X_defs.shape))
-    logging.info("X_examples.shape=" + str(X_examples.shape))
 
     while (True):
         db_row = indicesTable_db_c.fetchone()
@@ -149,10 +147,10 @@ def create_graph():
     X_globals = np.load(os.path.join(F.FOLDER_INPUT, F.SPVs_FASTTEXT_FILE))
 
     logging.info("Constructing X, matrix of node features")
-    logging.info(X_definitions.shape)
-    logging.info(X_examples.shape)
-    logging.info(X_senses.shape)
-    logging.info(X_globals.shape)
+    logging.info(X_definitions.shape) # (25946, 300)
+    logging.info(X_examples.shape) # (25841, 300)
+    logging.info(X_senses.shape) # (25946, 300)
+    logging.info(X_globals.shape) # (100, 300)
 
     # The order for the index of the nodes:
     # sense=[0,se) ; single prototype=[se,se+sp) ; definitions=[se+sp, se+sp+d) ; examples=[se+sp+d, e==num_nodes)

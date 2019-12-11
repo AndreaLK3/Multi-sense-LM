@@ -75,8 +75,8 @@ def create_senses_indices_table(vocabulary_words_ls):
                                                                             start_defs_count, end_defs_count,
                                                                             start_examples_count, end_examples_count))
 
-        logging.info("Vocabulary index of the sense " + wn_id + " = " + str(my_vocabulary_index))
-        logging.info("start_defs_count=" + str(start_defs_count) + " ; end_defs_count=" + str(end_defs_count) +
+        logging.debug("Vocabulary index of the sense " + wn_id + " = " + str(my_vocabulary_index))
+        logging.debug("start_defs_count=" + str(start_defs_count) + " ; end_defs_count=" + str(end_defs_count) +
                      " ; start_examples_count=" + str(start_examples_count) + " ; end_examples_count=" + str(end_examples_count))
 
         # update counters
@@ -89,7 +89,7 @@ def create_senses_indices_table(vocabulary_words_ls):
 
 
 # ['move', 'light']
-def prepare(vocabulary): #vocabulary = ['move', 'light', 'for', 'sea']
+def prepare(vocabulary, embeddings_method): #vocabulary = ['move', 'light', 'for', 'sea']
     #Utils.init_logging(os.path.join("PrepareKBInput", "PrepareKBInput.log"))
 
     # Phase 1 - Preprocessing: eliminating quasi-duplicate definitions and examples, and lemmatizing synonyms & antonyms
@@ -98,10 +98,6 @@ def prepare(vocabulary): #vocabulary = ['move', 'light', 'for', 'sea']
     # Phase 2 - Create the Vocabulary table with the correspondences (wordSense, integer index).
     create_senses_indices_table(vocabulary)
 
-    # Phase 3a - get the sentence embeddings for definitions and examples, using BERT, and store them
-    CE.compute_elements_embeddings(Utils.DEFINITIONS, CE.Method.DISTILBERT)
-    CE.compute_elements_embeddings(Utils.EXAMPLES, CE.Method.DISTILBERT)
-
-    # Phase 3b - get the sentence embeddings for definitions and examples, using FastText, and store them
-    CE.compute_elements_embeddings(Utils.DEFINITIONS, CE.Method.FASTTEXT)
-    CE.compute_elements_embeddings(Utils.EXAMPLES, CE.Method.FASTTEXT)
+    # Phase 3 - get the sentence embeddings for definitions and examples, using BERT or FasText, and store them
+    CE.compute_elements_embeddings(Utils.DEFINITIONS, embeddings_method)
+    CE.compute_elements_embeddings(Utils.EXAMPLES, embeddings_method)

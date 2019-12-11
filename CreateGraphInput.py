@@ -81,5 +81,5 @@ def exe(do_reset=False, compute_single_prototype=False):
     kb_data_chunk = RID.retrieve_data_WordNet(vocabulary)
     logging.info("CreateGraphInput.exe() > "
                  + " Words included in the vocabulary chunk, to be prepared: " + str(kb_data_chunk))
-    PI.prepare(kb_data_chunk)
+    PI.prepare(kb_data_chunk, CE.Method.FASTTEXT)
     tables.file._open_files.close_all()

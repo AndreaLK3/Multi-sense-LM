@@ -54,11 +54,28 @@ def convert_tokendict_to_tpl(token_dict, senseindices_db_c, globals_vocabulary_h
     else:
         sense_index = -1
     word = VocabUtils.process_slc_token(token_dict)
-    global_absolute_index = Utils.select_from_hdf5(globals_vocabulary_h5, 'vocabulary', ['word'], [word]).index[0]
+    try:
+        global_absolute_index = Utils.select_from_hdf5(globals_vocabulary_h5, 'vocabulary', ['word'], [word]).index[0]
+    except IndexError:
+        global_absolute_index = Utils.select_from_hdf5(globals_vocabulary_h5, 'vocabulary', ['word'], [Utils.UNK_TOKEN]).index[0]
+
     global_index = global_absolute_index + last_idx_senses
     return (global_index, sense_index)
 
 
+
+
+def get_tokens_tpls(next_token_tpl, split_datagenerator, senseindices_db_c, vocab_h5, model):
+    if next_token_tpl is None:
+        current_token_tpl = convert_tokendict_to_tpl(split_datagenerator.__next__(),
+                                                     senseindices_db_c, vocab_h5, model.last_idx_senses)
+        next_token_tpl = convert_tokendict_to_tpl(split_datagenerator.__next__(),
+                                                  senseindices_db_c, vocab_h5, model.last_idx_senses)
+    else:
+        current_token_tpl = next_token_tpl
+        next_token_tpl = convert_tokendict_to_tpl(split_datagenerator.__next__(),
+                                                  senseindices_db_c, vocab_h5, model.last_idx_senses)
+    return (current_token_tpl, next_token_tpl)
 
 
 def compute_loss_iteration(data, model, current_token_tpl, next_token_tpl):
@@ -88,19 +105,6 @@ def compute_loss_iteration(data, model, current_token_tpl, next_token_tpl):
 
     loss = loss_global + loss_sense
     return loss
-
-
-def get_tokens_tpls(next_token_tpl, split_datagenerator, senseindices_db_c, vocab_h5, model):
-    if next_token_tpl is None:
-        current_token_tpl = convert_tokendict_to_tpl(split_datagenerator.__next__(),
-                                                     senseindices_db_c, vocab_h5, model.last_idx_senses)
-        next_token_tpl = convert_tokendict_to_tpl(split_datagenerator.__next__(),
-                                                  senseindices_db_c, vocab_h5, model.last_idx_senses)
-    else:
-        current_token_tpl = next_token_tpl
-        next_token_tpl = convert_tokendict_to_tpl(split_datagenerator.__next__(),
-                                                  senseindices_db_c, vocab_h5, model.last_idx_senses)
-    return (current_token_tpl, next_token_tpl)
 
 
 def train():
