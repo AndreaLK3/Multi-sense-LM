@@ -22,7 +22,6 @@ import numpy as np
 # n: Retrieving N nodes also includes the starting node
 def get_indices_toinclude(edge_index, edge_type, node_index, num_to_retrieve):
     nodes_retrieved = [node_index]
-    prev_len = -1
     start_idx = 0
     stop_flag = False
     while(start_idx < len(nodes_retrieved) and stop_flag==False):
@@ -30,53 +29,55 @@ def get_indices_toinclude(edge_index, edge_type, node_index, num_to_retrieve):
         start_idx = start_idx + 1
 
         new_edges = get_neighbours(edge_index, edge_type, start_node)
-        new_nodes = list(map(lambda edge_tpl: edge_tpl[1], new_edges))
-        logging.info(new_nodes)
+        new_nodes = list(map(lambda edge_tpl: edge_tpl[1], new_edges)) + list(map(lambda edge_tpl: edge_tpl[0], new_edges))
         for n in new_nodes:
             if len(nodes_retrieved) >= num_to_retrieve:
                 stop_flag = True
                 break
             if n not in nodes_retrieved:
                 nodes_retrieved.append(n)
+                logging.debug("start_node=" + str(start_node) + " , nodes_retrieved= " + str(nodes_retrieved))
 
     return nodes_retrieved
 
 
 
-# Auxiliary function: find the immediate neighbours of a node, in the given order.
+# Auxiliary function: find the immediate neighbours of a node, in the given order. Both directions of edges are included
 # edge_type = def:0, exs:1, sc:2, syn:3, ant:4
 def get_neighbours(edge_index, edge_type, node_index):
-    sources = edge_index[0].numpy()
-    indices_of_edges_where_node_is_source = np.where(sources == node_index)[0]
+    indices_of_edges_where_node_is_source = np.where(edge_index[0].numpy() == node_index)[0]
+    indices_of_edges_where_node_is_target = np.where(edge_index[1].numpy() == node_index)[0]
     node_neighbours_edges = []
-    for i in indices_of_edges_where_node_is_source:
+    for i in np.concatenate([indices_of_edges_where_node_is_source,indices_of_edges_where_node_is_target]):
         node_neighbours_edges.append((edge_index[0][i].item(),edge_index[1][i].item(),edge_type[i].item()))
-    node_neighbours_edges = sorted(node_neighbours_edges, key=lambda src_trg_type_tpl: src_trg_type_tpl[2])
-    logging.info("node_index=" + str(node_index) + " -> node_neighbours_edges=" + str(node_neighbours_edges))
+    node_neighbours_edges = sorted(list(set(node_neighbours_edges)), key=lambda src_trg_type_tpl: src_trg_type_tpl[2])
+    logging.debug("node_index=" + str(node_index) + " -> node_neighbours_edges=" + str(node_neighbours_edges))
     return node_neighbours_edges
 
 
 def get_batch_of_graph(starting_node_index, batch_size, graph):
     Utils.init_logging('get_batch_of_graph.log')
-    batch_elems_indices = sorted(get_indices_toinclude(graph.edge_index, graph.edge_type, starting_node_index, batch_size))
-    mask = torch.ByteTensor([True if i in batch_elems_indices else False for i in range(0, graph.x.shape[0])])
-    batch_x = graph.x[mask]
+    batch_elements_indices_ls = sorted(get_indices_toinclude(graph.edge_index, graph.edge_type, starting_node_index.item(), batch_size))
+    batch_elements_indices = torch.Tensor(batch_elements_indices_ls).to(torch.int64)
+    batch_x = graph.x.index_select(0, batch_elements_indices)
 
-    elems_edges_lts = [(graph.edge_index[0][e_col],graph.edge_index[1][e_col]) for e_col in range(len(graph.edge_index[0]))
-                    if (graph.edge_index[0][e_col] in batch_elems_indices
-                        and graph.edge_index[1][e_col] in batch_elems_indices)]
-    _edges_lts_tensor_debug = torch.Tensor(elems_edges_lts).t()
-    elems_edgetypes = [graph.edge_type[e_col] for e_col in range(len(graph.edge_index[0]))
-                    if (graph.edge_index[0][e_col] in batch_elems_indices
-                        and graph.edge_index[1][e_col] in batch_elems_indices)]
+    edges_indices = torch.Tensor([e_col for e_col in range(len(graph.edge_index[0])) # it can be tensor([]) in some cases
+                    if (graph.edge_index[0][e_col] in batch_elements_indices
+                        and graph.edge_index[1][e_col] in batch_elements_indices)]).to(torch.int64)
+    #for edge_index in edges_indices:
+    #    print(graph.edge_index.t()[edge_index])
+    batch_edge_index_lts_defaultValues = graph.edge_index.t().index_select(0, edges_indices)
 
     elem_edges_lts_reindexed = []
-    for (src,trg) in elems_edges_lts:
-        src_01 = batch_elems_indices.index(src)
-        trg_01 = batch_elems_indices.index(trg)
+    for (src, trg) in batch_edge_index_lts_defaultValues:
+        src_01 = batch_elements_indices_ls.index(src)
+        trg_01 = batch_elements_indices_ls.index(trg)
         elem_edges_lts_reindexed.append((src_01, trg_01))
-    batch_edge_index = torch.Tensor(elem_edges_lts_reindexed).t()
-    batch_edge_type = torch.Tensor(elems_edgetypes)
+
+    with torch.no_grad():
+        batch_edge_index = torch.autograd.Variable(torch.Tensor(elem_edges_lts_reindexed).t().to(torch.int64))
+
+    batch_edge_type = graph.edge_type.index_select(0, index=edges_indices).to(torch.int64)
 
     return (batch_x, batch_edge_index, batch_edge_type)
 
@@ -171,7 +172,7 @@ def createInputGraph():
     #netx_graph = convert.to_networkx(graph)
     #networkx.write_gexf(netx_graph, path=os.path.join('GraphNN', 'exampleGraph.gexf'))
     example_node_index = 12
-    get_neighbours(graph.edge_index, graph.edge_type, example_node_index)
+    #get_neighbours(graph.edge_index, graph.edge_type, example_node_index)
 
     return graph
 
@@ -278,10 +279,10 @@ class NetRGCN(torch.nn.Module):
     def forward(self, batch_x, batch_edge_index, batch_edge_type): # given how we create the batches, the current node is at index 0
         x_Lplus1 = tF.relu(self.conv1(batch_x, batch_edge_index, batch_edge_type))
         x1_current_node = x_Lplus1[0] # current_node_index
-        logits_global = self.linear2global(x1_current_node)
+        logits_global = self.linear2global(x1_current_node) # shape=torch.Size([5])
         logits_sense = self.linear2sense(x1_current_node)
 
-        return (tF.log_softmax(logits_global), tF.log_softmax(logits_sense))
+        return (tF.log_softmax(logits_global, dim=0), tF.log_softmax(logits_sense, dim=0))
 
 
 
@@ -298,8 +299,6 @@ def train():
     #out = model(data.edge_index, data.edge_type, data.edge_norm)
     training_dataset = torch.Tensor([(10,-1),(11,5),(12,-1),(13,3),(14,-1),(10,9),(11,-1),(12,-1),(13,-1),(14,-1),
                         (10,-1),(11,5),(12,-1),(13,3),(14,-1),(10,9),(11,5),(12,-1),(13,3),(14,-1)]).type(torch.int64)
-    logging.info("Training dataset = " + str(training_dataset))
-    logging.info("Graph, data.x.shape=" + str(data.x.shape))
     training_dataset.to(device, dtype=torch.int64)
     num_epochs = 10
     model.train()
@@ -319,7 +318,7 @@ def train():
             else:
                 current_token_index = current_input_sense
             batch_x, batch_edge_index, batch_edge_type = get_batch_of_graph(current_token_index, 4, data)
-            predicted_globals, predicted_senses = model(batch_x, batch_edge_index, batch_edge_index)
+            predicted_globals, predicted_senses = model(batch_x, batch_edge_index, batch_edge_type)
 
             global_raw_idx = training_dataset[i + 1][0]
             sense_idx =  training_dataset[i + 1][1]

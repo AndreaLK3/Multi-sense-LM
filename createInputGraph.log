@@ -2,5 +2,6 @@ INFO : Senses : [ 0 , 10)
 INFO : Global single-prototypes : [ 10 , 15)
 INFO : Definitions : [ 15 , 35)
 INFO : Examples : [ 35 , 55)
-INFO : Total number of edges = 58
-INFO : node_index=12 -> node_neighbours_edges=[(12, 1, 2), (12, 2, 2), (12, 5, 2), (12, 6, 2), (12, 8, 2), (12, 13, 3), (12, 11, 3), (12, 14, 4)]
+INFO : Total number of edges = 51
+INFO : 
+Epoch n.1:

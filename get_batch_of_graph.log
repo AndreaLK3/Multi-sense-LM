@@ -1,4 +1,1 @@
-INFO : node_index=12 -> node_neighbours_edges=[(12, 1, 2), (12, 2, 2), (12, 5, 2), (12, 6, 2), (12, 8, 2), (12, 13, 3), (12, 11, 3), (12, 14, 4)]
-INFO : [1, 2, 5, 6, 8, 13, 11, 14]
-INFO : tensor([[12., 12., 12.],
-        [ 1.,  2.,  5.]])
+INFO : tensor(0.0024, grad_fn=<AddBackward0>)
