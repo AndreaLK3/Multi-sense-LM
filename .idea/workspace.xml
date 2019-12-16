@@ -2,19 +2,12 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="d35dca92-959c-489d-8a61-f337e4cce7fa" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/CreateGraphInput.log" beforeDir="false" afterPath="$PROJECT_DIR$/CreateGraphInput.log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CreateGraphInput.py" beforeDir="false" afterPath="$PROJECT_DIR$/CreateGraphInput.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/GraphNN/DefineGraph.py" beforeDir="false" afterPath="$PROJECT_DIR$/GraphNN/DefineGraph.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/GraphNN/MyRGCN.py" beforeDir="false" afterPath="$PROJECT_DIR$/GraphNN/MyRGCN.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/InputData/SinglePrototypes_withFastText.npy" beforeDir="false" afterPath="$PROJECT_DIR$/InputData/SinglePrototypes_withFastText.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/InputData/indices_table.sql" beforeDir="false" afterPath="$PROJECT_DIR$/InputData/indices_table.sql" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/InputData/vectorized_FastText_definitions.npy" beforeDir="false" afterPath="$PROJECT_DIR$/InputData/vectorized_FastText_definitions.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/InputData/vectorized_FastText_examples.npy" beforeDir="false" afterPath="$PROJECT_DIR$/InputData/vectorized_FastText_examples.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/GraphNN/PocketRGCN.py" beforeDir="false" afterPath="$PROJECT_DIR$/GraphNN/PocketRGCN.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/GraphNN/SenseLabeledCorpus.py" beforeDir="false" afterPath="$PROJECT_DIR$/GraphNN/SenseLabeledCorpus.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Media/Task1_DeveloperDiary.docx" beforeDir="false" afterPath="$PROJECT_DIR$/Media/Task1_DeveloperDiary.docx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PrepareKBInput/RemoveQuasiDuplicates.py" beforeDir="false" afterPath="$PROJECT_DIR$/PrepareKBInput/RemoveQuasiDuplicates.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Vocabulary/Vocabulary.py" beforeDir="false" afterPath="$PROJECT_DIR$/Vocabulary/Vocabulary.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Vocabulary/vocabulary_currentIndex.txt" beforeDir="false" afterPath="$PROJECT_DIR$/Vocabulary/vocabulary_currentIndex.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WordEmbeddings/ComputeEmbeddings.py" beforeDir="false" afterPath="$PROJECT_DIR$/WordEmbeddings/ComputeEmbeddings.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/temp.log" beforeDir="false" afterPath="$PROJECT_DIR$/temp.log" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -29,55 +22,10 @@
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/GraphNN/PocketRGCN.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="236">
-              <caret line="85" column="17" selection-start-line="85" selection-start-column="14" selection-end-line="85" selection-end-column="17" />
-              <folding>
-                <element signature="e#0#12#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/GraphNN/MyRGCN.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="57">
-              <caret line="29" column="98" selection-start-line="29" selection-start-column="98" selection-end-line="29" selection-end-column="98" />
-              <folding>
-                <element signature="e#0#12#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/GetKBInputData/WordNet.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="569">
-              <caret line="48" column="47" selection-start-line="48" selection-start-column="47" selection-end-line="48" selection-end-column="47" />
-              <folding>
-                <element signature="e#0#37#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Vocabulary/Vocabulary.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="594">
-              <caret line="62" column="75" selection-start-line="62" selection-start-column="75" selection-end-line="62" selection-end-column="75" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/GraphNN/DefineGraph.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2334">
-              <caret line="201" column="53" selection-start-line="201" selection-start-column="52" selection-end-line="201" selection-end-column="53" />
+            <state relative-caret-position="105">
+              <caret line="17" selection-start-line="17" selection-end-line="17" />
               <folding>
                 <element signature="e#0#19#0" expanded="true" />
               </folding>
@@ -86,24 +34,48 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/PrepareKBInput/RemoveQuasiDuplicates.py">
+        <entry file="file://$PROJECT_DIR$/CreateGraphInput.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-4">
-              <caret line="7" column="27" lean-forward="true" selection-start-line="7" selection-start-column="27" selection-end-line="7" selection-end-column="27" />
+            <state relative-caret-position="1110">
+              <caret line="84" column="39" selection-start-line="84" selection-start-column="39" selection-end-line="84" selection-end-column="39" />
               <folding>
-                <element signature="e#0#14#0" expanded="true" />
+                <element signature="e#0#22#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/CreateGraphInput.py">
+        <entry file="file://$PROJECT_DIR$/GraphNN/SenseLabeledCorpus.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="467">
-              <caret line="84" column="39" selection-start-line="84" selection-start-column="39" selection-end-line="84" selection-end-column="39" />
+            <state relative-caret-position="1800">
+              <caret line="125" column="85" selection-start-line="125" selection-start-column="85" selection-end-line="125" selection-end-column="85" />
               <folding>
-                <element signature="e#0#22#0" expanded="true" />
+                <element signature="e#0#9#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/GraphNN/MyRGCN.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="765">
+              <caret line="65" selection-start-line="65" selection-end-line="65" />
+              <folding>
+                <element signature="e#0#12#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/GraphNN/PocketRGCN.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="260">
+              <caret line="61" column="4" selection-start-line="61" selection-start-column="4" selection-end-line="61" selection-end-column="4" />
+              <folding>
+                <element signature="e#0#12#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -120,7 +92,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>30</find>
       <find>DENOMI</find>
       <find>init_lo</find>
       <find>name</find>
@@ -150,6 +121,7 @@
       <find>SPVs_FASTTEXT_FILE</find>
       <find>WHER</find>
       <find>WHERE</find>
+      <find>edge_index</find>
     </findStrings>
     <replaceStrings>
       <replace>F</replace>
@@ -210,8 +182,6 @@
         <option value="$PROJECT_DIR$/PrepareKBInput/LemmatizeNyms.py" />
         <option value="$PROJECT_DIR$/GetKBInputData/GetWordData.py" />
         <option value="$PROJECT_DIR$/Filesystem.py" />
-        <option value="$PROJECT_DIR$/GraphNN/PocketRGCN.py" />
-        <option value="$PROJECT_DIR$/GraphNN/SenseLabeledCorpus.py" />
         <option value="$PROJECT_DIR$/Vocabulary/Vocabulary_Utilities.py" />
         <option value="$PROJECT_DIR$/PrepareKBInput/PrepareKBInput.py" />
         <option value="$PROJECT_DIR$/CreateGraphInput.py" />
@@ -220,10 +190,12 @@
         <option value="$PROJECT_DIR$/PrepareKBInput/RemoveQuasiDuplicates.py" />
         <option value="$PROJECT_DIR$/GraphNN/DefineGraph.py" />
         <option value="$PROJECT_DIR$/GraphNN/MyRGCN.py" />
+        <option value="$PROJECT_DIR$/GraphNN/SenseLabeledCorpus.py" />
+        <option value="$PROJECT_DIR$/GraphNN/PocketRGCN.py" />
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds" extendedState="6">
+  <component name="ProjectFrameBounds">
     <option name="y" value="23" />
     <option name="width" value="1920" />
     <option name="height" value="986" />
@@ -234,6 +206,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -286,7 +259,6 @@
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -426,10 +398,32 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="23" width="1919" height="986" extended-state="6" />
+    <frame x="0" y="23" width="1920" height="986" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.49779737" visible="true" weight="0.11507725" />
+      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.49779737" visible="true" weight="0.15974441" />
+      <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
+      <window_info id="Favorites" order="2" sideWeight="0.50220263" side_tool="true" weight="0.18597998" />
+      <window_info anchor="bottom" id="Message" order="0" />
+      <window_info anchor="bottom" id="Find" order="1" weight="0.3131991" />
+      <window_info anchor="bottom" id="Run" order="2" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.39261746" />
+      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
+      <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
+      <window_info anchor="bottom" id="TODO" order="6" weight="0.32885906" />
+      <window_info anchor="bottom" id="Version Control" order="7" weight="0.32885906" />
+      <window_info anchor="bottom" id="Terminal" order="8" weight="0.3277311" />
+      <window_info anchor="bottom" id="Event Log" order="9" sideWeight="0.5007153" side_tool="true" weight="0.36414567" />
+      <window_info active="true" anchor="bottom" id="Python Console" order="10" sideWeight="0.49928468" visible="true" weight="0.30872482" />
+      <window_info anchor="bottom" id="Inspection Results" order="11" weight="0.32922733" />
+      <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
+      <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
+      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
+      <window_info anchor="right" id="R Graphics" order="3" />
+      <window_info anchor="right" id="R Packages" order="4" />
+    </layout>
+    <layout-to-restore>
+      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.49779737" visible="true" weight="0.11767838" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" sideWeight="0.50220263" side_tool="true" weight="0.18597998" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -442,14 +436,14 @@
       <window_info anchor="bottom" id="Version Control" order="7" weight="0.32885906" />
       <window_info anchor="bottom" id="Terminal" order="8" weight="0.3277311" />
       <window_info anchor="bottom" id="Event Log" order="9" sideWeight="0.5007153" side_tool="true" weight="0.36414567" />
-      <window_info active="true" anchor="bottom" id="Python Console" order="10" sideWeight="0.49928468" visible="true" weight="0.3210291" />
+      <window_info active="true" anchor="bottom" id="Python Console" order="10" sideWeight="0.49928468" visible="true" weight="0.31991053" />
       <window_info anchor="bottom" id="Inspection Results" order="11" weight="0.32922733" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
       <window_info anchor="right" id="R Graphics" order="3" />
       <window_info anchor="right" id="R Packages" order="4" />
-    </layout>
+    </layout-to-restore>
   </component>
   <component name="VcsManagerConfiguration">
     <ignored-roots>
@@ -622,13 +616,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$USER_HOME$/opt/anaconda3/lib/python3.7/site-packages/IPython/core/interactiveshell.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="134">
-          <caret line="3325" selection-start-line="3325" selection-end-line="3325" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$USER_HOME$/opt/anaconda3/lib/python3.7/site-packages/torch_geometric/nn/conv/message_passing.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="215">
@@ -684,16 +671,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/GraphNN/SenseLabeledCorpus.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2010">
-          <caret line="139" column="36" selection-start-line="139" selection-start-column="36" selection-end-line="139" selection-end-column="36" />
-          <folding>
-            <element signature="e#0#9#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/WordEmbeddings/ComputeEmbeddings.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="253">
@@ -728,16 +705,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="414">
           <caret line="41" column="34" selection-start-line="41" selection-start-column="34" selection-end-line="41" selection-end-column="34" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/GraphNN/PocketRGCN.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="236">
-          <caret line="85" column="17" selection-start-line="85" selection-start-column="14" selection-end-line="85" selection-end-column="17" />
-          <folding>
-            <element signature="e#0#12#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -785,10 +752,17 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$USER_HOME$/opt/anaconda3/lib/python3.7/site-packages/IPython/core/interactiveshell.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1083">
+          <caret line="3325" selection-start-line="3325" selection-end-line="3325" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/GraphNN/DefineGraph.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2334">
-          <caret line="201" column="53" selection-start-line="201" selection-start-column="52" selection-end-line="201" selection-end-column="53" />
+        <state relative-caret-position="105">
+          <caret line="17" selection-start-line="17" selection-end-line="17" />
           <folding>
             <element signature="e#0#19#0" expanded="true" />
           </folding>
@@ -797,7 +771,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/CreateGraphInput.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="467">
+        <state relative-caret-position="1110">
           <caret line="84" column="39" selection-start-line="84" selection-start-column="39" selection-end-line="84" selection-end-column="39" />
           <folding>
             <element signature="e#0#22#0" expanded="true" />
@@ -805,10 +779,30 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/GraphNN/SenseLabeledCorpus.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1800">
+          <caret line="125" column="85" selection-start-line="125" selection-start-column="85" selection-end-line="125" selection-end-column="85" />
+          <folding>
+            <element signature="e#0#9#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/GraphNN/MyRGCN.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="57">
-          <caret line="29" column="98" selection-start-line="29" selection-start-column="98" selection-end-line="29" selection-end-column="98" />
+        <state relative-caret-position="765">
+          <caret line="65" selection-start-line="65" selection-end-line="65" />
+          <folding>
+            <element signature="e#0#12#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/GraphNN/PocketRGCN.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="260">
+          <caret line="61" column="4" selection-start-line="61" selection-start-column="4" selection-end-line="61" selection-end-column="4" />
           <folding>
             <element signature="e#0#12#0" expanded="true" />
           </folding>

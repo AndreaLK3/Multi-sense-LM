@@ -1,12 +1,8 @@
-INFO : Constructing X, matrix of node features
-INFO : X_definitions.shape=torch.Size([13046, 300])
-INFO : X_examples.shape=torch.Size([16200, 300])
-INFO : X_senses.shape=torch.Size([13046, 300])
-INFO : X_globals.shape=torch.Size([5508, 300])
-INFO : Defining the edges: def, exs
-INFO : def_edges_se.__len__()=13046
-INFO : exs_edges_se.__len__()=22957086
-INFO : Defining the edges: sc
-INFO : NumExpr defaulting to 8 threads.
-INFO : sc_edges.__len__()=13046
-INFO : Defining the edges: syn, ant
+INFO : Senses : [ 0 , 10)
+INFO : Global single-prototypes : [ 10 , 15)
+INFO : Definitions : [ 15 , 35)
+INFO : Examples : [ 35 , 55)
+INFO : Total number of edges = 55
+INFO : node_index=12 -> node_neighbours_edges=[(12, 2, 2), (12, 6, 2), (12, 7, 2), (12, 10, 3), (12, 14, 4), (12, 13, 4)]
+INFO : node_index=12 -> node_neighbours_edges=[(12, 2, 2), (12, 6, 2), (12, 7, 2), (12, 10, 3), (12, 14, 4), (12, 13, 4)]
+INFO : [2, 6, 7, 10, 14, 13]

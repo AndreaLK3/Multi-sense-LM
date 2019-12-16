@@ -23,22 +23,21 @@ class NetRGCN(torch.nn.Module):
                               out_channels=data.x.shape[1], # doc: "Size of each output sample "
                               num_relations=data.num_relations,
                               num_bases=data.num_relations)
-        self.conv2global = RGCNConv(in_channels=data.x.shape[1], out_channels=self.last_idx_globals - self.last_idx_senses,
-                              num_relations=data.num_relations, num_bases=data.num_relations)
-        self.conv2sense = RGCNConv(in_channels=data.x.shape[1],
-                                    out_channels=self.last_idx_senses,
-                                    num_relations=data.num_relations, num_bases=data.num_relations) # 5
+        self.linear2global = torch.nn.Linear(in_features=data.x.shape[1],
+                                             out_features=self.last_idx_globals - self.last_idx_senses, bias=True)
+        self.linear2sense = torch.nn.Linear(in_features=data.x.shape[1], out_features=self.last_idx_senses, bias=True)
 
-    def forward(self, x, edge_index, edge_type):
+    def forward(self, x, edge_index, edge_type, current_node_index):
         x_Lplus1 = tF.relu(self.conv1(x, edge_index, edge_type))
-        x_toglobal = self.conv2global(x_Lplus1, edge_index, edge_type)
-        x_tosense = self.conv2sense(x_Lplus1, edge_index, edge_type)
+        x1_current_node = x_Lplus1[current_node_index]
+        logits_global = self.linear2global(x1_current_node)
+        logits_sense = self.linear2sense(x1_current_node)
 
         # output n.1 : shape [N,G]: for every node, the probability to belong to each one of the Global classes
         # i.e. to be followed by each one of the global words.
         # using softmax on dimension=1 gives sensible probabilities
 
-        return (tF.log_softmax(x_toglobal, dim=1), tF.log_softmax(x_tosense, dim=1))
+        return (tF.log_softmax(logits_global), tF.log_softmax(logits_sense))
 
 
 
@@ -79,13 +78,12 @@ def get_tokens_tpls(next_token_tpl, split_datagenerator, senseindices_db_c, voca
 
 def compute_loss_iteration(data, model, current_token_tpl, next_token_tpl):
 
-    predicted_global_forEachNode, predicted_sense_forEachNode = model(data.x, data.edge_index, data.edge_type)
-
     (current_input_global, current_input_sense) = current_token_tpl
     if current_input_sense == -1:
         current_token_index = current_input_global
     else:
         current_token_index = current_input_sense
+    predicted_globals, predicted_senses = model(data.x, data.edge_index, data.edge_type, current_token_index)
 
     (y_labelnext_global, y_labelnext_sense) = next_token_tpl
 
@@ -94,11 +92,10 @@ def compute_loss_iteration(data, model, current_token_tpl, next_token_tpl):
     else:
         is_label_senseLevel = True
 
-    loss_global = tF.nll_loss(predicted_global_forEachNode[current_token_index].unsqueeze(0), y_labelnext_global)
+    loss_global = tF.nll_loss(predicted_globals, y_labelnext_global)
 
     if is_label_senseLevel:
-        loss_sense = tF.nll_loss(predicted_sense_forEachNode[current_token_index].unsqueeze(0),
-                                 y_labelnext_sense)
+        loss_sense = tF.nll_loss(predicted_senses, y_labelnext_sense)
     else:
         loss_sense = 0
 

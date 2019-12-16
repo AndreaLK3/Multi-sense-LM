@@ -115,15 +115,15 @@ def readgenerator_senselabeled_corpuses(split_name):
     if split_name.lower() == Utils.TRAINING:
         training_subcorpuses_folder = os.path.join(F.FOLDER_TEXT_CORPUSES, F.FOLDER_UFSAC, F.FOLDER_TRAIN)
         full_fpaths = list(map(lambda fname: os.path.join(training_subcorpuses_folder, fname),
-                               os.listdir(training_subcorpuses_folder)))
+                               [fname for fname in os.listdir(training_subcorpuses_folder) if 'xml' in fname]))
     elif split_name.lower() == Utils.VALIDATION:
         validation_subcorpuses_folder = os.path.join(F.FOLDER_TEXT_CORPUSES, F.FOLDER_UFSAC, F.FOLDER_VALIDATION)
         full_fpaths = list(map(lambda fname: os.path.join(validation_subcorpuses_folder, fname),
-                               os.listdir(validation_subcorpuses_folder)))
+                               [fname for fname in os.listdir(validation_subcorpuses_folder) if 'xml' in fname]))
     else: # elif dataset_split.lower() == Utils.TEST:
         test_subcorpuses_folder = os.path.join(F.FOLDER_TEXT_CORPUSES, F.FOLDER_UFSAC, F.FOLDER_VALIDATION)
         full_fpaths = list(map(lambda fname: os.path.join(test_subcorpuses_folder, fname),
-                               os.listdir(test_subcorpuses_folder)))
+                               [fname for fname in os.listdir(test_subcorpuses_folder) if 'xml' in fname]))
 
     for xml_fpath in full_fpaths: # n: when using the readgenerator, I have to invoke .__next__().__next__() ,
         try:                      # and catch a StopIteration exception
