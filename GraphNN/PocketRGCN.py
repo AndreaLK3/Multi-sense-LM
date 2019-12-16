@@ -1,16 +1,12 @@
 import torch
 import torch_geometric
 from torch_geometric.nn import RGCNConv
-from torch.nn import Linear
 import torch.nn.functional as tF
-from WordEmbeddings.ComputeEmbeddings import Method
-import os
+
+from GraphNN.BatchesRGCN import get_batch_of_graph
 import random
-import numpy as np
 import Utils
 import logging
-from torch_geometric.utils import convert
-import networkx
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -20,67 +16,10 @@ import numpy as np
 # •	At Hop distance d=i , retrieve, in order: definitions, examples, synonyms, antonyms
 # Stop when the maximum number of nodes is reached (as defined by the input dimensions of the RGCN)
 # n: Retrieving N nodes also includes the starting node
-def get_indices_toinclude(edge_index, edge_type, node_index, num_to_retrieve):
-    nodes_retrieved = [node_index]
-    start_idx = 0
-    stop_flag = False
-    while(start_idx < len(nodes_retrieved) and stop_flag==False):
-        start_node = nodes_retrieved[start_idx]
-        start_idx = start_idx + 1
-
-        new_edges = get_neighbours(edge_index, edge_type, start_node)
-        new_nodes = list(map(lambda edge_tpl: edge_tpl[1], new_edges)) + list(map(lambda edge_tpl: edge_tpl[0], new_edges))
-        for n in new_nodes:
-            if len(nodes_retrieved) >= num_to_retrieve:
-                stop_flag = True
-                break
-            if n not in nodes_retrieved:
-                nodes_retrieved.append(n)
-                logging.debug("start_node=" + str(start_node) + " , nodes_retrieved= " + str(nodes_retrieved))
-
-    return nodes_retrieved
-
 
 
 # Auxiliary function: find the immediate neighbours of a node, in the given order. Both directions of edges are included
 # edge_type = def:0, exs:1, sc:2, syn:3, ant:4
-def get_neighbours(edge_index, edge_type, node_index):
-    indices_of_edges_where_node_is_source = np.where(edge_index[0].numpy() == node_index)[0]
-    indices_of_edges_where_node_is_target = np.where(edge_index[1].numpy() == node_index)[0]
-    node_neighbours_edges = []
-    for i in np.concatenate([indices_of_edges_where_node_is_source,indices_of_edges_where_node_is_target]):
-        node_neighbours_edges.append((edge_index[0][i].item(),edge_index[1][i].item(),edge_type[i].item()))
-    node_neighbours_edges = sorted(list(set(node_neighbours_edges)), key=lambda src_trg_type_tpl: src_trg_type_tpl[2])
-    logging.debug("node_index=" + str(node_index) + " -> node_neighbours_edges=" + str(node_neighbours_edges))
-    return node_neighbours_edges
-
-
-def get_batch_of_graph(starting_node_index, batch_size, graph):
-    Utils.init_logging('get_batch_of_graph.log')
-    batch_elements_indices_ls = sorted(get_indices_toinclude(graph.edge_index, graph.edge_type, starting_node_index.item(), batch_size))
-    batch_elements_indices = torch.Tensor(batch_elements_indices_ls).to(torch.int64)
-    batch_x = graph.x.index_select(0, batch_elements_indices)
-
-    edges_indices = torch.Tensor([e_col for e_col in range(len(graph.edge_index[0])) # it can be tensor([]) in some cases
-                    if (graph.edge_index[0][e_col] in batch_elements_indices
-                        and graph.edge_index[1][e_col] in batch_elements_indices)]).to(torch.int64)
-    #for edge_index in edges_indices:
-    #    print(graph.edge_index.t()[edge_index])
-    batch_edge_index_lts_defaultValues = graph.edge_index.t().index_select(0, edges_indices)
-
-    elem_edges_lts_reindexed = []
-    for (src, trg) in batch_edge_index_lts_defaultValues:
-        src_01 = batch_elements_indices_ls.index(src)
-        trg_01 = batch_elements_indices_ls.index(trg)
-        elem_edges_lts_reindexed.append((src_01, trg_01))
-
-    with torch.no_grad():
-        batch_edge_index = torch.autograd.Variable(torch.Tensor(elem_edges_lts_reindexed).t().to(torch.int64))
-
-    batch_edge_type = graph.edge_type.index_select(0, index=edges_indices).to(torch.int64)
-
-    return (batch_x, batch_edge_index, batch_edge_type)
-
 
 
 # In this example, we do not extract the node features, word and sense vocabulary indices, etc.

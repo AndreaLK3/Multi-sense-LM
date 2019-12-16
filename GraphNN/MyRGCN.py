@@ -13,6 +13,7 @@ import os
 import pandas as pd
 import matplotlib.pyplot as plt
 from math import inf
+import GraphNN.BatchesRGCN as BatchesRGCN
 
 class NetRGCN(torch.nn.Module):
     def __init__(self, data):
@@ -27,17 +28,14 @@ class NetRGCN(torch.nn.Module):
                                              out_features=self.last_idx_globals - self.last_idx_senses, bias=True)
         self.linear2sense = torch.nn.Linear(in_features=data.x.shape[1], out_features=self.last_idx_senses, bias=True)
 
-    def forward(self, x, edge_index, edge_type, current_node_index):
-        x_Lplus1 = tF.relu(self.conv1(x, edge_index, edge_type))
-        x1_current_node = x_Lplus1[current_node_index]
-        logits_global = self.linear2global(x1_current_node)
+
+    def forward(self, batch_x, batch_edge_index, batch_edge_type):  # given the batches, the current node is at index 0
+        x_Lplus1 = tF.relu(self.conv1(batch_x, batch_edge_index, batch_edge_type))
+        x1_current_node = x_Lplus1[0]  # current_node_index
+        logits_global = self.linear2global(x1_current_node)  # shape=torch.Size([5])
         logits_sense = self.linear2sense(x1_current_node)
 
-        # output n.1 : shape [N,G]: for every node, the probability to belong to each one of the Global classes
-        # i.e. to be followed by each one of the global words.
-        # using softmax on dimension=1 gives sensible probabilities
-
-        return (tF.log_softmax(logits_global), tF.log_softmax(logits_sense))
+        return (tF.log_softmax(logits_global, dim=0), tF.log_softmax(logits_sense, dim=0))
 
 
 
@@ -76,14 +74,16 @@ def get_tokens_tpls(next_token_tpl, split_datagenerator, senseindices_db_c, voca
     return current_token_tpl, next_token_tpl
 
 
-def compute_loss_iteration(data, model, current_token_tpl, next_token_tpl):
+def compute_loss_iteration(data, model, graphbatch_size, current_token_tpl, next_token_tpl):
 
     (current_input_global, current_input_sense) = current_token_tpl
+
     if current_input_sense == -1:
         current_token_index = current_input_global
     else:
         current_token_index = current_input_sense
-    predicted_globals, predicted_senses = model(data.x, data.edge_index, data.edge_type, current_token_index)
+    batch_x, batch_edge_index, batch_edge_type = BatchesRGCN.get_batch_of_graph(current_token_index, graphbatch_size, data)
+    predicted_globals, predicted_senses = model(batch_x, batch_edge_index, batch_edge_type)
 
     (y_labelnext_global, y_labelnext_sense) = next_token_tpl
 
@@ -104,7 +104,7 @@ def compute_loss_iteration(data, model, current_token_tpl, next_token_tpl):
 
 
 def train():
-    Utils.init_logging('temp.log')
+    Utils.init_logging('MyRGCN_train.log')
 
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     data = DG.get_graph_dataobject(new=False)
@@ -124,7 +124,7 @@ def train():
     num_epochs = 10
     model.train()
     losses = []
-    batch_size = 1
+    graphbatch_size = 16
     steps_logging = 100
 
     for epoch in range(1,num_epochs+1):
@@ -139,8 +139,9 @@ def train():
                 logging.info("Step n." + str(step))
                 current_token_tpl, next_token_tpl = get_tokens_tpls(next_token_tpl, train_generator, senseindices_db_c,
                                                                     vocab_h5, model.last_idx_senses)
+
                 optimizer.zero_grad()
-                loss = compute_loss_iteration(data, model, current_token_tpl, next_token_tpl)
+                loss = compute_loss_iteration(data, model, graphbatch_size, current_token_tpl, next_token_tpl)
                 loss.backward()
                 optimizer.step()
                 losses.append(loss)
