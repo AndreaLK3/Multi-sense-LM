@@ -256,7 +256,7 @@ def train():
                 current_token_index = current_input_global
             else:
                 current_token_index = current_input_sense
-            batch_x, batch_edge_index, batch_edge_type = get_batch_of_graph(current_token_index, 4, data)
+            batch_x, batch_edge_index, batch_edge_type = get_batch_of_graph(current_token_index.item(), 4, data)
             predicted_globals, predicted_senses = model(batch_x, batch_edge_index, batch_edge_type)
 
             global_raw_idx = training_dataset[i + 1][0]

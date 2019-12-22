@@ -15,6 +15,8 @@ import matplotlib.pyplot as plt
 from math import inf
 import GraphNN.BatchesRGCN as BatchesRGCN
 
+DEVICE = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+
 class NetRGCN(torch.nn.Module):
     def __init__(self, data):
         super(NetRGCN, self).__init__()
@@ -43,20 +45,28 @@ class NetRGCN(torch.nn.Module):
 
 def convert_tokendict_to_tpl(token_dict, senseindices_db_c, globals_vocabulary_h5, last_idx_senses):
     keys = token_dict.keys()
+    logging.info(token_dict) # debug
 
     if 'wn30_key' in keys:
-        wordnet_sense = wn.lemma_from_key(token_dict['wn30_key']).name()
+        wordnet_sense = wn.lemma_from_key(token_dict['wn30_key']).synset().name()
+        logging.info(wordnet_sense)
         query = "SELECT vocab_index FROM indices_table "+ "WHERE word_sense='"+wordnet_sense+"'"
-        sense_index = senseindices_db_c.execute(query).fetchone()
+        sense_index_queryresult = senseindices_db_c.execute(query).fetchone()
+        if sense_index_queryresult is None: # we did not find the senseID for a key
+            sense_index = -1                # in our senseindices_table derived from our vocabulary
+        else:
+            sense_index = sense_index_queryresult[0]
     else:
         sense_index = -1
     word = VocabUtils.process_slc_token(token_dict)
     try:
         global_absolute_index = Utils.select_from_hdf5(globals_vocabulary_h5, 'vocabulary', ['word'], [word]).index[0]
     except IndexError:
-        global_absolute_index = Utils.select_from_hdf5(globals_vocabulary_h5, 'vocabulary', ['word'], [Utils.UNK_TOKEN]).index[0]
+        # global_absolute_index = Utils.select_from_hdf5(globals_vocabulary_h5, 'vocabulary', ['word'], [Utils.UNK_TOKEN]).index[0]
+        raise Utils.MustSkipUNK_Exception
 
     global_index = global_absolute_index + last_idx_senses
+    logging.info('(global_index, sense_index)=' + str((global_index, sense_index)))
     return (global_index, sense_index)
 
 
@@ -85,6 +95,7 @@ def compute_loss_iteration(data, model, graphbatch_size, current_token_tpl, next
     batch_x, batch_edge_index, batch_edge_type = BatchesRGCN.get_batch_of_graph(current_token_index, graphbatch_size, data)
     predicted_globals, predicted_senses = model(batch_x, batch_edge_index, batch_edge_type)
 
+    logging.info('next_token_tpl=' + str(next_token_tpl))
     (y_labelnext_global, y_labelnext_sense) = next_token_tpl
 
     if y_labelnext_sense == -1:
@@ -92,25 +103,30 @@ def compute_loss_iteration(data, model, graphbatch_size, current_token_tpl, next
     else:
         is_label_senseLevel = True
 
+    predicted_globals = predicted_globals.unsqueeze(0) # adding 1 dimension, since we do not use batches for now. N x C
+    y_labelnext_global = torch.Tensor([y_labelnext_global]).to(torch.int64).to(DEVICE) # N
+    logging.info(predicted_globals.shape)
+    logging.info(y_labelnext_global.shape)
     loss_global = tF.nll_loss(predicted_globals, y_labelnext_global)
 
     if is_label_senseLevel:
+        predicted_senses = predicted_senses.unsqueeze(0)
+        y_labelnext_sense =  torch.Tensor([y_labelnext_sense]).to(torch.int64).to(DEVICE) # N
         loss_sense = tF.nll_loss(predicted_senses, y_labelnext_sense)
+        loss = loss_global + loss_sense
     else:
-        loss_sense = 0
+        loss = loss_global
 
-    loss = loss_global + loss_sense
     return loss
 
 
 def train():
     Utils.init_logging('MyRGCN_train.log')
 
-    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     data = DG.get_graph_dataobject(new=False)
     model = NetRGCN(data)
     logging.info("Graph-data object loaded, model initialized. Moving them to GPU device(s) if present.")
-    data.to(device), model.to(device)
+    data.to(DEVICE), model.to(DEVICE)
 
     senseindices_db_filepath = os.path.join(F.FOLDER_INPUT, Utils.INDICES_TABLE_DB)
     senseindices_db = sqlite3.connect(senseindices_db_filepath)
@@ -137,8 +153,12 @@ def train():
         try:
             while(True):
                 logging.info("Step n." + str(step))
-                current_token_tpl, next_token_tpl = get_tokens_tpls(next_token_tpl, train_generator, senseindices_db_c,
-                                                                    vocab_h5, model.last_idx_senses)
+                try:
+                    current_token_tpl, next_token_tpl = get_tokens_tpls(next_token_tpl, train_generator,
+                                                                        senseindices_db_c,vocab_h5, model.last_idx_senses)
+                except Utils.MustSkipUNK_Exception:
+                    logging.info("Encountered <UNK> token. Node not connected to any other in the graph, skipping")
+                    continue
 
                 optimizer.zero_grad()
                 loss = compute_loss_iteration(data, model, graphbatch_size, current_token_tpl, next_token_tpl)

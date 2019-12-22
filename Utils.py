@@ -85,6 +85,12 @@ def check_language(text, lang_id):
     return possible_match
 
 
+### When we encounter UNK, reading in text for the GNN, we skip it
+class MustSkipUNK_Exception(Exception):
+    def __init__(self):
+        super().__init__()
+
+
 # Utility for processing entities, word embeddings & co
 def count_tokens_in_corpus(corpus_txt_filepath):
 
@@ -164,7 +170,6 @@ def select_from_hdf5(input_db, table_key, field_names, values):
 def get_word_from_sense(sense_str):
     pattern = '[^.]+'
     mtc = re.match(pattern, sense_str)
-    # Temporary check for debugging
     try:
         word = mtc.group()
     except AttributeError:

@@ -2,8 +2,8 @@ import logging
 
 import numpy as np
 import torch
-
 import Utils
+
 
 DEVICE = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
@@ -23,7 +23,7 @@ def get_indices_toinclude(edge_index, edge_type, node_index, num_to_retrieve):
                 break
             if n not in nodes_retrieved:
                 nodes_retrieved.append(n)
-                logging.info("start_node=" + str(start_node) + " , nodes_retrieved= " + str(nodes_retrieved))
+                logging.debug("start_node=" + str(start_node) + " , nodes_retrieved= " + str(nodes_retrieved))
 
     return nodes_retrieved
 
@@ -35,13 +35,13 @@ def get_neighbours(edge_index, edge_type, node_index):
     for i in np.concatenate([indices_of_edges_where_node_is_source,indices_of_edges_where_node_is_target]):
         node_neighbours_edges.append((edge_index[0][i].item(),edge_index[1][i].item(),edge_type[i].item()))
     node_neighbours_edges = sorted(list(set(node_neighbours_edges)), key=lambda src_trg_type_tpl: src_trg_type_tpl[2])
-    logging.info("node_index=" + str(node_index) + " -> node_neighbours_edges=" + str(node_neighbours_edges))
+    logging.debug("node_index=" + str(node_index) + " -> node_neighbours_edges=" + str(node_neighbours_edges))
     return node_neighbours_edges
 
 
 def get_batch_of_graph(starting_node_index, batch_size, graph):
     logging.info("starting_node_index=" + str(starting_node_index))
-    batch_elements_indices_ls = sorted(get_indices_toinclude(graph.edge_index, graph.edge_type, starting_node_index.item(), batch_size))
+    batch_elements_indices_ls = sorted(get_indices_toinclude(graph.edge_index, graph.edge_type, starting_node_index, batch_size))
     batch_elements_indices = torch.Tensor(batch_elements_indices_ls).to(torch.int64).to(DEVICE)
     batch_x = graph.x.index_select(0, batch_elements_indices)
 
