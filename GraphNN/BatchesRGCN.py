@@ -40,7 +40,7 @@ def get_neighbours(edge_index, edge_type, node_index):
 
 
 def get_batch_of_graph(starting_node_index, batch_size, graph):
-    logging.info("starting_node_index=" + str(starting_node_index))
+    logging.debug("starting_node_index=" + str(starting_node_index))
     batch_elements_indices_ls = sorted(get_indices_toinclude(graph.edge_index, graph.edge_type, starting_node_index, batch_size))
     batch_elements_indices = torch.Tensor(batch_elements_indices_ls).to(torch.int64).to(DEVICE)
     batch_x = graph.x.index_select(0, batch_elements_indices)
