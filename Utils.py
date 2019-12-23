@@ -65,6 +65,15 @@ def init_logging(logfilename, loglevel=logging.INFO):
       logging.getLogger().addHandler(outlog_h)
 
 
+def log_chronometer(time_measurements):
+    for i in range(len(time_measurements)-1):
+        t1 = time_measurements[i]
+        t2 = time_measurements[i+1]
+        logging.info('t'+str(i+1)+' - t'+str(i)+' = '+str(round(t2-t1,5)))
+
+
+
+
 ### Note: must add the vocabularies of other languages
 def check_language(text, lang_id):
 

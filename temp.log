@@ -1,0 +1,111 @@
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Encountered <UNK> token. Node not connected to any other in the graph, skipping
+INFO : Step n.0
+INFO : t1 - t0 = 1.56371
+INFO : t2 - t1 = 0.0022
+INFO : t3 - t2 = 2e-05
+INFO : t4 - t3 = 0.0
+INFO : t5 - t4 = 4e-05
+INFO : t6 - t5 = 0.00024
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.0
+INFO : Step n.1
+INFO : t1 - t0 = 1.51787
+INFO : t2 - t1 = 0.00046
+INFO : t3 - t2 = 2e-05
+INFO : t4 - t3 = 0.0
+INFO : t5 - t4 = 3e-05
+INFO : t6 - t5 = 0.00015
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.0
+INFO : Step n.2
+INFO : t1 - t0 = 1.52969
+INFO : t2 - t1 = 0.00048
+INFO : t3 - t2 = 2e-05
+INFO : t4 - t3 = 0.0
+INFO : t5 - t4 = 3e-05
+INFO : t6 - t5 = 0.00015
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.0
+INFO : Step n.3
+INFO : t1 - t0 = 1.52509
+INFO : t2 - t1 = 0.00047
+INFO : t3 - t2 = 2e-05
+INFO : t4 - t3 = 0.0
+INFO : t5 - t4 = 4e-05
+INFO : t6 - t5 = 0.00016
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.0
+INFO : Step n.4
+INFO : t1 - t0 = 1.51909
+INFO : t2 - t1 = 0.00043
+INFO : t3 - t2 = 2e-05
+INFO : t4 - t3 = 0.0
+INFO : t5 - t4 = 3e-05
+INFO : t6 - t5 = 0.00015
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.0
+INFO : Step n.5
+INFO : t1 - t0 = 1.52896
+INFO : t2 - t1 = 0.00044
+INFO : t3 - t2 = 2e-05
+INFO : t4 - t3 = 0.0
+INFO : t5 - t4 = 3e-05
+INFO : t6 - t5 = 0.00015
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.0
+INFO : Step n.6
+INFO : Did not find word sense for key = recent%3:00:00:past:00
+INFO : t1 - t0 = 1.53062
+INFO : t2 - t1 = 0.00042
+INFO : t3 - t2 = 1e-05
+INFO : t4 - t3 = 0.0
+INFO : t5 - t4 = 3e-05
+INFO : t6 - t5 = 0.00015
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.0
+INFO : Step n.7
+INFO : Encountered <UNK> token. Node not connected to any other in the graph, skipping
+INFO : Step n.7
+INFO : t1 - t0 = 1.53441
+INFO : t2 - t1 = 0.00044
+INFO : t3 - t2 = 1e-05
+INFO : t4 - t3 = 0.0
+INFO : t5 - t4 = 3e-05
+INFO : t6 - t5 = 0.00015
+INFO : t7 - t6 = 3e-05
+INFO : t8 - t7 = 3e-05
+INFO : Step n.8
+INFO : Encountered <UNK> token. Node not connected to any other in the graph, skipping
+INFO : Step n.8
+INFO : t1 - t0 = 1.52744
+INFO : t2 - t1 = 0.00045
+INFO : t3 - t2 = 2e-05
+INFO : t4 - t3 = 0.0
+INFO : t5 - t4 = 3e-05
+INFO : t6 - t5 = 0.00016
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.0
+INFO : Step n.9
+INFO : t1 - t0 = 1.53233
+INFO : t2 - t1 = 0.00044
+INFO : t3 - t2 = 1e-05
+INFO : t4 - t3 = 0.0
+INFO : t5 - t4 = 3e-05
+INFO : t6 - t5 = 0.00015
+INFO : t7 - t6 = 3e-05
+INFO : t8 - t7 = 3e-05
+INFO : Step n.10
+INFO : nll_loss= tensor(18.1204, device='cuda:0', grad_fn=<AddBackward0>)
+INFO : Step n.10
+INFO : Encountered <UNK> token. Node not connected to any other in the graph, skipping
+INFO : Step n.10
+INFO : t1 - t0 = 1.52684
+INFO : t2 - t1 = 0.00045
+INFO : t3 - t2 = 2e-05
+INFO : t4 - t3 = 0.0
+INFO : t5 - t4 = 4e-05
+INFO : t6 - t5 = 0.00015
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.0
+INFO : Step n.11

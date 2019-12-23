@@ -6,15 +6,14 @@ import logging
 import torch.nn.functional as tF
 import GraphNN.DefineGraph as DG
 import GraphNN.SenseLabeledCorpus as SLC
-from nltk.corpus import wordnet as wn
-from nltk.corpus.reader.wordnet import WordNetError
-import Vocabulary.Vocabulary_Utilities as VocabUtils
 import sqlite3
 import os
 import pandas as pd
 import matplotlib.pyplot as plt
 from math import inf
-import GraphNN.BatchesRGCN as BatchesRGCN
+import GraphNN.InputForRGCN as IN
+import GraphNN.GraphSegments as GraphSegments
+from time import time
 
 DEVICE = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
@@ -41,55 +40,6 @@ class NetRGCN(torch.nn.Module):
         return (tF.log_softmax(logits_global, dim=0), tF.log_softmax(logits_sense, dim=0))
 
 
-
-### Internal function to: translate the word (and if present, the sense) into numerical indices.
-# sense = [0,se) ; single prototype = [se,se+sp) ; definitions = [se+sp, se+sp+d) ; examples = [se+sp+d, e==num_nodes)
-def convert_tokendict_to_tpl(token_dict, senseindices_db_c, globals_vocabulary_h5, last_idx_senses):
-    keys = token_dict.keys()
-    sense_index_queryresult = None
-
-    if 'wn30_key' in keys:
-        try:
-            wordnet_sense = wn.lemma_from_key(token_dict['wn30_key']).synset().name()
-            logging.debug(wordnet_sense)
-            query = "SELECT vocab_index FROM indices_table " + "WHERE word_sense='" + wordnet_sense + "'"
-            sense_index_queryresult = senseindices_db_c.execute(query).fetchone()
-        except WordNetError: # it may fail, due to typo or wrong labeling
-            logging.info("Did not find word sense for key = " + token_dict['wn30_key'])
-        except sqlite3.OperationalError :
-            logging.info("Error while attempting to execute query: " + query + " . Skipping sense")
-
-        if sense_index_queryresult is None: # the was no sense-key, or we did not find the sense for the key
-            sense_index = -1
-        else:
-            sense_index = sense_index_queryresult[0]
-    else:
-        sense_index = -1
-    word = VocabUtils.process_slc_token(token_dict)
-    try:
-        global_absolute_index = Utils.select_from_hdf5(globals_vocabulary_h5, 'vocabulary', ['word'], [word]).index[0]
-    except IndexError:
-        # global_absolute_index = Utils.select_from_hdf5(globals_vocabulary_h5, 'vocabulary', ['word'], [Utils.UNK_TOKEN]).index[0]
-        raise Utils.MustSkipUNK_Exception
-
-    global_index = global_absolute_index # + last_idx_senses; do not add this to globals, or we go beyond the n_classes
-    logging.debug('(global_index, sense_index)=' + str((global_index, sense_index)))
-    return (global_index, sense_index)
-
-
-### Entry point function to: translate the word (and if present, the sense) into numerical indices.
-def get_tokens_tpls(next_token_tpl, split_datagenerator, senseindices_db_c, vocab_h5, last_idx_senses):
-    if next_token_tpl is None:
-        current_token_tpl = convert_tokendict_to_tpl(split_datagenerator.__next__(),
-                                                     senseindices_db_c, vocab_h5, last_idx_senses)
-        next_token_tpl = convert_tokendict_to_tpl(split_datagenerator.__next__(),
-                                                  senseindices_db_c, vocab_h5, last_idx_senses)
-    else:
-        current_token_tpl = next_token_tpl
-        next_token_tpl = convert_tokendict_to_tpl(split_datagenerator.__next__(),senseindices_db_c, vocab_h5, last_idx_senses)
-    return current_token_tpl, next_token_tpl
-
-
 ### Part of an iteration of the training loop. Also defines the graph segment we operate on.
 def compute_loss_iteration(data, model, graphbatch_size, current_token_tpl, next_token_tpl):
 
@@ -99,8 +49,11 @@ def compute_loss_iteration(data, model, graphbatch_size, current_token_tpl, next
         current_token_index = current_input_global
     else:
         current_token_index = current_input_sense
-    batch_x, batch_edge_index, batch_edge_type = BatchesRGCN.get_batch_of_graph(current_token_index, graphbatch_size, data)
+    t0 = time()
+    batch_x, batch_edge_index, batch_edge_type = GraphSegments.get_batch_of_graph(current_token_index, graphbatch_size, data)
+    t1 = time()
     predicted_globals, predicted_senses = model(batch_x, batch_edge_index, batch_edge_type)
+    t2 = time()
 
     logging.debug('current_token_tpl=' + str(current_token_tpl))
     logging.debug('next_token_tpl=' + str(next_token_tpl))
@@ -111,22 +64,28 @@ def compute_loss_iteration(data, model, graphbatch_size, current_token_tpl, next
         y_labelnext_sense = 0 # it is not used anyway. May be useful to mantain the assertion: labels \in [0, num_classes)
     else:
         is_label_senseLevel = True
-
+    t3 = time()
     predicted_globals = predicted_globals.unsqueeze(0) # adding 1 dimension, since we do not use batches for now. N x C
+    t4 = time()
     y_labelnext_global = torch.Tensor([y_labelnext_global]).to(torch.int64).to(DEVICE) # N
+    t5 = time()
     logging.debug('y_labelnext_global= ' + str(y_labelnext_global))
     logging.debug('predicted_globals.shape= ' + str(predicted_globals.shape))
     loss_global = tF.nll_loss(predicted_globals, y_labelnext_global)
+    t6 = time()
 
     if is_label_senseLevel:
         predicted_senses = predicted_senses.unsqueeze(0)
         y_labelnext_sense = torch.Tensor([y_labelnext_sense]).to(torch.int64).to(DEVICE) # N
+        t7 = time()
         loss_sense = tF.nll_loss(predicted_senses, y_labelnext_sense)
         loss = loss_global + loss_sense
+        t8 = time()
     else:
         loss = loss_global
+        t8 = t7 = t6
 
-
+    Utils.log_chronometer([t0,t1,t2,t3,t4,t5,t6,t7,t8])
 
     return loss
 
@@ -164,9 +123,10 @@ def train():
         try:
             while(True):
                 logging.info("Step n." + str(step))
+
                 try:
-                    current_token_tpl, next_token_tpl = get_tokens_tpls(next_token_tpl, train_generator,
-                                                                        senseindices_db_c,vocab_h5, model.last_idx_senses)
+                    current_token_tpl, next_token_tpl = IN.get_tokens_tpls(next_token_tpl, train_generator,
+                                                                        senseindices_db_c, vocab_h5, model.last_idx_senses)
                 except Utils.MustSkipUNK_Exception:
                     logging.info("Encountered <UNK> token. Node not connected to any other in the graph, skipping")
                     continue
@@ -174,6 +134,7 @@ def train():
                 optimizer.zero_grad()
                 loss = compute_loss_iteration(data, model, graphbatch_size, current_token_tpl, next_token_tpl)
                 loss.backward()
+
                 optimizer.step()
                 losses.append(loss)
 
@@ -181,7 +142,6 @@ def train():
                 if step % steps_logging == 0:
                     logging.info("Step n." + str(step))
                     logging.info('nll_loss= ' + str(loss))
-
 
         except StopIteration:
             continue # next epoch

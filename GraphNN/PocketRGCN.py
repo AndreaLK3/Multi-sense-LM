@@ -3,7 +3,7 @@ import torch_geometric
 from torch_geometric.nn import RGCNConv
 import torch.nn.functional as tF
 
-from GraphNN.BatchesRGCN import get_batch_of_graph
+from GraphNN.GraphSegments import get_batch_of_graph
 import random
 import Utils
 import logging

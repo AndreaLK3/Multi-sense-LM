@@ -2,9 +2,14 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="d35dca92-959c-489d-8a61-f337e4cce7fa" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/GraphNN/InputForRGCN.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/GraphNN/BatchesRGCN.py" beforeDir="false" afterPath="$PROJECT_DIR$/GraphNN/GraphSegments.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/GraphNN/MyRGCN.py" beforeDir="false" afterPath="$PROJECT_DIR$/GraphNN/MyRGCN.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/GraphNN/PocketRGCN.py" beforeDir="false" afterPath="$PROJECT_DIR$/GraphNN/PocketRGCN.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/GraphNN/exampleGraph.gexf" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/Media/Task1_DeveloperDiary.docx" beforeDir="false" afterPath="$PROJECT_DIR$/Media/Task1_DeveloperDiary.docx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/Utils.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -56,8 +61,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/GraphNN/MyRGCN.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="231">
-              <caret line="59" column="97" selection-start-line="59" selection-start-column="97" selection-end-line="59" selection-end-column="97" />
+            <state relative-caret-position="254">
+              <caret line="52" column="125" lean-forward="true" selection-start-line="52" selection-start-column="4" selection-end-line="52" selection-end-column="125" />
               <folding>
                 <element signature="e#0#12#0" expanded="true" />
               </folding>
@@ -66,10 +71,10 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Utils.py">
+        <entry file="file://$PROJECT_DIR$/GraphNN/InputForRGCN.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2610">
-              <caret line="180" selection-start-line="180" selection-end-line="180" />
+            <state relative-caret-position="160">
+              <caret line="15" column="12" lean-forward="true" selection-start-line="15" selection-start-column="12" selection-end-line="15" selection-end-column="12" />
               <folding>
                 <element signature="e#0#14#0" expanded="true" />
               </folding>
@@ -78,9 +83,21 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/GraphNN/BatchesRGCN.py">
+        <entry file="file://$PROJECT_DIR$/Utils.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="615">
+            <state relative-caret-position="270">
+              <caret line="71" column="74" lean-forward="true" selection-start-line="71" selection-start-column="74" selection-end-line="71" selection-end-column="74" />
+              <folding>
+                <element signature="e#0#14#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/GraphNN/GraphSegments.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="675">
               <caret line="45" column="61" selection-start-line="45" selection-start-column="61" selection-end-line="45" selection-end-column="61" />
               <folding>
                 <element signature="e#0#14#0" expanded="true" />
@@ -170,8 +187,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/Vocabulary/Phrases.py" />
-        <option value="$PROJECT_DIR$/PrepareGraphInput/RunLMFinetuning.py" />
         <option value="$PROJECT_DIR$/PrepareGraphInput/SenseDenominations.py" />
         <option value="$PROJECT_DIR$/PrepareGraphInput/ReduceBERT.py" />
         <option value="$PROJECT_DIR$/PrepareGraphInput/run_lm_finetuning.py" />
@@ -217,9 +232,11 @@
         <option value="$PROJECT_DIR$/GraphNN/DefineGraph.py" />
         <option value="$PROJECT_DIR$/GraphNN/SenseLabeledCorpus.py" />
         <option value="$USER_HOME$/opt/anaconda3/lib/python3.7/site-packages/torch_geometric/nn/conv/message_passing.py" />
-        <option value="$PROJECT_DIR$/Utils.py" />
         <option value="$PROJECT_DIR$/GraphNN/PocketRGCN.py" />
         <option value="$PROJECT_DIR$/GraphNN/BatchesRGCN.py" />
+        <option value="$PROJECT_DIR$/GraphNN/InputToRGCN.py" />
+        <option value="$PROJECT_DIR$/GraphNN/InputForRGCN.py" />
+        <option value="$PROJECT_DIR$/Utils.py" />
         <option value="$PROJECT_DIR$/GraphNN/MyRGCN.py" />
       </list>
     </option>
@@ -513,16 +530,6 @@
     </expressions>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/WordEmbeddings/AutoEncoderDBERT.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="217">
-          <caret line="134" column="60" selection-start-line="134" selection-start-column="60" selection-end-line="134" selection-end-column="60" />
-          <folding>
-            <element signature="e#0#12#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Vocabulary/Phrases.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="735">
@@ -811,26 +818,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Utils.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2610">
-          <caret line="180" selection-start-line="180" selection-end-line="180" />
-          <folding>
-            <element signature="e#0#14#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/GraphNN/BatchesRGCN.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="615">
-          <caret line="45" column="61" selection-start-line="45" selection-start-column="61" selection-end-line="45" selection-end-column="61" />
-          <folding>
-            <element signature="e#0#14#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Vocabulary/Vocabulary_Utilities.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1575">
@@ -848,10 +835,40 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/GraphNN/GraphSegments.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="675">
+          <caret line="45" column="61" selection-start-line="45" selection-start-column="61" selection-end-line="45" selection-end-column="61" />
+          <folding>
+            <element signature="e#0#14#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/GraphNN/InputForRGCN.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="160">
+          <caret line="15" column="12" lean-forward="true" selection-start-line="15" selection-start-column="12" selection-end-line="15" selection-end-column="12" />
+          <folding>
+            <element signature="e#0#14#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Utils.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="270">
+          <caret line="71" column="74" lean-forward="true" selection-start-line="71" selection-start-column="74" selection-end-line="71" selection-end-column="74" />
+          <folding>
+            <element signature="e#0#14#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/GraphNN/MyRGCN.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="231">
-          <caret line="59" column="97" selection-start-line="59" selection-start-column="97" selection-end-line="59" selection-end-column="97" />
+        <state relative-caret-position="254">
+          <caret line="52" column="125" lean-forward="true" selection-start-line="52" selection-start-column="4" selection-end-line="52" selection-end-column="125" />
           <folding>
             <element signature="e#0#12#0" expanded="true" />
           </folding>
