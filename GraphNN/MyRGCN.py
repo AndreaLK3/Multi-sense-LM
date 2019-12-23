@@ -56,6 +56,8 @@ def convert_tokendict_to_tpl(token_dict, senseindices_db_c, globals_vocabulary_h
             sense_index_queryresult = senseindices_db_c.execute(query).fetchone()
         except WordNetError: # it may fail, due to typo or wrong labeling
             logging.info("Did not find word sense for key = " + token_dict['wn30_key'])
+        except sqlite3.OperationalError :
+            logging.info("Error while attempting to execute query: " + query + " . Skipping sense")
 
         if sense_index_queryresult is None: # the was no sense-key, or we did not find the sense for the key
             sense_index = -1
