@@ -82,7 +82,6 @@ def compute_loss_iteration(data, model, graphbatch_size, current_token_tpl, next
 
 
 def train():
-    Utils.init_logging('MyRGCN_train.log')
 
     data = DG.get_graph_dataobject(new=False)
     model = NetRGCN(data)
@@ -98,11 +97,11 @@ def train():
 
     optimizer = torch.optim.Adam(model.parameters(), lr=0.01, weight_decay=0.0005)
 
-    num_epochs = 10
+    num_epochs = 5
     model.train()
     losses = []
     graphbatch_size = 16
-    steps_logging = 10
+    steps_logging = 100
 
     for epoch in range(1,num_epochs+1):
         logging.info("\nTraining epoch n."+str(epoch) +":" )
@@ -113,7 +112,6 @@ def train():
         step = 0
         try:
             while(True):
-                logging.info("Step n." + str(step))
 
                 try:
                     current_token_tpl, next_token_tpl = IN.get_tokens_tpls(next_token_tpl, train_generator,
