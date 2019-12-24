@@ -11,15 +11,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 
-# Find the node's neighbours, to use for batching:
-# Increase gradually the hop distance, from i=1
-# •	At Hop distance d=i , retrieve, in order: definitions, examples, synonyms, antonyms
-# Stop when the maximum number of nodes is reached (as defined by the input dimensions of the RGCN)
-# n: Retrieving N nodes also includes the starting node
+DEVICE = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-
-# Auxiliary function: find the immediate neighbours of a node, in the given order. Both directions of edges are included
-# edge_type = def:0, exs:1, sc:2, syn:3, ant:4
 
 
 # In this example, we do not extract the node features, word and sense vocabulary indices, etc.
@@ -227,18 +220,17 @@ class NetRGCN(torch.nn.Module):
 
 def train():
 
-    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     inputgraph_dataobject = createInputGraph()
     RGCN_modelobject = NetRGCN(inputgraph_dataobject)
 
-    data, model = inputgraph_dataobject.to(device), RGCN_modelobject.to(device)
+    data, model = inputgraph_dataobject.to(DEVICE), RGCN_modelobject.to(DEVICE)
 
     optimizer = torch.optim.Adam(model.parameters(), lr=0.01, weight_decay=0.0005)
 
     #out = model(data.edge_index, data.edge_type, data.edge_norm)
     training_dataset = torch.Tensor([(10,-1),(11,5),(12,-1),(13,3),(14,-1),(10,9),(11,-1),(12,-1),(13,-1),(14,-1),
                         (10,-1),(11,5),(12,-1),(13,3),(14,-1),(10,9),(11,5),(12,-1),(13,3),(14,-1)]).type(torch.int64)
-    training_dataset.to(device, dtype=torch.int64)
+    training_dataset.to(DEVICE, dtype=torch.int64)
     num_epochs = 10
     model.train()
     losses = []
@@ -261,8 +253,8 @@ def train():
 
             global_raw_idx = training_dataset[i + 1][0]
             sense_idx =  training_dataset[i + 1][1]
-            (y_labelnext_global,y_labelnext_sense) = (torch.Tensor([global_raw_idx - model.last_idx_senses]).type(torch.int64),
-                                                      torch.Tensor([sense_idx]).type(torch.int64))
+            (y_labelnext_global,y_labelnext_sense) = (torch.Tensor([global_raw_idx - model.last_idx_senses]).type(torch.int64).to(DEVICE),
+                                                      torch.Tensor([sense_idx]).type(torch.int64).to(DEVICE))
 
             if y_labelnext_sense == -1:
                 is_label_senseLevel = False

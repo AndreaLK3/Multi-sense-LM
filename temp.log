@@ -1,111 +1,479 @@
 INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
 INFO : Encountered <UNK> token. Node not connected to any other in the graph, skipping
 INFO : Step n.0
-INFO : t1 - t0 = 1.56371
-INFO : t2 - t1 = 0.0022
-INFO : t3 - t2 = 2e-05
-INFO : t4 - t3 = 0.0
-INFO : t5 - t4 = 4e-05
-INFO : t6 - t5 = 0.00024
+INFO : t1 - t0 = 0.00443
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 6e-05
+INFO : t4 - t3 = 5e-05
+INFO : t5 - t4 = 0.62324
+INFO : t6 - t5 = 5e-05
 INFO : t7 - t6 = 0.0
-INFO : t8 - t7 = 0.0
+INFO : t8 - t7 = 0.01084
+INFO : t9 - t8 = 6e-05
+INFO : t10 - t9 = 2e-05
 INFO : Step n.1
-INFO : t1 - t0 = 1.51787
-INFO : t2 - t1 = 0.00046
-INFO : t3 - t2 = 2e-05
-INFO : t4 - t3 = 0.0
-INFO : t5 - t4 = 3e-05
-INFO : t6 - t5 = 0.00015
+INFO : t1 - t0 = 0.00365
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 3e-05
+INFO : t4 - t3 = 2e-05
+INFO : t5 - t4 = 0.62407
+INFO : t6 - t5 = 2e-05
 INFO : t7 - t6 = 0.0
-INFO : t8 - t7 = 0.0
+INFO : t8 - t7 = 0.00509
+INFO : t9 - t8 = 4e-05
+INFO : t10 - t9 = 2e-05
 INFO : Step n.2
-INFO : t1 - t0 = 1.52969
-INFO : t2 - t1 = 0.00048
-INFO : t3 - t2 = 2e-05
-INFO : t4 - t3 = 0.0
-INFO : t5 - t4 = 3e-05
-INFO : t6 - t5 = 0.00015
+INFO : t1 - t0 = 0.00326
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 3e-05
+INFO : t4 - t3 = 2e-05
+INFO : t5 - t4 = 0.62165
+INFO : t6 - t5 = 2e-05
 INFO : t7 - t6 = 0.0
-INFO : t8 - t7 = 0.0
+INFO : t8 - t7 = 0.00508
+INFO : t9 - t8 = 4e-05
+INFO : t10 - t9 = 2e-05
 INFO : Step n.3
-INFO : t1 - t0 = 1.52509
-INFO : t2 - t1 = 0.00047
-INFO : t3 - t2 = 2e-05
-INFO : t4 - t3 = 0.0
-INFO : t5 - t4 = 4e-05
-INFO : t6 - t5 = 0.00016
+INFO : t1 - t0 = 0.00299
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 3e-05
+INFO : t4 - t3 = 2e-05
+INFO : t5 - t4 = 0.62578
+INFO : t6 - t5 = 2e-05
 INFO : t7 - t6 = 0.0
-INFO : t8 - t7 = 0.0
+INFO : t8 - t7 = 0.00501
+INFO : t9 - t8 = 4e-05
+INFO : t10 - t9 = 2e-05
 INFO : Step n.4
-INFO : t1 - t0 = 1.51909
-INFO : t2 - t1 = 0.00043
-INFO : t3 - t2 = 2e-05
-INFO : t4 - t3 = 0.0
-INFO : t5 - t4 = 3e-05
-INFO : t6 - t5 = 0.00015
+INFO : t1 - t0 = 0.00253
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 3e-05
+INFO : t4 - t3 = 2e-05
+INFO : t5 - t4 = 0.61688
+INFO : t6 - t5 = 2e-05
 INFO : t7 - t6 = 0.0
-INFO : t8 - t7 = 0.0
+INFO : t8 - t7 = 0.00096
+INFO : t9 - t8 = 4e-05
+INFO : t10 - t9 = 2e-05
 INFO : Step n.5
-INFO : t1 - t0 = 1.52896
-INFO : t2 - t1 = 0.00044
-INFO : t3 - t2 = 2e-05
-INFO : t4 - t3 = 0.0
-INFO : t5 - t4 = 3e-05
-INFO : t6 - t5 = 0.00015
+INFO : t1 - t0 = 0.00248
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 3e-05
+INFO : t4 - t3 = 2e-05
+INFO : t5 - t4 = 0.61923
+INFO : t6 - t5 = 2e-05
 INFO : t7 - t6 = 0.0
-INFO : t8 - t7 = 0.0
+INFO : t8 - t7 = 0.00093
+INFO : t9 - t8 = 4e-05
+INFO : t10 - t9 = 2e-05
 INFO : Step n.6
 INFO : Did not find word sense for key = recent%3:00:00:past:00
-INFO : t1 - t0 = 1.53062
-INFO : t2 - t1 = 0.00042
-INFO : t3 - t2 = 1e-05
-INFO : t4 - t3 = 0.0
-INFO : t5 - t4 = 3e-05
-INFO : t6 - t5 = 0.00015
+INFO : t1 - t0 = 0.00329
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 3e-05
+INFO : t4 - t3 = 2e-05
+INFO : t5 - t4 = 0.62465
+INFO : t6 - t5 = 2e-05
 INFO : t7 - t6 = 0.0
-INFO : t8 - t7 = 0.0
+INFO : t8 - t7 = 0.00504
+INFO : t9 - t8 = 4e-05
+INFO : t10 - t9 = 2e-05
 INFO : Step n.7
 INFO : Encountered <UNK> token. Node not connected to any other in the graph, skipping
 INFO : Step n.7
-INFO : t1 - t0 = 1.53441
-INFO : t2 - t1 = 0.00044
-INFO : t3 - t2 = 1e-05
-INFO : t4 - t3 = 0.0
-INFO : t5 - t4 = 3e-05
-INFO : t6 - t5 = 0.00015
-INFO : t7 - t6 = 3e-05
-INFO : t8 - t7 = 3e-05
+INFO : t1 - t0 = 0.00333
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 3e-05
+INFO : t4 - t3 = 2e-05
+INFO : t5 - t4 = 0.62506
+INFO : t6 - t5 = 2e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.007
+INFO : t9 - t8 = 4e-05
+INFO : t10 - t9 = 2e-05
 INFO : Step n.8
 INFO : Encountered <UNK> token. Node not connected to any other in the graph, skipping
 INFO : Step n.8
-INFO : t1 - t0 = 1.52744
-INFO : t2 - t1 = 0.00045
-INFO : t3 - t2 = 2e-05
-INFO : t4 - t3 = 0.0
-INFO : t5 - t4 = 3e-05
-INFO : t6 - t5 = 0.00016
+INFO : t1 - t0 = 0.00312
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 3e-05
+INFO : t4 - t3 = 2e-05
+INFO : t5 - t4 = 0.6231
+INFO : t6 - t5 = 2e-05
 INFO : t7 - t6 = 0.0
-INFO : t8 - t7 = 0.0
+INFO : t8 - t7 = 0.00754
+INFO : t9 - t8 = 5e-05
+INFO : t10 - t9 = 2e-05
 INFO : Step n.9
-INFO : t1 - t0 = 1.53233
-INFO : t2 - t1 = 0.00044
-INFO : t3 - t2 = 1e-05
-INFO : t4 - t3 = 0.0
-INFO : t5 - t4 = 3e-05
-INFO : t6 - t5 = 0.00015
-INFO : t7 - t6 = 3e-05
-INFO : t8 - t7 = 3e-05
+INFO : t1 - t0 = 0.00304
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 3e-05
+INFO : t4 - t3 = 2e-05
+INFO : t5 - t4 = 0.62068
+INFO : t6 - t5 = 2e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00484
+INFO : t9 - t8 = 4e-05
+INFO : t10 - t9 = 2e-05
 INFO : Step n.10
-INFO : nll_loss= tensor(18.1204, device='cuda:0', grad_fn=<AddBackward0>)
+INFO : nll_loss= tensor(18.1293, device='cuda:0', grad_fn=<AddBackward0>)
 INFO : Step n.10
 INFO : Encountered <UNK> token. Node not connected to any other in the graph, skipping
 INFO : Step n.10
-INFO : t1 - t0 = 1.52684
-INFO : t2 - t1 = 0.00045
-INFO : t3 - t2 = 2e-05
-INFO : t4 - t3 = 0.0
-INFO : t5 - t4 = 4e-05
-INFO : t6 - t5 = 0.00015
+INFO : t1 - t0 = 0.00393
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 3e-05
+INFO : t4 - t3 = 2e-05
+INFO : t5 - t4 = 0.62249
+INFO : t6 - t5 = 2e-05
 INFO : t7 - t6 = 0.0
-INFO : t8 - t7 = 0.0
+INFO : t8 - t7 = 0.00859
+INFO : t9 - t8 = 4e-05
+INFO : t10 - t9 = 2e-05
 INFO : Step n.11
+INFO : t1 - t0 = 0.0031
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 3e-05
+INFO : t4 - t3 = 2e-05
+INFO : t5 - t4 = 0.6265
+INFO : t6 - t5 = 2e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00494
+INFO : t9 - t8 = 4e-05
+INFO : t10 - t9 = 2e-05
+INFO : Step n.12
+INFO : Encountered <UNK> token. Node not connected to any other in the graph, skipping
+INFO : Step n.12
+INFO : t1 - t0 = 0.00436
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 3e-05
+INFO : t4 - t3 = 2e-05
+INFO : t5 - t4 = 0.62216
+INFO : t6 - t5 = 2e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00258
+INFO : t9 - t8 = 4e-05
+INFO : t10 - t9 = 2e-05
+INFO : Step n.13
+INFO : Encountered <UNK> token. Node not connected to any other in the graph, skipping
+INFO : Step n.13
+INFO : Encountered <UNK> token. Node not connected to any other in the graph, skipping
+INFO : Step n.13
+INFO : t1 - t0 = 0.00295
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 3e-05
+INFO : t4 - t3 = 2e-05
+INFO : t5 - t4 = 0.62163
+INFO : t6 - t5 = 2e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00513
+INFO : t9 - t8 = 4e-05
+INFO : t10 - t9 = 2e-05
+INFO : Step n.14
+INFO : t1 - t0 = 0.00349
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 4e-05
+INFO : t4 - t3 = 2e-05
+INFO : t5 - t4 = 0.62393
+INFO : t6 - t5 = 2e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00511
+INFO : t9 - t8 = 4e-05
+INFO : t10 - t9 = 2e-05
+INFO : Step n.15
+INFO : t1 - t0 = 0.00387
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 3e-05
+INFO : t4 - t3 = 2e-05
+INFO : t5 - t4 = 0.62157
+INFO : t6 - t5 = 2e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00499
+INFO : t9 - t8 = 4e-05
+INFO : t10 - t9 = 2e-05
+INFO : Step n.16
+INFO : t1 - t0 = 0.00283
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 3e-05
+INFO : t4 - t3 = 2e-05
+INFO : t5 - t4 = 0.62477
+INFO : t6 - t5 = 2e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00941
+INFO : t9 - t8 = 4e-05
+INFO : t10 - t9 = 2e-05
+INFO : Step n.17
+INFO : t1 - t0 = 0.00423
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 3e-05
+INFO : t4 - t3 = 2e-05
+INFO : t5 - t4 = 0.62346
+INFO : t6 - t5 = 2e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.0109
+INFO : t9 - t8 = 4e-05
+INFO : t10 - t9 = 2e-05
+INFO : Step n.18
+INFO : t1 - t0 = 0.00453
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 4e-05
+INFO : t4 - t3 = 2e-05
+INFO : t5 - t4 = 0.62347
+INFO : t6 - t5 = 2e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.01137
+INFO : t9 - t8 = 5e-05
+INFO : t10 - t9 = 2e-05
+INFO : Step n.19
+INFO : t1 - t0 = 0.0029
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 3e-05
+INFO : t4 - t3 = 2e-05
+INFO : t5 - t4 = 0.62218
+INFO : t6 - t5 = 2e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00485
+INFO : t9 - t8 = 4e-05
+INFO : t10 - t9 = 2e-05
+INFO : Step n.20
+INFO : nll_loss= tensor(18.0867, device='cuda:0', grad_fn=<AddBackward0>)
+INFO : Step n.20
+INFO : Encountered <UNK> token. Node not connected to any other in the graph, skipping
+INFO : Step n.20
+INFO : t1 - t0 = 0.00393
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 3e-05
+INFO : t4 - t3 = 2e-05
+INFO : t5 - t4 = 0.61909
+INFO : t6 - t5 = 2e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00674
+INFO : t9 - t8 = 4e-05
+INFO : t10 - t9 = 2e-05
+INFO : Step n.21
+INFO : t1 - t0 = 0.0031
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 3e-05
+INFO : t4 - t3 = 2e-05
+INFO : t5 - t4 = 0.62753
+INFO : t6 - t5 = 2e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00494
+INFO : t9 - t8 = 4e-05
+INFO : t10 - t9 = 2e-05
+INFO : Step n.22
+INFO : Encountered <UNK> token. Node not connected to any other in the graph, skipping
+INFO : Step n.22
+INFO : Encountered <UNK> token. Node not connected to any other in the graph, skipping
+INFO : Step n.22
+INFO : t1 - t0 = 0.00532
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 5e-05
+INFO : t4 - t3 = 3e-05
+INFO : t5 - t4 = 0.62798
+INFO : t6 - t5 = 2e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.01525
+INFO : t9 - t8 = 5e-05
+INFO : t10 - t9 = 2e-05
+INFO : Step n.23
+INFO : t1 - t0 = 0.00334
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 3e-05
+INFO : t4 - t3 = 2e-05
+INFO : t5 - t4 = 0.62443
+INFO : t6 - t5 = 2e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.01676
+INFO : t9 - t8 = 4e-05
+INFO : t10 - t9 = 2e-05
+INFO : Step n.24
+INFO : Did not find word sense for key = overall%3:00:00:gross:00
+INFO : t1 - t0 = 0.00528
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 4e-05
+INFO : t4 - t3 = 2e-05
+INFO : t5 - t4 = 0.62132
+INFO : t6 - t5 = 2e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00874
+INFO : t9 - t8 = 5e-05
+INFO : t10 - t9 = 2e-05
+INFO : Step n.25
+INFO : t1 - t0 = 0.00379
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 3e-05
+INFO : t4 - t3 = 2e-05
+INFO : t5 - t4 = 0.62449
+INFO : t6 - t5 = 2e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.01543
+INFO : t9 - t8 = 5e-05
+INFO : t10 - t9 = 2e-05
+INFO : Step n.26
+INFO : t1 - t0 = 0.00513
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 3e-05
+INFO : t4 - t3 = 2e-05
+INFO : t5 - t4 = 0.62232
+INFO : t6 - t5 = 2e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.01167
+INFO : t9 - t8 = 4e-05
+INFO : t10 - t9 = 2e-05
+INFO : Step n.27
+INFO : t1 - t0 = 0.00252
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 3e-05
+INFO : t4 - t3 = 2e-05
+INFO : t5 - t4 = 0.62286
+INFO : t6 - t5 = 2e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00096
+INFO : t9 - t8 = 4e-05
+INFO : t10 - t9 = 2e-05
+INFO : Step n.28
+INFO : t1 - t0 = 0.00372
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 4e-05
+INFO : t4 - t3 = 2e-05
+INFO : t5 - t4 = 0.62442
+INFO : t6 - t5 = 2e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.01513
+INFO : t9 - t8 = 4e-05
+INFO : t10 - t9 = 2e-05
+INFO : Step n.29
+INFO : Encountered <UNK> token. Node not connected to any other in the graph, skipping
+INFO : Step n.29
+INFO : Encountered <UNK> token. Node not connected to any other in the graph, skipping
+INFO : Step n.29
+INFO : t1 - t0 = 0.00427
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 4e-05
+INFO : t4 - t3 = 2e-05
+INFO : t5 - t4 = 0.61907
+INFO : t6 - t5 = 2e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00227
+INFO : t9 - t8 = 4e-05
+INFO : t10 - t9 = 2e-05
+INFO : Step n.30
+INFO : nll_loss= tensor(8.8551, device='cuda:0', grad_fn=<NllLossBackward>)
+INFO : Step n.30
+INFO : t1 - t0 = 0.00413
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 4e-05
+INFO : t4 - t3 = 2e-05
+INFO : t5 - t4 = 0.62518
+INFO : t6 - t5 = 2e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00717
+INFO : t9 - t8 = 4e-05
+INFO : t10 - t9 = 2e-05
+INFO : Step n.31
+INFO : t1 - t0 = 0.0037
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 4e-05
+INFO : t4 - t3 = 2e-05
+INFO : t5 - t4 = 0.62875
+INFO : t6 - t5 = 4e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.01518
+INFO : t9 - t8 = 5e-05
+INFO : t10 - t9 = 2e-05
+INFO : Step n.32
+INFO : t1 - t0 = 0.0036
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 3e-05
+INFO : t4 - t3 = 2e-05
+INFO : t5 - t4 = 0.61874
+INFO : t6 - t5 = 2e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00159
+INFO : t9 - t8 = 4e-05
+INFO : t10 - t9 = 1e-05
+INFO : Step n.33
+INFO : t1 - t0 = 0.00288
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 3e-05
+INFO : t4 - t3 = 2e-05
+INFO : t5 - t4 = 0.61711
+INFO : t6 - t5 = 2e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00118
+INFO : t9 - t8 = 4e-05
+INFO : t10 - t9 = 2e-05
+INFO : Step n.34
+INFO : t1 - t0 = 0.00215
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 3e-05
+INFO : t4 - t3 = 2e-05
+INFO : t5 - t4 = 0.61504
+INFO : t6 - t5 = 2e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00065
+INFO : t9 - t8 = 4e-05
+INFO : t10 - t9 = 1e-05
+INFO : Step n.35
+INFO : t1 - t0 = 0.00248
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 4e-05
+INFO : t4 - t3 = 2e-05
+INFO : t5 - t4 = 0.62371
+INFO : t6 - t5 = 2e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00096
+INFO : t9 - t8 = 4e-05
+INFO : t10 - t9 = 1e-05
+INFO : Step n.36
+INFO : Encountered <UNK> token. Node not connected to any other in the graph, skipping
+INFO : Step n.36
+INFO : Encountered <UNK> token. Node not connected to any other in the graph, skipping
+INFO : Step n.36
+INFO : t1 - t0 = 0.00371
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 4e-05
+INFO : t4 - t3 = 2e-05
+INFO : t5 - t4 = 0.62151
+INFO : t6 - t5 = 2e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.01527
+INFO : t9 - t8 = 4e-05
+INFO : t10 - t9 = 2e-05
+INFO : Step n.37
+INFO : t1 - t0 = 0.00378
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 3e-05
+INFO : t4 - t3 = 2e-05
+INFO : t5 - t4 = 0.62222
+INFO : t6 - t5 = 2e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00774
+INFO : t9 - t8 = 4e-05
+INFO : t10 - t9 = 2e-05
+INFO : Step n.38
+INFO : t1 - t0 = 0.00603
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 6e-05
+INFO : t4 - t3 = 3e-05
+INFO : t5 - t4 = 0.63354
+INFO : t6 - t5 = 2e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.01523
+INFO : t9 - t8 = 4e-05
+INFO : t10 - t9 = 2e-05
+INFO : Step n.39
+INFO : t1 - t0 = 0.00391
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 4e-05
+INFO : t4 - t3 = 2e-05
+INFO : t5 - t4 = 0.62626
+INFO : t6 - t5 = 2e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.0044
+INFO : t9 - t8 = 4e-05
+INFO : t10 - t9 = 2e-05
+INFO : Step n.40
+INFO : nll_loss= tensor(5.3853, device='cuda:0', grad_fn=<NllLossBackward>)
+INFO : Step n.40

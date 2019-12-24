@@ -1,0 +1,2315 @@
+INFO : Senses : [ 0 , 10)
+INFO : Global single-prototypes : [ 10 , 15)
+INFO : Definitions : [ 15 , 35)
+INFO : Examples : [ 35 , 55)
+INFO : Total number of edges = 51
+INFO : 
+Epoch n.1:
+INFO : tensor(18)
+INFO : {9, 10, 3, 4}
+INFO : t1 - t0 = 0.00026
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 2e-05
+INFO : t4 - t3 = 6e-05
+INFO : t5 - t4 = 0.00071
+INFO : t6 - t5 = 4e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00018
+INFO : t9 - t8 = 4e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {47, 5, 30, 23}
+INFO : t1 - t0 = 0.00033
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 6e-05
+INFO : t4 - t3 = 2e-05
+INFO : t5 - t4 = 0.00133
+INFO : t6 - t5 = 6e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.0004
+INFO : t9 - t8 = 7e-05
+INFO : t10 - t9 = 2e-05
+INFO : tensor(18)
+INFO : {1, 11, 12, 5}
+INFO : t1 - t0 = 0.00055
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 3e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00119
+INFO : t6 - t5 = 5e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.0004
+INFO : t9 - t8 = 5e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {19, 49, 3, 54}
+INFO : t1 - t0 = 0.00021
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 2e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.0007
+INFO : t6 - t5 = 2e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00013
+INFO : t9 - t8 = 4e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {8, 13, 6, 14}
+INFO : t1 - t0 = 0.0002
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 2e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00091
+INFO : t6 - t5 = 4e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00032
+INFO : t9 - t8 = 3e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {32, 9, 38, 15}
+INFO : t1 - t0 = 0.00021
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 2e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.0009
+INFO : t6 - t5 = 3e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00019
+INFO : t9 - t8 = 4e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {1, 11, 12, 5}
+INFO : t1 - t0 = 0.00038
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 2e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00094
+INFO : t6 - t5 = 4e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00031
+INFO : t9 - t8 = 3e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {1, 11, 12, 5}
+INFO : t1 - t0 = 0.00052
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 3e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00092
+INFO : t6 - t5 = 4e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00032
+INFO : t9 - t8 = 4e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {0, 2, 13, 7}
+INFO : t1 - t0 = 0.0003
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 2e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00093
+INFO : t6 - t5 = 3e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00026
+INFO : t9 - t8 = 4e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {8, 13, 6, 14}
+INFO : t1 - t0 = 0.00024
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 3e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00112
+INFO : t6 - t5 = 4e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00037
+INFO : t9 - t8 = 4e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {9, 10, 3, 4}
+INFO : t1 - t0 = 0.00031
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 2e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00105
+INFO : t6 - t5 = 4e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00026
+INFO : t9 - t8 = 4e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {47, 5, 30, 23}
+INFO : t1 - t0 = 0.00022
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 3e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00095
+INFO : t6 - t5 = 4e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.0002
+INFO : t9 - t8 = 4e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {1, 11, 12, 5}
+INFO : t1 - t0 = 0.00034
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 2e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00089
+INFO : t6 - t5 = 4e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.0003
+INFO : t9 - t8 = 4e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {19, 49, 3, 54}
+INFO : t1 - t0 = 0.0002
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 2e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00088
+INFO : t6 - t5 = 3e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00019
+INFO : t9 - t8 = 3e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {8, 13, 6, 14}
+INFO : t1 - t0 = 0.00021
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 2e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00094
+INFO : t6 - t5 = 4e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00033
+INFO : t9 - t8 = 3e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {32, 9, 38, 15}
+INFO : t1 - t0 = 0.00021
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 2e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.0009
+INFO : t6 - t5 = 3e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00019
+INFO : t9 - t8 = 3e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {47, 5, 30, 23}
+INFO : t1 - t0 = 0.00019
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 2e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00086
+INFO : t6 - t5 = 3e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00019
+INFO : t9 - t8 = 3e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {1, 11, 12, 5}
+INFO : t1 - t0 = 0.00048
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 3e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00093
+INFO : t6 - t5 = 4e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00031
+INFO : t9 - t8 = 4e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {19, 49, 3, 54}
+INFO : t1 - t0 = 0.00021
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 2e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00089
+INFO : t6 - t5 = 3e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00019
+INFO : t9 - t8 = 3e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(1.0282, grad_fn=<AddBackward0>)
+INFO : 
+Epoch n.2:
+INFO : tensor(18)
+INFO : {9, 10, 3, 4}
+INFO : t1 - t0 = 0.00029
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 2e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00087
+INFO : t6 - t5 = 3e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00024
+INFO : t9 - t8 = 3e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {47, 5, 30, 23}
+INFO : t1 - t0 = 0.00021
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 2e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00088
+INFO : t6 - t5 = 3e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00019
+INFO : t9 - t8 = 3e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {1, 11, 12, 5}
+INFO : t1 - t0 = 0.00047
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 2e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00092
+INFO : t6 - t5 = 4e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00032
+INFO : t9 - t8 = 5e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {19, 49, 3, 54}
+INFO : t1 - t0 = 0.00024
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 3e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00095
+INFO : t6 - t5 = 3e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00019
+INFO : t9 - t8 = 4e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {8, 13, 6, 14}
+INFO : t1 - t0 = 0.00021
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 2e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00095
+INFO : t6 - t5 = 4e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00033
+INFO : t9 - t8 = 4e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {32, 9, 38, 15}
+INFO : t1 - t0 = 0.00021
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 2e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.0009
+INFO : t6 - t5 = 3e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00019
+INFO : t9 - t8 = 3e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {1, 11, 12, 5}
+INFO : t1 - t0 = 0.00036
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 2e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.0009
+INFO : t6 - t5 = 4e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00031
+INFO : t9 - t8 = 3e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {1, 11, 12, 5}
+INFO : t1 - t0 = 0.00047
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 2e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.0009
+INFO : t6 - t5 = 4e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00031
+INFO : t9 - t8 = 4e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {0, 2, 13, 7}
+INFO : t1 - t0 = 0.0003
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 3e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00093
+INFO : t6 - t5 = 3e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00024
+INFO : t9 - t8 = 4e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {8, 13, 6, 14}
+INFO : t1 - t0 = 0.0002
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 2e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00091
+INFO : t6 - t5 = 4e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00033
+INFO : t9 - t8 = 3e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {9, 10, 3, 4}
+INFO : t1 - t0 = 0.0003
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 2e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00096
+INFO : t6 - t5 = 3e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00024
+INFO : t9 - t8 = 3e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {47, 5, 30, 23}
+INFO : t1 - t0 = 0.0002
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 2e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00088
+INFO : t6 - t5 = 3e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00019
+INFO : t9 - t8 = 3e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {1, 11, 12, 5}
+INFO : t1 - t0 = 0.0005
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 2e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00091
+INFO : t6 - t5 = 4e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00031
+INFO : t9 - t8 = 3e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {19, 49, 3, 54}
+INFO : t1 - t0 = 0.00021
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 2e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00089
+INFO : t6 - t5 = 3e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00019
+INFO : t9 - t8 = 3e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {8, 13, 6, 14}
+INFO : t1 - t0 = 0.0002
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 2e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00092
+INFO : t6 - t5 = 4e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00032
+INFO : t9 - t8 = 3e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {32, 9, 38, 15}
+INFO : t1 - t0 = 0.0002
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 2e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00088
+INFO : t6 - t5 = 3e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00019
+INFO : t9 - t8 = 3e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {47, 5, 30, 23}
+INFO : t1 - t0 = 0.00021
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 2e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00087
+INFO : t6 - t5 = 3e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00018
+INFO : t9 - t8 = 3e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {1, 11, 12, 5}
+INFO : t1 - t0 = 0.00053
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 3e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00108
+INFO : t6 - t5 = 4e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00033
+INFO : t9 - t8 = 4e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {19, 49, 3, 54}
+INFO : t1 - t0 = 0.00027
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 3e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00099
+INFO : t6 - t5 = 4e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00019
+INFO : t9 - t8 = 4e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(0.5075, grad_fn=<AddBackward0>)
+INFO : 
+Epoch n.3:
+INFO : tensor(18)
+INFO : {9, 10, 3, 4}
+INFO : t1 - t0 = 0.00029
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 2e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00089
+INFO : t6 - t5 = 3e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00024
+INFO : t9 - t8 = 3e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {47, 5, 30, 23}
+INFO : t1 - t0 = 0.00021
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 3e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00091
+INFO : t6 - t5 = 3e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00019
+INFO : t9 - t8 = 4e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {1, 11, 12, 5}
+INFO : t1 - t0 = 0.00052
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 3e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00105
+INFO : t6 - t5 = 5e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00042
+INFO : t9 - t8 = 8e-05
+INFO : t10 - t9 = 2e-05
+INFO : tensor(18)
+INFO : {19, 49, 3, 54}
+INFO : t1 - t0 = 0.00021
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 3e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00094
+INFO : t6 - t5 = 4e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.0002
+INFO : t9 - t8 = 4e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {8, 13, 6, 14}
+INFO : t1 - t0 = 0.0002
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 2e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00093
+INFO : t6 - t5 = 4e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00025
+INFO : t9 - t8 = 3e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {32, 9, 38, 15}
+INFO : t1 - t0 = 0.00022
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 3e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00097
+INFO : t6 - t5 = 4e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00021
+INFO : t9 - t8 = 4e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {1, 11, 12, 5}
+INFO : t1 - t0 = 0.00038
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 3e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00108
+INFO : t6 - t5 = 4e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00031
+INFO : t9 - t8 = 4e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {1, 11, 12, 5}
+INFO : t1 - t0 = 0.00061
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 5e-05
+INFO : t4 - t3 = 2e-05
+INFO : t5 - t4 = 0.00097
+INFO : t6 - t5 = 4e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00036
+INFO : t9 - t8 = 4e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {0, 2, 13, 7}
+INFO : t1 - t0 = 0.0003
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 3e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00094
+INFO : t6 - t5 = 4e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00027
+INFO : t9 - t8 = 4e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {8, 13, 6, 14}
+INFO : t1 - t0 = 0.00022
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 3e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00111
+INFO : t6 - t5 = 5e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00043
+INFO : t9 - t8 = 8e-05
+INFO : t10 - t9 = 2e-05
+INFO : tensor(18)
+INFO : {9, 10, 3, 4}
+INFO : t1 - t0 = 0.00029
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 3e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00095
+INFO : t6 - t5 = 3e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00025
+INFO : t9 - t8 = 4e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {47, 5, 30, 23}
+INFO : t1 - t0 = 0.00037
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 7e-05
+INFO : t4 - t3 = 3e-05
+INFO : t5 - t4 = 0.00149
+INFO : t6 - t5 = 5e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00029
+INFO : t9 - t8 = 7e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {1, 11, 12, 5}
+INFO : t1 - t0 = 0.0005
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 3e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00095
+INFO : t6 - t5 = 4e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00031
+INFO : t9 - t8 = 3e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {19, 49, 3, 54}
+INFO : t1 - t0 = 0.00021
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 2e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00089
+INFO : t6 - t5 = 3e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00018
+INFO : t9 - t8 = 3e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {8, 13, 6, 14}
+INFO : t1 - t0 = 0.00023
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 4e-05
+INFO : t4 - t3 = 2e-05
+INFO : t5 - t4 = 0.00131
+INFO : t6 - t5 = 5e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00093
+INFO : t9 - t8 = 0.00011
+INFO : t10 - t9 = 3e-05
+INFO : tensor(18)
+INFO : {32, 9, 38, 15}
+INFO : t1 - t0 = 0.00022
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 3e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00097
+INFO : t6 - t5 = 5e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00023
+INFO : t9 - t8 = 5e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {47, 5, 30, 23}
+INFO : t1 - t0 = 0.00023
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 3e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00097
+INFO : t6 - t5 = 4e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00026
+INFO : t9 - t8 = 5e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {1, 11, 12, 5}
+INFO : t1 - t0 = 0.00049
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 3e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00098
+INFO : t6 - t5 = 4e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00032
+INFO : t9 - t8 = 4e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {19, 49, 3, 54}
+INFO : t1 - t0 = 0.00023
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 3e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00094
+INFO : t6 - t5 = 3e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.0002
+INFO : t9 - t8 = 4e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(0.1097, grad_fn=<AddBackward0>)
+INFO : 
+Epoch n.4:
+INFO : tensor(18)
+INFO : {9, 10, 3, 4}
+INFO : t1 - t0 = 0.00027
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 2e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00083
+INFO : t6 - t5 = 3e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00026
+INFO : t9 - t8 = 4e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {47, 5, 30, 23}
+INFO : t1 - t0 = 0.0002
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 2e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00089
+INFO : t6 - t5 = 3e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00019
+INFO : t9 - t8 = 3e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {1, 11, 12, 5}
+INFO : t1 - t0 = 0.00045
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 2e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00086
+INFO : t6 - t5 = 4e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00033
+INFO : t9 - t8 = 4e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {19, 49, 3, 54}
+INFO : t1 - t0 = 0.0004
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 0.00011
+INFO : t4 - t3 = 5e-05
+INFO : t5 - t4 = 0.00159
+INFO : t6 - t5 = 6e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00025
+INFO : t9 - t8 = 6e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {8, 13, 6, 14}
+INFO : t1 - t0 = 0.00022
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 2e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00098
+INFO : t6 - t5 = 4e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00033
+INFO : t9 - t8 = 4e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {32, 9, 38, 15}
+INFO : t1 - t0 = 0.00021
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 2e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00093
+INFO : t6 - t5 = 3e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00019
+INFO : t9 - t8 = 4e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {1, 11, 12, 5}
+INFO : t1 - t0 = 0.00037
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 2e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00099
+INFO : t6 - t5 = 4e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00033
+INFO : t9 - t8 = 4e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {1, 11, 12, 5}
+INFO : t1 - t0 = 0.00049
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 2e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00093
+INFO : t6 - t5 = 4e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00031
+INFO : t9 - t8 = 4e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {0, 2, 13, 7}
+INFO : t1 - t0 = 0.00027
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 2e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00087
+INFO : t6 - t5 = 3e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00024
+INFO : t9 - t8 = 4e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {8, 13, 6, 14}
+INFO : t1 - t0 = 0.00019
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 2e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00089
+INFO : t6 - t5 = 4e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00035
+INFO : t9 - t8 = 4e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {9, 10, 3, 4}
+INFO : t1 - t0 = 0.00028
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 2e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00092
+INFO : t6 - t5 = 3e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00025
+INFO : t9 - t8 = 4e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {47, 5, 30, 23}
+INFO : t1 - t0 = 0.0002
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 2e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00087
+INFO : t6 - t5 = 3e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00018
+INFO : t9 - t8 = 3e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {1, 11, 12, 5}
+INFO : t1 - t0 = 0.00051
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 3e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00096
+INFO : t6 - t5 = 4e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00031
+INFO : t9 - t8 = 3e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {19, 49, 3, 54}
+INFO : t1 - t0 = 0.0002
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 2e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00089
+INFO : t6 - t5 = 3e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00019
+INFO : t9 - t8 = 3e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {8, 13, 6, 14}
+INFO : t1 - t0 = 0.0002
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 2e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00093
+INFO : t6 - t5 = 4e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00032
+INFO : t9 - t8 = 3e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {32, 9, 38, 15}
+INFO : t1 - t0 = 0.0002
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 2e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00086
+INFO : t6 - t5 = 4e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.0002
+INFO : t9 - t8 = 4e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {47, 5, 30, 23}
+INFO : t1 - t0 = 0.00027
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 3e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00109
+INFO : t6 - t5 = 4e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00022
+INFO : t9 - t8 = 5e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {1, 11, 12, 5}
+INFO : t1 - t0 = 0.00051
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 3e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00095
+INFO : t6 - t5 = 4e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00031
+INFO : t9 - t8 = 4e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {19, 49, 3, 54}
+INFO : t1 - t0 = 0.00022
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 3e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00093
+INFO : t6 - t5 = 3e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00019
+INFO : t9 - t8 = 3e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(0.0020, grad_fn=<AddBackward0>)
+INFO : 
+Epoch n.5:
+INFO : tensor(18)
+INFO : {9, 10, 3, 4}
+INFO : t1 - t0 = 0.0003
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 3e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00094
+INFO : t6 - t5 = 4e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00027
+INFO : t9 - t8 = 5e-05
+INFO : t10 - t9 = 2e-05
+INFO : tensor(18)
+INFO : {47, 5, 30, 23}
+INFO : t1 - t0 = 0.00024
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 3e-05
+INFO : t4 - t3 = 2e-05
+INFO : t5 - t4 = 0.00101
+INFO : t6 - t5 = 4e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00024
+INFO : t9 - t8 = 6e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {1, 11, 12, 5}
+INFO : t1 - t0 = 0.00046
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 2e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00091
+INFO : t6 - t5 = 4e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00031
+INFO : t9 - t8 = 4e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {19, 49, 3, 54}
+INFO : t1 - t0 = 0.00022
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 3e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00104
+INFO : t6 - t5 = 6e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00032
+INFO : t9 - t8 = 8e-05
+INFO : t10 - t9 = 2e-05
+INFO : tensor(18)
+INFO : {8, 13, 6, 14}
+INFO : t1 - t0 = 0.00024
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 3e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.001
+INFO : t6 - t5 = 4e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00034
+INFO : t9 - t8 = 4e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {32, 9, 38, 15}
+INFO : t1 - t0 = 0.00022
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 2e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00092
+INFO : t6 - t5 = 3e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00019
+INFO : t9 - t8 = 4e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {1, 11, 12, 5}
+INFO : t1 - t0 = 0.00043
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 3e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00103
+INFO : t6 - t5 = 4e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00034
+INFO : t9 - t8 = 4e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {1, 11, 12, 5}
+INFO : t1 - t0 = 0.00048
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 2e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00098
+INFO : t6 - t5 = 4e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00031
+INFO : t9 - t8 = 4e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {0, 2, 13, 7}
+INFO : t1 - t0 = 0.00029
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 2e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00093
+INFO : t6 - t5 = 3e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00026
+INFO : t9 - t8 = 4e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {8, 13, 6, 14}
+INFO : t1 - t0 = 0.00022
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 2e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00108
+INFO : t6 - t5 = 5e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00039
+INFO : t9 - t8 = 6e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {9, 10, 3, 4}
+INFO : t1 - t0 = 0.0003
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 3e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00095
+INFO : t6 - t5 = 4e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00031
+INFO : t9 - t8 = 4e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {47, 5, 30, 23}
+INFO : t1 - t0 = 0.00021
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 2e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00105
+INFO : t6 - t5 = 3e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00022
+INFO : t9 - t8 = 4e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {1, 11, 12, 5}
+INFO : t1 - t0 = 0.00048
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 2e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00104
+INFO : t6 - t5 = 4e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00035
+INFO : t9 - t8 = 4e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {19, 49, 3, 54}
+INFO : t1 - t0 = 0.00019
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 3e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00096
+INFO : t6 - t5 = 3e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.0002
+INFO : t9 - t8 = 4e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {8, 13, 6, 14}
+INFO : t1 - t0 = 0.0002
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 2e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.0009
+INFO : t6 - t5 = 4e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00032
+INFO : t9 - t8 = 3e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {32, 9, 38, 15}
+INFO : t1 - t0 = 0.00024
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 3e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00103
+INFO : t6 - t5 = 4e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00022
+INFO : t9 - t8 = 5e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {47, 5, 30, 23}
+INFO : t1 - t0 = 0.00022
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 3e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00092
+INFO : t6 - t5 = 3e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00019
+INFO : t9 - t8 = 4e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {1, 11, 12, 5}
+INFO : t1 - t0 = 0.00048
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 2e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00092
+INFO : t6 - t5 = 4e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.0003
+INFO : t9 - t8 = 4e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {19, 49, 3, 54}
+INFO : t1 - t0 = 0.0002
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 2e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00088
+INFO : t6 - t5 = 3e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00019
+INFO : t9 - t8 = 3e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(0.0069, grad_fn=<AddBackward0>)
+INFO : 
+Epoch n.6:
+INFO : tensor(18)
+INFO : {9, 10, 3, 4}
+INFO : t1 - t0 = 0.00027
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 2e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00082
+INFO : t6 - t5 = 3e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00024
+INFO : t9 - t8 = 3e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {47, 5, 30, 23}
+INFO : t1 - t0 = 0.00016
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 2e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00063
+INFO : t6 - t5 = 2e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00015
+INFO : t9 - t8 = 3e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {1, 11, 12, 5}
+INFO : t1 - t0 = 0.00047
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 2e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00091
+INFO : t6 - t5 = 4e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00031
+INFO : t9 - t8 = 3e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {19, 49, 3, 54}
+INFO : t1 - t0 = 0.0002
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 2e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00088
+INFO : t6 - t5 = 3e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00019
+INFO : t9 - t8 = 3e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {8, 13, 6, 14}
+INFO : t1 - t0 = 0.0002
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 2e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.0009
+INFO : t6 - t5 = 4e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00033
+INFO : t9 - t8 = 4e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {32, 9, 38, 15}
+INFO : t1 - t0 = 0.0002
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 2e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00087
+INFO : t6 - t5 = 3e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00018
+INFO : t9 - t8 = 3e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {1, 11, 12, 5}
+INFO : t1 - t0 = 0.00036
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 2e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00089
+INFO : t6 - t5 = 4e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00031
+INFO : t9 - t8 = 3e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {1, 11, 12, 5}
+INFO : t1 - t0 = 0.00048
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 2e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00093
+INFO : t6 - t5 = 4e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00031
+INFO : t9 - t8 = 3e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {0, 2, 13, 7}
+INFO : t1 - t0 = 0.00028
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 2e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00089
+INFO : t6 - t5 = 3e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00024
+INFO : t9 - t8 = 3e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {8, 13, 6, 14}
+INFO : t1 - t0 = 0.0002
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 2e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00092
+INFO : t6 - t5 = 4e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00033
+INFO : t9 - t8 = 3e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {9, 10, 3, 4}
+INFO : t1 - t0 = 0.00027
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 2e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00085
+INFO : t6 - t5 = 3e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00024
+INFO : t9 - t8 = 3e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {47, 5, 30, 23}
+INFO : t1 - t0 = 0.00019
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 2e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00086
+INFO : t6 - t5 = 3e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00019
+INFO : t9 - t8 = 3e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {1, 11, 12, 5}
+INFO : t1 - t0 = 0.00049
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 2e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00094
+INFO : t6 - t5 = 4e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00031
+INFO : t9 - t8 = 4e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {19, 49, 3, 54}
+INFO : t1 - t0 = 0.00021
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 2e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00088
+INFO : t6 - t5 = 3e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00019
+INFO : t9 - t8 = 4e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {8, 13, 6, 14}
+INFO : t1 - t0 = 0.00021
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 2e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00094
+INFO : t6 - t5 = 4e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00033
+INFO : t9 - t8 = 4e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {32, 9, 38, 15}
+INFO : t1 - t0 = 0.00018
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 3e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00093
+INFO : t6 - t5 = 3e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00019
+INFO : t9 - t8 = 3e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {47, 5, 30, 23}
+INFO : t1 - t0 = 0.00021
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 2e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00088
+INFO : t6 - t5 = 3e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00019
+INFO : t9 - t8 = 4e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {1, 11, 12, 5}
+INFO : t1 - t0 = 0.0005
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 3e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00096
+INFO : t6 - t5 = 4e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00035
+INFO : t9 - t8 = 5e-05
+INFO : t10 - t9 = 2e-05
+INFO : tensor(18)
+INFO : {19, 49, 3, 54}
+INFO : t1 - t0 = 0.00024
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 3e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00101
+INFO : t6 - t5 = 4e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.0002
+INFO : t9 - t8 = 4e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(0.0037, grad_fn=<AddBackward0>)
+INFO : 
+Epoch n.7:
+INFO : tensor(18)
+INFO : {9, 10, 3, 4}
+INFO : t1 - t0 = 0.00029
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 2e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00087
+INFO : t6 - t5 = 3e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00024
+INFO : t9 - t8 = 3e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {47, 5, 30, 23}
+INFO : t1 - t0 = 0.00026
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 3e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00112
+INFO : t6 - t5 = 4e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00026
+INFO : t9 - t8 = 7e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {1, 11, 12, 5}
+INFO : t1 - t0 = 0.00049
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 2e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00096
+INFO : t6 - t5 = 4e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00031
+INFO : t9 - t8 = 4e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {19, 49, 3, 54}
+INFO : t1 - t0 = 0.00022
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 3e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00098
+INFO : t6 - t5 = 4e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.0002
+INFO : t9 - t8 = 4e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {8, 13, 6, 14}
+INFO : t1 - t0 = 0.00025
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 3e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00142
+INFO : t6 - t5 = 7e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00045
+INFO : t9 - t8 = 8e-05
+INFO : t10 - t9 = 2e-05
+INFO : tensor(18)
+INFO : {32, 9, 38, 15}
+INFO : t1 - t0 = 0.00022
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 3e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00096
+INFO : t6 - t5 = 4e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00026
+INFO : t9 - t8 = 5e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {1, 11, 12, 5}
+INFO : t1 - t0 = 0.00037
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 2e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00092
+INFO : t6 - t5 = 4e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00031
+INFO : t9 - t8 = 3e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {1, 11, 12, 5}
+INFO : t1 - t0 = 0.00058
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 3e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00099
+INFO : t6 - t5 = 4e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00032
+INFO : t9 - t8 = 3e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {0, 2, 13, 7}
+INFO : t1 - t0 = 0.00033
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 3e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00104
+INFO : t6 - t5 = 4e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00027
+INFO : t9 - t8 = 4e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {8, 13, 6, 14}
+INFO : t1 - t0 = 0.00021
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 2e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00094
+INFO : t6 - t5 = 4e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00033
+INFO : t9 - t8 = 3e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {9, 10, 3, 4}
+INFO : t1 - t0 = 0.0003
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 3e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00089
+INFO : t6 - t5 = 4e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00027
+INFO : t9 - t8 = 5e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {47, 5, 30, 23}
+INFO : t1 - t0 = 0.00022
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 2e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00095
+INFO : t6 - t5 = 3e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00019
+INFO : t9 - t8 = 4e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {1, 11, 12, 5}
+INFO : t1 - t0 = 0.00048
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 2e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00095
+INFO : t6 - t5 = 4e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00035
+INFO : t9 - t8 = 5e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {19, 49, 3, 54}
+INFO : t1 - t0 = 0.00021
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 2e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00098
+INFO : t6 - t5 = 4e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00022
+INFO : t9 - t8 = 5e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {8, 13, 6, 14}
+INFO : t1 - t0 = 0.00022
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 3e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.001
+INFO : t6 - t5 = 4e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00037
+INFO : t9 - t8 = 4e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {32, 9, 38, 15}
+INFO : t1 - t0 = 0.00021
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 2e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00091
+INFO : t6 - t5 = 3e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00019
+INFO : t9 - t8 = 3e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {47, 5, 30, 23}
+INFO : t1 - t0 = 0.00021
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 2e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.0009
+INFO : t6 - t5 = 3e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.0002
+INFO : t9 - t8 = 4e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {1, 11, 12, 5}
+INFO : t1 - t0 = 0.00049
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 3e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00101
+INFO : t6 - t5 = 4e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00031
+INFO : t9 - t8 = 4e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {19, 49, 3, 54}
+INFO : t1 - t0 = 0.00021
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 2e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00087
+INFO : t6 - t5 = 3e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00019
+INFO : t9 - t8 = 3e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(0.0022, grad_fn=<AddBackward0>)
+INFO : 
+Epoch n.8:
+INFO : tensor(18)
+INFO : {9, 10, 3, 4}
+INFO : t1 - t0 = 0.00027
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 2e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00092
+INFO : t6 - t5 = 3e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00031
+INFO : t9 - t8 = 5e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {47, 5, 30, 23}
+INFO : t1 - t0 = 0.00021
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 2e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00091
+INFO : t6 - t5 = 3e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00019
+INFO : t9 - t8 = 4e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {1, 11, 12, 5}
+INFO : t1 - t0 = 0.00048
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 2e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00094
+INFO : t6 - t5 = 4e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00031
+INFO : t9 - t8 = 4e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {19, 49, 3, 54}
+INFO : t1 - t0 = 0.00016
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 3e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00084
+INFO : t6 - t5 = 3e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00019
+INFO : t9 - t8 = 3e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {8, 13, 6, 14}
+INFO : t1 - t0 = 0.00014
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 2e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00086
+INFO : t6 - t5 = 4e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00033
+INFO : t9 - t8 = 3e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {32, 9, 38, 15}
+INFO : t1 - t0 = 0.00019
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 2e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00086
+INFO : t6 - t5 = 3e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00019
+INFO : t9 - t8 = 3e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {1, 11, 12, 5}
+INFO : t1 - t0 = 0.00036
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 2e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00091
+INFO : t6 - t5 = 4e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00034
+INFO : t9 - t8 = 4e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {1, 11, 12, 5}
+INFO : t1 - t0 = 0.00047
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 2e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00091
+INFO : t6 - t5 = 4e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00031
+INFO : t9 - t8 = 4e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {0, 2, 13, 7}
+INFO : t1 - t0 = 0.00028
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 2e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00091
+INFO : t6 - t5 = 3e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00025
+INFO : t9 - t8 = 3e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {8, 13, 6, 14}
+INFO : t1 - t0 = 0.0002
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 2e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00092
+INFO : t6 - t5 = 4e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00033
+INFO : t9 - t8 = 4e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {9, 10, 3, 4}
+INFO : t1 - t0 = 0.00028
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 2e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00092
+INFO : t6 - t5 = 3e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00025
+INFO : t9 - t8 = 3e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {47, 5, 30, 23}
+INFO : t1 - t0 = 0.0002
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 2e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00084
+INFO : t6 - t5 = 3e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00018
+INFO : t9 - t8 = 3e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {1, 11, 12, 5}
+INFO : t1 - t0 = 0.00046
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 2e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.0009
+INFO : t6 - t5 = 4e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00031
+INFO : t9 - t8 = 3e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {19, 49, 3, 54}
+INFO : t1 - t0 = 0.00019
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 2e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00086
+INFO : t6 - t5 = 3e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00018
+INFO : t9 - t8 = 3e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {8, 13, 6, 14}
+INFO : t1 - t0 = 0.00021
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 2e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00094
+INFO : t6 - t5 = 4e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00032
+INFO : t9 - t8 = 3e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {32, 9, 38, 15}
+INFO : t1 - t0 = 0.0002
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 2e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00087
+INFO : t6 - t5 = 3e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00019
+INFO : t9 - t8 = 3e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {47, 5, 30, 23}
+INFO : t1 - t0 = 0.0002
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 2e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00085
+INFO : t6 - t5 = 3e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00019
+INFO : t9 - t8 = 3e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {1, 11, 12, 5}
+INFO : t1 - t0 = 0.00046
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 2e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00089
+INFO : t6 - t5 = 4e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00031
+INFO : t9 - t8 = 3e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {19, 49, 3, 54}
+INFO : t1 - t0 = 0.00022
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 2e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00095
+INFO : t6 - t5 = 3e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00019
+INFO : t9 - t8 = 4e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(0.0019, grad_fn=<AddBackward0>)
+INFO : 
+Epoch n.9:
+INFO : tensor(18)
+INFO : {9, 10, 3, 4}
+INFO : t1 - t0 = 0.00037
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 3e-05
+INFO : t4 - t3 = 3e-05
+INFO : t5 - t4 = 0.00092
+INFO : t6 - t5 = 4e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00025
+INFO : t9 - t8 = 4e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {47, 5, 30, 23}
+INFO : t1 - t0 = 0.00021
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 2e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00091
+INFO : t6 - t5 = 3e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00019
+INFO : t9 - t8 = 4e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {1, 11, 12, 5}
+INFO : t1 - t0 = 0.00048
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 3e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00118
+INFO : t6 - t5 = 4e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00037
+INFO : t9 - t8 = 6e-05
+INFO : t10 - t9 = 2e-05
+INFO : tensor(18)
+INFO : {19, 49, 3, 54}
+INFO : t1 - t0 = 0.00022
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 3e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00098
+INFO : t6 - t5 = 4e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00019
+INFO : t9 - t8 = 4e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {8, 13, 6, 14}
+INFO : t1 - t0 = 0.0002
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 2e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.0009
+INFO : t6 - t5 = 4e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00033
+INFO : t9 - t8 = 3e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {32, 9, 38, 15}
+INFO : t1 - t0 = 0.00023
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 3e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00098
+INFO : t6 - t5 = 4e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00019
+INFO : t9 - t8 = 6e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {1, 11, 12, 5}
+INFO : t1 - t0 = 0.00038
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 2e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00097
+INFO : t6 - t5 = 4e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00031
+INFO : t9 - t8 = 4e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {1, 11, 12, 5}
+INFO : t1 - t0 = 0.00045
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 2e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00094
+INFO : t6 - t5 = 4e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00032
+INFO : t9 - t8 = 4e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {0, 2, 13, 7}
+INFO : t1 - t0 = 0.00029
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 3e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00107
+INFO : t6 - t5 = 5e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00029
+INFO : t9 - t8 = 4e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {8, 13, 6, 14}
+INFO : t1 - t0 = 0.00021
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 3e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00095
+INFO : t6 - t5 = 4e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00034
+INFO : t9 - t8 = 4e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {9, 10, 3, 4}
+INFO : t1 - t0 = 0.00028
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 2e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00093
+INFO : t6 - t5 = 3e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00025
+INFO : t9 - t8 = 4e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {47, 5, 30, 23}
+INFO : t1 - t0 = 0.00021
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 2e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00091
+INFO : t6 - t5 = 3e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.0002
+INFO : t9 - t8 = 4e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {1, 11, 12, 5}
+INFO : t1 - t0 = 0.00049
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 3e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00099
+INFO : t6 - t5 = 4e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00032
+INFO : t9 - t8 = 4e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {19, 49, 3, 54}
+INFO : t1 - t0 = 0.00021
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 2e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00087
+INFO : t6 - t5 = 3e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00019
+INFO : t9 - t8 = 3e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {8, 13, 6, 14}
+INFO : t1 - t0 = 0.00023
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 3e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00102
+INFO : t6 - t5 = 4e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00036
+INFO : t9 - t8 = 4e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {32, 9, 38, 15}
+INFO : t1 - t0 = 0.00022
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 2e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00094
+INFO : t6 - t5 = 3e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00019
+INFO : t9 - t8 = 4e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {47, 5, 30, 23}
+INFO : t1 - t0 = 0.0002
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 2e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00088
+INFO : t6 - t5 = 3e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00019
+INFO : t9 - t8 = 3e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {1, 11, 12, 5}
+INFO : t1 - t0 = 0.00046
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 3e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00092
+INFO : t6 - t5 = 4e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00032
+INFO : t9 - t8 = 4e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {19, 49, 3, 54}
+INFO : t1 - t0 = 0.00022
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 2e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00097
+INFO : t6 - t5 = 4e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.0002
+INFO : t9 - t8 = 4e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(0.0018, grad_fn=<AddBackward0>)
+INFO : 
+Epoch n.10:
+INFO : tensor(18)
+INFO : {9, 10, 3, 4}
+INFO : t1 - t0 = 0.00029
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 2e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00089
+INFO : t6 - t5 = 3e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00025
+INFO : t9 - t8 = 3e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {47, 5, 30, 23}
+INFO : t1 - t0 = 0.0002
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 2e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00087
+INFO : t6 - t5 = 3e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00019
+INFO : t9 - t8 = 3e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {1, 11, 12, 5}
+INFO : t1 - t0 = 0.0005
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 2e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00095
+INFO : t6 - t5 = 4e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00031
+INFO : t9 - t8 = 4e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {19, 49, 3, 54}
+INFO : t1 - t0 = 0.0002
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 2e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00084
+INFO : t6 - t5 = 3e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00018
+INFO : t9 - t8 = 3e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {8, 13, 6, 14}
+INFO : t1 - t0 = 0.0002
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 2e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00095
+INFO : t6 - t5 = 4e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00034
+INFO : t9 - t8 = 3e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {32, 9, 38, 15}
+INFO : t1 - t0 = 0.0002
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 2e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00084
+INFO : t6 - t5 = 3e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00019
+INFO : t9 - t8 = 3e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {1, 11, 12, 5}
+INFO : t1 - t0 = 0.00034
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 2e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00087
+INFO : t6 - t5 = 4e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00031
+INFO : t9 - t8 = 3e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {1, 11, 12, 5}
+INFO : t1 - t0 = 0.00047
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 2e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.0009
+INFO : t6 - t5 = 4e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00031
+INFO : t9 - t8 = 4e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {0, 2, 13, 7}
+INFO : t1 - t0 = 0.00028
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 2e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00089
+INFO : t6 - t5 = 3e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00024
+INFO : t9 - t8 = 3e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {8, 13, 6, 14}
+INFO : t1 - t0 = 0.0002
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 2e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00089
+INFO : t6 - t5 = 4e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00033
+INFO : t9 - t8 = 3e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {9, 10, 3, 4}
+INFO : t1 - t0 = 0.00028
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 2e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00088
+INFO : t6 - t5 = 3e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00024
+INFO : t9 - t8 = 3e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {47, 5, 30, 23}
+INFO : t1 - t0 = 0.0002
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 2e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00083
+INFO : t6 - t5 = 3e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00018
+INFO : t9 - t8 = 3e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {1, 11, 12, 5}
+INFO : t1 - t0 = 0.00046
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 2e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00089
+INFO : t6 - t5 = 4e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.0003
+INFO : t9 - t8 = 3e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {19, 49, 3, 54}
+INFO : t1 - t0 = 0.00019
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 2e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00085
+INFO : t6 - t5 = 3e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00019
+INFO : t9 - t8 = 3e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {8, 13, 6, 14}
+INFO : t1 - t0 = 0.0002
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 2e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.0009
+INFO : t6 - t5 = 4e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00033
+INFO : t9 - t8 = 3e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {32, 9, 38, 15}
+INFO : t1 - t0 = 0.00021
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 2e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00088
+INFO : t6 - t5 = 3e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00018
+INFO : t9 - t8 = 4e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {47, 5, 30, 23}
+INFO : t1 - t0 = 0.0002
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 2e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00087
+INFO : t6 - t5 = 3e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00018
+INFO : t9 - t8 = 4e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {1, 11, 12, 5}
+INFO : t1 - t0 = 0.00046
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 2e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00087
+INFO : t6 - t5 = 4e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00031
+INFO : t9 - t8 = 3e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(18)
+INFO : {19, 49, 3, 54}
+INFO : t1 - t0 = 0.00019
+INFO : t2 - t1 = 0.0
+INFO : t3 - t2 = 2e-05
+INFO : t4 - t3 = 1e-05
+INFO : t5 - t4 = 0.00087
+INFO : t6 - t5 = 3e-05
+INFO : t7 - t6 = 0.0
+INFO : t8 - t7 = 0.00018
+INFO : t9 - t8 = 3e-05
+INFO : t10 - t9 = 1e-05
+INFO : tensor(0.0022, grad_fn=<AddBackward0>)

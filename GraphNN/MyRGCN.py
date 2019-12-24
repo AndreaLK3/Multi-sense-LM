@@ -13,7 +13,7 @@ import matplotlib.pyplot as plt
 from math import inf
 import GraphNN.InputForRGCN as IN
 import GraphNN.GraphSegments as GraphSegments
-from time import time
+
 
 DEVICE = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
@@ -49,11 +49,9 @@ def compute_loss_iteration(data, model, graphbatch_size, current_token_tpl, next
         current_token_index = current_input_global
     else:
         current_token_index = current_input_sense
-    t0 = time()
+
     batch_x, batch_edge_index, batch_edge_type = GraphSegments.get_batch_of_graph(current_token_index, graphbatch_size, data)
-    t1 = time()
     predicted_globals, predicted_senses = model(batch_x, batch_edge_index, batch_edge_type)
-    t2 = time()
 
     logging.debug('current_token_tpl=' + str(current_token_tpl))
     logging.debug('next_token_tpl=' + str(next_token_tpl))
@@ -64,28 +62,21 @@ def compute_loss_iteration(data, model, graphbatch_size, current_token_tpl, next
         y_labelnext_sense = 0 # it is not used anyway. May be useful to mantain the assertion: labels \in [0, num_classes)
     else:
         is_label_senseLevel = True
-    t3 = time()
+
     predicted_globals = predicted_globals.unsqueeze(0) # adding 1 dimension, since we do not use batches for now. N x C
-    t4 = time()
     y_labelnext_global = torch.Tensor([y_labelnext_global]).to(torch.int64).to(DEVICE) # N
-    t5 = time()
     logging.debug('y_labelnext_global= ' + str(y_labelnext_global))
     logging.debug('predicted_globals.shape= ' + str(predicted_globals.shape))
+
     loss_global = tF.nll_loss(predicted_globals, y_labelnext_global)
-    t6 = time()
 
     if is_label_senseLevel:
         predicted_senses = predicted_senses.unsqueeze(0)
         y_labelnext_sense = torch.Tensor([y_labelnext_sense]).to(torch.int64).to(DEVICE) # N
-        t7 = time()
         loss_sense = tF.nll_loss(predicted_senses, y_labelnext_sense)
         loss = loss_global + loss_sense
-        t8 = time()
     else:
         loss = loss_global
-        t8 = t7 = t6
-
-    Utils.log_chronometer([t0,t1,t2,t3,t4,t5,t6,t7,t8])
 
     return loss
 

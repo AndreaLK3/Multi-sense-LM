@@ -3,10 +3,15 @@ import logging
 import numpy as np
 import torch
 import Utils
-
+from time import time
 
 DEVICE = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
+# Find the node's neighbours, to use for batching:
+# Increase gradually the hop distance, from i=1
+# •	At Hop distance d=i , retrieve, in order: definitions, examples, synonyms, antonyms
+# Stop when the maximum number of nodes is reached (as defined by the input dimensions of the RGCN)
+# n: Retrieving N nodes also includes the starting node
 def get_indices_toinclude(edge_index, edge_type, node_index, num_to_retrieve):
     nodes_retrieved = [node_index]
     start_idx = 0
@@ -27,7 +32,8 @@ def get_indices_toinclude(edge_index, edge_type, node_index, num_to_retrieve):
 
     return nodes_retrieved
 
-
+# Auxiliary function: find the immediate neighbours of a node, in the given order. Both directions of edges are included
+# edge_type = def:0, exs:1, sc:2, syn:3, ant:4
 def get_neighbours(edge_index, edge_type, node_index):
     indices_of_edges_where_node_is_source = np.where(edge_index[0].cpu().numpy() == node_index)[0]
     indices_of_edges_where_node_is_target = np.where(edge_index[1].cpu().numpy() == node_index)[0]
@@ -41,26 +47,36 @@ def get_neighbours(edge_index, edge_type, node_index):
 
 def get_batch_of_graph(starting_node_index, batch_size, graph):
     logging.debug("starting_node_index=" + str(starting_node_index))
+    t0 = time()
     batch_elements_indices_ls = sorted(get_indices_toinclude(graph.edge_index, graph.edge_type, starting_node_index, batch_size))
+    t1 = time()
+    t2 = t1
     batch_elements_indices = torch.Tensor(batch_elements_indices_ls).to(torch.int64).to(DEVICE)
+    t3 = time()
     batch_x = graph.x.index_select(0, batch_elements_indices)
+    t4 = time()
 
+    # original time: t5 - t4 = 1.54736
     edges_indices = torch.Tensor([e_col for e_col in range(len(graph.edge_index[0])) # it can be tensor([]) in some cases
-                    if (graph.edge_index[0][e_col] in batch_elements_indices
-                        and graph.edge_index[1][e_col] in batch_elements_indices)]).to(torch.int64).to(DEVICE)
-    #for edge_index in edges_indices:
-    #    print(graph.edge_index.t()[edge_index])
+                          if (graph.edge_index[0][e_col].item() in set(batch_elements_indices_ls)
+                         and graph.edge_index[1][e_col].item() in set(batch_elements_indices_ls))]).to(torch.int64).to(DEVICE)
+
+    t5 = time()
     batch_edge_index_lts_defaultValues = graph.edge_index.t().index_select(0, edges_indices)
+    t6 = time()
 
     elem_edges_lts_reindexed = []
+    t7 = time()
     for (src, trg) in batch_edge_index_lts_defaultValues:
         src_01 = batch_elements_indices_ls.index(src)
         trg_01 = batch_elements_indices_ls.index(trg)
         elem_edges_lts_reindexed.append((src_01, trg_01))
+    t8 = time()
 
     with torch.no_grad():
         batch_edge_index = torch.autograd.Variable(torch.Tensor(elem_edges_lts_reindexed).t().to(torch.int64)).to(DEVICE)
-
+    t9 = time()
     batch_edge_type = graph.edge_type.index_select(0, index=edges_indices).to(torch.int64).to(DEVICE)
-
+    t10 = time()
+    Utils.log_chronometer([t0,t1,t2,t3,t4,t5,t6,t7,t8,t9,t10])
     return (batch_x, batch_edge_index, batch_edge_type)
