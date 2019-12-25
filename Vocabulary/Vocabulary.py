@@ -9,7 +9,6 @@ import Vocabulary.Vocabulary_Utilities as VocabUtils
 
 
 def build_vocabulary_from_text(corpus_txt_filepath):
-    #Utils.init_logging(os.path.join("PrepareKBInput", "Vocabulary.log"), logging.INFO)
     vocab_dict = {}
     tot_tokens = 0
 

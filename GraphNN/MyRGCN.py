@@ -13,7 +13,8 @@ import matplotlib.pyplot as plt
 from math import inf
 import GraphNN.InputForRGCN as IN
 import GraphNN.GraphSegments as GraphSegments
-
+import numpy as np
+from time import time
 
 DEVICE = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
@@ -92,7 +93,7 @@ def train():
     senseindices_db = sqlite3.connect(senseindices_db_filepath)
     senseindices_db_c = senseindices_db.cursor()
 
-    globals_vocabulary_fpath = os.path.join(F.FOLDER_VOCABULARY, F.VOCAB_FROMSLC_FILE)
+    globals_vocabulary_fpath = os.path.join(F.FOLDER_VOCABULARY, F.VOCABULARY_OF_GLOBALS_FILE)
     vocab_h5 = pd.HDFStore(globals_vocabulary_fpath, mode='r')
 
     optimizer = torch.optim.Adam(model.parameters(), lr=0.01, weight_decay=0.0005)
@@ -101,7 +102,8 @@ def train():
     model.train()
     losses = []
     graphbatch_size = 16
-    steps_logging = 100
+    steps_logging = 1000
+    trainlosses_record_fpath = os.path.join(F.FOLDER_GRAPHNN, F.LOSSES_FILE)
 
     for epoch in range(1,num_epochs+1):
         logging.info("\nTraining epoch n."+str(epoch) +":" )
@@ -110,6 +112,7 @@ def train():
         valid_generator = SLC.read_split('validation')
         epoch_valid_loss = inf
         step = 0
+        logtime_0 = time()
         try:
             while(True):
 
@@ -117,7 +120,7 @@ def train():
                     current_token_tpl, next_token_tpl = IN.get_tokens_tpls(next_token_tpl, train_generator,
                                                                         senseindices_db_c, vocab_h5, model.last_idx_senses)
                 except Utils.MustSkipUNK_Exception:
-                    logging.info("Encountered <UNK> token. Node not connected to any other in the graph, skipping")
+                    logging.debug("Encountered <UNK> token. Node not connected to any other in the graph, skipping")
                     continue
 
                 optimizer.zero_grad()
@@ -131,10 +134,13 @@ def train():
                 if step % steps_logging == 0:
                     logging.info("Step n." + str(step))
                     logging.info('nll_loss= ' + str(loss))
-
+                    logtime_1 = time()
+                    logging.info("Time elapsed="+str(round(logtime_1-logtime_0,3)) + "\n***")
+                    raise StopIteration # temporary, for rapid debugging
         except StopIteration:
             continue # next epoch
 
+    np.save(trainlosses_record_fpath, np.array(losses))
     getLossGraph(losses)
 
 def getLossGraph(source1):

@@ -14,11 +14,15 @@ def convert_tokendict_to_tpl(token_dict, senseindices_db_c, globals_vocabulary_h
 
     if 'wn30_key' in keys:
         try:
-            wordnet_sense = wn.lemma_from_key(token_dict['wn30_key']).synset().name()
-            logging.debug(wordnet_sense)
+            try:
+                wn30_key = token_dict['wn30_key']
+                wordnet_sense = wn.lemma_from_key(wn30_key).synset().name()
+            except WordNetError: # common labeling mistake: 'next%3:00...' should be 'next%5:00...'
+                wn30_key = (token_dict['wn30_key']).replace('3', '5')
+                wordnet_sense = wn.lemma_from_key(wn30_key).synset().name()
             query = "SELECT vocab_index FROM indices_table " + "WHERE word_sense='" + wordnet_sense + "'"
             sense_index_queryresult = senseindices_db_c.execute(query).fetchone()
-        except (WordNetError, ValueError): # it may fail, due to typo or wrong labeling
+        except ValueError: # it may fail, due to typo or wrong labeling
             logging.info("Did not find word sense for key = " + token_dict['wn30_key'])
         except sqlite3.OperationalError :
             logging.info("Error while attempting to execute query: " + query + " . Skipping sense")

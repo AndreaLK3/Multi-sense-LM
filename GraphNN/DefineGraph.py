@@ -177,7 +177,7 @@ def create_graph():
     logging.info("exs_edges_se.__len__()=" + str(exs_edges_se.__len__()))
 
     logging.info("Defining the edges: sc")
-    globals_vocabulary_fpath = os.path.join(F.FOLDER_VOCABULARY, F.VOCAB_FROMSLC_FILE)
+    globals_vocabulary_fpath = os.path.join(F.FOLDER_VOCABULARY, F.VOCABULARY_OF_GLOBALS_FILE )
     globals_vocabulary_df =  pd.read_hdf(globals_vocabulary_fpath, mode='r')
     sc_edges = get_edges_sensechildren(globals_vocabulary_df, X_senses.shape[0])
     logging.info("sc_edges.__len__()=" + str(sc_edges.__len__()))

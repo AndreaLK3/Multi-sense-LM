@@ -25,7 +25,7 @@ def reset():
 
     # reset the vocabularies, and the SQL DB with the indices for the embedding matrices
     vocab_filepaths = list(map(lambda fname: os.path.join(F.FOLDER_VOCABULARY, fname),
-                               [F.VOCAB_WT2_FILE, F.VOCAB_WT103_FILE, F.VOCAB_PHRASED, F.VOCAB_FROMSLC_FILE]))
+                               [F.VOCABULARY_OF_GLOBALS_FILE, F.VOCAB_PHRASED]))
     db_filepaths = [os.path.join(F.FOLDER_INPUT, Utils.INDICES_TABLE_DB)]
 
     for fpath in archives_filepaths:
@@ -52,27 +52,19 @@ def reset_embeddings():
 
 
 
-def exe(do_reset=False, compute_single_prototype=False):
+def exe(do_reset=False, compute_single_prototype=False, vocabulary_from_senselabeled=False):
     Utils.init_logging('CreateGraphInput.log')
     if do_reset:
         reset()
 
-    # NOTE: If the source of our vocabulary is a text corpus, for simplicity and streamlining we ignore Phrases for now
-    # If the source is the sense-labeled corpus, it already has phrases (e.g. breaking_even, great_powers)
-    # PHR.setup_phrased_corpus(os.path.join(F.FOLDER_WT2, F.WT_TRAIN_FILE),
-    #                          os.path.join(F.FOLDER_INPUT, F.PHRASED_TRAINING_CORPUS),
-    #                          min_freq=40, score_threshold=120) # bigrams of phrases
-    # V.get_vocabulary_df(...)
-
-    vocab_filepath = os.path.join(F.FOLDER_VOCABULARY, F.VOCAB_FROMSLC_FILE)
-    vocabulary = V.get_vocabulary_df(senselabeled_or_text=True, slc_split_name='training', corpus_txt_filepath=None,
-                                     out_vocabulary_h5_filepath=vocab_filepath, min_count=10) # temporary, it should be 3 or 5
+    vocab_text_source = os.path.join(F.FOLDER_TEXT_CORPUSES, F.FOLDER_WT2, F.WT_TRAIN_FILE)
+    outvocab_filepath = os.path.join(F.FOLDER_VOCABULARY, F.VOCABULARY_OF_GLOBALS_FILE)
+    vocabulary = V.get_vocabulary_df(senselabeled_or_text=vocabulary_from_senselabeled, slc_split_name='training',
+                                     corpus_txt_filepath=vocab_text_source,
+                                     out_vocabulary_h5_filepath=outvocab_filepath, min_count=5)
 
     if compute_single_prototype:
         reset_embeddings()
-        # CE.compute_single_prototype_embeddings(vocabulary,
-        #                                        os.path.join(F.FOLDER_INPUT, F.SPVs_DISTILBERT_FILE),
-        #                                        CE.Method.DISTILBERT)
 
         CE.compute_single_prototype_embeddings(vocabulary,
                                                os.path.join(F.FOLDER_INPUT, F.SPVs_FASTTEXT_FILE),
