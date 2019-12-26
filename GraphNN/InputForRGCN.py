@@ -6,6 +6,19 @@ import Utils
 from Vocabulary import Vocabulary_Utilities as VocabUtils
 from time import time
 
+### Utility function, to hndle the common labeling mistake: 'next%3:00...' should be 'next%5:00...'
+def try_to_get_wordnet_sense(wn30_key):
+    try:
+        wordnet_sense = wn.lemma_from_key(wn30_key).synset().name()
+    except (WordNetError, ValueError):
+        try:
+            wn30_key = wn30_key.replace('3', '5', 1)
+            wordnet_sense = wn.lemma_from_key(wn30_key).synset().name()
+        except (WordNetError, ValueError):
+            wordnet_sense = None
+    return wordnet_sense
+
+
 ### Internal function to: translate the word (and if present, the sense) into numerical indices.
 # sense = [0,se) ; single prototype = [se,se+sp) ; definitions = [se+sp, se+sp+d) ; examples = [se+sp+d, e==num_nodes)
 def convert_tokendict_to_tpl(token_dict, senseindices_db_c, globals_vocabulary_h5, last_idx_senses):
@@ -13,19 +26,15 @@ def convert_tokendict_to_tpl(token_dict, senseindices_db_c, globals_vocabulary_h
     sense_index_queryresult = None
 
     if 'wn30_key' in keys:
-        try:
+
+        wn30_key = token_dict['wn30_key']
+        wordnet_sense = try_to_get_wordnet_sense(wn30_key)
+        if wordnet_sense is not None:
             try:
-                wn30_key = token_dict['wn30_key']
-                wordnet_sense = wn.lemma_from_key(wn30_key).synset().name()
-            except WordNetError: # common labeling mistake: 'next%3:00...' should be 'next%5:00...'
-                wn30_key = (token_dict['wn30_key']).replace('3', '5')
-                wordnet_sense = wn.lemma_from_key(wn30_key).synset().name()
-            query = "SELECT vocab_index FROM indices_table " + "WHERE word_sense='" + wordnet_sense + "'"
-            sense_index_queryresult = senseindices_db_c.execute(query).fetchone()
-        except ValueError: # it may fail, due to typo or wrong labeling
-            logging.info("Did not find word sense for key = " + token_dict['wn30_key'])
-        except sqlite3.OperationalError :
-            logging.info("Error while attempting to execute query: " + query + " . Skipping sense")
+                query = "SELECT vocab_index FROM indices_table " + "WHERE word_sense='" + wordnet_sense + "'"
+                sense_index_queryresult = senseindices_db_c.execute(query).fetchone()
+            except sqlite3.OperationalError :
+                logging.info("Error while attempting to execute query: " + query + " . Skipping sense")
 
         if sense_index_queryresult is None: # the was no sense-key, or we did not find the sense for the key
             sense_index = -1

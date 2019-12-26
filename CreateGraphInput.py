@@ -61,7 +61,7 @@ def exe(do_reset=False, compute_single_prototype=False, vocabulary_from_senselab
     outvocab_filepath = os.path.join(F.FOLDER_VOCABULARY, F.VOCABULARY_OF_GLOBALS_FILE)
     vocabulary = V.get_vocabulary_df(senselabeled_or_text=vocabulary_from_senselabeled, slc_split_name='training',
                                      corpus_txt_filepath=vocab_text_source,
-                                     out_vocabulary_h5_filepath=outvocab_filepath, min_count=5)
+                                     out_vocabulary_h5_filepath=outvocab_filepath, min_count=10)
 
     if compute_single_prototype:
         reset_embeddings()

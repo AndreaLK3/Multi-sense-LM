@@ -3,7 +3,7 @@ import torch_geometric
 from torch_geometric.nn import RGCNConv
 import torch.nn.functional as tF
 
-from GraphNN.GraphSegments import get_batch_of_graph
+import GraphNN.GraphArea as GA
 import random
 import Utils
 import logging
@@ -229,26 +229,30 @@ def train():
 
     #out = model(data.edge_index, data.edge_type, data.edge_norm)
     training_dataset = torch.Tensor([(10,-1),(11,5),(12,-1),(13,3),(14,-1),(10,9),(11,-1),(12,-1),(13,-1),(14,-1),
-                        (10,-1),(11,5),(12,-1),(13,3),(14,-1),(10,9),(11,5),(12,-1),(13,3),(14,-1)]).type(torch.int64)
+                        (10,-1),(11,5),(12,-1),(13,3),(14,-1),(10,9),(11,5),(12,-1),(13,3),(14,-1),
+                        (12,-1),(13,3),(10,9),(13,-1),(14,-4),(12,-1),(11,-1),(12,-1),(10,9),(14,-1)]).type(torch.int64)
     training_dataset.to(DEVICE, dtype=torch.int64)
     num_epochs = 10
     model.train()
     losses = []
     loss = 0
     batch_size = 4
+    node_segment_size = 8
 
     for epoch in range(1,num_epochs+1):
         logging.info("\nEpoch n."+str(epoch) +":" )
 
-        for i in range(len(training_dataset)-1):
+        for i in range(0, len(training_dataset)-batch_size, batch_size-1):
             optimizer.zero_grad()
-
-            (current_input_global, current_input_sense) = training_dataset[i] # so we decide which row of the graph-output we use for the prediction
-            if current_input_sense == -1:
-                current_token_index = current_input_global
-            else:
-                current_token_index = current_input_sense
-            batch_x, batch_edge_index, batch_edge_type = get_batch_of_graph(current_token_index.item(), 4, data)
+            logging.info('Location='+ str(i))
+            inputElems_lts = training_dataset[i:i+batch_size]
+            batch_in_tokens_ls = []
+            for (global_idx, sense_idx) in inputElems_lts:
+                if sense_idx == -1:
+                    batch_in_tokens_ls.append(global_idx)
+                else:
+                    batch_in_tokens_ls.append(sense_idx)
+            batch_x, batch_edge_index, batch_edge_type = GA.get_batch_grapharea(batch_in_tokens_ls, node_segment_size, data)
             predicted_globals, predicted_senses = model(batch_x, batch_edge_index, batch_edge_type)
 
             global_raw_idx = training_dataset[i + 1][0]

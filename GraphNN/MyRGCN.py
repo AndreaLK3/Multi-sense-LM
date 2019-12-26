@@ -12,7 +12,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from math import inf
 import GraphNN.InputForRGCN as IN
-import GraphNN.GraphSegments as GraphSegments
+import GraphNN.GraphArea as GraphSegments
 import numpy as np
 from time import time
 
@@ -51,7 +51,7 @@ def compute_loss_iteration(data, model, graphbatch_size, current_token_tpl, next
     else:
         current_token_index = current_input_sense
 
-    batch_x, batch_edge_index, batch_edge_type = GraphSegments.get_batch_of_graph(current_token_index, graphbatch_size, data)
+    batch_x, batch_edge_index, batch_edge_type = GraphSegments.get_graph_area(current_token_index, graphbatch_size, data)
     predicted_globals, predicted_senses = model(batch_x, batch_edge_index, batch_edge_type)
 
     logging.debug('current_token_tpl=' + str(current_token_tpl))
@@ -98,11 +98,11 @@ def train():
 
     optimizer = torch.optim.Adam(model.parameters(), lr=0.01, weight_decay=0.0005)
 
-    num_epochs = 5
+    num_epochs = 50
     model.train()
     losses = []
     graphbatch_size = 16
-    steps_logging = 1000
+    steps_logging = 100
     trainlosses_record_fpath = os.path.join(F.FOLDER_GRAPHNN, F.LOSSES_FILE)
 
     for epoch in range(1,num_epochs+1):
@@ -128,20 +128,21 @@ def train():
                 loss.backward()
 
                 optimizer.step()
-                losses.append(loss)
+
 
                 step = step +1
                 if step % steps_logging == 0:
+                    losses.append(loss.item())
                     logging.info("Step n." + str(step))
                     logging.info('nll_loss= ' + str(loss))
                     logtime_1 = time()
                     logging.info("Time elapsed="+str(round(logtime_1-logtime_0,3)) + "\n***")
-                    raise StopIteration # temporary, for rapid debugging
+
         except StopIteration:
             continue # next epoch
 
     np.save(trainlosses_record_fpath, np.array(losses))
-    getLossGraph(losses)
+    #getLossGraph(losses)
 
 def getLossGraph(source1):
     plt.plot(source1, color='red', marker='o')

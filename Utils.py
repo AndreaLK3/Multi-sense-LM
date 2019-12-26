@@ -5,7 +5,8 @@ import nltk
 import string
 import re
 import subprocess
-
+import numpy as np
+import matplotlib.pyplot as plt
 
 ########## Constants ##########
 
@@ -50,7 +51,7 @@ SENSE_NOAD = 'Sense_NOAD'
 SENSE_WORDNET = 'Sense_WordNet'
 EMPTY = 'EMPTY'
 
-########## Functions ##########
+########## Logging and development ##########
 
 def init_logging(logfilename, loglevel=logging.INFO):
   for handler in logging.root.handlers[:]:
@@ -72,7 +73,12 @@ def log_chronometer(time_measurements):
         logging.info('t'+str(i+1)+' - t'+str(i)+' = '+str(round(t2-t1,5)))
 
 
+def display_ygraph_fromfile(npy_fpath):
+    data_y_array = np.load(npy_fpath, allow_pickle=True)
+    plt.plot(data_y_array)
+    plt.ylim((0, max(data_y_array)))
 
+#####
 
 ### Note: must add the vocabularies of other languages
 def check_language(text, lang_id):
