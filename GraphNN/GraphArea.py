@@ -33,7 +33,7 @@ def get_indices_toinclude(edge_index, edge_type, node_index, num_to_retrieve):
                 nodes_retrieved.append(n)
                 logging.debug("start_node=" + str(start_node) + " , nodes_retrieved= " + str(nodes_retrieved))
 
-    return sorted(nodes_retrieved), sorted(list(edges_retrieved_set))
+    return nodes_retrieved, list(edges_retrieved_set)
 
 # Auxiliary function: find the immediate neighbours of a node, in the given order. Both directions of edges are included
 # edge_type = def:0, exs:1, sc:2, syn:3, ant:4
@@ -50,17 +50,17 @@ def get_node_edges(edge_index, edge_type, node_index):
 
 
 ### Entry point function
-def get_graph_area(starting_node_index, batch_size, graph):
-    logging.debug("starting_node_index=" + str(starting_node_index))
-    node_indices_ls, all_edges_retrieved_ls = get_indices_toinclude(graph.edge_index, graph.edge_type, starting_node_index, batch_size)
-    node_indices = torch.Tensor(node_indices_ls).to(torch.int64).to(DEVICE)
+def get_graph_area(starting_node_index, area_size, graph):
+    logging.info("starting_node_index=" + str(starting_node_index))
+    node_indices_ls, all_edges_retrieved_ls = get_indices_toinclude(graph.edge_index, graph.edge_type, starting_node_index, area_size)
+    node_indices = torch.Tensor(sorted(node_indices_ls)).to(torch.int64).to(DEVICE)
     area_x = graph.x.index_select(0, node_indices)
 
     # original time: t5 - t4 = 1.54 s; version 3 time: 0.05 s
     edges_retrieved_ls = list(filter(lambda edge_idx: graph.edge_index[0][edge_idx].item() in set(node_indices_ls)
                                                   and graph.edge_index[1][edge_idx].item() in set(node_indices_ls),
                                      all_edges_retrieved_ls)) # to include an edge, both source and target node must be in the batch
-    edges_indices = torch.Tensor(edges_retrieved_ls).to(torch.int64).to(DEVICE)
+    edges_indices = torch.Tensor(sorted(edges_retrieved_ls)).to(torch.int64).to(DEVICE)
     edge_index_lts_defaultValues = graph.edge_index.t().index_select(0, edges_indices)
 
     elem_edges_lts_reindexed = []
@@ -76,35 +76,63 @@ def get_graph_area(starting_node_index, batch_size, graph):
     return (area_x, area_edge_index, area_edge_type)
 
 
+### Utility function: given a LLS of reachable nodes from each starting point in the batch,
+### include as many as it is necessary to:
+# 1) guarantee propagation in the RGCN
+# 2) return exactly the number of rows needed by the input matrix to the RGCN
+def include_adjacent_nodes(adjacent_nodes_lls, size_X):
+
+    logging.info('adjacent_nodes_lls=' + str(adjacent_nodes_lls))
+    nodes_to_include = []
+    level = 0
+    end_flag = False
+    while not(end_flag):
+        for n in range(len(adjacent_nodes_lls)):
+            node = adjacent_nodes_lls[n][level]
+            nodes_to_include.append(node)
+            if len(nodes_to_include) >= size_X:
+                end_flag = True
+                break
+        level = level +1
+    logging.info('size_X=' + str(size_X))
+    logging.info('nodes_to_include='+str(nodes_to_include))
+    return nodes_to_include
+
 
 ### Entry point function - batch mode
-def get_batch_grapharea(batch_in_tokens_ls, node_segment_size, graph):
-    nodes_indices_ls = []
+def get_batch_grapharea(batch_in_tokens_ls, size_X, graph):
+    logging.info("starting_node_indices=" + str(batch_in_tokens_ls))
+    neighbours_lls = []
     all_edges_retrieved_ls = []
+    adjacency_ls_size = 2* (size_X // len(batch_in_tokens_ls))
     for starting_node_index in batch_in_tokens_ls:
         node_indices_ls, all_edges_ls = get_indices_toinclude(graph.edge_index, graph.edge_type,
-                                                              starting_node_index, node_segment_size)
-        nodes_indices_ls.extend(node_indices_ls)
-        all_edges_retrieved_ls.extend(all_edges_ls)
+                                                              starting_node_index, adjacency_ls_size)
+        neighbours_lls.append(node_indices_ls)
+        all_edges_retrieved_ls.extend(all_edges_ls) # must filter for useful edges later
 
-    nodes_indices_ls = sorted(list(set(nodes_indices_ls)))
+    nodes_indices_ls = include_adjacent_nodes(neighbours_lls, size_X)
     nodes_indices = torch.Tensor(nodes_indices_ls).to(torch.int64).to(DEVICE)
     area_x = graph.x.index_select(0, nodes_indices)
+    # there is a correspondence area_x[0] == graph.x[batch_in_tokens_ls[0]]
+    logging.info('Correspondence=' + str(area_x[0] == graph.x[batch_in_tokens_ls[0]]))
 
     all_edges_retrieved_ls = sorted(list(set(all_edges_retrieved_ls)))
 
-    edges_retrieved_ls = list(
+    edges_retrieved_indices = list(
         filter(lambda edge_idx: graph.edge_index[0][edge_idx].item() in set(nodes_indices_ls)
                                 and graph.edge_index[1][edge_idx].item() in set(nodes_indices_ls),
                all_edges_retrieved_ls))  # to include an edge, both source and target node must be in the batch
+
     # The rest of the code is identical to the function defined previously:
-    edges_indices = torch.Tensor(edges_retrieved_ls).to(torch.int64).to(DEVICE)
+    edges_indices = torch.Tensor(edges_retrieved_indices).to(torch.int64).to(DEVICE)
+
     edge_index_lts_defaultValues = graph.edge_index.t().index_select(0, edges_indices)
 
     elem_edges_lts_reindexed = []
     for (src, trg) in edge_index_lts_defaultValues:
-        src_01 = node_indices_ls.index(src)
-        trg_01 = node_indices_ls.index(trg)
+        src_01 = nodes_indices_ls.index(src)
+        trg_01 = nodes_indices_ls.index(trg)
         elem_edges_lts_reindexed.append((src_01, trg_01))
 
     with torch.no_grad():

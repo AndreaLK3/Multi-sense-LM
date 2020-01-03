@@ -12,7 +12,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from math import inf
 import GraphNN.InputForRGCN as IN
-import GraphNN.GraphArea as GraphSegments
+import GraphNN.GraphArea as GraphArea
 import numpy as np
 from time import time
 
@@ -51,7 +51,7 @@ def compute_loss_iteration(data, model, graphbatch_size, current_token_tpl, next
     else:
         current_token_index = current_input_sense
 
-    batch_x, batch_edge_index, batch_edge_type = GraphSegments.get_graph_area(current_token_index, graphbatch_size, data)
+    batch_x, batch_edge_index, batch_edge_type = GraphArea.get_graph_area(current_token_index, graphbatch_size, data)
     predicted_globals, predicted_senses = model(batch_x, batch_edge_index, batch_edge_type)
 
     logging.debug('current_token_tpl=' + str(current_token_tpl))
@@ -98,10 +98,10 @@ def train():
 
     optimizer = torch.optim.Adam(model.parameters(), lr=0.01, weight_decay=0.0005)
 
-    num_epochs = 50
+    num_epochs = 200
     model.train()
     losses = []
-    graphbatch_size = 16
+    grapharea_size = 32
     steps_logging = 100
     trainlosses_record_fpath = os.path.join(F.FOLDER_GRAPHNN, F.LOSSES_FILE)
 
@@ -124,7 +124,7 @@ def train():
                     continue
 
                 optimizer.zero_grad()
-                loss = compute_loss_iteration(data, model, graphbatch_size, current_token_tpl, next_token_tpl)
+                loss = compute_loss_iteration(data, model, grapharea_size, current_token_tpl, next_token_tpl)
                 loss.backward()
 
                 optimizer.step()

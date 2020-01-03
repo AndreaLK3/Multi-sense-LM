@@ -2,34 +2,15 @@ INFO : Senses : [ 0 , 10)
 INFO : Global single-prototypes : [ 10 , 15)
 INFO : Definitions : [ 15 , 35)
 INFO : Examples : [ 35 , 55)
-INFO : Total number of edges = 50
+INFO : Total number of edges = 57
 INFO : 
 Epoch n.1:
-INFO : tensor(0.9676, grad_fn=<AddBackward0>)
-INFO : 
-Epoch n.2:
-INFO : tensor(0.2971, grad_fn=<AddBackward0>)
-INFO : 
-Epoch n.3:
-INFO : tensor(0.0282, grad_fn=<AddBackward0>)
-INFO : 
-Epoch n.4:
-INFO : tensor(0.0007, grad_fn=<AddBackward0>)
-INFO : 
-Epoch n.5:
-INFO : tensor(0.0005, grad_fn=<AddBackward0>)
-INFO : 
-Epoch n.6:
-INFO : tensor(0.0003, grad_fn=<AddBackward0>)
-INFO : 
-Epoch n.7:
-INFO : tensor(0.0006, grad_fn=<AddBackward0>)
-INFO : 
-Epoch n.8:
-INFO : tensor(0.0008, grad_fn=<AddBackward0>)
-INFO : 
-Epoch n.9:
-INFO : tensor(0.0009, grad_fn=<AddBackward0>)
-INFO : 
-Epoch n.10:
-INFO : tensor(0.0013, grad_fn=<AddBackward0>)
+INFO : Location=0
+INFO : starting_node_index=10
+INFO : starting_node_index=5
+INFO : starting_node_index=12
+INFO : starting_node_index=3
+INFO : starting_node_index=10
+INFO : starting_node_index=5
+INFO : starting_node_index=12
+INFO : starting_node_index=3

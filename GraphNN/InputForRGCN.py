@@ -36,17 +36,16 @@ def convert_tokendict_to_tpl(token_dict, senseindices_db_c, globals_vocabulary_h
             except sqlite3.OperationalError :
                 logging.info("Error while attempting to execute query: " + query + " . Skipping sense")
 
-        if sense_index_queryresult is None: # the was no sense-key, or we did not find the sense for the key
+        if sense_index_queryresult is None: # there was no sense-key, or we did not find the sense for the key
             sense_index = -1
         else:
             sense_index = sense_index_queryresult[0]
     else:
         sense_index = -1
-    word = VocabUtils.process_slc_token(token_dict)
+    word = VocabUtils.process_slc_token(token_dict) # html.unescape, and lowercase the ALL-CAPITALS
     try:
         global_absolute_index = Utils.select_from_hdf5(globals_vocabulary_h5, 'vocabulary', ['word'], [word]).index[0]
     except IndexError:
-        # global_absolute_index = Utils.select_from_hdf5(globals_vocabulary_h5, 'vocabulary', ['word'], [Utils.UNK_TOKEN]).index[0]
         raise Utils.MustSkipUNK_Exception
 
     global_index = global_absolute_index # + last_idx_senses; do not add this to globals, or we go beyond the n_classes
