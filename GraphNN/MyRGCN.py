@@ -11,7 +11,7 @@ import os
 import pandas as pd
 import matplotlib.pyplot as plt
 from math import inf
-import GraphNN.InputForRGCN as IN
+import GraphNN.NumericalIndices as IN
 import GraphNN.GraphArea as GraphArea
 import numpy as np
 from time import time

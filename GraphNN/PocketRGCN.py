@@ -165,36 +165,6 @@ def setrandomedges_syn_or_ant(global_low, global_high, restrict=False, opposite_
 ######
 
 ##### The GNN
-# From the GCN example at: https://pytorch-geometric.readthedocs.io/en/latest/notes/introduction.html
-# class Net(torch.nn.Module):
-#     def __init__(self):
-#         super(Net, self).__init__()
-#         self.conv1 = GCNConv(dataset.num_node_features, 16)
-#         self.conv2 = GCNConv(16, dataset.num_classes)
-#
-#     def forward(self, data):
-#         x, edge_index = data.x, data.edge_index
-#
-#         x = self.conv1(x, edge_index)
-#         x = F.relu(x)
-#         x = F.dropout(x, training=self.training)
-#         x = self.conv2(x, edge_index)
-#
-#         return F.log_softmax(x, dim=1)
-# From the RGCN example at: https://github.com/rusty1s/pytorch_geometric/blob/master/examples/rgcn.py
-# class Net(torch.nn.Module):
-#     def __init__(self):
-#         super(Net, self).__init__()
-#         self.conv1 = RGCNConv(
-#             data.num_nodes, 16, dataset.num_relations, num_bases=30)
-#         self.conv2 = RGCNConv(
-#             16, dataset.num_classes, dataset.num_relations, num_bases=30)
-#
-#     def forward(self, edge_index, edge_type, edge_norm):
-#         x = F.relu(self.conv1(None, edge_index, edge_type))
-#         x = self.conv2(x, edge_index, edge_type)
-#         return F.log_softmax(x, dim=1)
-
 class NetRGCN(torch.nn.Module):
     def __init__(self, data):
         super(NetRGCN, self).__init__()
@@ -216,6 +186,68 @@ class NetRGCN(torch.nn.Module):
 
         return (tF.log_softmax(logits_global, dim=0), tF.log_softmax(logits_sense, dim=0))
 
+### Training
+
+# Given the tuple of numerical indices for an element, e.g. (13,5), retrieve a list
+# of either 1 or 2 tuples that are input to the forward function, i.e. (x, edge_index, edge_type)
+# Here i decide what is the starting token for a prediction. For now, it is "sense if present, else global"
+def get_forwardinput_forelement(global_idx, sense_idx, node_area_size, graph):
+    forward_input_ls = []
+    if (sense_idx == -1):
+        x, edge_index, edge_type = GA.get_graph_area(global_idx.item(), node_area_size, graph)
+        forward_input_ls.append((x, edge_index, edge_type))
+    else:
+        x, edge_index, edge_type = GA.get_graph_area(sense_idx.item(), node_area_size, graph)
+        forward_input_ls.append((x, edge_index, edge_type))
+    return forward_input_ls
+
+#n: will be modified in order to use the generator when in the full model instead of the pocket model
+# returns a lists of indices that covers the current_tokens and the labels
+def get_batch_indices_tpls(batch_size, training_dataset, current_train_index):
+    batch_indices_lts = []
+    for i in range(batch_size+1): # I also get here the label that comes after the first element
+        (token_global_idx, token_sense_idx) = training_dataset[current_train_index+i]
+        batch_indices_lts.append((token_global_idx, token_sense_idx))
+    return batch_indices_lts
+
+
+# used to compute the loss, among the elements in a batch, for the 2 categories: globals and senses
+def compute_batch_losses(input_indices_lts, batch_rgcn_input_ls, model):
+    # predictions and labels. The sense prediction is included only if the sense label is valid.
+    batch_predicted_globals_ls = []
+    batch_predicted_senses_ls = []
+    batch_labels_globals_ls = []
+    batch_labels_senses_ls = []
+    for i in range(len(input_indices_lts) - 1):
+        (x, edge_index, edge_type) = batch_rgcn_input_ls[i]
+        predicted_globals, predicted_senses = model(x, edge_index, edge_type)
+
+        (y_global_raw_idx, y_sense_idx) = input_indices_lts[i + 1]
+        (y_global, y_sense) = (
+            torch.Tensor([y_global_raw_idx - model.last_idx_senses]).type(torch.int64).to(DEVICE),
+            torch.Tensor([y_sense_idx]).type(torch.int64).to(DEVICE))
+
+        batch_predicted_globals_ls.extend([predicted_globals])
+        batch_labels_globals_ls.extend([y_global])
+        if not (y_sense == -1):
+            batch_predicted_senses_ls.append(predicted_senses)
+            batch_labels_senses_ls.append(y_sense)
+
+    batch_predicted_globals = torch.cat([torch.unsqueeze(t, dim=0) for t in batch_predicted_globals_ls], dim=0)
+    batch_labels_globals = torch.cat(batch_labels_globals_ls, dim=0)
+
+    # compute the loss (batch mode)
+    loss_global = tF.nll_loss(batch_predicted_globals, batch_labels_globals)
+    if len(batch_labels_senses_ls) > 0:
+        batch_predicted_senses = torch.cat([torch.unsqueeze(t, dim=0) for t in batch_predicted_senses_ls],
+                                           dim=0)
+        batch_labels_senses = torch.cat(batch_labels_senses_ls, dim=0)
+        loss_sense = tF.nll_loss(batch_predicted_senses, batch_labels_senses)
+    else:
+        loss_sense = 0
+    loss = loss_global + loss_sense
+
+    return loss
 
 
 def train():
@@ -223,79 +255,36 @@ def train():
     inputgraph_dataobject = createInputGraph()
     RGCN_modelobject = NetRGCN(inputgraph_dataobject)
 
-    data, model = inputgraph_dataobject.to(DEVICE), RGCN_modelobject.to(DEVICE)
+    graph, model = inputgraph_dataobject.to(DEVICE), RGCN_modelobject.to(DEVICE)
 
     optimizer = torch.optim.Adam(model.parameters(), lr=0.01, weight_decay=0.0005)
 
     #out = model(data.edge_index, data.edge_type, data.edge_norm)
     training_dataset = torch.Tensor([(10,-1),(11,5),(12,-1),(13,3),(14,-1),(10,9),(11,-1),(12,-1),(13,-1),(14,-1),
                         (10,-1),(11,5),(12,-1),(13,3),(14,-1),(10,9),(11,5),(12,-1),(13,3),(14,-1),
-                        (12,-1),(13,3),(10,9),(13,-1),(14,-4),(12,-1),(11,-1),(12,-1),(10,9),(14,-1)]).type(torch.int64)
+                        (12,-1),(13,3),(10,9),(13,-1),(14,-1),(12,-1),(11,-1),(12,-1),(10,9),(14,-1)]).type(torch.int64)
     training_dataset.to(DEVICE, dtype=torch.int64)
-    num_epochs = 10
+    num_epochs = 20
     model.train()
     losses = []
     loss = 0
     batch_size = 4
-    node_segment_size = 8
+    node_area_size = 8
 
     for epoch in range(1,num_epochs+1):
         logging.info("\nEpoch n."+str(epoch) +":" )
 
-        for i in range(0, len(training_dataset)-batch_size, batch_size-1):
+        for batch_start in range(0, len(training_dataset) - batch_size, batch_size - 1):
             optimizer.zero_grad()
-            logging.info('\n-----\nLocation='+ str(i))
+            logging.info('\n-----\nLocation=' + str(batch_start))
 
-            inputElems_lts = training_dataset[i:i+batch_size+1]
-
-            # For every element in the batch:
-            # define the graph input for the RGCN
+            input_indices_lts = get_batch_indices_tpls(batch_size, training_dataset, batch_start)
+            logging.debug(input_indices_lts)
             batch_rgcn_input_ls = []
-            for (global_idx, sense_idx) in inputElems_lts[0:-1]:
-                if sense_idx == -1:
-                    batch_rgcn_input_ls.append(GA.get_graph_area(global_idx.item(), node_segment_size, data))
-                else:
-                    batch_rgcn_input_ls.append(GA.get_graph_area(sense_idx.item(), node_segment_size, data))
-
-            # predictions and labels. The sense prediction is included only if the sense label is valid.
-            batch_predicted_globals_ls = []
-            batch_predicted_senses_ls = []
-            batch_labels_globals_ls = []
-            batch_labels_senses_ls = []
-            for i in range(len(inputElems_lts)-1):
-                (batch_x, batch_edge_index, batch_edge_type) = batch_rgcn_input_ls[i]
-                predicted_globals, predicted_senses = model(batch_x, batch_edge_index, batch_edge_type)
-
-                (global_raw_idx, sense_idx) = inputElems_lts[i + 1]
-                (y_labelnext_global, y_labelnext_sense) = (
-                torch.Tensor([global_raw_idx - model.last_idx_senses]).type(torch.int64).to(DEVICE),
-                torch.Tensor([sense_idx]).type(torch.int64).to(DEVICE))
-
-                batch_predicted_globals_ls.extend([predicted_globals])
-                batch_labels_globals_ls.extend([y_labelnext_global])
-                if not(y_labelnext_sense == -1):
-                    batch_predicted_senses_ls.append(predicted_senses)
-                    batch_labels_senses_ls.append(y_labelnext_sense)
-
-            batch_predicted_globals = torch.cat([torch.unsqueeze(t, dim=0) for t in batch_predicted_globals_ls], dim=0)
-            batch_labels_globals = torch.cat(batch_labels_globals_ls, dim=0)
-
-            logging.info(batch_predicted_globals)
-            logging.info(batch_labels_globals)
-            logging.info('***')
-
-            # compute the loss (batch mode)
-            loss_global =tF.nll_loss(batch_predicted_globals,batch_labels_globals)
-            if len(batch_labels_senses_ls)>0:
-                batch_predicted_senses = torch.cat([torch.unsqueeze(t, dim=0) for t in batch_predicted_senses_ls],
-                                                   dim=0)
-                batch_labels_senses = torch.cat(batch_labels_senses_ls, dim=0)
-                logging.info(batch_predicted_senses)
-                logging.info(batch_labels_senses)
-                loss_sense = tF.nll_loss(batch_predicted_senses,batch_labels_senses)
-            else:
-                loss_sense = 0
-            loss = loss_global + loss_sense
+            for i in range(len(input_indices_lts)-1):
+                (global_idx, sense_idx) = input_indices_lts[i]
+                batch_rgcn_input_ls.extend(get_forwardinput_forelement(global_idx, sense_idx, node_area_size, graph))
+            loss = compute_batch_losses(input_indices_lts, batch_rgcn_input_ls, model)
             loss.backward()
             optimizer.step()
 
