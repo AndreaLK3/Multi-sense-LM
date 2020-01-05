@@ -3,11 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="d35dca92-959c-489d-8a61-f337e4cce7fa" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/GraphNN/GraphArea.py" beforeDir="false" afterPath="$PROJECT_DIR$/GraphNN/GraphArea.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/GraphNN/InputForRGCN.py" beforeDir="false" afterPath="$PROJECT_DIR$/GraphNN/InputForRGCN.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/GraphNN/MyRGCN.py" beforeDir="false" afterPath="$PROJECT_DIR$/GraphNN/MyRGCN.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/GraphNN/PocketRGCN.py" beforeDir="false" afterPath="$PROJECT_DIR$/GraphNN/PocketRGCN.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/GraphNN/trainingLosses.npy" beforeDir="false" afterPath="$PROJECT_DIR$/GraphNN/trainingLosses.npy" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Media/Task1_DeveloperDiary.docx" beforeDir="false" afterPath="$PROJECT_DIR$/Media/Task1_DeveloperDiary.docx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/createInputGraph.log" beforeDir="false" afterPath="$PROJECT_DIR$/createInputGraph.log" afterDir="false" />
     </list>
@@ -58,7 +54,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/GraphNN/InputForRGCN.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="390">
+            <state relative-caret-position="690">
               <caret line="52" column="28" selection-start-line="52" selection-start-column="28" selection-end-line="52" selection-end-column="28" />
               <folding>
                 <element signature="e#0#14#0" expanded="true" />
@@ -70,8 +66,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Vocabulary/Vocabulary_Utilities.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="209">
-              <caret line="113" column="58" lean-forward="true" selection-start-line="113" selection-start-column="58" selection-end-line="113" selection-end-column="58" />
+            <state relative-caret-position="1605">
+              <caret line="113" column="58" selection-start-line="113" selection-start-column="58" selection-end-line="113" selection-end-column="58" />
               <folding>
                 <element signature="e#0#11#0" expanded="true" />
               </folding>
@@ -82,8 +78,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/GraphNN/PocketRGCN.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="332">
-              <caret line="272" column="49" selection-start-line="272" selection-start-column="49" selection-end-line="272" selection-end-column="49" />
+            <state relative-caret-position="-62">
+              <caret line="237" column="12" lean-forward="true" selection-start-line="237" selection-start-column="12" selection-end-line="237" selection-end-column="12" />
               <folding>
                 <element signature="e#0#12#0" expanded="true" />
               </folding>
@@ -94,7 +90,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/GraphNN/GraphArea.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="210">
+            <state relative-caret-position="135">
               <caret line="14" column="76" selection-start-line="14" selection-start-column="61" selection-end-line="14" selection-end-column="76" />
               <folding>
                 <element signature="e#0#14#0" expanded="true" />
@@ -228,7 +224,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -281,6 +276,7 @@
           <select />
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -423,7 +419,7 @@
     <frame x="0" y="23" width="1440" height="806" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.49499" visible="true" weight="0.18454936" />
+      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.49499" visible="true" weight="0.19098713" />
       <window_info id="Structure" order="1" sideWeight="0.50501" side_tool="true" weight="0.17596567" />
       <window_info id="Favorites" order="2" sideWeight="0.50220263" side_tool="true" weight="0.18597998" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -436,7 +432,7 @@
       <window_info anchor="bottom" id="Version Control" order="7" weight="0.32885906" />
       <window_info anchor="bottom" id="Terminal" order="8" weight="0.3277311" />
       <window_info anchor="bottom" id="Event Log" order="9" sideWeight="0.50214595" side_tool="true" weight="0.30812326" />
-      <window_info anchor="bottom" id="Python Console" order="10" sideWeight="0.49785408" visible="true" weight="0.30112046" />
+      <window_info active="true" anchor="bottom" id="Python Console" order="10" sideWeight="0.49785408" visible="true" weight="0.30112046" />
       <window_info anchor="bottom" id="Inspection Results" order="11" weight="0.32922733" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
@@ -784,6 +780,13 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/GraphNN/MyRGCN.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="210">
+          <caret line="14" column="30" selection-start-line="14" selection-start-column="30" selection-end-line="14" selection-end-column="30" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/Utils.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1020">
@@ -794,37 +797,30 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/GraphNN/GraphArea.py">
+    <entry file="file://$PROJECT_DIR$/GraphNN/InputForRGCN.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="210">
-          <caret line="14" column="76" selection-start-line="14" selection-start-column="61" selection-end-line="14" selection-end-column="76" />
+        <state relative-caret-position="690">
+          <caret line="52" column="28" selection-start-line="52" selection-start-column="28" selection-end-line="52" selection-end-column="28" />
           <folding>
             <element signature="e#0#14#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/GraphNN/MyRGCN.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="210">
-          <caret line="14" column="30" selection-start-line="14" selection-start-column="30" selection-end-line="14" selection-end-column="30" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Vocabulary/Vocabulary_Utilities.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="209">
-          <caret line="113" column="58" lean-forward="true" selection-start-line="113" selection-start-column="58" selection-end-line="113" selection-end-column="58" />
+        <state relative-caret-position="1605">
+          <caret line="113" column="58" selection-start-line="113" selection-start-column="58" selection-end-line="113" selection-end-column="58" />
           <folding>
             <element signature="e#0#11#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/GraphNN/InputForRGCN.py">
+    <entry file="file://$PROJECT_DIR$/GraphNN/GraphArea.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="390">
-          <caret line="52" column="28" selection-start-line="52" selection-start-column="28" selection-end-line="52" selection-end-column="28" />
+        <state relative-caret-position="135">
+          <caret line="14" column="76" selection-start-line="14" selection-start-column="61" selection-end-line="14" selection-end-column="76" />
           <folding>
             <element signature="e#0#14#0" expanded="true" />
           </folding>
@@ -833,8 +829,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/GraphNN/PocketRGCN.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="332">
-          <caret line="272" column="49" selection-start-line="272" selection-start-column="49" selection-end-line="272" selection-end-column="49" />
+        <state relative-caret-position="-62">
+          <caret line="237" column="12" lean-forward="true" selection-start-line="237" selection-start-column="12" selection-end-line="237" selection-end-column="12" />
           <folding>
             <element signature="e#0#12#0" expanded="true" />
           </folding>

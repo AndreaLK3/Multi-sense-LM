@@ -225,7 +225,7 @@ def train():
 
     data, model = inputgraph_dataobject.to(DEVICE), RGCN_modelobject.to(DEVICE)
 
-    optimizer = # torch.optim.Adam(model.parameters(), lr=0.01, weight_decay=0.0005)
+    optimizer = torch.optim.Adam(model.parameters(), lr=0.01, weight_decay=0.0005)
 
     #out = model(data.edge_index, data.edge_type, data.edge_norm)
     training_dataset = torch.Tensor([(10,-1),(11,5),(12,-1),(13,3),(14,-1),(10,9),(11,-1),(12,-1),(13,-1),(14,-1),
@@ -244,43 +244,55 @@ def train():
 
         for i in range(0, len(training_dataset)-batch_size, batch_size-1):
             optimizer.zero_grad()
-            logging.info('Location='+ str(i))
+            logging.info('\n-----\nLocation='+ str(i))
 
-            inputElems_lts = training_dataset[i:i+batch_size]
+            inputElems_lts = training_dataset[i:i+batch_size+1]
 
             # For every element in the batch:
             # define the graph input for the RGCN
             batch_rgcn_input_ls = []
-            for (global_idx, sense_idx) in inputElems_lts:
+            for (global_idx, sense_idx) in inputElems_lts[0:-1]:
                 if sense_idx == -1:
                     batch_rgcn_input_ls.append(GA.get_graph_area(global_idx.item(), node_segment_size, data))
                 else:
                     batch_rgcn_input_ls.append(GA.get_graph_area(sense_idx.item(), node_segment_size, data))
 
-            # compute the predictions, and prepare the labels
-            batch_predicted_ls = []
-            batch_labels_ls = []
-            for i in range(len(inputElems_lts)):
+            # predictions and labels. The sense prediction is included only if the sense label is valid.
+            batch_predicted_globals_ls = []
+            batch_predicted_senses_ls = []
+            batch_labels_globals_ls = []
+            batch_labels_senses_ls = []
+            for i in range(len(inputElems_lts)-1):
                 (batch_x, batch_edge_index, batch_edge_type) = batch_rgcn_input_ls[i]
                 predicted_globals, predicted_senses = model(batch_x, batch_edge_index, batch_edge_type)
-                batch_predicted_ls.append((predicted_globals, predicted_senses))
 
-                (global_raw_idx, sense_idx) = inputElems_lts[i+1]
-                (y_labelnext_global,y_labelnext_sense) = (torch.Tensor([global_idx- model.last_idx_senses]).type(torch.int64).to(DEVICE),
-                                                      torch.Tensor([sense_idx]).type(torch.int64).to(DEVICE))
-                batch_labels_ls.append((y_labelnext_global, y_labelnext_sense))
+                (global_raw_idx, sense_idx) = inputElems_lts[i + 1]
+                (y_labelnext_global, y_labelnext_sense) = (
+                torch.Tensor([global_raw_idx - model.last_idx_senses]).type(torch.int64).to(DEVICE),
+                torch.Tensor([sense_idx]).type(torch.int64).to(DEVICE))
 
-            # compute the loss, and accumulate it
-            if y_labelnext_sense == -1:
-                is_label_senseLevel = False
-            else:
-                is_label_senseLevel = True
+                batch_predicted_globals_ls.extend([predicted_globals])
+                batch_labels_globals_ls.extend([y_labelnext_global])
+                if not(y_labelnext_sense == -1):
+                    batch_predicted_senses_ls.append(predicted_senses)
+                    batch_labels_senses_ls.append(y_labelnext_sense)
 
-            loss_global = tF.nll_loss(predicted_globals.unsqueeze(0), y_labelnext_global)
+            batch_predicted_globals = torch.cat([torch.unsqueeze(t, dim=0) for t in batch_predicted_globals_ls], dim=0)
+            batch_labels_globals = torch.cat(batch_labels_globals_ls, dim=0)
 
+            logging.info(batch_predicted_globals)
+            logging.info(batch_labels_globals)
+            logging.info('***')
 
-            if is_label_senseLevel:
-                loss_sense = tF.nll_loss(predicted_senses.unsqueeze(0),y_labelnext_sense)
+            # compute the loss (batch mode)
+            loss_global =tF.nll_loss(batch_predicted_globals,batch_labels_globals)
+            if len(batch_labels_senses_ls)>0:
+                batch_predicted_senses = torch.cat([torch.unsqueeze(t, dim=0) for t in batch_predicted_senses_ls],
+                                                   dim=0)
+                batch_labels_senses = torch.cat(batch_labels_senses_ls, dim=0)
+                logging.info(batch_predicted_senses)
+                logging.info(batch_labels_senses)
+                loss_sense = tF.nll_loss(batch_predicted_senses,batch_labels_senses)
             else:
                 loss_sense = 0
             loss = loss_global + loss_sense
