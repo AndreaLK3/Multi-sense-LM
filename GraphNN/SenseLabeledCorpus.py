@@ -80,7 +80,7 @@ def organize_subcorpus(xml_fpath, train_fraction):
 
 def organize_splits():
     Utils.init_logging('temp.log')
-    xml_fnames = ['semcor.xml', 'masc.xml', 'omsti.xml', 'raganato_ALL.xml', 'wngt.xml']
+    xml_fnames = ['semcor.xml']#, 'masc.xml', 'omsti.xml', 'raganato_ALL.xml', 'wngt.xml']
     xml_fpaths = list(map(
         lambda fname: os.path.join(F.FOLDER_TEXT_CORPUSES, F.FOLDER_UFSAC, fname), xml_fnames))
     split_directories_paths = list(map(lambda dirname: os.path.join(F.FOLDER_TEXT_CORPUSES, F.FOLDER_UFSAC, dirname),

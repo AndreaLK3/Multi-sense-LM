@@ -39,8 +39,7 @@ SEMCOR_DB = 'semcor_all.db'
 MASC_DB = 'masc_written.db'
 
 KBGRAPH_FILE = 'kbGraph.dataobject'
-LOSSES_FILE = 'trainingLosses.npy'
+LOSSES_FILEEND = 'losses.npy'
+PERPLEXITY_FILEEND = 'perplexity.npy'
 
 ENCODER_MODEL = "Encoder_768to300_nn.model" # not used in the current version
-
-

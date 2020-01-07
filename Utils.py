@@ -78,6 +78,13 @@ def display_ygraph_fromfile(npy_fpath):
     plt.plot(data_y_array)
     plt.ylim((0, max(data_y_array)))
 
+
+def display_xygraph_from_files(npy_fpaths_ls):
+    for npy_fpath in npy_fpaths_ls:
+        xy_lts_array = np.load(npy_fpath, allow_pickle=True)
+        plt.plot(xy_lts_array.transpose()[0], xy_lts_array.transpose()[1])
+
+
 #####
 
 ### Note: must add the vocabularies of other languages

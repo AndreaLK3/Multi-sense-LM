@@ -41,49 +41,109 @@ class NetRGCN(torch.nn.Module):
         return (tF.log_softmax(logits_global, dim=0), tF.log_softmax(logits_sense, dim=0))
 
 
-### Part of an iteration of the training loop. Also defines the graph segment we operate on.
-def compute_loss_iteration(data, model, graphbatch_size, current_token_tpl, next_token_tpl):
+# used to compute the loss, among the elements in a batch, for the 2 categories: globals and senses
+def compute_batch_losses(input_indices_lts, batch_rgcn_input_ls, model):
+    # predictions and labels. The sense prediction is included only if the sense label is valid.
+    batch_predicted_globals_ls = []
+    batch_predicted_senses_ls = []
+    batch_labels_globals_ls = []
+    batch_labels_senses_ls = []
 
-    (current_input_global, current_input_sense) = current_token_tpl
+    for i in range(len(input_indices_lts) - 1):
+        (x, edge_index, edge_type) = batch_rgcn_input_ls[i]
+        predicted_globals, predicted_senses = model(x, edge_index, edge_type)
 
-    if current_input_sense == -1:
-        current_token_index = current_input_global
+        (y_global_idx, y_sense_idx) = input_indices_lts[i + 1]
+        (y_global, y_sense) = (
+            torch.Tensor([y_global_idx]).type(torch.int64).to(DEVICE),
+            torch.Tensor([y_sense_idx]).type(torch.int64).to(DEVICE))
+        logging.debug("compute_batch_losses > (y_global, y_sense)=" + str((y_global, y_sense)))
+
+        batch_predicted_globals_ls.extend([predicted_globals])
+        batch_labels_globals_ls.extend([y_global])
+        if not (y_sense == -1):
+            batch_predicted_senses_ls.append(predicted_senses)
+            batch_labels_senses_ls.append(y_sense)
+
+    batch_predicted_globals = torch.cat([torch.unsqueeze(t, dim=0) for t in batch_predicted_globals_ls], dim=0)
+    batch_labels_globals = torch.cat(batch_labels_globals_ls, dim=0)
+
+    # compute the loss (batch mode)
+    loss_global = tF.nll_loss(batch_predicted_globals, batch_labels_globals)
+    if len(batch_labels_senses_ls) > 0:
+        batch_predicted_senses = torch.cat([torch.unsqueeze(t, dim=0) for t in batch_predicted_senses_ls],
+                                           dim=0)
+        batch_labels_senses = torch.cat(batch_labels_senses_ls, dim=0)
+        loss_sense = tF.nll_loss(batch_predicted_senses, batch_labels_senses)
     else:
-        current_token_index = current_input_sense
-
-    batch_x, batch_edge_index, batch_edge_type = GraphArea.get_graph_area(current_token_index, graphbatch_size, data)
-    predicted_globals, predicted_senses = model(batch_x, batch_edge_index, batch_edge_type)
-
-    logging.debug('current_token_tpl=' + str(current_token_tpl))
-    logging.debug('next_token_tpl=' + str(next_token_tpl))
-    (y_labelnext_global, y_labelnext_sense) = next_token_tpl
-
-    if y_labelnext_sense == -1:
-        is_label_senseLevel = False
-        y_labelnext_sense = 0 # it is not used anyway. May be useful to mantain the assertion: labels \in [0, num_classes)
-    else:
-        is_label_senseLevel = True
-
-    predicted_globals = predicted_globals.unsqueeze(0) # adding 1 dimension, since we do not use batches for now. N x C
-    y_labelnext_global = torch.Tensor([y_labelnext_global]).to(torch.int64).to(DEVICE) # N
-    logging.debug('y_labelnext_global= ' + str(y_labelnext_global))
-    logging.debug('predicted_globals.shape= ' + str(predicted_globals.shape))
-
-    loss_global = tF.nll_loss(predicted_globals, y_labelnext_global)
-
-    if is_label_senseLevel:
-        predicted_senses = predicted_senses.unsqueeze(0)
-        y_labelnext_sense = torch.Tensor([y_labelnext_sense]).to(torch.int64).to(DEVICE) # N
-        loss_sense = tF.nll_loss(predicted_senses, y_labelnext_sense)
-        loss = loss_global + loss_sense
-    else:
-        loss = loss_global
+        loss_sense = 0
+    loss = loss_global + loss_sense
 
     return loss
 
+# Given the tuple of numerical indices for an element, e.g. (13,5), retrieve a list
+# of either 1 or 2 tuples that are input to the forward function, i.e. (x, edge_index, edge_type)
+# Here Is decide what is the starting token for a prediction. For now, it is "sense if present, else global"
+def get_forwardinput_forelement(global_idx, sense_idx, node_area_size, graph):
+    forward_input_ls = []
+    logging.debug("get_forwardinput_forelement: " + str(global_idx) + ' ; ' + str(sense_idx))
+    if (sense_idx == -1):
+        x, edge_index, edge_type = GraphArea.get_graph_area(global_idx, node_area_size, graph)
+        forward_input_ls.append((x, edge_index, edge_type))
+    else:
+        x, edge_index, edge_type = GraphArea.get_graph_area(sense_idx, node_area_size, graph)
+        forward_input_ls.append((x, edge_index, edge_type))
+    return forward_input_ls
 
-def train():
 
+def compute_validation_loss(model, valid_generator, senseindices_db_c, vocab_h5, grapharea_size, data):
+    model.eval()
+    validation_losses_ls = []
+    validation_batch_size = 64 # by default, losses are averaged in a batch. I introduce batches to be faster
+    try:
+        while(True):
+            with torch.no_grad():
+                batch_valid_loss = select_and_process_batch(validation_batch_size, grapharea_size,
+                                                            valid_generator, senseindices_db_c, vocab_h5, model, data)
+                validation_losses_ls.append(batch_valid_loss)
+    except StopIteration:
+        pass # iterating over the validation split finished
+
+    valid_loss = np.average(validation_losses_ls)
+    logging.info("Validation loss=" + valid_loss)
+    model.train()
+    return valid_loss
+
+
+def select_and_process_batch(batch_size, grapharea_size, elements_generator, senseindices_db_c, vocab_h5, model, data):
+    next_token_tpl = None
+    # collecting the numerical indices of the batch's elements
+    input_indices_lts = []
+    while (len(input_indices_lts) <= batch_size):
+        try:
+            current_token_tpl, next_token_tpl = IN.get_tokens_tpls(next_token_tpl, elements_generator,
+                                                                   senseindices_db_c, vocab_h5,
+                                                                   model.last_idx_senses)
+            input_indices_lts.append(current_token_tpl)
+        except Utils.MustSkipUNK_Exception:
+            logging.debug("Encountered <UNK> token. Node not connected to any other in the graph, skipping")
+            continue
+    logging.debug('input_indices_lts=' + str(input_indices_lts))
+
+    # gathering the graph-input for the RGCN layer
+    batch_rgcn_input_ls = []
+    for i in range(len(input_indices_lts) - 1):
+        (global_idx, sense_idx) = input_indices_lts[i]
+        batch_rgcn_input_ls.extend(
+            get_forwardinput_forelement(global_idx, sense_idx, grapharea_size, data))
+
+    # computing the loss for the batch
+    loss = compute_batch_losses(input_indices_lts, batch_rgcn_input_ls, model)
+    return loss
+
+
+def train(grapharea_size=32, batch_size=8, num_epochs=50):
+    Utils.init_logging('temp.log')
     data = DG.get_graph_dataobject(new=False)
     model = NetRGCN(data)
     logging.info("Graph-data object loaded, model initialized. Moving them to GPU device(s) if present.")
@@ -98,51 +158,53 @@ def train():
 
     optimizer = torch.optim.Adam(model.parameters(), lr=0.01, weight_decay=0.0005)
 
-    num_epochs = 200
     model.train()
-    losses = []
-    grapharea_size = 32
-    steps_logging = 100
-    trainlosses_record_fpath = os.path.join(F.FOLDER_GRAPHNN, F.LOSSES_FILE)
+    losses_lts = []
+    perplexity_values_lts = []
+    validation_losses_lts = []
+    steps_logging = 100 // batch_size
+    hyperparameters_fnamestring = 'batchsize' + str(batch_size) \
+                                  + '_graphareasize' + str(grapharea_size)\
+                                  + '_epochs' + str(num_epochs)
+    trainlosses_record_fpath = os.path.join(F.FOLDER_GRAPHNN, hyperparameters_fnamestring + '_' + F.LOSSES_FILEEND)
+    perplexity_record_fpath = os.path.join(F.FOLDER_GRAPHNN, hyperparameters_fnamestring + '_' + F.PERPLEXITY_FILEEND)
 
     for epoch in range(1,num_epochs+1):
-        logging.info("\nTraining epoch n."+str(epoch) +":" )
+        logging.info("\nTraining epoch n."+str(epoch) + ":")
         train_generator = SLC.read_split('training')
-        next_token_tpl = None
+
         valid_generator = SLC.read_split('validation')
-        epoch_valid_loss = inf
+        previous_valid_loss = inf
         step = 0
-        logtime_0 = time()
+
         try:
             while(True):
 
-                try:
-                    current_token_tpl, next_token_tpl = IN.get_tokens_tpls(next_token_tpl, train_generator,
-                                                                        senseindices_db_c, vocab_h5, model.last_idx_senses)
-                except Utils.MustSkipUNK_Exception:
-                    logging.debug("Encountered <UNK> token. Node not connected to any other in the graph, skipping")
-                    continue
-
+                # starting operating on one batch
                 optimizer.zero_grad()
-                loss = compute_loss_iteration(data, model, grapharea_size, current_token_tpl, next_token_tpl)
+                loss = select_and_process_batch(batch_size, grapharea_size, train_generator, senseindices_db_c, vocab_h5, model, data)
                 loss.backward()
-
                 optimizer.step()
-
 
                 step = step +1
                 if step % steps_logging == 0:
-                    losses.append(loss.item())
-                    logging.info("Step n." + str(step))
-                    logging.info('nll_loss= ' + str(loss))
-                    logtime_1 = time()
-                    logging.info("Time elapsed="+str(round(logtime_1-logtime_0,3)) + "\n***")
+                    logging_point = epoch * step // steps_logging
+                    logging.info("Logging point n." + str(logging_point) + ';' + 'Training nll_loss= ' + str(loss))
+                    losses_lts.append((logging_point,loss.item()))
+                    # calculating perplexity=e^(cross_entropy). We currently have log_softmax>nll_loss, equivalent to it
+                    perplexity = torch.exp(loss)
+                    perplexity_values_lts.append((logging_point,perplexity))
 
         except StopIteration:
-            continue # next epoch
+            epoch_valid_loss = compute_validation_loss(model, valid_generator, senseindices_db_c, vocab_h5)
+            validation_logging_point = epoch * step // steps_logging
+            validation_losses_lts.append((validation_logging_point,epoch_valid_loss))
+            if epoch_valid_loss > previous_valid_loss + 0.01: # (epsilon)
+                torch.save(data, os.path.join(F.FOLDER_GRAPHNN, hyperparameters_fnamestring + '.graphdata'))
+                torch.save(model, os.path.join(F.FOLDER_GRAPHNN, hyperparameters_fnamestring + '.rgcnmodel'))
+                break
+            else:
+                continue # next epoch
 
-    np.save(trainlosses_record_fpath, np.array(losses))
-    #getLossGraph(losses)
-
-def getLossGraph(source1):
-    plt.plot(source1, color='red', marker='o')
+    np.save(trainlosses_record_fpath, np.array(losses_lts))
+    np.save(perplexity_record_fpath, np.array(losses_lts))

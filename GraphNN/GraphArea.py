@@ -51,7 +51,7 @@ def get_node_edges(edge_index, edge_type, node_index):
 
 ### Entry point function
 def get_graph_area(starting_node_index, area_size, graph):
-    logging.info("starting_node_index=" + str(starting_node_index))
+    logging.debug("starting_node_index=" + str(starting_node_index))
     node_indices_ls, all_edges_retrieved_ls = get_indices_toinclude(graph.edge_index, graph.edge_type, starting_node_index, area_size)
     node_indices = torch.Tensor(sorted(node_indices_ls)).to(torch.int64).to(DEVICE)
     area_x = graph.x.index_select(0, node_indices)
