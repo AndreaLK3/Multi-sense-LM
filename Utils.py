@@ -80,9 +80,13 @@ def display_ygraph_fromfile(npy_fpath):
 
 
 def display_xygraph_from_files(npy_fpaths_ls):
+    overall_max = 0
     for npy_fpath in npy_fpaths_ls:
         xy_lts_array = np.load(npy_fpath, allow_pickle=True)
         plt.plot(xy_lts_array.transpose()[0], xy_lts_array.transpose()[1])
+        array_max = max(xy_lts_array.transpose()[1])
+        overall_max = array_max if array_max > overall_max else overall_max
+    plt.ylim((0, overall_max))
 
 
 #####

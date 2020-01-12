@@ -105,12 +105,12 @@ def compute_validation_loss(model, valid_generator, senseindices_db_c, vocab_h5,
             with torch.no_grad():
                 batch_valid_loss = select_and_process_batch(validation_batch_size, grapharea_size,
                                                             valid_generator, senseindices_db_c, vocab_h5, model, data)
-                validation_losses_ls.append(batch_valid_loss)
+                validation_losses_ls.append(batch_valid_loss.item())
     except StopIteration:
         pass # iterating over the validation split finished
 
     valid_loss = np.average(validation_losses_ls)
-    logging.info("Validation loss=" + valid_loss)
+    logging.info("Validation loss=" + str(round(valid_loss, 5)))
     model.train()
     return valid_loss
 
@@ -142,8 +142,8 @@ def select_and_process_batch(batch_size, grapharea_size, elements_generator, sen
     return loss
 
 
-def train(grapharea_size=32, batch_size=8, num_epochs=50):
-    Utils.init_logging('temp.log')
+def train(grapharea_size=32, batch_size=8, num_epochs=10):
+    Utils.init_logging('MyRGCN.log')
     data = DG.get_graph_dataobject(new=False)
     model = NetRGCN(data)
     logging.info("Graph-data object loaded, model initialized. Moving them to GPU device(s) if present.")
@@ -162,20 +162,23 @@ def train(grapharea_size=32, batch_size=8, num_epochs=50):
     losses_lts = []
     perplexity_values_lts = []
     validation_losses_lts = []
-    steps_logging = 100 // batch_size
-    hyperparameters_fnamestring = 'batchsize' + str(batch_size) \
+    valid_perplexity_values_lts = []
+    steps_logging = 500 // batch_size
+    hyperparams_str = 'batchsize' + str(batch_size) \
                                   + '_graphareasize' + str(grapharea_size)\
                                   + '_epochs' + str(num_epochs)
-    trainlosses_record_fpath = os.path.join(F.FOLDER_GRAPHNN, hyperparameters_fnamestring + '_' + F.LOSSES_FILEEND)
-    perplexity_record_fpath = os.path.join(F.FOLDER_GRAPHNN, hyperparameters_fnamestring + '_' + F.PERPLEXITY_FILEEND)
+    trainlosses_fpath = os.path.join(F.FOLDER_GRAPHNN, hyperparams_str + '_' + Utils.TRAINING + '_' + F.LOSSES_FILEEND)
+    trainperplexity_fpath = os.path.join(F.FOLDER_GRAPHNN, hyperparams_str + '_' + Utils.TRAINING + '_' + F.PERPLEXITY_FILEEND)
+    validlosses_fpath = os.path.join(F.FOLDER_GRAPHNN, hyperparams_str + '_' + Utils.VALIDATION + '_' + F.LOSSES_FILEEND)
+    validperplexity_fpath = os.path.join(F.FOLDER_GRAPHNN, hyperparams_str + '_' + Utils.VALIDATION + '_' + F.PERPLEXITY_FILEEND)
 
+    global_step = 0
     for epoch in range(1,num_epochs+1):
         logging.info("\nTraining epoch n."+str(epoch) + ":")
         train_generator = SLC.read_split('training')
 
         valid_generator = SLC.read_split('validation')
         previous_valid_loss = inf
-        step = 0
 
         try:
             while(True):
@@ -186,25 +189,30 @@ def train(grapharea_size=32, batch_size=8, num_epochs=50):
                 loss.backward()
                 optimizer.step()
 
-                step = step +1
-                if step % steps_logging == 0:
-                    logging_point = epoch * step // steps_logging
-                    logging.info("Logging point n." + str(logging_point) + ';' + 'Training nll_loss= ' + str(loss))
+                global_step = global_step +1
+                if global_step % steps_logging == 0:
+                    logging_point = global_step // steps_logging
+                    logging.info("Logging point n." + str(logging_point) +
+                                 " ; Global step=" + str(global_step) + ' ; Training nll_loss= ' + str(loss))
                     losses_lts.append((logging_point,loss.item()))
                     # calculating perplexity=e^(cross_entropy). We currently have log_softmax>nll_loss, equivalent to it
                     perplexity = torch.exp(loss)
                     perplexity_values_lts.append((logging_point,perplexity))
 
         except StopIteration:
-            epoch_valid_loss = compute_validation_loss(model, valid_generator, senseindices_db_c, vocab_h5)
-            validation_logging_point = epoch * step // steps_logging
-            validation_losses_lts.append((validation_logging_point,epoch_valid_loss))
+            epoch_valid_loss = compute_validation_loss(model, valid_generator, senseindices_db_c, vocab_h5, grapharea_size, data)
+            validation_logging_point = global_step // steps_logging
+            validation_losses_lts.append((validation_logging_point,epoch_valid_loss.item()))
+            valid_perplexity = torch.exp(epoch_valid_loss)
+            valid_perplexity_values_lts.append((validation_logging_point, valid_perplexity))
             if epoch_valid_loss > previous_valid_loss + 0.01: # (epsilon)
-                torch.save(data, os.path.join(F.FOLDER_GRAPHNN, hyperparameters_fnamestring + '.graphdata'))
-                torch.save(model, os.path.join(F.FOLDER_GRAPHNN, hyperparameters_fnamestring + '.rgcnmodel'))
+                torch.save(data, os.path.join(F.FOLDER_GRAPHNN, hyperparams_str + '_graph.dataobject'))
+                torch.save(model, os.path.join(F.FOLDER_GRAPHNN, hyperparams_str + '.rgcnmodel'))
                 break
             else:
                 continue # next epoch
 
-    np.save(trainlosses_record_fpath, np.array(losses_lts))
-    np.save(perplexity_record_fpath, np.array(losses_lts))
+    np.save(trainlosses_fpath, np.array(losses_lts))
+    np.save(trainperplexity_fpath, np.array(perplexity_values_lts))
+    np.save(validlosses_fpath, np.array(validation_losses_lts))
+    np.save(validperplexity_fpath, np.array(valid_perplexity_values_lts))

@@ -100,7 +100,6 @@ def organize_splits():
 # read an XML in UFSAC sense-labeled format. __next__() returns the dictionary of attributes of a <word> element
 def dataset_generator(xml_fpath):
     xml_docfile = open(xml_fpath, "rb")
-    Utils.init_logging('temp.log')
     logging.info("Generator over subcorpus at " + xml_fpath)
     for event, elem in lxml.etree.iterparse(xml_docfile):
         if elem.tag == "sentence":
@@ -110,7 +109,6 @@ def dataset_generator(xml_fpath):
 
 
 def readgenerator_senselabeled_corpuses(split_name):
-    Utils.init_logging('temp.log')
     logging.info("Invoking")
     if split_name.lower() == Utils.TRAINING:
         training_subcorpuses_folder = os.path.join(F.FOLDER_TEXT_CORPUSES, F.FOLDER_UFSAC, F.FOLDER_TRAIN)
