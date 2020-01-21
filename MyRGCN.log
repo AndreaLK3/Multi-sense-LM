@@ -1,471 +1,121 @@
 INFO : Graph-data object loaded, model initialized. Moving them to GPU device(s) if present.
-INFO : 
+INFO :
 Training epoch n.1:
 INFO : Invoking
 INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
-INFO : Logging point n.1 ; Step=62 ; Training nll_loss= tensor(18.0323, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='governor's_race.n.01' . Skipping sense
-INFO : Logging point n.2 ; Step=124 ; Training nll_loss= tensor(16.1941, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.3 ; Step=186 ; Training nll_loss= tensor(16.9541, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.4 ; Step=248 ; Training nll_loss= tensor(15.8672, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='master's_degree.n.01' . Skipping sense
-INFO : Logging point n.5 ; Step=310 ; Training nll_loss= tensor(16.1560, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.6 ; Step=372 ; Training nll_loss= tensor(11.9525, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.7 ; Step=434 ; Training nll_loss= tensor(16.8210, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.8 ; Step=496 ; Training nll_loss= tensor(15.3917, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.9 ; Step=558 ; Training nll_loss= tensor(15.2751, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.10 ; Step=620 ; Training nll_loss= tensor(13.5991, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.11 ; Step=682 ; Training nll_loss= tensor(14.7272, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='o'clock.r.01' . Skipping sense
-INFO : Logging point n.12 ; Step=744 ; Training nll_loss= tensor(17.0871, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.13 ; Step=806 ; Training nll_loss= tensor(13.6430, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.14 ; Step=868 ; Training nll_loss= tensor(16.7892, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.15 ; Step=930 ; Training nll_loss= tensor(15.9145, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.16 ; Step=992 ; Training nll_loss= tensor(16.0186, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='o'clock.r.01' . Skipping sense
-INFO : Logging point n.17 ; Step=1054 ; Training nll_loss= tensor(9.9452, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.18 ; Step=1116 ; Training nll_loss= tensor(12.3512, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='sow_one's_oats.v.01' . Skipping sense
-INFO : Logging point n.19 ; Step=1178 ; Training nll_loss= tensor(15.4291, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.20 ; Step=1240 ; Training nll_loss= tensor(13.4356, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.21 ; Step=1302 ; Training nll_loss= tensor(17.4951, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='bull's_eye.n.02' . Skipping sense
-INFO : Logging point n.22 ; Step=1364 ; Training nll_loss= tensor(16.1043, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.23 ; Step=1426 ; Training nll_loss= tensor(17.1471, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.24 ; Step=1488 ; Training nll_loss= tensor(13.7938, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.25 ; Step=1550 ; Training nll_loss= tensor(14.7827, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.26 ; Step=1612 ; Training nll_loss= tensor(13.6077, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.27 ; Step=1674 ; Training nll_loss= tensor(11.4933, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.28 ; Step=1736 ; Training nll_loss= tensor(15.0628, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.29 ; Step=1798 ; Training nll_loss= tensor(15.4902, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.30 ; Step=1860 ; Training nll_loss= tensor(14.5848, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.31 ; Step=1922 ; Training nll_loss= tensor(15.8889, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.32 ; Step=1984 ; Training nll_loss= tensor(15.9385, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.33 ; Step=2046 ; Training nll_loss= tensor(14.8165, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.34 ; Step=2108 ; Training nll_loss= tensor(17.7052, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Invoking
-INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Validation/semcor.xml
-INFO : Validation loss=14.52323
-INFO : 
-Training epoch n.2:
-INFO : Invoking
-INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
-INFO : Logging point n.2 ; Step=62 ; Training nll_loss= tensor(13.7620, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='governor's_race.n.01' . Skipping sense
-INFO : Logging point n.4 ; Step=124 ; Training nll_loss= tensor(15.6216, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.6 ; Step=186 ; Training nll_loss= tensor(16.2197, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.8 ; Step=248 ; Training nll_loss= tensor(15.0897, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='master's_degree.n.01' . Skipping sense
-INFO : Logging point n.10 ; Step=310 ; Training nll_loss= tensor(15.3782, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.12 ; Step=372 ; Training nll_loss= tensor(11.9383, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.14 ; Step=434 ; Training nll_loss= tensor(14.1800, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.16 ; Step=496 ; Training nll_loss= tensor(14.4507, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.18 ; Step=558 ; Training nll_loss= tensor(15.0517, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.20 ; Step=620 ; Training nll_loss= tensor(12.7651, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.22 ; Step=682 ; Training nll_loss= tensor(14.1289, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='o'clock.r.01' . Skipping sense
-INFO : Logging point n.24 ; Step=744 ; Training nll_loss= tensor(17.1190, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.26 ; Step=806 ; Training nll_loss= tensor(13.4397, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.28 ; Step=868 ; Training nll_loss= tensor(15.7884, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.30 ; Step=930 ; Training nll_loss= tensor(16.1515, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.32 ; Step=992 ; Training nll_loss= tensor(15.4863, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='o'clock.r.01' . Skipping sense
-INFO : Logging point n.34 ; Step=1054 ; Training nll_loss= tensor(9.8782, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.36 ; Step=1116 ; Training nll_loss= tensor(12.0982, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='sow_one's_oats.v.01' . Skipping sense
-INFO : Logging point n.38 ; Step=1178 ; Training nll_loss= tensor(15.1180, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.40 ; Step=1240 ; Training nll_loss= tensor(12.4760, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.42 ; Step=1302 ; Training nll_loss= tensor(16.8707, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='bull's_eye.n.02' . Skipping sense
-INFO : Logging point n.44 ; Step=1364 ; Training nll_loss= tensor(15.6084, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.46 ; Step=1426 ; Training nll_loss= tensor(16.6382, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.48 ; Step=1488 ; Training nll_loss= tensor(13.3216, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.50 ; Step=1550 ; Training nll_loss= tensor(13.5436, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.52 ; Step=1612 ; Training nll_loss= tensor(13.5517, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.54 ; Step=1674 ; Training nll_loss= tensor(10.9904, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.56 ; Step=1736 ; Training nll_loss= tensor(14.3975, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.58 ; Step=1798 ; Training nll_loss= tensor(15.4612, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.60 ; Step=1860 ; Training nll_loss= tensor(15.0400, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.62 ; Step=1922 ; Training nll_loss= tensor(15.8576, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.64 ; Step=1984 ; Training nll_loss= tensor(15.8794, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.66 ; Step=2046 ; Training nll_loss= tensor(14.3360, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.68 ; Step=2108 ; Training nll_loss= tensor(16.7071, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Invoking
-INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Validation/semcor.xml
-INFO : Validation loss=14.3079
-INFO : 
-Training epoch n.3:
-INFO : Invoking
-INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
-INFO : Logging point n.3 ; Step=62 ; Training nll_loss= tensor(13.9174, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='governor's_race.n.01' . Skipping sense
-INFO : Logging point n.6 ; Step=124 ; Training nll_loss= tensor(14.8342, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.9 ; Step=186 ; Training nll_loss= tensor(15.6099, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.12 ; Step=248 ; Training nll_loss= tensor(14.4145, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='master's_degree.n.01' . Skipping sense
-INFO : Logging point n.15 ; Step=310 ; Training nll_loss= tensor(15.1292, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.18 ; Step=372 ; Training nll_loss= tensor(10.3478, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.21 ; Step=434 ; Training nll_loss= tensor(13.3238, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.24 ; Step=496 ; Training nll_loss= tensor(14.3522, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.27 ; Step=558 ; Training nll_loss= tensor(14.5890, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.30 ; Step=620 ; Training nll_loss= tensor(12.3122, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.33 ; Step=682 ; Training nll_loss= tensor(13.3353, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='o'clock.r.01' . Skipping sense
-INFO : Logging point n.36 ; Step=744 ; Training nll_loss= tensor(16.7126, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.39 ; Step=806 ; Training nll_loss= tensor(13.1369, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.42 ; Step=868 ; Training nll_loss= tensor(16.0364, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.45 ; Step=930 ; Training nll_loss= tensor(15.9909, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.48 ; Step=992 ; Training nll_loss= tensor(14.5812, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='o'clock.r.01' . Skipping sense
-INFO : Logging point n.51 ; Step=1054 ; Training nll_loss= tensor(9.3994, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.54 ; Step=1116 ; Training nll_loss= tensor(11.7930, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='sow_one's_oats.v.01' . Skipping sense
-INFO : Logging point n.57 ; Step=1178 ; Training nll_loss= tensor(14.8386, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.60 ; Step=1240 ; Training nll_loss= tensor(12.2260, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.63 ; Step=1302 ; Training nll_loss= tensor(15.9848, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='bull's_eye.n.02' . Skipping sense
-INFO : Logging point n.66 ; Step=1364 ; Training nll_loss= tensor(14.7439, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.69 ; Step=1426 ; Training nll_loss= tensor(16.7071, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.72 ; Step=1488 ; Training nll_loss= tensor(13.0843, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.75 ; Step=1550 ; Training nll_loss= tensor(12.9748, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.78 ; Step=1612 ; Training nll_loss= tensor(13.3100, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.81 ; Step=1674 ; Training nll_loss= tensor(10.5040, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.84 ; Step=1736 ; Training nll_loss= tensor(14.5677, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.87 ; Step=1798 ; Training nll_loss= tensor(14.7761, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.90 ; Step=1860 ; Training nll_loss= tensor(14.7485, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.93 ; Step=1922 ; Training nll_loss= tensor(15.5395, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.96 ; Step=1984 ; Training nll_loss= tensor(15.7313, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.99 ; Step=2046 ; Training nll_loss= tensor(13.9794, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.102 ; Step=2108 ; Training nll_loss= tensor(17.1718, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Invoking
-INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Validation/semcor.xml
-INFO : Validation loss=13.9249
-INFO : 
-Training epoch n.4:
-INFO : Invoking
-INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
-INFO : Logging point n.4 ; Step=62 ; Training nll_loss= tensor(14.3107, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='governor's_race.n.01' . Skipping sense
-INFO : Logging point n.8 ; Step=124 ; Training nll_loss= tensor(14.9063, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.12 ; Step=186 ; Training nll_loss= tensor(15.3638, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.16 ; Step=248 ; Training nll_loss= tensor(14.0322, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='master's_degree.n.01' . Skipping sense
-INFO : Logging point n.20 ; Step=310 ; Training nll_loss= tensor(14.8019, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.24 ; Step=372 ; Training nll_loss= tensor(11.0557, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.28 ; Step=434 ; Training nll_loss= tensor(12.8741, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.32 ; Step=496 ; Training nll_loss= tensor(13.4772, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.36 ; Step=558 ; Training nll_loss= tensor(14.6744, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.40 ; Step=620 ; Training nll_loss= tensor(12.1841, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.44 ; Step=682 ; Training nll_loss= tensor(13.2502, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='o'clock.r.01' . Skipping sense
-INFO : Logging point n.48 ; Step=744 ; Training nll_loss= tensor(16.2734, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.52 ; Step=806 ; Training nll_loss= tensor(13.2269, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.56 ; Step=868 ; Training nll_loss= tensor(15.6153, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.60 ; Step=930 ; Training nll_loss= tensor(15.7189, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.64 ; Step=992 ; Training nll_loss= tensor(14.0907, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='o'clock.r.01' . Skipping sense
-INFO : Logging point n.68 ; Step=1054 ; Training nll_loss= tensor(9.3806, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.72 ; Step=1116 ; Training nll_loss= tensor(11.9508, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='sow_one's_oats.v.01' . Skipping sense
-INFO : Logging point n.76 ; Step=1178 ; Training nll_loss= tensor(15.0134, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.80 ; Step=1240 ; Training nll_loss= tensor(12.4578, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.84 ; Step=1302 ; Training nll_loss= tensor(15.7928, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='bull's_eye.n.02' . Skipping sense
-INFO : Logging point n.88 ; Step=1364 ; Training nll_loss= tensor(15.7593, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.92 ; Step=1426 ; Training nll_loss= tensor(16.6268, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.96 ; Step=1488 ; Training nll_loss= tensor(13.0837, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.100 ; Step=1550 ; Training nll_loss= tensor(13.9753, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.104 ; Step=1612 ; Training nll_loss= tensor(12.2787, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.108 ; Step=1674 ; Training nll_loss= tensor(9.6048, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.112 ; Step=1736 ; Training nll_loss= tensor(15.3693, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.116 ; Step=1798 ; Training nll_loss= tensor(14.4122, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.120 ; Step=1860 ; Training nll_loss= tensor(13.7186, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.124 ; Step=1922 ; Training nll_loss= tensor(15.4140, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.128 ; Step=1984 ; Training nll_loss= tensor(15.7666, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.132 ; Step=2046 ; Training nll_loss= tensor(13.9200, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.136 ; Step=2108 ; Training nll_loss= tensor(16.9194, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Invoking
-INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Validation/semcor.xml
-INFO : Validation loss=14.02622
-INFO : 
-Training epoch n.5:
-INFO : Invoking
-INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
-INFO : Logging point n.5 ; Step=62 ; Training nll_loss= tensor(14.1899, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='governor's_race.n.01' . Skipping sense
-INFO : Logging point n.10 ; Step=124 ; Training nll_loss= tensor(14.8844, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.15 ; Step=186 ; Training nll_loss= tensor(15.4836, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.20 ; Step=248 ; Training nll_loss= tensor(13.7482, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='master's_degree.n.01' . Skipping sense
-INFO : Logging point n.25 ; Step=310 ; Training nll_loss= tensor(14.3911, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.30 ; Step=372 ; Training nll_loss= tensor(11.3890, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.35 ; Step=434 ; Training nll_loss= tensor(12.0173, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.40 ; Step=496 ; Training nll_loss= tensor(13.2731, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.45 ; Step=558 ; Training nll_loss= tensor(14.5906, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.50 ; Step=620 ; Training nll_loss= tensor(12.0806, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.55 ; Step=682 ; Training nll_loss= tensor(12.9111, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='o'clock.r.01' . Skipping sense
-INFO : Logging point n.60 ; Step=744 ; Training nll_loss= tensor(16.6629, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.65 ; Step=806 ; Training nll_loss= tensor(13.0701, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.70 ; Step=868 ; Training nll_loss= tensor(15.4647, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.75 ; Step=930 ; Training nll_loss= tensor(15.9106, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.80 ; Step=992 ; Training nll_loss= tensor(13.9543, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='o'clock.r.01' . Skipping sense
-INFO : Logging point n.85 ; Step=1054 ; Training nll_loss= tensor(9.2382, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.90 ; Step=1116 ; Training nll_loss= tensor(11.7361, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='sow_one's_oats.v.01' . Skipping sense
-INFO : Logging point n.95 ; Step=1178 ; Training nll_loss= tensor(15.0312, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.100 ; Step=1240 ; Training nll_loss= tensor(11.9116, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.105 ; Step=1302 ; Training nll_loss= tensor(15.4044, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='bull's_eye.n.02' . Skipping sense
-INFO : Logging point n.110 ; Step=1364 ; Training nll_loss= tensor(14.8318, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.115 ; Step=1426 ; Training nll_loss= tensor(16.2798, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.120 ; Step=1488 ; Training nll_loss= tensor(13.3126, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.125 ; Step=1550 ; Training nll_loss= tensor(13.6736, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.130 ; Step=1612 ; Training nll_loss= tensor(12.0284, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.135 ; Step=1674 ; Training nll_loss= tensor(9.6035, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.140 ; Step=1736 ; Training nll_loss= tensor(15.1579, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.145 ; Step=1798 ; Training nll_loss= tensor(14.1525, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.150 ; Step=1860 ; Training nll_loss= tensor(13.9011, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.155 ; Step=1922 ; Training nll_loss= tensor(14.6656, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.160 ; Step=1984 ; Training nll_loss= tensor(15.7050, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.165 ; Step=2046 ; Training nll_loss= tensor(13.7479, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.170 ; Step=2108 ; Training nll_loss= tensor(16.3865, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Invoking
-INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Validation/semcor.xml
-INFO : Validation loss=14.34855
-INFO : 
-Training epoch n.6:
-INFO : Invoking
-INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
-INFO : Logging point n.6 ; Step=62 ; Training nll_loss= tensor(14.1253, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='governor's_race.n.01' . Skipping sense
-INFO : Logging point n.12 ; Step=124 ; Training nll_loss= tensor(14.7213, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.18 ; Step=186 ; Training nll_loss= tensor(15.6470, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.24 ; Step=248 ; Training nll_loss= tensor(13.5544, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='master's_degree.n.01' . Skipping sense
-INFO : Logging point n.30 ; Step=310 ; Training nll_loss= tensor(14.1670, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.36 ; Step=372 ; Training nll_loss= tensor(11.3941, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.42 ; Step=434 ; Training nll_loss= tensor(11.8223, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.48 ; Step=496 ; Training nll_loss= tensor(13.2150, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.54 ; Step=558 ; Training nll_loss= tensor(14.5961, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.60 ; Step=620 ; Training nll_loss= tensor(12.0670, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.66 ; Step=682 ; Training nll_loss= tensor(12.8389, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='o'clock.r.01' . Skipping sense
-INFO : Logging point n.72 ; Step=744 ; Training nll_loss= tensor(16.5583, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.78 ; Step=806 ; Training nll_loss= tensor(12.8370, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.84 ; Step=868 ; Training nll_loss= tensor(15.2716, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.90 ; Step=930 ; Training nll_loss= tensor(15.5995, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.96 ; Step=992 ; Training nll_loss= tensor(14.2576, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='o'clock.r.01' . Skipping sense
-INFO : Logging point n.102 ; Step=1054 ; Training nll_loss= tensor(8.7929, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.108 ; Step=1116 ; Training nll_loss= tensor(11.8119, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='sow_one's_oats.v.01' . Skipping sense
-INFO : Logging point n.114 ; Step=1178 ; Training nll_loss= tensor(15.1711, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.120 ; Step=1240 ; Training nll_loss= tensor(11.6710, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.126 ; Step=1302 ; Training nll_loss= tensor(15.6468, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='bull's_eye.n.02' . Skipping sense
-INFO : Logging point n.132 ; Step=1364 ; Training nll_loss= tensor(15.4482, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.138 ; Step=1426 ; Training nll_loss= tensor(16.8059, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.144 ; Step=1488 ; Training nll_loss= tensor(12.7924, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.150 ; Step=1550 ; Training nll_loss= tensor(13.5031, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.156 ; Step=1612 ; Training nll_loss= tensor(11.9071, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.162 ; Step=1674 ; Training nll_loss= tensor(10.8625, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.168 ; Step=1736 ; Training nll_loss= tensor(14.8882, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.174 ; Step=1798 ; Training nll_loss= tensor(14.3688, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.180 ; Step=1860 ; Training nll_loss= tensor(13.4304, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.186 ; Step=1922 ; Training nll_loss= tensor(14.7673, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.192 ; Step=1984 ; Training nll_loss= tensor(15.3329, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.198 ; Step=2046 ; Training nll_loss= tensor(13.7080, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.204 ; Step=2108 ; Training nll_loss= tensor(16.3784, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Invoking
-INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Validation/semcor.xml
-INFO : Validation loss=14.27651
-INFO : 
-Training epoch n.7:
-INFO : Invoking
-INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
-INFO : Logging point n.7 ; Step=62 ; Training nll_loss= tensor(14.0583, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='governor's_race.n.01' . Skipping sense
-INFO : Logging point n.14 ; Step=124 ; Training nll_loss= tensor(14.6643, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.21 ; Step=186 ; Training nll_loss= tensor(15.5174, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.28 ; Step=248 ; Training nll_loss= tensor(14.5600, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='master's_degree.n.01' . Skipping sense
-INFO : Logging point n.35 ; Step=310 ; Training nll_loss= tensor(13.6278, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.42 ; Step=372 ; Training nll_loss= tensor(11.9508, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.49 ; Step=434 ; Training nll_loss= tensor(11.5298, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.56 ; Step=496 ; Training nll_loss= tensor(13.0798, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.63 ; Step=558 ; Training nll_loss= tensor(14.9307, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.70 ; Step=620 ; Training nll_loss= tensor(11.8167, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.77 ; Step=682 ; Training nll_loss= tensor(12.6659, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='o'clock.r.01' . Skipping sense
-INFO : Logging point n.84 ; Step=744 ; Training nll_loss= tensor(16.5655, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.91 ; Step=806 ; Training nll_loss= tensor(12.8167, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.98 ; Step=868 ; Training nll_loss= tensor(15.4444, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.105 ; Step=930 ; Training nll_loss= tensor(15.7298, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.112 ; Step=992 ; Training nll_loss= tensor(14.0381, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='o'clock.r.01' . Skipping sense
-INFO : Logging point n.119 ; Step=1054 ; Training nll_loss= tensor(8.5424, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.126 ; Step=1116 ; Training nll_loss= tensor(11.6071, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='sow_one's_oats.v.01' . Skipping sense
-INFO : Logging point n.133 ; Step=1178 ; Training nll_loss= tensor(15.1149, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.140 ; Step=1240 ; Training nll_loss= tensor(11.8624, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.147 ; Step=1302 ; Training nll_loss= tensor(15.4680, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='bull's_eye.n.02' . Skipping sense
-INFO : Logging point n.154 ; Step=1364 ; Training nll_loss= tensor(15.2913, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.161 ; Step=1426 ; Training nll_loss= tensor(16.8259, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.168 ; Step=1488 ; Training nll_loss= tensor(12.7086, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.175 ; Step=1550 ; Training nll_loss= tensor(13.4240, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.182 ; Step=1612 ; Training nll_loss= tensor(11.7641, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.189 ; Step=1674 ; Training nll_loss= tensor(10.6497, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.196 ; Step=1736 ; Training nll_loss= tensor(13.7818, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.203 ; Step=1798 ; Training nll_loss= tensor(14.3781, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.210 ; Step=1860 ; Training nll_loss= tensor(13.4452, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.217 ; Step=1922 ; Training nll_loss= tensor(14.4641, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.224 ; Step=1984 ; Training nll_loss= tensor(15.3960, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.231 ; Step=2046 ; Training nll_loss= tensor(13.6194, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.238 ; Step=2108 ; Training nll_loss= tensor(16.2737, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Invoking
-INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Validation/semcor.xml
-INFO : Validation loss=14.31721
-INFO : 
-Training epoch n.8:
-INFO : Invoking
-INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
-INFO : Logging point n.8 ; Step=62 ; Training nll_loss= tensor(14.2780, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='governor's_race.n.01' . Skipping sense
-INFO : Logging point n.16 ; Step=124 ; Training nll_loss= tensor(14.4412, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.24 ; Step=186 ; Training nll_loss= tensor(15.6114, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.32 ; Step=248 ; Training nll_loss= tensor(14.5248, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='master's_degree.n.01' . Skipping sense
-INFO : Logging point n.40 ; Step=310 ; Training nll_loss= tensor(13.5022, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.48 ; Step=372 ; Training nll_loss= tensor(11.7125, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.56 ; Step=434 ; Training nll_loss= tensor(11.1984, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.64 ; Step=496 ; Training nll_loss= tensor(13.2778, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.72 ; Step=558 ; Training nll_loss= tensor(14.4851, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.80 ; Step=620 ; Training nll_loss= tensor(12.1409, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.88 ; Step=682 ; Training nll_loss= tensor(12.7613, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='o'clock.r.01' . Skipping sense
-INFO : Logging point n.96 ; Step=744 ; Training nll_loss= tensor(16.1412, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.104 ; Step=806 ; Training nll_loss= tensor(12.8187, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.112 ; Step=868 ; Training nll_loss= tensor(15.4577, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.120 ; Step=930 ; Training nll_loss= tensor(15.5762, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.128 ; Step=992 ; Training nll_loss= tensor(13.8854, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='o'clock.r.01' . Skipping sense
-INFO : Logging point n.136 ; Step=1054 ; Training nll_loss= tensor(8.7127, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.144 ; Step=1116 ; Training nll_loss= tensor(11.6836, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='sow_one's_oats.v.01' . Skipping sense
-INFO : Logging point n.152 ; Step=1178 ; Training nll_loss= tensor(15.2125, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.160 ; Step=1240 ; Training nll_loss= tensor(12.0112, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.168 ; Step=1302 ; Training nll_loss= tensor(15.4134, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='bull's_eye.n.02' . Skipping sense
-INFO : Logging point n.176 ; Step=1364 ; Training nll_loss= tensor(15.4886, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.184 ; Step=1426 ; Training nll_loss= tensor(16.3414, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.192 ; Step=1488 ; Training nll_loss= tensor(12.7211, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.200 ; Step=1550 ; Training nll_loss= tensor(13.4936, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.208 ; Step=1612 ; Training nll_loss= tensor(11.5133, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.216 ; Step=1674 ; Training nll_loss= tensor(10.7938, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.224 ; Step=1736 ; Training nll_loss= tensor(14.0722, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.232 ; Step=1798 ; Training nll_loss= tensor(14.8512, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.240 ; Step=1860 ; Training nll_loss= tensor(13.4827, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.248 ; Step=1922 ; Training nll_loss= tensor(14.7438, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.256 ; Step=1984 ; Training nll_loss= tensor(15.7114, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.264 ; Step=2046 ; Training nll_loss= tensor(13.6331, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.272 ; Step=2108 ; Training nll_loss= tensor(15.6705, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Invoking
-INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Validation/semcor.xml
-INFO : Validation loss=14.50266
-INFO : 
-Training epoch n.9:
-INFO : Invoking
-INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
-INFO : Logging point n.9 ; Step=62 ; Training nll_loss= tensor(13.8229, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='governor's_race.n.01' . Skipping sense
-INFO : Logging point n.18 ; Step=124 ; Training nll_loss= tensor(14.3440, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.27 ; Step=186 ; Training nll_loss= tensor(15.6373, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.36 ; Step=248 ; Training nll_loss= tensor(14.5814, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='master's_degree.n.01' . Skipping sense
-INFO : Logging point n.45 ; Step=310 ; Training nll_loss= tensor(13.6536, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.54 ; Step=372 ; Training nll_loss= tensor(11.7724, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.63 ; Step=434 ; Training nll_loss= tensor(11.4093, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.72 ; Step=496 ; Training nll_loss= tensor(13.4185, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.81 ; Step=558 ; Training nll_loss= tensor(14.4916, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.90 ; Step=620 ; Training nll_loss= tensor(12.2782, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.99 ; Step=682 ; Training nll_loss= tensor(12.7608, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='o'clock.r.01' . Skipping sense
-INFO : Logging point n.108 ; Step=744 ; Training nll_loss= tensor(16.3133, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.117 ; Step=806 ; Training nll_loss= tensor(12.9286, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.126 ; Step=868 ; Training nll_loss= tensor(15.3564, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.135 ; Step=930 ; Training nll_loss= tensor(15.5765, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.144 ; Step=992 ; Training nll_loss= tensor(13.6655, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='o'clock.r.01' . Skipping sense
-INFO : Logging point n.153 ; Step=1054 ; Training nll_loss= tensor(9.0747, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.162 ; Step=1116 ; Training nll_loss= tensor(11.7986, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='sow_one's_oats.v.01' . Skipping sense
-INFO : Logging point n.171 ; Step=1178 ; Training nll_loss= tensor(15.1378, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.180 ; Step=1240 ; Training nll_loss= tensor(11.7296, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.189 ; Step=1302 ; Training nll_loss= tensor(15.3058, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='bull's_eye.n.02' . Skipping sense
-INFO : Logging point n.198 ; Step=1364 ; Training nll_loss= tensor(15.4635, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.207 ; Step=1426 ; Training nll_loss= tensor(16.5278, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.216 ; Step=1488 ; Training nll_loss= tensor(12.6363, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.225 ; Step=1550 ; Training nll_loss= tensor(13.5085, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.234 ; Step=1612 ; Training nll_loss= tensor(11.5718, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.243 ; Step=1674 ; Training nll_loss= tensor(10.7734, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.252 ; Step=1736 ; Training nll_loss= tensor(13.9307, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.261 ; Step=1798 ; Training nll_loss= tensor(14.9090, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.270 ; Step=1860 ; Training nll_loss= tensor(13.6534, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.279 ; Step=1922 ; Training nll_loss= tensor(14.3713, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.288 ; Step=1984 ; Training nll_loss= tensor(15.3002, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.297 ; Step=2046 ; Training nll_loss= tensor(13.5315, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.306 ; Step=2108 ; Training nll_loss= tensor(16.1417, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Invoking
-INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Validation/semcor.xml
-INFO : Validation loss=14.32739
-INFO : 
-Training epoch n.10:
-INFO : Invoking
-INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
-INFO : Logging point n.10 ; Step=62 ; Training nll_loss= tensor(14.0829, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='governor's_race.n.01' . Skipping sense
-INFO : Logging point n.20 ; Step=124 ; Training nll_loss= tensor(14.5297, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.30 ; Step=186 ; Training nll_loss= tensor(15.3950, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.40 ; Step=248 ; Training nll_loss= tensor(14.3672, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='master's_degree.n.01' . Skipping sense
-INFO : Logging point n.50 ; Step=310 ; Training nll_loss= tensor(13.3479, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.60 ; Step=372 ; Training nll_loss= tensor(11.9360, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.70 ; Step=434 ; Training nll_loss= tensor(11.8966, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.80 ; Step=496 ; Training nll_loss= tensor(13.6792, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.90 ; Step=558 ; Training nll_loss= tensor(14.4384, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.100 ; Step=620 ; Training nll_loss= tensor(12.1743, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.110 ; Step=682 ; Training nll_loss= tensor(12.8143, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='o'clock.r.01' . Skipping sense
-INFO : Logging point n.120 ; Step=744 ; Training nll_loss= tensor(16.1835, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.130 ; Step=806 ; Training nll_loss= tensor(12.8592, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.140 ; Step=868 ; Training nll_loss= tensor(15.5260, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.150 ; Step=930 ; Training nll_loss= tensor(15.7644, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.160 ; Step=992 ; Training nll_loss= tensor(13.7841, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='o'clock.r.01' . Skipping sense
-INFO : Logging point n.170 ; Step=1054 ; Training nll_loss= tensor(8.8674, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.180 ; Step=1116 ; Training nll_loss= tensor(12.1274, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='sow_one's_oats.v.01' . Skipping sense
-INFO : Logging point n.190 ; Step=1178 ; Training nll_loss= tensor(15.0598, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.200 ; Step=1240 ; Training nll_loss= tensor(11.8432, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.210 ; Step=1302 ; Training nll_loss= tensor(15.6370, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='bull's_eye.n.02' . Skipping sense
-INFO : Logging point n.220 ; Step=1364 ; Training nll_loss= tensor(15.4527, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.230 ; Step=1426 ; Training nll_loss= tensor(16.3884, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.240 ; Step=1488 ; Training nll_loss= tensor(13.1301, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.250 ; Step=1550 ; Training nll_loss= tensor(13.3796, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.260 ; Step=1612 ; Training nll_loss= tensor(11.5833, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.270 ; Step=1674 ; Training nll_loss= tensor(11.1768, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.280 ; Step=1736 ; Training nll_loss= tensor(14.1751, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.290 ; Step=1798 ; Training nll_loss= tensor(14.9072, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.300 ; Step=1860 ; Training nll_loss= tensor(13.7860, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.310 ; Step=1922 ; Training nll_loss= tensor(14.4159, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.320 ; Step=1984 ; Training nll_loss= tensor(15.5587, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.330 ; Step=2046 ; Training nll_loss= tensor(13.6580, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Logging point n.340 ; Step=2108 ; Training nll_loss= tensor(16.0938, device='cuda:0', grad_fn=<AddBackward0>)
-INFO : Invoking
-INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Validation/semcor.xml
-INFO : Validation loss=14.43181
+INFO : t1 - t0 = 1e-05
+INFO : t2 - t1 = 1.83114
+INFO : t3 - t2 = 0.01082
+INFO : t4 - t3 = 0.00142
+
+INFO : t1 - t0 = 7e-05
+INFO : t2 - t1 = 0.59842
+INFO : t3 - t2 = 0.01009
+INFO : t4 - t3 = 0.00083
+
+INFO : t1 - t0 = 6e-05
+INFO : t2 - t1 = 0.88717
+INFO : t3 - t2 = 0.00796
+INFO : t4 - t3 = 0.00082
+
+INFO : t1 - t0 = 6e-05
+INFO : t2 - t1 = 0.66457
+INFO : t3 - t2 = 0.00773
+INFO : t4 - t3 = 0.0008
+INFO : t1 - t0 = 5e-05
+INFO : t2 - t1 = 0.60917
+INFO : t3 - t2 = 0.00774
+INFO : t4 - t3 = 0.00083
+
+INFO : t1 - t0 = 5e-05
+INFO : t2 - t1 = 0.64166
+INFO : t3 - t2 = 0.00824
+INFO : t4 - t3 = 0.00083
+INFO : t1 - t0 = 6e-05
+INFO : t2 - t1 = 0.79469
+INFO : t3 - t2 = 0.00792
+INFO : t4 - t3 = 0.00107
+INFO : t1 - t0 = 7e-05
+INFO : t2 - t1 = 0.48291
+INFO : t3 - t2 = 0.00845
+INFO : t4 - t3 = 0.00083
+INFO : t1 - t0 = 7e-05
+INFO : t2 - t1 = 0.75267
+INFO : t3 - t2 = 0.00846
+INFO : t4 - t3 = 0.00082
+INFO : t1 - t0 = 6e-05
+INFO : t2 - t1 = 0.71748
+INFO : t3 - t2 = 0.00772
+INFO : t4 - t3 = 0.00082
+INFO : t1 - t0 = 5e-05
+INFO : t2 - t1 = 0.56678
+INFO : t3 - t2 = 0.00781
+INFO : t4 - t3 = 0.00173
+INFO : t1 - t0 = 0.0001
+INFO : t2 - t1 = 0.66021
+INFO : t3 - t2 = 0.00845
+INFO : t4 - t3 = 0.001
+INFO : t1 - t0 = 6e-05
+INFO : t2 - t1 = 0.61811
+INFO : t3 - t2 = 0.00822
+INFO : t4 - t3 = 0.0008
+INFO : t1 - t0 = 5e-05
+INFO : t2 - t1 = 0.77525
+INFO : t3 - t2 = 0.00776
+INFO : t4 - t3 = 0.0009
+INFO : t1 - t0 = 0.00017
+INFO : t2 - t1 = 0.82353
+INFO : t3 - t2 = 0.00802
+INFO : t4 - t3 = 0.00084
+INFO : t1 - t0 = 6e-05
+INFO : t2 - t1 = 0.85429
+INFO : t3 - t2 = 0.00796
+INFO : t4 - t3 = 0.00093
+INFO : t1 - t0 = 6e-05
+INFO : t2 - t1 = 0.86504
+INFO : t3 - t2 = 0.00774
+INFO : t4 - t3 = 0.00109
+INFO : t1 - t0 = 7e-05
+INFO : t2 - t1 = 0.71888
+INFO : t3 - t2 = 0.00794
+INFO : t4 - t3 = 0.00084
+INFO : t1 - t0 = 7e-05
+INFO : t2 - t1 = 0.46374
+INFO : t3 - t2 = 0.00818
+INFO : t4 - t3 = 0.00103
+INFO : t1 - t0 = 7e-05
+INFO : t2 - t1 = 0.73113
+INFO : t3 - t2 = 0.0077
+INFO : t4 - t3 = 0.00085
+INFO : t1 - t0 = 6e-05
+INFO : t2 - t1 = 0.72748
+INFO : t3 - t2 = 0.008
+INFO : t4 - t3 = 0.0008
+INFO : t1 - t0 = 0.00017
+INFO : t2 - t1 = 0.55454
+INFO : t3 - t2 = 0.00799
+INFO : t4 - t3 = 0.00092
+INFO : t1 - t0 = 6e-05
+INFO : t2 - t1 = 0.56147
+INFO : t3 - t2 = 0.00779
+INFO : t4 - t3 = 0.00081
+INFO : t1 - t0 = 5e-05
+INFO : t2 - t1 = 0.50784
+INFO : t3 - t2 = 0.00822
+INFO : t4 - t3 = 0.00108
+INFO : t1 - t0 = 7e-05
+INFO : t2 - t1 = 0.71613
+INFO : t3 - t2 = 0.00846
+INFO : t4 - t3 = 0.00102
+INFO : t1 - t0 = 6e-05
+INFO : t2 - t1 = 0.77897
+INFO : t3 - t2 = 0.00799
+INFO : t4 - t3 = 0.00081
+INFO : t1 - t0 = 5e-05
+INFO : t2 - t1 = 0.85719
+INFO : t3 - t2 = 0.00826
+INFO : t4 - t3 = 0.00084
+INFO : t1 - t0 = 6e-05
+INFO : t2 - t1 = 0.88905
+INFO : t3 - t2 = 0.00823
+INFO : t4 - t3 = 0.00118

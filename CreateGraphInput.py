@@ -53,7 +53,7 @@ def reset_embeddings():
 
 
 def exe(do_reset=False, compute_single_prototype=False, vocabulary_from_senselabeled=False):
-    Utils.init_logging('CreateGraphInput.log')
+
     if do_reset:
         reset()
 

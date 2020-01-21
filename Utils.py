@@ -79,14 +79,19 @@ def display_ygraph_fromfile(npy_fpath):
     plt.ylim((0, max(data_y_array)))
 
 
+# For now, intended to be use with training_losses and validation_losses
 def display_xygraph_from_files(npy_fpaths_ls):
     overall_max = 0
-    for npy_fpath in npy_fpaths_ls:
+    legend_labels = ['Training loss', 'Validation loss']
+    for i in range(len(npy_fpaths_ls)):
+        npy_fpath = npy_fpaths_ls[i]
         xy_lts_array = np.load(npy_fpath, allow_pickle=True)
-        plt.plot(xy_lts_array.transpose()[0], xy_lts_array.transpose()[1])
+        plt.plot(xy_lts_array.transpose()[0], xy_lts_array.transpose()[1], label = legend_labels[i])
         array_max = max(xy_lts_array.transpose()[1])
         overall_max = array_max if array_max > overall_max else overall_max
     plt.ylim((0, overall_max))
+    ax = plt.axes()
+    ax.legend()
 
 
 #####

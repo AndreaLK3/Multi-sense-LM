@@ -5,7 +5,7 @@ FOLDER_WORD_EMBEDDINGS = 'WordEmbeddings'
 FOLDER_VOCABULARY = 'Vocabulary'
 FOLDER_TEXT_CORPUSES = 'TextCorpuses'
 FOLDER_UFSAC = 'ufsac-public-2.1'
-FOLDER_GRAPHNN = 'GraphNN'
+FOLDER_GRAPHNN = 'GNN'
 
 BN_WORD_INTROS = 'BabelNet_word_intros'
 BN_SYNSET_DATA = 'BabelNet_synset_data'

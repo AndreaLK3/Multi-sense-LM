@@ -3,7 +3,7 @@ import Utils
 import Filesystem as F
 import os
 import pandas as pd
-import GraphNN.SenseLabeledCorpus as SLC
+import GNN.SenseLabeledCorpus as SLC
 import logging
 import Vocabulary.Vocabulary_Utilities as VocabUtils
 
