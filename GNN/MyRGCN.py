@@ -12,7 +12,9 @@ import pandas as pd
 from math import inf
 import GNN.NumericalIndices as IN
 import Graph.GraphArea as GraphArea
+import Graph.StoreAdjacencies as SA
 import numpy as np
+from time import time
 
 DEVICE = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
@@ -85,27 +87,27 @@ def compute_batch_losses(input_indices_lts, batch_rgcn_input_ls, model):
 # Given the tuple of numerical indices for an element, e.g. (13,5), retrieve a list
 # of either 1 or 2 tuples that are input to the forward function, i.e. (x, edge_index, edge_type)
 # Here Is decide what is the starting token for a prediction. For now, it is "sense if present, else global"
-def get_forwardinput_forelement(global_idx, sense_idx, node_area_size, graph):
+def get_forwardinput_forelement(global_idx, sense_idx, grapharea_matrix, area_size):
     forward_input_ls = []
     logging.debug("get_forwardinput_forelement: " + str(global_idx) + ' ; ' + str(sense_idx))
     if (sense_idx == -1):
-        x, edge_index, edge_type = GraphArea.get_graph_area(global_idx, node_area_size, graph)
+        x, edge_index, edge_type = SA.get_node_data(grapharea_matrix, global_idx, area_size)
+        # old version: x, edge_index, edge_type = GraphArea.get_graph_area(global_idx, node_area_size, graph)
         forward_input_ls.append((x, edge_index, edge_type))
     else:
-        x, edge_index, edge_type = GraphArea.get_graph_area(sense_idx, node_area_size, graph)
+        x, edge_index, edge_type = SA.get_node_data(grapharea_matrix, sense_idx, area_size)
         forward_input_ls.append((x, edge_index, edge_type))
     return forward_input_ls
 
 
-def compute_validation_loss(model, valid_generator, senseindices_db_c, vocab_h5, grapharea_size, data):
+def compute_validation_loss(model, valid_generator, senseindices_db_c, vocab_h5, grapharea_matrix, grapharea_size):
     model.eval()
     validation_losses_ls = []
     validation_batch_size = 64 # by default, losses are averaged in a batch. I introduce batches to be faster
     try:
         while(True):
             with torch.no_grad():
-                batch_valid_loss = select_and_process_batch(validation_batch_size, grapharea_size,
-                                                            valid_generator, senseindices_db_c, vocab_h5, model, data)
+                batch_valid_loss =  select_and_process_batch(validation_batch_size, grapharea_matrix, valid_generator, senseindices_db_c, vocab_h5, model, grapharea_size)
                 validation_losses_ls.append(batch_valid_loss.item())
     except StopIteration:
         pass # iterating over the validation split finished
@@ -116,7 +118,7 @@ def compute_validation_loss(model, valid_generator, senseindices_db_c, vocab_h5,
     return valid_loss
 
 
-def select_and_process_batch(batch_size, grapharea_size, elements_generator, senseindices_db_c, vocab_h5, model, data):
+def select_and_process_batch(batch_size, grapharea_matrix, elements_generator, senseindices_db_c, vocab_h5, model, area_size):
     next_token_tpl = None
     # collecting the numerical indices of the batch's elements
     input_indices_lts = []
@@ -137,7 +139,7 @@ def select_and_process_batch(batch_size, grapharea_size, elements_generator, sen
     for i in range(len(input_indices_lts) - 1):
         (global_idx, sense_idx) = input_indices_lts[i]
         batch_rgcn_input_ls.extend(
-            get_forwardinput_forelement(global_idx, sense_idx, grapharea_size, data))
+            get_forwardinput_forelement(global_idx, sense_idx, grapharea_matrix, area_size) )
 
     # computing the loss for the batch
     loss = compute_batch_losses(input_indices_lts, batch_rgcn_input_ls, model)
@@ -147,17 +149,19 @@ def select_and_process_batch(batch_size, grapharea_size, elements_generator, sen
 
 
 
-def train(grapharea_size=64, batch_size=8, num_epochs=5):
+def train(grapharea_size=32, batch_size=8, num_epochs=5):
     Utils.init_logging('MyRGCN.log')
-    data = DG.get_graph_dataobject(new=False)
-    model = NetRGCN(data)
+    graph_dataobj = DG.get_graph_dataobject(new=False)
+    model = NetRGCN(graph_dataobj)
     logging.info("Graph-data object loaded, model initialized. Moving them to GPU device(s) if present.")
-    data.to(DEVICE), model.to(DEVICE)
+    graph_dataobj.to(DEVICE), model.to(DEVICE)
 
     n_gpu = torch.cuda.device_count()
     # if n_gpu > 1:
     #     model = torch.nn.DataParallel(model)
     #     model = model.module
+
+    grapharea_matrix = torch.Tensor(SA.get_grapharea_matrix(graph_dataobj, grapharea_size)).to(torch.int64).to(DEVICE)
 
     senseindices_db_filepath = os.path.join(F.FOLDER_INPUT, Utils.INDICES_TABLE_DB)
     senseindices_db = sqlite3.connect(senseindices_db_filepath)
@@ -189,8 +193,9 @@ def train(grapharea_size=64, batch_size=8, num_epochs=5):
             while(not(flag_earlystop)):
                 # starting operating on one batch
                 optimizer.zero_grad()
+                t0 = time()
 
-                loss = select_and_process_batch(batch_size, grapharea_size, train_generator, senseindices_db_c, vocab_h5, model, data)
+                loss = select_and_process_batch(batch_size, grapharea_matrix, train_generator, senseindices_db_c, vocab_h5, model, grapharea_size)
                 loss.backward()
                 optimizer.step()
 
@@ -202,15 +207,17 @@ def train(grapharea_size=64, batch_size=8, num_epochs=5):
                     losses_lts.append((logging_point,loss.item()))
                     valid_generator = SLC.read_split('validation')
                     epoch_valid_loss = compute_validation_loss(model, valid_generator, senseindices_db_c, vocab_h5,
-                                                               grapharea_size, data)
+                                                               grapharea_size, graph_dataobj)
                     validation_logging_point = global_step // steps_logging
                     validation_losses_lts.append((validation_logging_point, epoch_valid_loss.item()))
                     if epoch_valid_loss > previous_valid_loss + 0.01:  # (epsilon)
                         flag_earlystop = True
+                t1 = time()
+                Utils.log_chronometer([t0,t1])
 
         except StopIteration:
             if flag_earlystop:
-                torch.save(data, os.path.join(F.FOLDER_GRAPHNN, hyperparams_str +
+                torch.save(graph_dataobj, os.path.join(F.FOLDER_GRAPHNN, hyperparams_str +
                                               'step_' + str(global_step) + '_graph.dataobject'))
                 torch.save(model,os.path.join(F.FOLDER_GRAPHNN, hyperparams_str +
                                               'step_' + str(global_step) + '.rgcnmodel'))

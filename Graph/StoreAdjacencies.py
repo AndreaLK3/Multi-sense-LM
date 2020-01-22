@@ -8,14 +8,32 @@ import Utils
 import os
 from time import time
 
-def create_adjacencies_matrix(area_size):
-    Utils.init_logging('temp.log')
+
+### Auxiliary getter function, to extract node area data from a row in the matrix
+def get_node_data(grapharea_matrix, i, grapharea_size, edges_added_per_node=64):
+    k = grapharea_size
+    m = k * edges_added_per_node
+
+    x_ls = list(filter( lambda num: num!=-1, grapharea_matrix[i][0:k]))
+    edgeindex_sources_ls = list(filter( lambda num: num!=-1, grapharea_matrix[i][k:k + m] ))
+    edgeindex_targets_ls = list(filter( lambda num: num!=-1, grapharea_matrix[i][k + m:k + 2*m ] ))
+    edgetype_ls = list(filter( lambda num: num!=-1, grapharea_matrix[i][k + 2 * m: k + 3 * m ] ))
+
+    x = torch.Tensor(x_ls)# .to(torch.int64)
+    edgeindex = torch.Tensor([edgeindex_sources_ls, edgeindex_targets_ls])# .to(torch.int64)
+    edgetype = torch.Tensor(edgetype_ls) # .to(torch.int64)
+
+    return x, edgeindex, edgetype
+
+
+
+### Creation function
+def create_adjacencies_matrix(graph_dataobj, area_size, edges_added_per_node=64):
+
     out_fpath = os.path.join(F.FOLDER_GRAPH, 'nodes_' + str(area_size) + '_' + F.GRAPHAREA_FILE)
     out_file = open(out_fpath, 'wb')
 
-    graph_dataobj = DG.get_graph_dataobject()
     logging.info(graph_dataobj)
-    edges_added_per_node = 128
     tot_nodes = graph_dataobj.x.shape[0]
 
     k = area_size
@@ -53,15 +71,17 @@ def create_adjacencies_matrix(area_size):
     return nodes_arraytable
 
 
-def get_grapharea_matrix(area_size):
+### Entry point function
+def get_grapharea_matrix(graphdata_obj, area_size):
     candidate_fnames = [fname for fname in os.listdir(F.FOLDER_GRAPH)
                         if ((F.GRAPHAREA_FILE in fname) and ('nodes_' + str(area_size) + '_' in fname))]
     if len(candidate_fnames) == 0:
-        grapharea_matrix = create_adjacencies_matrix(area_size)
+        logging.info("Pre-computing and saving graphArea matrix, with area_size=" + str(area_size))
+        grapharea_matrix = create_adjacencies_matrix(graphdata_obj, area_size)
     else:
         fpath = os.path.join(F.FOLDER_GRAPH, candidate_fnames[0]) # we expect to find only one
-        logging.info("Loading graphArea matrix, with area_size=" + area_size + " from: " + str(fpath))
-        grapharea_matrix = np.load(fpath)
+        logging.info("Loading graphArea matrix, with area_size=" + str(area_size) + " from: " + str(fpath))
+        grapharea_matrix = np.load(fpath, allow_pickle=True)
     return grapharea_matrix
 
 
