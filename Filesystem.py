@@ -43,4 +43,4 @@ KBGRAPH_FILE = 'kbGraph.dataobject'
 LOSSES_FILEEND = 'losses.npy'
 PERPLEXITY_FILEEND = 'perplexity.npy'
 
-GRAPHAREA_FILE = 'graphArea_matrix.npy'
+GRAPHAREA_FILE = 'graphArea_matrix.torchobj'

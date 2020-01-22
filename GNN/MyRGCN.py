@@ -10,11 +10,10 @@ import sqlite3
 import os
 import pandas as pd
 from math import inf
-import GNN.NumericalIndices as IN
-import Graph.GraphArea as GraphArea
 import Graph.StoreAdjacencies as SA
 import numpy as np
 from time import time
+import GNN.BatchProcessing as BP
 
 DEVICE = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
@@ -45,59 +44,10 @@ class NetRGCN(torch.nn.Module):
 
 
 # Used to compute the loss, among the elements in a batch, for the 2 categories: globals and senses
-def compute_batch_losses(input_indices_lts, batch_rgcn_input_ls, model):
-    # predictions and labels. The sense prediction is included only if the sense label is valid.
-    batch_predicted_globals_ls = []
-    batch_predicted_senses_ls = []
-    batch_labels_globals_ls = []
-    batch_labels_senses_ls = []
-
-    for i in range(len(input_indices_lts) - 1):
-        (x, edge_index, edge_type) = batch_rgcn_input_ls[i]
-        predicted_globals, predicted_senses = model(x, edge_index, edge_type)
-
-        (y_global_idx, y_sense_idx) = input_indices_lts[i + 1]
-        (y_global, y_sense) = (
-            torch.Tensor([y_global_idx]).type(torch.int64).to(DEVICE),
-            torch.Tensor([y_sense_idx]).type(torch.int64).to(DEVICE))
-        logging.debug("compute_batch_losses > (y_global, y_sense)=" + str((y_global, y_sense)))
-
-        batch_predicted_globals_ls.extend([predicted_globals])
-        batch_labels_globals_ls.extend([y_global])
-        if not (y_sense == -1):
-            batch_predicted_senses_ls.append(predicted_senses)
-            batch_labels_senses_ls.append(y_sense)
-
-    batch_predicted_globals = torch.cat([torch.unsqueeze(t, dim=0) for t in batch_predicted_globals_ls], dim=0)
-    batch_labels_globals = torch.cat(batch_labels_globals_ls, dim=0)
-
-    # compute the loss (batch mode)
-    loss_global = tF.nll_loss(batch_predicted_globals, batch_labels_globals)
-    if len(batch_labels_senses_ls) > 0:
-        batch_predicted_senses = torch.cat([torch.unsqueeze(t, dim=0) for t in batch_predicted_senses_ls],
-                                           dim=0)
-        batch_labels_senses = torch.cat(batch_labels_senses_ls, dim=0)
-        loss_sense = tF.nll_loss(batch_predicted_senses, batch_labels_senses)
-    else:
-        loss_sense = 0
-    loss = loss_global + loss_sense
-
-    return loss
 
 # Given the tuple of numerical indices for an element, e.g. (13,5), retrieve a list
 # of either 1 or 2 tuples that are input to the forward function, i.e. (x, edge_index, edge_type)
 # Here Is decide what is the starting token for a prediction. For now, it is "sense if present, else global"
-def get_forwardinput_forelement(global_idx, sense_idx, grapharea_matrix, area_size):
-    forward_input_ls = []
-    logging.debug("get_forwardinput_forelement: " + str(global_idx) + ' ; ' + str(sense_idx))
-    if (sense_idx == -1):
-        x, edge_index, edge_type = SA.get_node_data(grapharea_matrix, global_idx, area_size)
-        # old version: x, edge_index, edge_type = GraphArea.get_graph_area(global_idx, node_area_size, graph)
-        forward_input_ls.append((x, edge_index, edge_type))
-    else:
-        x, edge_index, edge_type = SA.get_node_data(grapharea_matrix, sense_idx, area_size)
-        forward_input_ls.append((x, edge_index, edge_type))
-    return forward_input_ls
 
 
 def compute_validation_loss(model, valid_generator, senseindices_db_c, vocab_h5, grapharea_matrix, grapharea_size):
@@ -107,7 +57,9 @@ def compute_validation_loss(model, valid_generator, senseindices_db_c, vocab_h5,
     try:
         while(True):
             with torch.no_grad():
-                batch_valid_loss =  select_and_process_batch(validation_batch_size, grapharea_matrix, valid_generator, senseindices_db_c, vocab_h5, model, grapharea_size)
+                input_indices_lts = BP.select_batch_indices(validation_batch_size, valid_generator,senseindices_db_c, vocab_h5, model)
+                batch_grapharea_input = BP.get_batch_grapharea_input(input_indices_lts, grapharea_matrix, grapharea_size)
+                batch_valid_loss = BP.compute_batch_losses(input_indices_lts, batch_grapharea_input, model)
                 validation_losses_ls.append(batch_valid_loss.item())
     except StopIteration:
         pass # iterating over the validation split finished
@@ -116,37 +68,6 @@ def compute_validation_loss(model, valid_generator, senseindices_db_c, vocab_h5,
     logging.info("Validation loss=" + str(round(valid_loss, 5)))
     model.train()
     return valid_loss
-
-
-def select_and_process_batch(batch_size, grapharea_matrix, elements_generator, senseindices_db_c, vocab_h5, model, area_size):
-    next_token_tpl = None
-    # collecting the numerical indices of the batch's elements
-    input_indices_lts = []
-
-    while (len(input_indices_lts) <= batch_size):
-        try:
-            current_token_tpl, next_token_tpl = IN.get_tokens_tpls(next_token_tpl, elements_generator,
-                                                                   senseindices_db_c, vocab_h5,
-                                                                   model.last_idx_senses)
-            input_indices_lts.append(current_token_tpl)
-        except Utils.MustSkipUNK_Exception:
-            logging.debug("Encountered <UNK> token. Node not connected to any other in the graph, skipping")
-            continue
-    logging.debug('input_indices_lts=' + str(input_indices_lts))
-
-    # gathering the graph-input for the RGCN layer
-    batch_rgcn_input_ls = []
-    for i in range(len(input_indices_lts) - 1):
-        (global_idx, sense_idx) = input_indices_lts[i]
-        batch_rgcn_input_ls.extend(
-            get_forwardinput_forelement(global_idx, sense_idx, grapharea_matrix, area_size) )
-
-    # computing the loss for the batch
-    loss = compute_batch_losses(input_indices_lts, batch_rgcn_input_ls, model)
-    logging.info('***')
-
-    return loss
-
 
 
 def train(grapharea_size=32, batch_size=8, num_epochs=5):
@@ -195,7 +116,11 @@ def train(grapharea_size=32, batch_size=8, num_epochs=5):
                 optimizer.zero_grad()
                 t0 = time()
 
-                loss = select_and_process_batch(batch_size, grapharea_matrix, train_generator, senseindices_db_c, vocab_h5, model, grapharea_size)
+                input_indices_lts = BP.select_batch_indices(batch_size, train_generator, senseindices_db_c,
+                                                            vocab_h5, model)
+                batch_grapharea_input = BP.get_batch_grapharea_input(input_indices_lts, grapharea_matrix,
+                                                                     grapharea_size)
+                loss = BP.compute_batch_losses(input_indices_lts, batch_grapharea_input, model)
                 loss.backward()
                 optimizer.step()
 
