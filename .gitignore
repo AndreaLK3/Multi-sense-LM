@@ -3,6 +3,7 @@
 *.vec
 *.db
 *.dataobject
+*.npy
 WikiText-103/
 runs/
 GraphNN/pyGAT

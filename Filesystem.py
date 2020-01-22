@@ -5,6 +5,7 @@ FOLDER_WORD_EMBEDDINGS = 'WordEmbeddings'
 FOLDER_VOCABULARY = 'Vocabulary'
 FOLDER_TEXT_CORPUSES = 'TextCorpuses'
 FOLDER_UFSAC = 'ufsac-public-2.1'
+FOLDER_GRAPH = "Graph"
 FOLDER_GRAPHNN = 'GNN'
 
 BN_WORD_INTROS = 'BabelNet_word_intros'
@@ -42,4 +43,4 @@ KBGRAPH_FILE = 'kbGraph.dataobject'
 LOSSES_FILEEND = 'losses.npy'
 PERPLEXITY_FILEEND = 'perplexity.npy'
 
-ENCODER_MODEL = "Encoder_768to300_nn.model" # not used in the current version
+GRAPHAREA_FILE = 'graphArea_matrix.npy'
