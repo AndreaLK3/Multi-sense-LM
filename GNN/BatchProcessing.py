@@ -27,32 +27,34 @@ def select_batch_indices(batch_size, elements_generator,senseindices_db_c, vocab
     return input_indices_lts
 
 
-### Batch step n.2: given the numerical indices of the words,
-### invoke the function that gathers the graph-input for each node.
-### Graph-input= neigbouring nodes in x, their edges in edge_index, edge_type
-def get_batch_grapharea_input(input_indices_lts, grapharea_matrix, area_size):
+### Batch step n.2:
+### Given the tuple of numerical indices for an element, e.g. (13,5), retrieve a list
+### of either 1 or 2 tuples that are input to the forward function, i.e. (x, edge_index, edge_type)
+### Here Is decide what is the starting token for a prediction. For now, it is "sense if present, else global"
+def get_batch_grapharea_input(input_indices_lts, grapharea_matrix, area_size, graph_dataobj):
     # gathering the graph-input for the RGCN layer
     batch_rgcn_input_ls = []
     for i in range(len(input_indices_lts) - 1):
         (global_idx, sense_idx) = input_indices_lts[i]
 
         batch_rgcn_input_ls.extend(
-            get_forwardinput_forelement(global_idx, sense_idx, grapharea_matrix, area_size))
+            get_forwardinput_forelement(global_idx, sense_idx, grapharea_matrix, area_size, graph_dataobj))
     return batch_rgcn_input_ls
 
 ### Auxiliary function, to get the graph-input (x, edge_index, edge_type)
 def get_forwardinput_forelement(global_idx, sense_idx, grapharea_matrix, area_size, graph_dataobj):
     forward_input_ls = []
-    logging.info("get_forwardinput_forelement: " + str(global_idx) + ' ; ' + str(sense_idx))
+    logging.debug("get_forwardinput_forelement: " + str(global_idx) + ' ; ' + str(sense_idx))
     if (sense_idx == -1):
-        nodes_ls, edge_index, edge_type = SA.get_node_data(grapharea_matrix, global_idx, area_size)
-        area_x = graph_dataobj.x.index_select(0, nodes_ls)
-        # old version: x, edge_index, edge_type = GraphArea.get_graph_area(global_idx, node_area_size, graph)
-        forward_input_ls.append((area_x, edge_index, edge_type))
+        sourcenode_idx = global_idx
     else:
-        nodes_ls, edge_index, edge_type = SA.get_node_data(grapharea_matrix, sense_idx, area_size)
-        area_x = graph_dataobj.x.index_select(0, nodes_ls)
-        forward_input_ls.append((area_x, edge_index, edge_type))
+        sourcenode_idx = sense_idx
+    nodes_ls, edge_index, edge_type = SA.get_node_data(grapharea_matrix, sourcenode_idx, area_size)
+    node_indices = torch.Tensor(sorted(nodes_ls)).to(torch.int64).to(DEVICE)
+    area_x = graph_dataobj.x.index_select(0, node_indices)
+    # old version: x, edge_index, edge_type = GraphArea.get_graph_area(global_idx, node_area_size, graph)
+    forward_input_ls.append((area_x, edge_index, edge_type))
+
     return forward_input_ls
 
 

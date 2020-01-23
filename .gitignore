@@ -4,6 +4,7 @@
 *.db
 *.dataobject
 *.npy
+*.torchobj
 WikiText-103/
 runs/
 GraphNN/pyGAT

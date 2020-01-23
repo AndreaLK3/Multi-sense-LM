@@ -21,7 +21,7 @@ SOURCE_OMEGAWIKI = 'OmegaWiki'
 SOURCE_DBPEDIA = "DBpedia"
 
 HDF5_BASE_SIZE_512 = 512
-DEVICE = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+DEVICE = torch.device('cuda' if torch.cuda.is_available() else 'cpu') # torch.device('cpu')#
 
 # Lexicon
 

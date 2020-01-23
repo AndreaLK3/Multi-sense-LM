@@ -10,7 +10,7 @@ import sqlite3
 import os
 import pandas as pd
 from math import inf
-import Graph.Adjacencies as SA
+import Graph.Adjacencies as AD
 import numpy as np
 from time import time
 import GNN.BatchProcessing as BP
@@ -35,10 +35,10 @@ class NetRGCN(torch.nn.Module):
 
 
     def forward(self, batch_x, batch_edge_index, batch_edge_type):  # given the batches, the current node is at index 0
-        logging.info("NetRGCN > forward")
-        logging.info("batch_x = " + str(batch_x))
-        logging.info("batch_edge_index = " + str(batch_edge_index))
-        logging.info("batch_edge_type = " + str(batch_edge_type))
+        logging.debug("NetRGCN > forward")
+        logging.debug("batch_x = " + str(batch_x))
+        logging.debug("batch_edge_index = " + str(batch_edge_index))
+        logging.debug("batch_edge_type = " + str(batch_edge_type))
         x_Lplus1 = tF.relu(self.conv1(batch_x, batch_edge_index, batch_edge_type))
         x1_current_node = x_Lplus1[0]  # current_node_index
         logits_global = self.linear2global(x1_current_node)  # shape=torch.Size([5])
@@ -47,14 +47,9 @@ class NetRGCN(torch.nn.Module):
         return (tF.log_softmax(logits_global, dim=0), tF.log_softmax(logits_sense, dim=0))
 
 
-# Used to compute the loss, among the elements in a batch, for the 2 categories: globals and senses
-
-# Given the tuple of numerical indices for an element, e.g. (13,5), retrieve a list
-# of either 1 or 2 tuples that are input to the forward function, i.e. (x, edge_index, edge_type)
-# Here Is decide what is the starting token for a prediction. For now, it is "sense if present, else global"
 
 
-def compute_validation_loss(model, valid_generator, senseindices_db_c, vocab_h5, grapharea_matrix, grapharea_size):
+def compute_validation_loss(model, valid_generator, senseindices_db_c, vocab_h5, grapharea_matrix, grapharea_size, graph):
     model.eval()
     validation_losses_ls = []
     validation_batch_size = 64 # by default, losses are averaged in a batch. I introduce batches to be faster
@@ -62,7 +57,7 @@ def compute_validation_loss(model, valid_generator, senseindices_db_c, vocab_h5,
         while(True):
             with torch.no_grad():
                 input_indices_lts = BP.select_batch_indices(validation_batch_size, valid_generator,senseindices_db_c, vocab_h5, model)
-                batch_grapharea_input = BP.get_batch_grapharea_input(input_indices_lts, grapharea_matrix, grapharea_size)
+                batch_grapharea_input = BP.get_batch_grapharea_input(input_indices_lts, grapharea_matrix, grapharea_size, graph)
                 batch_valid_loss = BP.compute_batch_losses(input_indices_lts, batch_grapharea_input, model)
                 validation_losses_ls.append(batch_valid_loss.item())
     except StopIteration:
@@ -74,7 +69,7 @@ def compute_validation_loss(model, valid_generator, senseindices_db_c, vocab_h5,
     return valid_loss
 
 
-def train(grapharea_size=32, batch_size=1, num_epochs=5):
+def train(grapharea_size=32, batch_size=8, num_epochs=5):
     Utils.init_logging('MyRGCN.log')
     graph_dataobj = DG.get_graph_dataobject(new=False)
     logging.info(graph_dataobj)
@@ -89,7 +84,7 @@ def train(grapharea_size=32, batch_size=1, num_epochs=5):
     #     model = torch.nn.DataParallel(model)
     #     model = model.module
 
-    grapharea_matrix = SA.get_grapharea_matrix(graph_dataobj, grapharea_size)
+    grapharea_matrix = AD.get_grapharea_matrix(graph_dataobj, grapharea_size)
 
     senseindices_db_filepath = os.path.join(F.FOLDER_INPUT, Utils.INDICES_TABLE_DB)
     senseindices_db = sqlite3.connect(senseindices_db_filepath)
@@ -126,7 +121,7 @@ def train(grapharea_size=32, batch_size=1, num_epochs=5):
                 input_indices_lts = BP.select_batch_indices(batch_size, train_generator, senseindices_db_c,
                                                             vocab_h5, model)
                 batch_grapharea_input = BP.get_batch_grapharea_input(input_indices_lts, grapharea_matrix,
-                                                                     grapharea_size)
+                                                                     grapharea_size, graph_dataobj)
 
                 loss = BP.compute_batch_losses(input_indices_lts, batch_grapharea_input, model)
                 loss.backward()
@@ -140,7 +135,7 @@ def train(grapharea_size=32, batch_size=1, num_epochs=5):
                     losses_lts.append((logging_point,loss.item()))
                     valid_generator = SLC.read_split('validation')
                     epoch_valid_loss = compute_validation_loss(model, valid_generator, senseindices_db_c, vocab_h5,
-                                                               grapharea_size, graph_dataobj)
+                                                               grapharea_matrix, grapharea_size, graph_dataobj)
                     validation_logging_point = global_step // steps_logging
                     validation_losses_lts.append((validation_logging_point, epoch_valid_loss.item()))
                     if epoch_valid_loss > previous_valid_loss + 0.01:  # (epsilon)
