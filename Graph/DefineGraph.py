@@ -112,6 +112,20 @@ def get_edges_sensechildren(globals_voc_df, globals_start_index_toadd):
     return edges_ls
 
 
+def get_edges_selfloops(sc_edges, num_globals):
+    globals_sources = sorted(list(map(lambda edge_tpl : edge_tpl[0], sc_edges)))
+    senses_targets = list(map(lambda edge_tpl : edge_tpl[1], sc_edges))
+    max_sense = max(senses_targets)
+
+    all_globals_indices = list(range(max_sense+1,max_sense+num_globals+1))
+
+    globals_needing_selfloop = [g_idx for g_idx in all_globals_indices if g_idx not in globals_sources]
+
+    edges_selfloops = [(g_idx, g_idx) for g_idx in globals_needing_selfloop]
+
+    return edges_selfloops
+
+
 # Synonyms and antonyms: global -> global : [se,se+sp) -> [se,se+sp).
 # Bidirectional (which means 2 connections, (a,b) and (b,a)
 def get_edges_nyms(nyms_name, globals_voc_df, globals_start_index_toadd):
@@ -151,6 +165,9 @@ def get_edges_nyms(nyms_name, globals_voc_df, globals_start_index_toadd):
     return edges_ls
 
 
+
+
+
 def create_graph():
     Utils.init_logging('DefineGraph.log')
     X_definitions = load_senses_elements(Method.FASTTEXT, Utils.DEFINITIONS)
@@ -159,28 +176,34 @@ def create_graph():
     X_globals = torch.Tensor(np.load(os.path.join(F.FOLDER_INPUT, F.SPVs_FASTTEXT_FILE)))
 
     logging.info("Constructing X, matrix of node features")
-    logging.info("X_definitions.shape=" + str(X_definitions.shape)) # (25946, 300)
-    logging.info("X_examples.shape=" + str(X_examples.shape)) # (25841, 300)
-    logging.info("X_senses.shape=" + str(X_senses.shape)) # (25946, 300)
-    logging.info("X_globals.shape=" + str(X_globals.shape)) # (21349, 300)
+    logging.info("X_definitions.shape=" + str(X_definitions.shape)) # X_definitions.shape=torch.Size([19008, 300])
+    logging.info("X_examples.shape=" + str(X_examples.shape)) # X_examples.shape=torch.Size([20191, 300])
+    logging.info("X_senses.shape=" + str(X_senses.shape)) # X_senses.shape=torch.Size([19008, 300])
+    logging.info("X_globals.shape=" + str(X_globals.shape)) # X_globals.shape=torch.Size([13675, 300])
 
     # The order for the index of the nodes:
     # sense=[0,se) ; single prototype=[se,se+sp) ; definitions=[se+sp, se+sp+d) ; examples=[se+sp+d, e==num_nodes)
     X = torch.cat([X_senses, X_globals, X_definitions, X_examples])
+    # Currently, total number of nodes: 71882
 
     # edge_index (LongTensor, optional) – Graph connectivity in COO format with shape [2, num_edges].
     # We can operate with a list of S-D tuples, adding t().contiguous()
     logging.info("Defining the edges: def, exs")
     def_edges_se = get_edges_elements(Utils.DEFINITIONS, X_senses.shape[0] + X_globals.shape[0])
-    logging.info("def_edges_se.__len__()=" + str(def_edges_se.__len__()))
+    logging.info("def_edges_se.__len__()=" + str(def_edges_se.__len__())) # def_edges_se.__len__()=19008
     exs_edges_se = get_edges_elements(Utils.EXAMPLES, X_senses.shape[0] + X_globals.shape[0]+ X_definitions.shape[0])
-    logging.info("exs_edges_se.__len__()=" + str(exs_edges_se.__len__()))
+    logging.info("exs_edges_se.__len__()=" + str(exs_edges_se.__len__())) # exs_edges_se.__len__()=20191
+
 
     logging.info("Defining the edges: sc")
     globals_vocabulary_fpath = os.path.join(F.FOLDER_VOCABULARY, F.VOCABULARY_OF_GLOBALS_FILE )
     globals_vocabulary_df =  pd.read_hdf(globals_vocabulary_fpath, mode='r')
     sc_edges = get_edges_sensechildren(globals_vocabulary_df, X_senses.shape[0])
     logging.info("sc_edges.__len__()=" + str(sc_edges.__len__()))
+    # Note: we also add self-loops to all globals without a sense.
+    edges_selfloops = get_edges_selfloops(sc_edges, num_globals=X_globals.shape[0])
+    sc_edges.extend(edges_selfloops)
+    logging.info("sc_edges_with_selfloops.__len__()=" + str(sc_edges.__len__()))
 
     logging.info("Defining the edges: syn, ant")
     syn_edges = get_edges_nyms(Utils.SYNONYMS, globals_vocabulary_df, X_senses.shape[0])

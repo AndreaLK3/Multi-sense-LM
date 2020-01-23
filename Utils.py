@@ -7,8 +7,10 @@ import re
 import subprocess
 import numpy as np
 import matplotlib.pyplot as plt
+import torch
 
 ########## Constants ##########
+import torch
 
 BABELNET_KEY = '7ba5e9a1-1f42-4d9a-97a7-c888975a60a1' # 5000 queries per day until 31-12-2019, then 1000
 
@@ -19,6 +21,7 @@ SOURCE_OMEGAWIKI = 'OmegaWiki'
 SOURCE_DBPEDIA = "DBpedia"
 
 HDF5_BASE_SIZE_512 = 512
+DEVICE = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 # Lexicon
 

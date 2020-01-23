@@ -7,21 +7,21 @@ import logging
 import Utils
 import os
 from time import time
-
+from Utils import DEVICE
 
 ### Auxiliary getter function, to extract node area data from a row in the matrix
 def get_node_data(grapharea_matrix, i, grapharea_size, edges_added_per_node=64):
     k = grapharea_size
     m = k * edges_added_per_node
 
-    x_ls = list(filter( lambda num: num!=-1, grapharea_matrix[i][0:k]))
+    nodes_ls = list(filter( lambda num: num!=-1, grapharea_matrix[i][0:k]))
     edgeindex_sources_ls = list(filter( lambda num: num!=-1, grapharea_matrix[i][k:k + m] ))
     edgeindex_targets_ls = list(filter( lambda num: num!=-1, grapharea_matrix[i][k + m:k + 2*m ] ))
     edgetype_ls = list(filter( lambda num: num!=-1, grapharea_matrix[i][k + 2 * m: k + 3 * m ] ))
 
-    x = torch.Tensor(x_ls)# .to(torch.int64)
-    edgeindex = torch.Tensor([edgeindex_sources_ls, edgeindex_targets_ls])# .to(torch.int64)
-    edgetype = torch.Tensor(edgetype_ls) # .to(torch.int64)
+    x = torch.Tensor(nodes_ls).to(DEVICE)
+    edgeindex = torch.Tensor([edgeindex_sources_ls, edgeindex_targets_ls]).to(torch.int64).to(DEVICE)
+    edgetype = torch.Tensor(edgetype_ls).to(torch.int64).to(DEVICE)
 
     return x, edgeindex, edgetype
 
@@ -39,7 +39,7 @@ def create_adjacencies_matrix(graph_dataobj, area_size, edges_added_per_node=64)
     k = area_size
     m = k * edges_added_per_node
     tot_dim_row = area_size + 3 * m
-    nodes_arraytable = torch.ones(size=(tot_nodes, tot_dim_row), dtype=torch.int64) * -1
+    nodes_arraytable = torch.ones(size=(tot_nodes, tot_dim_row)) * -1
 
     # Given k = graph_area_size and m = max_edges, each row of the .npy array will have the following boundaries:
     # [0 : k) for the nodes.
@@ -49,22 +49,21 @@ def create_adjacencies_matrix(graph_dataobj, area_size, edges_added_per_node=64)
     for i in range(tot_nodes):
         node_index = i
         (adj_nodes_ls, adj_edge_index, adj_edge_type) = GA.get_grapharea_elements(node_index, area_size, graph_dataobj)
-        # padding the adjacent_nodes section to k, the graph_area_size
-        arr_adj_nodes = torch.Tensor(adj_nodes_ls)
+        logging.info("node_index=" + str(node_index))
         # extract sources and targets from the edge_index related to the node
         adj_edge_sources = adj_edge_index[0]
         adj_edge_targets = adj_edge_index[1]
 
         # convert to numpy arrays
-        arr_adj_edge_sources = adj_edge_sources.to(torch.int64)
-        arr_adj_edge_targets = adj_edge_targets.to(torch.int64)
-        arr_adj_edge_type = adj_edge_type.to(torch.int64)
+        t_adj_edge_sources = adj_edge_sources.to(torch.int64)
+        t_adj_edge_targets = adj_edge_targets.to(torch.int64)
+        t_adj_edge_type = adj_edge_type.to(torch.int64)
 
         # assign at the appropriate locations
-        nodes_arraytable[i][0:len(arr_adj_nodes)] = arr_adj_nodes
-        nodes_arraytable[i][k:k+len(arr_adj_edge_sources)] = arr_adj_edge_sources
-        nodes_arraytable[i][k+m:k+m+len(arr_adj_edge_targets)] = arr_adj_edge_targets
-        nodes_arraytable[i][k+2*m: k+2*m+len(arr_adj_edge_type)] = arr_adj_edge_type
+        nodes_arraytable[i][0:len(adj_nodes_ls)] = torch.Tensor(adj_nodes_ls)
+        nodes_arraytable[i][k:k+len(t_adj_edge_sources)] = t_adj_edge_sources
+        nodes_arraytable[i][k+m:k+m+len(t_adj_edge_targets)] = t_adj_edge_targets
+        nodes_arraytable[i][k+2*m: k+2*m+len(t_adj_edge_type)] = t_adj_edge_type
 
     torch.save(nodes_arraytable, out_fpath)
     # out_file.close() -- used with numpy

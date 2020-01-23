@@ -10,12 +10,12 @@ import sqlite3
 import os
 import pandas as pd
 from math import inf
-import Graph.StoreAdjacencies as SA
+import Graph.Adjacencies as SA
 import numpy as np
 from time import time
 import GNN.BatchProcessing as BP
+from Utils import DEVICE
 
-DEVICE = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 ### The Graph Neural Network. Currently, it has:
 ###     1 RGCN layer that operates on the selected area of the the graph
@@ -35,6 +35,10 @@ class NetRGCN(torch.nn.Module):
 
 
     def forward(self, batch_x, batch_edge_index, batch_edge_type):  # given the batches, the current node is at index 0
+        logging.info("NetRGCN > forward")
+        logging.info("batch_x = " + str(batch_x))
+        logging.info("batch_edge_index = " + str(batch_edge_index))
+        logging.info("batch_edge_type = " + str(batch_edge_type))
         x_Lplus1 = tF.relu(self.conv1(batch_x, batch_edge_index, batch_edge_type))
         x1_current_node = x_Lplus1[0]  # current_node_index
         logits_global = self.linear2global(x1_current_node)  # shape=torch.Size([5])
@@ -70,19 +74,22 @@ def compute_validation_loss(model, valid_generator, senseindices_db_c, vocab_h5,
     return valid_loss
 
 
-def train(grapharea_size=32, batch_size=8, num_epochs=5):
+def train(grapharea_size=32, batch_size=1, num_epochs=5):
     Utils.init_logging('MyRGCN.log')
     graph_dataobj = DG.get_graph_dataobject(new=False)
+    logging.info(graph_dataobj)
     model = NetRGCN(graph_dataobj)
     logging.info("Graph-data object loaded, model initialized. Moving them to GPU device(s) if present.")
-    graph_dataobj.to(DEVICE), model.to(DEVICE)
+    graph_dataobj.to(DEVICE)
+    model.to(DEVICE)
+
 
     n_gpu = torch.cuda.device_count()
     # if n_gpu > 1:
     #     model = torch.nn.DataParallel(model)
     #     model = model.module
 
-    grapharea_matrix = torch.Tensor(SA.get_grapharea_matrix(graph_dataobj, grapharea_size)).to(torch.int64).to(DEVICE)
+    grapharea_matrix = SA.get_grapharea_matrix(graph_dataobj, grapharea_size)
 
     senseindices_db_filepath = os.path.join(F.FOLDER_INPUT, Utils.INDICES_TABLE_DB)
     senseindices_db = sqlite3.connect(senseindices_db_filepath)
@@ -120,6 +127,7 @@ def train(grapharea_size=32, batch_size=8, num_epochs=5):
                                                             vocab_h5, model)
                 batch_grapharea_input = BP.get_batch_grapharea_input(input_indices_lts, grapharea_matrix,
                                                                      grapharea_size)
+
                 loss = BP.compute_batch_losses(input_indices_lts, batch_grapharea_input, model)
                 loss.backward()
                 optimizer.step()

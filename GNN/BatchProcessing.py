@@ -5,9 +5,8 @@ from torch.nn import functional as tF
 
 import Utils
 from GNN import NumericalIndices as IN
-from GNN.MyRGCN import DEVICE
-from Graph import StoreAdjacencies as SA
-
+from Graph import Adjacencies as SA
+from Utils import DEVICE
 
 ### Batch step n.1: Use the generator to get the the word tokens, and then convert them into numerical indices
 def select_batch_indices(batch_size, elements_generator,senseindices_db_c, vocab_h5, model):
@@ -36,21 +35,24 @@ def get_batch_grapharea_input(input_indices_lts, grapharea_matrix, area_size):
     batch_rgcn_input_ls = []
     for i in range(len(input_indices_lts) - 1):
         (global_idx, sense_idx) = input_indices_lts[i]
+
         batch_rgcn_input_ls.extend(
             get_forwardinput_forelement(global_idx, sense_idx, grapharea_matrix, area_size))
     return batch_rgcn_input_ls
 
 ### Auxiliary function, to get the graph-input (x, edge_index, edge_type)
-def get_forwardinput_forelement(global_idx, sense_idx, grapharea_matrix, area_size):
+def get_forwardinput_forelement(global_idx, sense_idx, grapharea_matrix, area_size, graph_dataobj):
     forward_input_ls = []
-    logging.debug("get_forwardinput_forelement: " + str(global_idx) + ' ; ' + str(sense_idx))
+    logging.info("get_forwardinput_forelement: " + str(global_idx) + ' ; ' + str(sense_idx))
     if (sense_idx == -1):
-        x, edge_index, edge_type = SA.get_node_data(grapharea_matrix, global_idx, area_size)
+        nodes_ls, edge_index, edge_type = SA.get_node_data(grapharea_matrix, global_idx, area_size)
+        area_x = graph_dataobj.x.index_select(0, nodes_ls)
         # old version: x, edge_index, edge_type = GraphArea.get_graph_area(global_idx, node_area_size, graph)
-        forward_input_ls.append((x, edge_index, edge_type))
+        forward_input_ls.append((area_x, edge_index, edge_type))
     else:
-        x, edge_index, edge_type = SA.get_node_data(grapharea_matrix, sense_idx, area_size)
-        forward_input_ls.append((x, edge_index, edge_type))
+        nodes_ls, edge_index, edge_type = SA.get_node_data(grapharea_matrix, sense_idx, area_size)
+        area_x = graph_dataobj.x.index_select(0, nodes_ls)
+        forward_input_ls.append((area_x, edge_index, edge_type))
     return forward_input_ls
 
 
@@ -64,6 +66,7 @@ def compute_batch_losses(input_indices_lts, batch_rgcn_input_ls, model):
 
     for i in range(len(input_indices_lts) - 1):
         (x, edge_index, edge_type) = batch_rgcn_input_ls[i]
+
         predicted_globals, predicted_senses = model(x, edge_index, edge_type)
 
         (y_global_idx, y_sense_idx) = input_indices_lts[i + 1]
