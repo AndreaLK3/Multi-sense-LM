@@ -80,9 +80,9 @@ def train(grapharea_size=32, batch_size=8, num_epochs=5):
 
 
     n_gpu = torch.cuda.device_count()
-    # if n_gpu > 1:
-    #     model = torch.nn.DataParallel(model)
-    #     model = model.module
+    if n_gpu > 1:
+         model = torch.nn.DataParallel(model)
+         model = model.module
 
     grapharea_matrix = AD.get_grapharea_matrix(graph_dataobj, grapharea_size)
 

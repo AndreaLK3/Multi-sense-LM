@@ -19,15 +19,15 @@ def get_node_data(grapharea_matrix, i, grapharea_size, edges_added_per_node=64):
     edgeindex_targets_ls = list(filter( lambda num: num!=-1, grapharea_matrix[i][k + m:k + 2*m ] ))
     edgetype_ls = list(filter( lambda num: num!=-1, grapharea_matrix[i][k + 2 * m: k + 3 * m ] ))
 
-    x = torch.Tensor(nodes_ls).to(DEVICE)
+    nodes = torch.Tensor(nodes_ls).to(DEVICE)
     edgeindex = torch.Tensor([edgeindex_sources_ls, edgeindex_targets_ls]).to(torch.int64).to(DEVICE)
     edgetype = torch.Tensor(edgetype_ls).to(torch.int64).to(DEVICE)
 
-    return x, edgeindex, edgetype
+    return nodes, edgeindex, edgetype
 
 
 
-### Creation function
+### Creation function - torch.Tensor version
 def create_adjacencies_matrix(graph_dataobj, area_size, edges_added_per_node=64):
 
     out_fpath = os.path.join(F.FOLDER_GRAPH, 'nodes_' + str(area_size) + '_' + F.GRAPHAREA_FILE)
@@ -70,7 +70,7 @@ def create_adjacencies_matrix(graph_dataobj, area_size, edges_added_per_node=64)
     return nodes_arraytable
 
 
-### Creation function  - Temporary alternative version - numpy
+### Creation function - numpy version
 def create_adjacencies_matrix_numpy(graph_dataobj, area_size, edges_added_per_node=64):
     Utils.init_logging('create_adjacencies_matrix_numpy.log')
     out_fpath = os.path.join(F.FOLDER_GRAPH, 'nodes_' + str(area_size) + '_graphArea_matrix.npy')
@@ -112,17 +112,18 @@ def create_adjacencies_matrix_numpy(graph_dataobj, area_size, edges_added_per_no
     out_file.close() # -- used with numpy
     return nodes_arraytable
 
-### Entry point function
+### Entry point function. Temporarily modified. Numpy version.
 def get_grapharea_matrix(graphdata_obj, area_size):
     candidate_fnames = [fname for fname in os.listdir(F.FOLDER_GRAPH)
-                        if ((F.GRAPHAREA_FILE in fname) and ('nodes_' + str(area_size) + '_' in fname))]
+                        if (('_graphArea_matrix.npy' in fname) and ('nodes_' + str(area_size) + '_' in fname))]
     if len(candidate_fnames) == 0:
         logging.info("Pre-computing and saving graphArea matrix, with area_size=" + str(area_size))
-        grapharea_matrix = create_adjacencies_matrix(graphdata_obj, area_size)
+        grapharea_matrix = create_adjacencies_matrix_numpy(graphdata_obj, area_size)
     else:
         fpath = os.path.join(F.FOLDER_GRAPH, candidate_fnames[0]) # we expect to find only one
         logging.info("Loading graphArea matrix, with area_size=" + str(area_size) + " from: " + str(fpath))
-        grapharea_matrix = torch.load(fpath) #-- used with numpy: allow_pickle=True
+        # grapharea_matrix = torch.load(fpath) # -- used with numpy: allow_pickle=True
+        grapharea_matrix = np.load(fpath, allow_pickle=True)
     return grapharea_matrix
 
 
