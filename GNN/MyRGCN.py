@@ -17,6 +17,35 @@ import GNN.BatchProcessing as BP
 from Utils import DEVICE
 
 
+### Utility function, to filter out -1 values. Used in the forward() call
+def get_valid_input_values(feature_matrix):
+
+    valid_rows_ls = []
+    logging.info(feature_matrix.shape)
+    rows_mask = [not(all([elem == -1 for elem in row])) for row in feature_matrix]
+    for i in range(feature_matrix.shape[0]):
+        if rows_mask[i] == True:
+            valid_rows_ls.append(feature_matrix[i,:])
+
+    valid_input_ls = []
+    for row_t in valid_rows_ls:
+        columns_mask = torch.Tensor([elem != -1 for elem in row_t])
+        row_valid_elems = torch.masked_select(row_t, columns_mask)
+        valid_input_ls.append(row_valid_elems)
+
+    return torch.Tensor(valid_input_ls)
+
+
+### Utility function, to split the 3 input features (area_x, edge_index, edge_type). Used in the forward() call
+def extract_input_features_from_matrix(features_matrix, node_vectors_dim):
+    x = features_matrix[:, 0:node_vectors_dim]
+    remaining_dims = features_matrix.shape[1] - node_vectors_dim
+    edge_features_dims = remaining_dims // 2
+    edge_index = features_matrix[0:2, node_vectors_dim: node_vectors_dim + edge_features_dims]
+    edge_type = features_matrix[0, node_vectors_dim + edge_features_dims: node_vectors_dim + 2 * edge_features_dims]
+    return (x, edge_index, edge_type)
+
+
 ### The Graph Neural Network. Currently, it has:
 ###     1 RGCN layer that operates on the selected area of the the graph
 ###     2 linear layers, that go from the RGCN representation to the  global classes and the senses' classes
@@ -34,18 +63,19 @@ class NetRGCN(torch.nn.Module):
         self.linear2sense = torch.nn.Linear(in_features=data.x.shape[1], out_features=self.last_idx_senses, bias=True)
 
 
-    def forward(self, batch_x, batch_edge_index, batch_edge_type):  # given the batches, the current node is at index 0
-        logging.debug("NetRGCN > forward")
-        logging.debug("batch_x = " + str(batch_x))
-        logging.debug("batch_edge_index = " + str(batch_edge_index))
-        logging.debug("batch_edge_type = " + str(batch_edge_type))
-        x_Lplus1 = tF.relu(self.conv1(batch_x, batch_edge_index, batch_edge_type))
+    def forward(self, inputfeatures_matrix):  # containing: x, edge_index, edge_type
+        # splitting
+        (x, edge_index, edge_type) = extract_input_features_from_matrix(inputfeatures_matrix, self.conv1.in_channels)
+        # excluding the non-valid -1 values from the processing
+        (x, edge_index, edge_type) = (get_valid_input_values(feature_m) for feature_m in (x, edge_index, edge_type))
+
+        x_Lplus1 = tF.relu(self.conv1(x, edge_index, edge_type))
+
         x1_current_node = x_Lplus1[0]  # current_node_index
         logits_global = self.linear2global(x1_current_node)  # shape=torch.Size([5])
         logits_sense = self.linear2sense(x1_current_node)
 
         return (tF.log_softmax(logits_global, dim=0), tF.log_softmax(logits_sense, dim=0))
-
 
 
 
@@ -69,7 +99,7 @@ def compute_validation_loss(model, valid_generator, senseindices_db_c, vocab_h5,
     return valid_loss
 
 
-def train(grapharea_size=32, batch_size=8, num_epochs=5):
+def train(grapharea_size=32, batch_size=8, num_epochs=10):
     Utils.init_logging('MyRGCN.log')
     graph_dataobj = DG.get_graph_dataobject(new=False)
     logging.info(graph_dataobj)
@@ -93,7 +123,7 @@ def train(grapharea_size=32, batch_size=8, num_epochs=5):
     globals_vocabulary_fpath = os.path.join(F.FOLDER_VOCABULARY, F.VOCABULARY_OF_GLOBALS_FILE)
     vocab_h5 = pd.HDFStore(globals_vocabulary_fpath, mode='r')
 
-    optimizer = torch.optim.Adam(model.parameters(), lr=0.01, weight_decay=0.0005)
+    optimizer = torch.optim.Adam(model.parameters(), lr=0.001, weight_decay=0.0005)
 
     model.train()
     losses_lts = []
@@ -129,6 +159,7 @@ def train(grapharea_size=32, batch_size=8, num_epochs=5):
 
                 global_step = global_step +1
                 if global_step % steps_logging == 0:
+                    logging.info("Iteration time=" + str(round(time()-t0,5)))
                     logging_point = global_step // steps_logging
                     logging.info("Logging point n." + str(logging_point) +
                                  " ; Global step=" + str(global_step) + ' ; Training nll_loss= ' + str(loss))
@@ -139,9 +170,10 @@ def train(grapharea_size=32, batch_size=8, num_epochs=5):
                     validation_logging_point = global_step // steps_logging
                     validation_losses_lts.append((validation_logging_point, epoch_valid_loss.item()))
                     if epoch_valid_loss > previous_valid_loss + 0.01:  # (epsilon)
-                        flag_earlystop = True
-                t1 = time()
-                Utils.log_chronometer([t0,t1])
+                        pass # flag_earlystop = True -- no early stopping for now
+                    previous_valid_loss = epoch_valid_loss
+                #t1 = time()
+                #Utils.log_chronometer([t0,t1])
 
         except StopIteration:
             if flag_earlystop:
