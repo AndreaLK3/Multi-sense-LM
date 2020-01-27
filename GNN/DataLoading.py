@@ -19,30 +19,39 @@ def pad_tensor(tensor, target_shape):
 
 # When automatic batching is enabled, collate_fn is called with a list of data samples at each time.
 # It is expected to collate the input samples into a batch for yielding from the data loader iterator.
+# At the moment, I am just returning a list, because the input of different sizes in the rgcn layer call
+# does not allow me to stack the tensors to do proper batching
 def collate_fn(data):
-    # data: is a list of tuples, each with (x, edge_index, edge_type) tensors
-    max_areasize = 0
-    max_columns = 0
-
-    for ((x, edge_index, edge_type), label_next_token_tpl) in data:
-        if x.shape[0] > max_areasize:
-            max_areasize = x.shape[0]
-        if x.shape[1] > max_columns:
-            max_columns = x.shape[1]
+    # # data: is a list of tuples, each with (x, edge_index, edge_type) tensors
+    # max_areasize = 0
+    # max_columns = 0
+    #
+    # for ((x, edge_index, edge_type), label_next_token_tpl) in data:
+    #     if x.shape[0] > max_areasize:
+    #         max_areasize = x.shape[0]
+    #     if x.shape[1] > max_columns:
+    #         max_columns = x.shape[1]
+    #
+    # padded_input_ls = []
+    # labels_ls = []
+    # target_shape = (max_areasize, max_columns)
+    #
+    # for ((x, edge_index, edge_type), label_next_token_tpl) in data:
+    #     padded_x = pad_tensor(x, target_shape)
+    #     padded_edge_index = pad_tensor(edge_index, target_shape)
+    #     padded_edge_type = pad_tensor(edge_type, target_shape)
+    #     labels_ls.append(torch.tensor(label_next_token_tpl, dtype=torch.int64))
+    #     sample_input_matrix = torch.cat([padded_x, padded_edge_index, padded_edge_type], dim=1)
+    #     padded_input_ls.append(sample_input_matrix)
 
     padded_input_ls = []
     labels_ls = []
-    target_shape = (max_areasize, max_columns)
 
     for ((x, edge_index, edge_type), label_next_token_tpl) in data:
-        padded_x = pad_tensor(x, target_shape)
-        padded_edge_index = pad_tensor(edge_index, target_shape)
-        padded_edge_type = pad_tensor(edge_type, target_shape)
-        labels_ls.append(torch.tensor(label_next_token_tpl, dtype=torch.int64))
-        sample_input_matrix = torch.cat([padded_x, padded_edge_index, padded_edge_type], dim=1)
-        padded_input_ls.append(sample_input_matrix)
+        padded_input_ls.append((x, edge_index, edge_type))
+        labels_ls.append(label_next_token_tpl)
 
-    return (torch.stack(padded_input_ls, dim=0), torch.stack(labels_ls, dim=0))
+    return padded_input_ls, labels_ls
 
 
 ##### The Dataset

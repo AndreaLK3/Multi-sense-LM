@@ -17,42 +17,42 @@ import GNN.BatchProcessing as BP
 from Utils import DEVICE
 import GNN.DataLoading as DL
 
-### Auxiliary function:
-### Excludes the -1s used for padding from the features of the forward()
-def select_valid_features(vector, target_dtype):
-    valid_elems_all = []
-    logging.info(vector.shape)
-    for b in range(vector.shape[0]): # batch dimension:
-        logging.info(b)
-        if len(vector[b].shape) <=1: # 1 row
-            valid_elems_all = torch.tensor(list(filter(lambda num: num != -1, vector[b])), dtype=target_dtype)
-            #logging.info(valid_elems_all)
-        else: # 2 or more rows
-            for i in range(vector[b].shape[0]):
-                valid_elems_ls = list(filter(lambda num: num != -1, vector[b,i]))
-                #logging.info(valid_elems_ls)
-                if len(valid_elems_ls) > 0:
-                    valid_elems_all.append(torch.tensor(valid_elems_ls, dtype=target_dtype))
-    return torch.stack(valid_elems_all)
-
-
-### Auxiliary function:
-### Extracts the different input features from the batch-level matrix passed to the forward()
-def extract_features(inputfeatures_matrix, n_cols):
-    # e.g. dimensions of the input features' matrix: [4, 32, 900]
-    padded_x = inputfeatures_matrix[:,:, 0:n_cols]
-    padded_edge_index = inputfeatures_matrix[:, :, n_cols:2*n_cols]
-    padded_edge_type = inputfeatures_matrix[:, :, 2*n_cols:3*n_cols]
-    x = select_valid_features(padded_x, target_dtype=torch.float)
-    edge_index = select_valid_features(padded_edge_index, target_dtype=torch.int64)
-    edge_type = select_valid_features(padded_edge_type, target_dtype=torch.int64)
-    return x, edge_index, edge_type
+# ### Auxiliary function:
+# ### Excludes the -1s used for padding from the features of the forward()
+# def select_valid_features(vector, target_dtype):
+#     valid_elems_all = []
+#     logging.info(vector.shape)
+#     for b in range(vector.shape[0]): # batch dimension:
+#         logging.info(b)
+#         if len(vector[b].shape) <=1: # 1 row
+#             valid_elems_all = torch.tensor(list(filter(lambda num: num != -1, vector[b])), dtype=target_dtype)
+#             #logging.info(valid_elems_all)
+#         else: # 2 or more rows
+#             for i in range(vector[b].shape[0]):
+#                 valid_elems_ls = list(filter(lambda num: num != -1, vector[b,i]))
+#                 #logging.info(valid_elems_ls)
+#                 if len(valid_elems_ls) > 0:
+#                     valid_elems_all.append(torch.tensor(valid_elems_ls, dtype=target_dtype))
+#     return torch.stack(valid_elems_all)
+#
+#
+# ### Auxiliary function:
+# ### Extracts the different input features from the batch-level matrix passed to the forward()
+# def extract_features(inputfeatures_matrix, n_cols):
+#     # e.g. dimensions of the input features' matrix: [4, 32, 900]
+#     padded_x = inputfeatures_matrix[:,:, 0:n_cols]
+#     padded_edge_index = inputfeatures_matrix[:, :, n_cols:2*n_cols]
+#     padded_edge_type = inputfeatures_matrix[:, :, 2*n_cols:3*n_cols]
+#     x = select_valid_features(padded_x, target_dtype=torch.float)
+#     edge_index = select_valid_features(padded_edge_index, target_dtype=torch.int64)
+#     edge_type = select_valid_features(padded_edge_type, target_dtype=torch.int64)
+#     return x, edge_index, edge_type
 
 
 
 ### The Graph Neural Network. Currently, it has:
 ###     1 RGCN layer that operates on the selected area of the the graph
-###     2 linear layers, that go from the RGCN representation to the  global classes and the senses' classes
+###     2 linear layers, that go from the RGCN representation to the global classes and the senses' classes
 class NetRGCN(torch.nn.Module):
     def __init__(self, data):
         super(NetRGCN, self).__init__()
@@ -66,18 +66,26 @@ class NetRGCN(torch.nn.Module):
                                              out_features=self.last_idx_globals - self.last_idx_senses, bias=True)
         self.linear2sense = torch.nn.Linear(in_features=data.x.shape[1], out_features=self.last_idx_senses, bias=True)
 
-    def forward(self, inputfeatures_matrix):  # given the batches, the current node is at index 0
-        x, edge_index, edge_type = extract_features(inputfeatures_matrix, inputfeatures_matrix.shape[2]//3)
-        logging.info("x.shape=" + str(x.shape))
-        logging.info("edge_index.shape=" + str(edge_index.shape))
-        logging.info("edge_type.shape=" + str(edge_type.shape))
-        ### applying the network structure
-        x_Lplus1 = tF.relu(self.conv1(x, edge_index, edge_type))
-        x1_current_node = x_Lplus1[0]  # current_node_index
-        logits_global = self.linear2global(x1_current_node)  # shape=torch.Size([5])
-        logits_sense = self.linear2sense(x1_current_node)
+    def forward(self, batchinput_ls):  # given the batches, the current node is at index 0
+        # x, edge_index, edge_type = extract_features(inputfeatures_matrix, inputfeatures_matrix.shape[2]//3)
+        # logging.info("x.shape=" + str(x.shape))
+        # logging.info("edge_index.shape=" + str(edge_index.shape))
+        # logging.info("edge_type.shape=" + str(edge_type.shape))
+        predictions_globals = None
+        predictions_senses = None
+        for (x, edge_index, edge_type) in batchinput_ls:
+            x_Lplus1 = tF.relu(self.conv1(x, edge_index, edge_type))
+            x1_current_node = x_Lplus1[0]  # current_node_index
+            logits_global = self.linear2global(x1_current_node)  # shape=torch.Size([5])
+            logits_sense = self.linear2sense(x1_current_node)
 
-        return (tF.log_softmax(logits_global, dim=0), tF.log_softmax(logits_sense, dim=0))
+            predictions_globals = tF.log_softmax(logits_global, dim=0) if predictions_globals is None \
+                else torch.stack([predictions_globals, (tF.log_softmax(logits_global, dim=0))])
+            predictions_senses = tF.log_softmax(logits_sense, dim=0) if predictions_senses is None \
+                else torch.stack([predictions_senses, (tF.log_softmax(logits_sense, dim=0))])
+        # logging.info(predictions_globals.shape)
+        # logging.info(predictions_senses.shape)
+        return predictions_globals, predictions_senses
 
 
 ########
@@ -103,7 +111,7 @@ def compute_validation_loss(model, valid_generator, senseindices_db_c, vocab_h5,
 
 ########
 
-def train(grapharea_size=32, batch_size=4, num_epochs=10):
+def train(grapharea_size=32, batch_size=32, num_epochs=10):
     Utils.init_logging('MyRGCN.log')
     graph_dataobj = DG.get_graph_dataobject(new=False)
     logging.info(graph_dataobj)
@@ -151,29 +159,35 @@ def train(grapharea_size=32, batch_size=4, num_epochs=10):
         flag_earlystop = False
         try:
             while(not(flag_earlystop)):
-                for batch_input, batch_labels in train_dataloader: # tuple of 2 tensors
+                for batch_input, batch_labels in train_dataloader: # tuple of 2 lists
                     #logging.info("batch_input=" + str(batch_input))
-                    logging.info("batch_input.shape=" + str(batch_input.shape))
-                    logging.info("batch_labels=" + str(batch_labels))
+                    #logging.info("\nbatch_labels=" + str(batch_labels))
                     # starting operations on one batch
                     optimizer.zero_grad()
                     t0 = time()
 
-
-                    predicted_globals, predicted_senses = model(batch_input)
-
-
-
-                    continue
-                    raise Exception
+                    predictions_globals, predictions_senses = model(batch_input)
+                    # logging.info(predictions_globals)
+                    # logging.info(predictions_senses)
+                    batch_labels_t = torch.tensor(batch_labels).t().to(DEVICE)
+                    batch_labels_globals = batch_labels_t[0]
+                    batch_labels_senses = batch_labels_t[1]
 
                     # compute the loss (batch mode)
-                    loss_global = tF.nll_loss(predicted_globals, batch_labels_globals)
-                    if len(batch_labels_senses_ls) > 0:
-                        batch_predicted_senses = torch.cat([torch.unsqueeze(t, dim=0) for t in batch_predicted_senses_ls],
-                                                           dim=0)
-                        batch_labels_senses = torch.cat(batch_labels_senses_ls, dim=0)
-                        loss_sense = tF.nll_loss(batch_predicted_senses, batch_labels_senses)
+                    loss_global = tF.nll_loss(predictions_globals, batch_labels_globals)
+
+                    batch_validsenses_predicted = []
+                    batch_validsenses_labels = []
+                    for i in range(batch_labels_senses.shape[0]):
+                        senselabel = batch_labels_senses[i]
+                        if senselabel != -1:
+                            batch_validsenses_labels.append(senselabel.item())
+                            batch_validsenses_predicted.append(predictions_senses[i])
+                    if len(batch_validsenses_labels) > 1:
+                        # logging.info(batch_validsenses_predicted)
+                        # logging.info(batch_validsenses_labels)
+                        loss_sense = tF.nll_loss(torch.stack(batch_validsenses_predicted).to(DEVICE),
+                                                 torch.tensor(batch_validsenses_labels, dtype=torch.int64).to(DEVICE))
                     else:
                         loss_sense = 0
                     loss = loss_global + loss_sense
@@ -195,8 +209,8 @@ def train(grapharea_size=32, batch_size=4, num_epochs=10):
                         if epoch_valid_loss > previous_valid_loss + 0.01:  # (epsilon)
                             pass # flag_earlystop = True -- no early stopping for now
                         previous_valid_loss = epoch_valid_loss
-                    #t1 = time()
-                    #Utils.log_chronometer([t0,t1])
+                    t1 = time()
+                    Utils.log_chronometer([t0,t1])
 
         except MemoryError:
             if flag_earlystop:
