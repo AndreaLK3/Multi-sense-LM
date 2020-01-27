@@ -46,9 +46,9 @@ def convert_tokendict_to_tpl(token_dict, senseindices_db_c, globals_vocabulary_h
 
     try:
         global_absolute_index = Utils.select_from_hdf5(globals_vocabulary_h5, 'vocabulary', ['word'], [word]).index[0]
-    except IndexError:
-        logging.info("Raising Utils.MustSkipUNK_Exception with word= " + str(word))
-        raise Utils.MustSkipUNK_Exception
+    except IndexError: # redirect onto <unk>
+        word = Utils.UNK_TOKEN
+        global_absolute_index = Utils.select_from_hdf5(globals_vocabulary_h5, 'vocabulary', ['word'], [word]).index[0]
 
     global_index = global_absolute_index # + last_idx_senses; do not add this to globals, or we go beyond the n_classes
     logging.debug('(global_index, sense_index)=' + str((global_index, sense_index)))

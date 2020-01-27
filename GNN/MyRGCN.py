@@ -17,6 +17,18 @@ import GNN.BatchProcessing as BP
 from Utils import DEVICE
 import GNN.DataLoading as DL
 
+### Auxiliary function:
+### Excludes the -1s used for padding from the features of the forward()
+def select_valid_features(vector, target_dtype):
+    valid_elems_all = []
+    if len(vector.shape) <=1: # 1 row
+        valid_elems_all = list(filter(lambda num: num != -1, vector))
+    else: # 2 or more rows
+        for i in range(vector.shape[0]):
+            valid_elems_ls = list(filter(lambda num: num != -1, vector[i]))
+            valid_elems_all.append(valid_elems_ls)
+    return torch.tensor(valid_elems_all, dtype=target_dtype)
+
 
 ### The Graph Neural Network. Currently, it has:
 ###     1 RGCN layer that operates on the selected area of the the graph
@@ -34,7 +46,12 @@ class NetRGCN(torch.nn.Module):
                                              out_features=self.last_idx_globals - self.last_idx_senses, bias=True)
         self.linear2sense = torch.nn.Linear(in_features=data.x.shape[1], out_features=self.last_idx_senses, bias=True)
 
-    def forward(self, x, edge_index, edge_type):  # given the batches, the current node is at index 0
+    def forward(self, inputfeatures_tpl):  # given the batches, the current node is at index 0
+        ((x, edge_index, edge_type), _labels) = inputfeatures_tpl
+        x = select_valid_features(x, target_dtype=torch.float)
+        edge_index = select_valid_features(edge_index, torch.int64)
+        edge_type = select_valid_features(edge_type, torch.int64)
+        ### applying the network structure
         x_Lplus1 = tF.relu(self.conv1(x, edge_index, edge_type))
         x1_current_node = x_Lplus1[0]  # current_node_index
         logits_global = self.linear2global(x1_current_node)  # shape=torch.Size([5])
@@ -107,7 +124,8 @@ def train(grapharea_size=32, batch_size=8, num_epochs=10):
         logging.info("\nTraining epoch n."+str(epoch) + ":")
         train_dataset = DL.TextDataset('training', senseindices_db_c, vocab_h5, model,
                                        grapharea_matrix, grapharea_size, graph_dataobj)
-        train_dataloader = torch.utils.data.DataLoader(train_dataset, batch_size=1, num_workers=1)
+        train_dataloader = torch.utils.data.DataLoader(train_dataset, batch_size=2, num_workers=1,
+                                                       collate_fn=DL.collate_fn)
 
         previous_valid_loss = inf
         flag_earlystop = False

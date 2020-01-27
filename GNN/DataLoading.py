@@ -6,6 +6,45 @@ from Utils import DEVICE
 import Graph.Adjacencies as AD
 
 
+# Auxiliary function: pad with -1s
+def pad_tensor(tensor, target_shape):
+    padded_t = torch.ones(size=target_shape) * -1
+    if len(padded_t.shape) <=1: # 1 row
+        padded_t[0:len(tensor)] = tensor
+    else: # 2 or more rows
+        for i in range(padded_t.shape[0]):
+            padded_t[i,0:len(tensor[i])] = tensor[i]
+    return padded_t
+
+
+# When automatic batching is enabled, collate_fn is called with a list of data samples at each time.
+# It is expected to collate the input samples into a batch for yielding from the data loader iterator.
+def collate_fn(data):
+    # data: is a list of tuples, each with (x, edge_index, edge_type) tensors
+    max_areasize = 0
+    max_edges = 0
+
+
+    for ((x, edge_index, edge_type), label_next_token_tpl) in data:
+        if x.shape[0] > max_areasize:
+            max_areasize = x.shape[0]
+        if edge_index.shape[1] > max_edges:
+            max_edges = edge_index.shape[1]
+
+    padded_data_ls = []
+    target_shape_x = (max_areasize, x.shape[1])
+    target_shape_edges = (2, max_edges)
+
+    for ((x, edge_index, edge_type), label_next_token_tpl) in data:
+        padded_x = pad_tensor(x, target_shape_x)
+        padded_edge_index = pad_tensor(edge_index, target_shape_edges)
+        padded_edge_type = pad_tensor(edge_type, (max_edges,))
+        padded_data_ls.append(((padded_x, padded_edge_index, padded_edge_type), label_next_token_tpl))
+
+    return padded_data_ls
+
+
+##### The Dataset
 class TextDataset(torch.utils.data.Dataset):
     def __init__(self, split_name, senseindices_db_c, vocab_h5, model,
                        grapharea_matrix, area_size, graph_dataobj):
@@ -18,7 +57,7 @@ class TextDataset(torch.utils.data.Dataset):
 
         self.grapharea_matrix = grapharea_matrix
         self.area_size = area_size
-        self.grahp_dataobj = graph_dataobj
+        self.graph_dataobj = graph_dataobj
         self.next_token_tpl = None
 
 
@@ -45,10 +84,11 @@ class TextDataset(torch.utils.data.Dataset):
                 return self.counter
         else:
             return self.counter
+#####
 
 
-
-### Step n.2: getting the graph-input (x, edge_index, edge_type)
+### Auxiliary function:
+### Getting the graph-input (x, edge_index, edge_type)
 ### Here I decide what is the starting token for a prediction. For now, it is "sense if present, else global"
 def get_forwardinput_forelement(global_idx, sense_idx, grapharea_matrix, area_size, graph_dataobj):
 
