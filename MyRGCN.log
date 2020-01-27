@@ -7,27 +7,12 @@ Training epoch n.1:
 INFO : Preliminary: reading the dataset to determine the number of samples
 INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
 INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
-INFO : torch.Size([32, 300])
-INFO : torch.Size([32, 300])
-INFO : torch.Size([32, 300])
-INFO : ###
-INFO : torch.Size([32, 300])
-INFO : torch.Size([32, 300])
-INFO : torch.Size([32, 300])
-INFO : ###
-INFO : torch.Size([32, 300])
-INFO : torch.Size([32, 300])
-INFO : torch.Size([32, 300])
-INFO : ###
-INFO : torch.Size([32, 300])
-INFO : torch.Size([32, 300])
-INFO : torch.Size([32, 300])
-INFO : ###
-INFO : torch.Size([32, 300])
-INFO : torch.Size([32, 300])
-INFO : torch.Size([32, 300])
-INFO : ###
-INFO : torch.Size([32, 300])
-INFO : torch.Size([32, 300])
-INFO : torch.Size([32, 300])
-INFO : ###
+INFO : batch_input.shape=torch.Size([2, 32, 900])
+INFO : batch_labels=tensor([[   15,  8080],
+        [  656, 16309]])
+INFO : torch.Size([2, 32, 300])
+INFO : 0
+INFO : 1
+INFO : torch.Size([2, 32, 300])
+INFO : 0
+INFO : 1

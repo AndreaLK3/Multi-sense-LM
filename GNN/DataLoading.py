@@ -24,28 +24,25 @@ def collate_fn(data):
     max_areasize = 0
     max_columns = 0
 
-
     for ((x, edge_index, edge_type), label_next_token_tpl) in data:
         if x.shape[0] > max_areasize:
             max_areasize = x.shape[0]
         if x.shape[1] > max_columns:
             max_columns = x.shape[1]
 
-    padded_data_ls = []
+    padded_input_ls = []
+    labels_ls = []
     target_shape = (max_areasize, max_columns)
 
     for ((x, edge_index, edge_type), label_next_token_tpl) in data:
         padded_x = pad_tensor(x, target_shape)
         padded_edge_index = pad_tensor(edge_index, target_shape)
         padded_edge_type = pad_tensor(edge_type, target_shape)
-        padded_label = pad_tensor(label_next_token_tpl)
-        logging.info(padded_x.shape)
-        logging.info(padded_edge_index.shape)
-        logging.info(padded_edge_type.shape)
-        logging.info('###')
-        padded_data_ls.append(((padded_x, padded_edge_index, padded_edge_type), label_next_token_tpl))
+        labels_ls.append(torch.tensor(label_next_token_tpl, dtype=torch.int64))
+        sample_input_matrix = torch.cat([padded_x, padded_edge_index, padded_edge_type], dim=1)
+        padded_input_ls.append(sample_input_matrix)
 
-    return torch.stack(padded_data_ls, dim=1)
+    return (torch.stack(padded_input_ls, dim=0), torch.stack(labels_ls, dim=0))
 
 
 ##### The Dataset

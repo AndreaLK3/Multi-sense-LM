@@ -21,13 +21,33 @@ import GNN.DataLoading as DL
 ### Excludes the -1s used for padding from the features of the forward()
 def select_valid_features(vector, target_dtype):
     valid_elems_all = []
-    if len(vector.shape) <=1: # 1 row
-        valid_elems_all = list(filter(lambda num: num != -1, vector))
-    else: # 2 or more rows
-        for i in range(vector.shape[0]):
-            valid_elems_ls = list(filter(lambda num: num != -1, vector[i]))
-            valid_elems_all.append(valid_elems_ls)
-    return torch.tensor(valid_elems_all, dtype=target_dtype)
+    logging.info(vector.shape)
+    for b in range(vector.shape[0]): # batch dimension:
+        logging.info(b)
+        if len(vector[b].shape) <=1: # 1 row
+            valid_elems_all = torch.tensor(list(filter(lambda num: num != -1, vector[b])), dtype=target_dtype)
+            #logging.info(valid_elems_all)
+        else: # 2 or more rows
+            for i in range(vector[b].shape[0]):
+                valid_elems_ls = list(filter(lambda num: num != -1, vector[b,i]))
+                #logging.info(valid_elems_ls)
+                if len(valid_elems_ls) > 0:
+                    valid_elems_all.append(torch.tensor(valid_elems_ls, dtype=target_dtype))
+    return torch.stack(valid_elems_all)
+
+
+### Auxiliary function:
+### Extracts the different input features from the batch-level matrix passed to the forward()
+def extract_features(inputfeatures_matrix, n_cols):
+    # e.g. dimensions of the input features' matrix: [4, 32, 900]
+    padded_x = inputfeatures_matrix[:,:, 0:n_cols]
+    padded_edge_index = inputfeatures_matrix[:, :, n_cols:2*n_cols]
+    padded_edge_type = inputfeatures_matrix[:, :, 2*n_cols:3*n_cols]
+    x = select_valid_features(padded_x, target_dtype=torch.float)
+    edge_index = select_valid_features(padded_edge_index, target_dtype=torch.int64)
+    edge_type = select_valid_features(padded_edge_type, target_dtype=torch.int64)
+    return x, edge_index, edge_type
+
 
 
 ### The Graph Neural Network. Currently, it has:
@@ -46,11 +66,11 @@ class NetRGCN(torch.nn.Module):
                                              out_features=self.last_idx_globals - self.last_idx_senses, bias=True)
         self.linear2sense = torch.nn.Linear(in_features=data.x.shape[1], out_features=self.last_idx_senses, bias=True)
 
-    def forward(self, inputfeatures_tpl):  # given the batches, the current node is at index 0
-        ((x, edge_index, edge_type), _labels) = inputfeatures_tpl
-        x = select_valid_features(x, target_dtype=torch.float)
-        edge_index = select_valid_features(edge_index, torch.int64)
-        edge_type = select_valid_features(edge_type, torch.int64)
+    def forward(self, inputfeatures_matrix):  # given the batches, the current node is at index 0
+        x, edge_index, edge_type = extract_features(inputfeatures_matrix, inputfeatures_matrix.shape[2]//3)
+        logging.info("x.shape=" + str(x.shape))
+        logging.info("edge_index.shape=" + str(edge_index.shape))
+        logging.info("edge_type.shape=" + str(edge_type.shape))
         ### applying the network structure
         x_Lplus1 = tF.relu(self.conv1(x, edge_index, edge_type))
         x1_current_node = x_Lplus1[0]  # current_node_index
@@ -131,15 +151,16 @@ def train(grapharea_size=32, batch_size=4, num_epochs=10):
         flag_earlystop = False
         try:
             while(not(flag_earlystop)):
-                for batch in train_dataloader:
-                    logging.info("batch=" + str(batch))
-                    logging.info("batch.shape" + str(batch.shape))
+                for batch_input, batch_labels in train_dataloader: # tuple of 2 tensors
+                    #logging.info("batch_input=" + str(batch_input))
+                    logging.info("batch_input.shape=" + str(batch_input.shape))
+                    logging.info("batch_labels=" + str(batch_labels))
                     # starting operations on one batch
                     optimizer.zero_grad()
                     t0 = time()
 
 
-                    predicted_globals, predicted_senses = model(batch)
+                    predicted_globals, predicted_senses = model(batch_input)
 
 
 
