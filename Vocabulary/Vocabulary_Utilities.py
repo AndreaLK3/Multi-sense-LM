@@ -89,7 +89,7 @@ def replace_numbers(list_of_tokens):
     return modified_tokens
 
 ##### Process one line: tokenize, convert symbols like @-@, manage <unk>, replace numbers etc.
-def process_line(line, tot_tokens=0):
+def  process_line(line, tot_tokens=0):
 
     no_ampersand_symbols_line = convert_symbols(line)  # eliminate @-@, @.@ etc.
     raw_sentences_ls = nltk.tokenize.sent_tokenize(no_ampersand_symbols_line) # split line into sentences at the periods

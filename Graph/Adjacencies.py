@@ -14,16 +14,18 @@ def get_node_data(grapharea_matrix, i, grapharea_size, edges_added_per_node=64):
     k = grapharea_size
     m = k * edges_added_per_node
 
-    nodes_ls = grapharea_matrix[i][0:k]
-    edgeindex_sources_ls = grapharea_matrix[i][k:k + m]
-    edgeindex_targets_ls = grapharea_matrix[i][k + m:k + 2*m]
-    edgetype_ls = grapharea_matrix[i][k + 2 * m: k + 3 * m ]
+    nodes_ls = list(filter(lambda num: num != -1, grapharea_matrix[i][0:k]))
+    edgeindex_sources_ls = list(filter(lambda num: num != -1, grapharea_matrix[i][k:k + m]))
+    edgeindex_targets_ls = list(filter(lambda num: num != -1, grapharea_matrix[i][k + m:k + 2 * m]))
+    edgetype_ls = list(filter(lambda num: num != -1, grapharea_matrix[i][k + 2 * m: k + 3 * m]))
 
     nodes = torch.Tensor(nodes_ls).to(DEVICE)
     edgeindex = torch.Tensor([edgeindex_sources_ls, edgeindex_targets_ls]).to(torch.int64).to(DEVICE)
     edgetype = torch.Tensor(edgetype_ls).to(torch.int64).to(DEVICE)
 
     return nodes, edgeindex, edgetype
+
+
 
 ### Creation function - numpy version
 def create_adjacencies_matrix_numpy(graph_dataobj, area_size, edges_added_per_node=64):

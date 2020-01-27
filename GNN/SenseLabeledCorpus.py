@@ -109,7 +109,6 @@ def dataset_generator(xml_fpath):
 
 
 def readgenerator_senselabeled_corpuses(split_name):
-    logging.info("Invoking")
     if split_name.lower() == Utils.TRAINING:
         training_subcorpuses_folder = os.path.join(F.FOLDER_TEXT_CORPUSES, F.FOLDER_UFSAC, F.FOLDER_TRAIN)
         full_fpaths = list(map(lambda fname: os.path.join(training_subcorpuses_folder, fname),

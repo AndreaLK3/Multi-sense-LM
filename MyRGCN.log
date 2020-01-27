@@ -4,8 +4,7 @@ INFO : Loading graphArea matrix, with area_size=32 from: Graph/nodes_32_graphAre
 INFO : NumExpr defaulting to 8 threads.
 INFO : 
 Training epoch n.1:
-INFO : Invoking
+INFO : Preliminary: reading the dataset to determine the number of samples
 INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
-INFO : [(656, 16309), (11525, -1), (129, -1), (2536, 13084), (65, -1), (3018, -1), (1608, -1), (4835, 9704), (548, 13109)]
-INFO : torch.Size([8, 32, 4396])
-INFO : torch.Size([8, 32, 4396])
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Raising Utils.MustSkipUNK_Exception with word= Fulton County Grand Jury

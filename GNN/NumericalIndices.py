@@ -43,9 +43,11 @@ def convert_tokendict_to_tpl(token_dict, senseindices_db_c, globals_vocabulary_h
     else:
         sense_index = -1
     word = VocabUtils.process_slc_token(token_dict) # html.unescape, and lowercase the ALL-CAPITALS
+
     try:
         global_absolute_index = Utils.select_from_hdf5(globals_vocabulary_h5, 'vocabulary', ['word'], [word]).index[0]
     except IndexError:
+        logging.info("Raising Utils.MustSkipUNK_Exception with word= " + str(word))
         raise Utils.MustSkipUNK_Exception
 
     global_index = global_absolute_index # + last_idx_senses; do not add this to globals, or we go beyond the n_classes
@@ -62,4 +64,5 @@ def get_tokens_tpls(next_token_tpl, split_datagenerator, senseindices_db_c, voca
     else:
         current_token_tpl = next_token_tpl
         next_token_tpl = convert_tokendict_to_tpl(split_datagenerator.__next__(),senseindices_db_c, vocab_h5, last_idx_senses)
+
     return current_token_tpl, next_token_tpl
