@@ -83,7 +83,7 @@ def compute_validation_loss(model, valid_generator, senseindices_db_c, vocab_h5,
 
 ########
 
-def train(grapharea_size=32, batch_size=8, num_epochs=10):
+def train(grapharea_size=32, batch_size=4, num_epochs=10):
     Utils.init_logging('MyRGCN.log')
     graph_dataobj = DG.get_graph_dataobject(new=False)
     logging.info(graph_dataobj)
@@ -131,17 +131,19 @@ def train(grapharea_size=32, batch_size=8, num_epochs=10):
         flag_earlystop = False
         try:
             while(not(flag_earlystop)):
-                for inputs, labels in train_dataloader:
-                    # starting operating on one batch
+                for batch in train_dataloader:
+                    logging.info("batch=" + str(batch))
+                    logging.info("batch.shape" + str(batch.shape))
+                    # starting operations on one batch
                     optimizer.zero_grad()
                     t0 = time()
 
 
-                    predicted_globals, predicted_senses = model(inputs)
+                    predicted_globals, predicted_senses = model(batch)
 
-                    logging.info(inputs)
-                    logging.info(labels)
 
+
+                    continue
                     raise Exception
 
                     # compute the loss (batch mode)

@@ -9,10 +9,10 @@ import Graph.Adjacencies as AD
 # Auxiliary function: pad with -1s
 def pad_tensor(tensor, target_shape):
     padded_t = torch.ones(size=target_shape) * -1
-    if len(padded_t.shape) <=1: # 1 row
-        padded_t[0:len(tensor)] = tensor
+    if len(tensor.shape) <=1: # 1 row
+        padded_t[0][0:len(tensor)] = tensor
     else: # 2 or more rows
-        for i in range(padded_t.shape[0]):
+        for i in range(tensor.shape[0]):
             padded_t[i,0:len(tensor[i])] = tensor[i]
     return padded_t
 
@@ -22,26 +22,30 @@ def pad_tensor(tensor, target_shape):
 def collate_fn(data):
     # data: is a list of tuples, each with (x, edge_index, edge_type) tensors
     max_areasize = 0
-    max_edges = 0
+    max_columns = 0
 
 
     for ((x, edge_index, edge_type), label_next_token_tpl) in data:
         if x.shape[0] > max_areasize:
             max_areasize = x.shape[0]
-        if edge_index.shape[1] > max_edges:
-            max_edges = edge_index.shape[1]
+        if x.shape[1] > max_columns:
+            max_columns = x.shape[1]
 
     padded_data_ls = []
-    target_shape_x = (max_areasize, x.shape[1])
-    target_shape_edges = (2, max_edges)
+    target_shape = (max_areasize, max_columns)
 
     for ((x, edge_index, edge_type), label_next_token_tpl) in data:
-        padded_x = pad_tensor(x, target_shape_x)
-        padded_edge_index = pad_tensor(edge_index, target_shape_edges)
-        padded_edge_type = pad_tensor(edge_type, (max_edges,))
+        padded_x = pad_tensor(x, target_shape)
+        padded_edge_index = pad_tensor(edge_index, target_shape)
+        padded_edge_type = pad_tensor(edge_type, target_shape)
+        padded_label = pad_tensor(label_next_token_tpl)
+        logging.info(padded_x.shape)
+        logging.info(padded_edge_index.shape)
+        logging.info(padded_edge_type.shape)
+        logging.info('###')
         padded_data_ls.append(((padded_x, padded_edge_index, padded_edge_type), label_next_token_tpl))
 
-    return padded_data_ls
+    return torch.stack(padded_data_ls, dim=1)
 
 
 ##### The Dataset
