@@ -17,39 +17,6 @@ import GNN.BatchProcessing as BP
 from Utils import DEVICE
 import GNN.DataLoading as DL
 
-# ### Auxiliary function:
-# ### Excludes the -1s used for padding from the features of the forward()
-# def select_valid_features(vector, target_dtype):
-#     valid_elems_all = []
-#     logging.info(vector.shape)
-#     for b in range(vector.shape[0]): # batch dimension:
-#         logging.info(b)
-#         if len(vector[b].shape) <=1: # 1 row
-#             valid_elems_all = torch.tensor(list(filter(lambda num: num != -1, vector[b])), dtype=target_dtype)
-#             #logging.info(valid_elems_all)
-#         else: # 2 or more rows
-#             for i in range(vector[b].shape[0]):
-#                 valid_elems_ls = list(filter(lambda num: num != -1, vector[b,i]))
-#                 #logging.info(valid_elems_ls)
-#                 if len(valid_elems_ls) > 0:
-#                     valid_elems_all.append(torch.tensor(valid_elems_ls, dtype=target_dtype))
-#     return torch.stack(valid_elems_all)
-#
-#
-# ### Auxiliary function:
-# ### Extracts the different input features from the batch-level matrix passed to the forward()
-# def extract_features(inputfeatures_matrix, n_cols):
-#     # e.g. dimensions of the input features' matrix: [4, 32, 900]
-#     padded_x = inputfeatures_matrix[:,:, 0:n_cols]
-#     padded_edge_index = inputfeatures_matrix[:, :, n_cols:2*n_cols]
-#     padded_edge_type = inputfeatures_matrix[:, :, 2*n_cols:3*n_cols]
-#     x = select_valid_features(padded_x, target_dtype=torch.float)
-#     edge_index = select_valid_features(padded_edge_index, target_dtype=torch.int64)
-#     edge_type = select_valid_features(padded_edge_type, target_dtype=torch.int64)
-#     return x, edge_index, edge_type
-
-
-
 ### The Graph Neural Network. Currently, it has:
 ###     1 RGCN layer that operates on the selected area of the the graph
 ###     2 linear layers, that go from the RGCN representation to the global classes and the senses' classes
@@ -67,51 +34,59 @@ class NetRGCN(torch.nn.Module):
         self.linear2sense = torch.nn.Linear(in_features=data.x.shape[1], out_features=self.last_idx_senses, bias=True)
 
     def forward(self, batchinput_ls):  # given the batches, the current node is at index 0
-        # x, edge_index, edge_type = extract_features(inputfeatures_matrix, inputfeatures_matrix.shape[2]//3)
-        # logging.info("x.shape=" + str(x.shape))
-        # logging.info("edge_index.shape=" + str(edge_index.shape))
-        # logging.info("edge_type.shape=" + str(edge_type.shape))
-        predictions_globals = None
-        predictions_senses = None
+        predictions_globals_ls = []
+        predictions_senses_ls = []
         for (x, edge_index, edge_type) in batchinput_ls:
             x_Lplus1 = tF.relu(self.conv1(x, edge_index, edge_type))
             x1_current_node = x_Lplus1[0]  # current_node_index
             logits_global = self.linear2global(x1_current_node)  # shape=torch.Size([5])
             logits_sense = self.linear2sense(x1_current_node)
 
-            predictions_globals = tF.log_softmax(logits_global, dim=0) if predictions_globals is None \
-                else torch.stack([predictions_globals, (tF.log_softmax(logits_global, dim=0))])
-            predictions_senses = tF.log_softmax(logits_sense, dim=0) if predictions_senses is None \
-                else torch.stack([predictions_senses, (tF.log_softmax(logits_sense, dim=0))])
-        # logging.info(predictions_globals.shape)
-        # logging.info(predictions_senses.shape)
-        return predictions_globals, predictions_senses
+            sample_predictions_globals = tF.log_softmax(logits_global, dim=0)
+            predictions_globals_ls.append(sample_predictions_globals)
+            sample_predictions_senses = tF.log_softmax(logits_sense, dim=0)
+            predictions_senses_ls.append(sample_predictions_senses)
+
+        return torch.stack(predictions_globals_ls, dim=0), torch.stack(predictions_senses_ls, dim=0)
 
 
 ########
 
-def compute_validation_loss(model, valid_generator, senseindices_db_c, vocab_h5, grapharea_matrix, grapharea_size, graph):
-    model.eval()
-    validation_losses_ls = []
-    validation_batch_size = 64 # by default, losses are averaged in a batch. I introduce batches to be faster
-    try:
-        while(True):
-            with torch.no_grad():
-                input_indices_lts = BP.select_batch_indices(validation_batch_size, valid_generator,senseindices_db_c, vocab_h5, model)
-                batch_grapharea_input = BP.get_batch_grapharea_input(input_indices_lts, grapharea_matrix, grapharea_size, graph)
-                batch_valid_loss = BP.compute_batch_losses(input_indices_lts, batch_grapharea_input, model)
-                validation_losses_ls.append(batch_valid_loss.item())
-    except StopIteration:
-        pass # iterating over the validation split finished
-
-    valid_loss = np.average(validation_losses_ls)
-    logging.info("Validation loss=" + str(round(valid_loss, 5)))
-    model.train()
-    return valid_loss
+# Auxiliary function for compute_model_loss
+def compute_sense_loss(predictions_senses, batch_labels_senses):
+    batch_validsenses_predicted = []
+    batch_validsenses_labels = []
+    for i in range(batch_labels_senses.shape[0]):
+        senselabel = batch_labels_senses[i]
+        if senselabel != -1:
+            batch_validsenses_labels.append(senselabel.item())
+            batch_validsenses_predicted.append(predictions_senses[i])
+    if len(batch_validsenses_labels) > 1:
+        loss_sense = tF.nll_loss(torch.stack(batch_validsenses_predicted).to(DEVICE),
+                                 torch.tensor(batch_validsenses_labels, dtype=torch.int64).to(DEVICE))
+    else:
+        loss_sense = 0
+    return loss_sense
 
 ########
 
-def train(grapharea_size=32, batch_size=32, num_epochs=10):
+def compute_model_loss(model,batch_input, batch_labels):
+    predictions_globals, predictions_senses = model(batch_input)
+
+    batch_labels_t = torch.tensor(batch_labels).t().to(DEVICE)
+    batch_labels_globals = batch_labels_t[0]
+    batch_labels_senses = batch_labels_t[1]
+
+    # compute the loss for the batch
+    loss_global = tF.nll_loss(predictions_globals, batch_labels_globals)
+    loss_sense = compute_sense_loss(predictions_senses, batch_labels_senses)
+    loss = loss_global + loss_sense
+
+    return loss
+
+########
+
+def train(grapharea_size=32, batch_size=8, learning_rate=0.0001, num_epochs=20):
     Utils.init_logging('MyRGCN.log')
     graph_dataobj = DG.get_graph_dataobject(new=False)
     logging.info(graph_dataobj)
@@ -119,7 +94,6 @@ def train(grapharea_size=32, batch_size=32, num_epochs=10):
     logging.info("Graph-data object loaded, model initialized. Moving them to GPU device(s) if present.")
     graph_dataobj.to(DEVICE)
     model.to(DEVICE)
-
 
     n_gpu = torch.cuda.device_count()
     if n_gpu > 1:
@@ -135,14 +109,15 @@ def train(grapharea_size=32, batch_size=32, num_epochs=10):
     globals_vocabulary_fpath = os.path.join(F.FOLDER_VOCABULARY, F.VOCABULARY_OF_GLOBALS_FILE)
     vocab_h5 = pd.HDFStore(globals_vocabulary_fpath, mode='r')
 
-    optimizer = torch.optim.Adam(model.parameters(), lr=0.001, weight_decay=0.0005)
+    optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate, weight_decay=0.0005)
 
     model.train()
-    losses_lts = []
+    training_losses_lts = []
     validation_losses_lts = []
-    steps_logging = 2000 // batch_size
-    hyperparams_str = 'batchsize' + str(batch_size) \
-                                  + '_graphareasize' + str(grapharea_size)\
+    steps_logging = 500 // batch_size
+    hyperparams_str = 'batch' + str(batch_size) \
+                                  + '_area' + str(grapharea_size)\
+                                  + '_lr' + str(learning_rate) \
                                   + '_epochs' + str(num_epochs)
     trainlosses_fpath = os.path.join(F.FOLDER_GRAPHNN, hyperparams_str + '_' + Utils.TRAINING + '_' + F.LOSSES_FILEEND)
     validlosses_fpath = os.path.join(F.FOLDER_GRAPHNN, hyperparams_str + '_' + Utils.VALIDATION + '_' + F.LOSSES_FILEEND)
@@ -152,75 +127,78 @@ def train(grapharea_size=32, batch_size=32, num_epochs=10):
         logging.info("\nTraining epoch n."+str(epoch) + ":")
         train_dataset = DL.TextDataset('training', senseindices_db_c, vocab_h5, model,
                                        grapharea_matrix, grapharea_size, graph_dataobj)
-        train_dataloader = torch.utils.data.DataLoader(train_dataset, batch_size=2, num_workers=1,
+        train_dataloader = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size, num_workers=1,
                                                        collate_fn=DL.collate_fn)
 
-        previous_valid_loss = inf
+        sum_logsegment_loss = 0
+        previous_epoch_valid_loss = inf
         flag_earlystop = False
-        try:
-            while(not(flag_earlystop)):
+
+        while(not(flag_earlystop)):
+            try:
                 for batch_input, batch_labels in train_dataloader: # tuple of 2 lists
-                    #logging.info("batch_input=" + str(batch_input))
-                    #logging.info("\nbatch_labels=" + str(batch_labels))
+
                     # starting operations on one batch
                     optimizer.zero_grad()
                     t0 = time()
+                    # compute loss for the batch
+                    loss = compute_model_loss(model, batch_input, batch_labels)
+                    # running sum of the training loss in the log segment
+                    sum_logsegment_loss = sum_logsegment_loss + loss.item()
 
-                    predictions_globals, predictions_senses = model(batch_input)
-                    # logging.info(predictions_globals)
-                    # logging.info(predictions_senses)
-                    batch_labels_t = torch.tensor(batch_labels).t().to(DEVICE)
-                    batch_labels_globals = batch_labels_t[0]
-                    batch_labels_senses = batch_labels_t[1]
-
-                    # compute the loss (batch mode)
-                    loss_global = tF.nll_loss(predictions_globals, batch_labels_globals)
-
-                    batch_validsenses_predicted = []
-                    batch_validsenses_labels = []
-                    for i in range(batch_labels_senses.shape[0]):
-                        senselabel = batch_labels_senses[i]
-                        if senselabel != -1:
-                            batch_validsenses_labels.append(senselabel.item())
-                            batch_validsenses_predicted.append(predictions_senses[i])
-                    if len(batch_validsenses_labels) > 1:
-                        # logging.info(batch_validsenses_predicted)
-                        # logging.info(batch_validsenses_labels)
-                        loss_sense = tF.nll_loss(torch.stack(batch_validsenses_predicted).to(DEVICE),
-                                                 torch.tensor(batch_validsenses_labels, dtype=torch.int64).to(DEVICE))
-                    else:
-                        loss_sense = 0
-                    loss = loss_global + loss_sense
                     loss.backward()
                     optimizer.step()
 
                     global_step = global_step +1
                     if global_step % steps_logging == 0:
                         logging.info("Iteration time=" + str(round(time()-t0,5)))
-                        logging_point = global_step // steps_logging
-                        logging.info("Logging point n." + str(logging_point) +
-                                     " ; Global step=" + str(global_step) + ' ; Training nll_loss= ' + str(loss))
-                        losses_lts.append((logging_point,loss.item()))
-                        valid_generator = SLC.read_split('validation')
-                        epoch_valid_loss = compute_validation_loss(model, valid_generator, senseindices_db_c, vocab_h5,
-                                                                   grapharea_matrix, grapharea_size, graph_dataobj)
-                        validation_logging_point = global_step // steps_logging
-                        validation_losses_lts.append((validation_logging_point, epoch_valid_loss.item()))
-                        if epoch_valid_loss > previous_valid_loss + 0.01:  # (epsilon)
-                            pass # flag_earlystop = True -- no early stopping for now
-                        previous_valid_loss = epoch_valid_loss
-                    t1 = time()
-                    Utils.log_chronometer([t0,t1])
+                        logsegment_loss = sum_logsegment_loss / steps_logging
+                        logging.info("Global step=" + str(global_step) + ' ; Training nll_loss= ' + str(logsegment_loss))
+                        training_losses_lts.append((global_step,logsegment_loss))
+                        sum_logsegment_loss = 0
 
-        except MemoryError:
-            if flag_earlystop:
-                torch.save(graph_dataobj, os.path.join(F.FOLDER_GRAPHNN, hyperparams_str +
-                                              'step_' + str(global_step) + '_graph.dataobject'))
-                torch.save(model,os.path.join(F.FOLDER_GRAPHNN, hyperparams_str +
-                                              'step_' + str(global_step) + '.rgcnmodel'))
-                break
-            else:
-                continue # next epoch
+            except StopIteration:
+                # end of an epoch. Time to check the validation loss
+                valid_dataset = DL.TextDataset('validation', senseindices_db_c, vocab_h5, model,
+                                               grapharea_matrix, grapharea_size, graph_dataobj)
+                valid_dataloader = torch.utils.data.DataLoader(valid_dataset, batch_size=batch_size, num_workers=1,
+                                                               collate_fn=DL.collate_fn)
+                epoch_valid_loss = validation(valid_dataloader, model)
 
-    np.save(trainlosses_fpath, np.array(losses_lts))
+                if epoch_valid_loss > previous_epoch_valid_loss + 0.01:  # ( + epsilon)
+                    pass # flag_earlystop = True -- early stopping disabled for the test of overfitting on small dataset
+                previous_epoch_valid_loss = epoch_valid_loss
+
+
+    torch.save(graph_dataobj, os.path.join(F.FOLDER_GRAPHNN, hyperparams_str +
+                                  'step_' + str(global_step) + '_graph.dataobject'))
+    torch.save(model,os.path.join(F.FOLDER_GRAPHNN, hyperparams_str +
+                                  'step_' + str(global_step) + '.rgcnmodel'))
+
+    np.save(trainlosses_fpath, np.array(training_losses_lts))
     np.save(validlosses_fpath, np.array(validation_losses_lts))
+
+
+
+#####
+
+def validation(valid_dataloader, model):
+
+    model.eval()  # do not train the model now
+    sum_epoch_valid_loss = 0
+    validation_step = 0
+
+    with torch.no_grad: # Deactivates the autograd engine entirely to save some memory
+        for batch_input, batch_labels in valid_dataloader:
+            valid_loss = compute_model_loss(model, batch_input, batch_labels)
+            sum_epoch_valid_loss = sum_epoch_valid_loss + valid_loss
+            validation_step = validation_step + 1
+
+    epoch_valid_loss = sum_epoch_valid_loss / validation_step
+
+    model.train()  # training can resume
+
+    return epoch_valid_loss
+
+
+
