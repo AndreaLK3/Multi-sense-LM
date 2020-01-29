@@ -2,14 +2,12 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="d35dca92-959c-489d-8a61-f337e4cce7fa" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/GNN/ExplorePredictions.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/GNN/DataLoading.py" beforeDir="false" afterPath="$PROJECT_DIR$/GNN/DataLoading.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/GNN/MyRGCN.py" beforeDir="false" afterPath="$PROJECT_DIR$/GNN/MyRGCN.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/GNN/PocketRGCN.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/Media/Task1_DeveloperDiary_2.docx" beforeDir="false" afterPath="$PROJECT_DIR$/Media/Task1_DeveloperDiary_2.docx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MyRGCN.log" beforeDir="false" afterPath="$PROJECT_DIR$/MyRGCN.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Media/~$sk1_DeveloperDiary_2.docx" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/Utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/Utils.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/create_adjacencies_matrix_numpy.log" beforeDir="false" afterPath="$PROJECT_DIR$/create_adjacencies_matrix_numpy.log" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -23,19 +21,10 @@
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Filesystem.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="675">
-              <caret line="45" column="39" selection-start-line="45" selection-start-column="39" selection-end-line="45" selection-end-column="39" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/GNN/NumericalIndices.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="660">
-              <caret line="50" column="118" selection-start-line="50" selection-start-column="118" selection-end-line="50" selection-end-column="118" />
+            <state relative-caret-position="615">
+              <caret line="47" column="118" selection-start-line="47" selection-start-column="118" selection-end-line="47" selection-end-column="118" />
               <folding>
                 <element signature="e#0#14#0" expanded="true" />
               </folding>
@@ -67,8 +56,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Utils.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-624">
-              <caret line="85" column="14" selection-start-line="85" selection-start-column="14" selection-end-line="85" selection-end-column="14" />
+            <state relative-caret-position="-325">
+              <caret line="86" column="41" selection-start-line="86" selection-start-column="41" selection-end-line="86" selection-end-column="41" />
               <folding>
                 <element signature="e#0#14#0" expanded="true" />
               </folding>
@@ -76,13 +65,49 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/GNN/MyRGCN.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="299">
-              <caret line="39" column="70" lean-forward="true" selection-start-line="39" selection-start-column="34" selection-end-line="39" selection-end-column="70" />
+            <state relative-caret-position="1110">
+              <caret line="91" column="78" selection-start-line="91" selection-start-column="78" selection-end-line="91" selection-end-column="78" />
               <folding>
                 <element signature="e#0#12#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/GNN/ExplorePredictions.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="165">
+              <caret line="11" column="65" selection-start-line="11" selection-start-column="65" selection-end-line="11" selection-end-column="65" />
+              <folding>
+                <element signature="e#0#9#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/PrepareKBInput/PrepareKBInput.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="585">
+              <caret line="49" column="56" selection-start-line="48" selection-start-column="4" selection-end-line="49" selection-end-column="56" />
+              <folding>
+                <element signature="e#0#17#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Graph/DefineGraph.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="870">
+              <caret line="68" column="45" selection-start-line="68" selection-start-column="8" selection-end-line="68" selection-end-column="45" />
+              <folding>
+                <element signature="e#0#19#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -117,12 +142,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>info(</find>
-      <find>get_batch_indices_tpls</find>
-      <find>starting</find>
-      <find>init_logging</find>
-      <find>compute_validation_loss</find>
-      <find>perple</find>
       <find>t1</find>
       <find>sorted</find>
       <find>pd.</find>
@@ -147,6 +166,12 @@
       <find>node_index</find>
       <find>logging.info</find>
       <find>logging.info(</find>
+      <find>GLOBA</find>
+      <find>select_from_hdf5</find>
+      <find>db</find>
+      <find>db_c</find>
+      <find>WHERE</find>
+      <find>c.</find>
     </findStrings>
     <replaceStrings>
       <replace>F</replace>
@@ -167,9 +192,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/WordEmbeddings/SinglePrototypeVectors.py" />
-        <option value="$PROJECT_DIR$/WordEmbeddings/EmbedWithFastText.py" />
-        <option value="$PROJECT_DIR$/WordEmbeddings/EmbedWithDBERT.py" />
         <option value="$PROJECT_DIR$/GraphNN/GraphAttentionNetwork.py" />
         <option value="$PROJECT_DIR$/PrepareKBInput/SenseDenominations.py" />
         <option value="$PROJECT_DIR$/GraphNN/OnLoadingTheDataset.py" />
@@ -216,8 +238,11 @@
         <option value="$USER_HOME$/opt/anaconda3/lib/python3.7/site-packages/torch/utils/data/dataloader.py" />
         <option value="$USER_HOME$/opt/anaconda3/lib/python3.7/site-packages/torch_geometric/nn/conv/rgcn_conv.py" />
         <option value="$PROJECT_DIR$/GNN/DataLoading.py" />
-        <option value="$PROJECT_DIR$/Utils.py" />
+        <option value="$PROJECT_DIR$/GNN/Training.py" />
         <option value="$PROJECT_DIR$/GNN/MyRGCN.py" />
+        <option value="$PROJECT_DIR$/GNN/Explore.py" />
+        <option value="$PROJECT_DIR$/Utils.py" />
+        <option value="$PROJECT_DIR$/GNN/ExplorePredictions.py" />
       </list>
     </option>
   </component>
@@ -232,6 +257,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -289,7 +315,6 @@
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -353,14 +378,14 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="23" width="1920" height="1101" extended-state="6" />
+    <frame x="0" y="23" width="1440" height="801" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.49499" visible="true" weight="0.15867944" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.49499" visible="true" weight="0.16094421" />
       <window_info id="Structure" order="1" sideWeight="0.50501" side_tool="true" weight="0.17596567" />
       <window_info id="Favorites" order="2" sideWeight="0.50220263" side_tool="true" weight="0.18597998" />
       <window_info anchor="bottom" id="Message" order="0" />
-      <window_info anchor="bottom" id="Find" order="1" weight="0.30744594" />
+      <window_info anchor="bottom" id="Find" order="1" weight="0.30723488" />
       <window_info anchor="bottom" id="Run" order="2" />
       <window_info anchor="bottom" id="Debug" order="3" sideWeight="0.49946752" weight="0.3915132" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
@@ -369,7 +394,7 @@
       <window_info anchor="bottom" id="Version Control" order="7" weight="0.32746196" />
       <window_info anchor="bottom" id="Terminal" order="8" weight="0.32746196" />
       <window_info anchor="bottom" id="Event Log" order="9" sideWeight="0.5023828" side_tool="true" weight="0.32265812" />
-      <window_info anchor="bottom" id="Python Console" order="10" sideWeight="0.49761716" visible="true" weight="0.28741327" />
+      <window_info anchor="bottom" id="Python Console" order="10" sideWeight="0.49761716" visible="true" weight="0.28631875" />
       <window_info anchor="bottom" id="Inspection Results" order="11" weight="0.32922733" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
@@ -439,8 +464,6 @@
     </expressions>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/GraphNN/pyGAT/utils.py" />
-    <entry file="file://$PROJECT_DIR$/GraphNN/pyGAT/visualize_graph.py" />
     <entry file="file://$PROJECT_DIR$/GraphNN/pyGAT/layers.py" />
     <entry file="file://$PROJECT_DIR$/GraphNN/pyGAT/models.py" />
     <entry file="file://$PROJECT_DIR$/PrepareKBInput/SenseDenominations.py">
@@ -579,16 +602,6 @@
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
     <entry file="file://$PROJECT_DIR$/GNN/OnPytorchGeometric.py" />
-    <entry file="file://$PROJECT_DIR$/PrepareKBInput/PrepareKBInput.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="180">
-          <caret line="22" column="21" selection-start-line="22" selection-start-column="21" selection-end-line="22" selection-end-column="21" />
-          <folding>
-            <element signature="e#0#17#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$USER_HOME$/opt/anaconda3/lib/python3.7/site-packages/IPython/core/interactiveshell.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="164">
@@ -634,16 +647,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="349">
           <caret line="410" selection-start-line="410" selection-end-line="410" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Graph/DefineGraph.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <caret line="229" selection-start-line="229" selection-end-line="229" />
-          <folding>
-            <element signature="e#0#19#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -706,10 +709,12 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/GNN/PocketRGCN.py" />
+    <entry file="file://$PROJECT_DIR$/GNN/Training.py" />
     <entry file="file://$PROJECT_DIR$/GNN/NumericalIndices.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="660">
-          <caret line="50" column="118" selection-start-line="50" selection-start-column="118" selection-end-line="50" selection-end-column="118" />
+        <state relative-caret-position="615">
+          <caret line="47" column="118" selection-start-line="47" selection-start-column="118" selection-end-line="47" selection-end-column="118" />
           <folding>
             <element signature="e#0#14#0" expanded="true" />
           </folding>
@@ -733,6 +738,36 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/GNN/MyRGCN.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1110">
+          <caret line="91" column="78" selection-start-line="91" selection-start-column="78" selection-end-line="91" selection-end-column="78" />
+          <folding>
+            <element signature="e#0#12#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/PrepareKBInput/PrepareKBInput.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="585">
+          <caret line="49" column="56" selection-start-line="48" selection-start-column="4" selection-end-line="49" selection-end-column="56" />
+          <folding>
+            <element signature="e#0#17#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Graph/DefineGraph.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="870">
+          <caret line="68" column="45" selection-start-line="68" selection-start-column="8" selection-end-line="68" selection-end-column="45" />
+          <folding>
+            <element signature="e#0#19#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/Vocabulary/Vocabulary_Utilities.py">
       <provider selected="true" editor-type-id="text-editor">
         <state>
@@ -749,30 +784,20 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Utils.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-624">
-          <caret line="85" column="14" selection-start-line="85" selection-start-column="14" selection-end-line="85" selection-end-column="14" />
+        <state relative-caret-position="-325">
+          <caret line="86" column="41" selection-start-line="86" selection-start-column="41" selection-end-line="86" selection-end-column="41" />
           <folding>
             <element signature="e#0#14#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/GNN/PocketRGCN.py">
+    <entry file="file://$PROJECT_DIR$/GNN/ExplorePredictions.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2685">
-          <caret line="179" selection-start-line="179" selection-end-line="179" />
+        <state relative-caret-position="165">
+          <caret line="11" column="65" selection-start-line="11" selection-start-column="65" selection-end-line="11" selection-end-column="65" />
           <folding>
-            <element signature="e#0#12#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/GNN/MyRGCN.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="299">
-          <caret line="39" column="70" lean-forward="true" selection-start-line="39" selection-start-column="34" selection-end-line="39" selection-end-column="70" />
-          <folding>
-            <element signature="e#0#12#0" expanded="true" />
+            <element signature="e#0#9#0" expanded="true" />
           </folding>
         </state>
       </provider>

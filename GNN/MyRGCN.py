@@ -4,7 +4,7 @@ import Utils
 import Filesystem as F
 import logging
 import torch.nn.functional as tfunc
-import torch.nn.modules.instancenorm as istnorm
+import torch.nn.modules.batchnorm as batchnorm
 import Graph.DefineGraph as DG
 import GNN.SenseLabeledCorpus as SLC
 import sqlite3
@@ -37,7 +37,10 @@ class NetRGCN(torch.nn.Module):
         predictions_globals_ls = []
         predictions_senses_ls = []
         for (x, edge_index, edge_type) in batchinput_ls:
-            x_Lplus1 = tfunc.relu(self.conv1(x, edge_index, edge_type))
+            rgcn_conv = self.conv1(x, edge_index, edge_type)
+            # normalizer = batchnorm.BatchNorm1d(num_features=x.shape[1])
+            # normalized_rgcn_conv = normalizer(rgcn_conv)
+            x_Lplus1 = tfunc.relu(rgcn_conv)
             x1_current_node = x_Lplus1[0]  # current_node_index
             logits_global = self.linear2global(x1_current_node)  # shape=torch.Size([5])
             logits_sense = self.linear2sense(x1_current_node)
@@ -86,7 +89,7 @@ def compute_model_loss(model,batch_input, batch_labels):
 
 ########
 
-def train(grapharea_size=64, batch_size=8, learning_rate=0.003, num_epochs=200):
+def train(grapharea_size=32, batch_size=8, learning_rate=0.003, num_epochs=100):
     Utils.init_logging('MyRGCN.log')
     graph_dataobj = DG.get_graph_dataobject(new=False)
     logging.info(graph_dataobj)

@@ -82,6 +82,7 @@ def display_ygraph_fromfile(npy_fpath, axis_labels=None):
     plt.plot(data_y_array)
     plt.xticks(range(0,len(data_y_array), len(data_y_array)//20))
     plt.yticks(range(0, int(max(data_y_array)) + 1, 1))
+    plt.xlim((0, len(data_y_array)))
     plt.ylim((0, max(data_y_array)))
     plt.grid(b=True, color='lightgrey', linestyle='-', linewidth=0.5)
     if axis_labels is not None:
