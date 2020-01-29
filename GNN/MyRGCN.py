@@ -3,7 +3,8 @@ from torch_geometric.nn import RGCNConv
 import Utils
 import Filesystem as F
 import logging
-import torch.nn.functional as tF
+import torch.nn.functional as tfunc
+import torch.nn.modules.instancenorm as istnorm
 import Graph.DefineGraph as DG
 import GNN.SenseLabeledCorpus as SLC
 import sqlite3
@@ -13,7 +14,6 @@ from math import inf
 import Graph.Adjacencies as AD
 import numpy as np
 from time import time
-import GNN.BatchProcessing as BP
 from Utils import DEVICE
 import GNN.DataLoading as DL
 
@@ -37,14 +37,14 @@ class NetRGCN(torch.nn.Module):
         predictions_globals_ls = []
         predictions_senses_ls = []
         for (x, edge_index, edge_type) in batchinput_ls:
-            x_Lplus1 = tF.relu(self.conv1(x, edge_index, edge_type))
+            x_Lplus1 = tfunc.relu(self.conv1(x, edge_index, edge_type))
             x1_current_node = x_Lplus1[0]  # current_node_index
             logits_global = self.linear2global(x1_current_node)  # shape=torch.Size([5])
             logits_sense = self.linear2sense(x1_current_node)
 
-            sample_predictions_globals = tF.log_softmax(logits_global, dim=0)
+            sample_predictions_globals = tfunc.log_softmax(logits_global, dim=0)
             predictions_globals_ls.append(sample_predictions_globals)
-            sample_predictions_senses = tF.log_softmax(logits_sense, dim=0)
+            sample_predictions_senses = tfunc.log_softmax(logits_sense, dim=0)
             predictions_senses_ls.append(sample_predictions_senses)
 
         return torch.stack(predictions_globals_ls, dim=0), torch.stack(predictions_senses_ls, dim=0)
@@ -62,8 +62,8 @@ def compute_sense_loss(predictions_senses, batch_labels_senses):
             batch_validsenses_labels.append(senselabel.item())
             batch_validsenses_predicted.append(predictions_senses[i])
     if len(batch_validsenses_labels) > 1:
-        loss_sense = tF.nll_loss(torch.stack(batch_validsenses_predicted).to(DEVICE),
-                                 torch.tensor(batch_validsenses_labels, dtype=torch.int64).to(DEVICE))
+        loss_sense = tfunc.nll_loss(torch.stack(batch_validsenses_predicted).to(DEVICE),
+                                    torch.tensor(batch_validsenses_labels, dtype=torch.int64).to(DEVICE))
     else:
         loss_sense = 0
     return loss_sense
@@ -78,7 +78,7 @@ def compute_model_loss(model,batch_input, batch_labels):
     batch_labels_senses = batch_labels_t[1]
 
     # compute the loss for the batch
-    loss_global = tF.nll_loss(predictions_globals, batch_labels_globals)
+    loss_global = tfunc.nll_loss(predictions_globals, batch_labels_globals)
     loss_sense = compute_sense_loss(predictions_senses, batch_labels_senses)
     loss = loss_global + loss_sense
 
@@ -86,7 +86,7 @@ def compute_model_loss(model,batch_input, batch_labels):
 
 ########
 
-def train(grapharea_size=32, batch_size=8, learning_rate=0.0001, num_epochs=20):
+def train(grapharea_size=64, batch_size=8, learning_rate=0.003, num_epochs=200):
     Utils.init_logging('MyRGCN.log')
     graph_dataobj = DG.get_graph_dataobject(new=False)
     logging.info(graph_dataobj)
@@ -109,66 +109,76 @@ def train(grapharea_size=32, batch_size=8, learning_rate=0.0001, num_epochs=20):
     globals_vocabulary_fpath = os.path.join(F.FOLDER_VOCABULARY, F.VOCABULARY_OF_GLOBALS_FILE)
     vocab_h5 = pd.HDFStore(globals_vocabulary_fpath, mode='r')
 
-    optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate, weight_decay=0.0005)
+    optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate) #  weight_decay=0.0005
 
     model.train()
     training_losses_lts = []
     validation_losses_lts = []
-    steps_logging = 500 // batch_size
+    steps_logging = 100 // batch_size
     hyperparams_str = 'batch' + str(batch_size) \
-                                  + '_area' + str(grapharea_size)\
-                                  + '_lr' + str(learning_rate) \
-                                  + '_epochs' + str(num_epochs)
+                      + '_area' + str(grapharea_size)\
+                      + '_lr' + str(learning_rate) \
+                      + '_epochs' + str(num_epochs)
     trainlosses_fpath = os.path.join(F.FOLDER_GRAPHNN, hyperparams_str + '_' + Utils.TRAINING + '_' + F.LOSSES_FILEEND)
     validlosses_fpath = os.path.join(F.FOLDER_GRAPHNN, hyperparams_str + '_' + Utils.VALIDATION + '_' + F.LOSSES_FILEEND)
 
     global_step = 0
+    previous_valid_loss = inf
+
     for epoch in range(1,num_epochs+1):
         logging.info("\nTraining epoch n."+str(epoch) + ":")
         train_dataset = DL.TextDataset('training', senseindices_db_c, vocab_h5, model,
                                        grapharea_matrix, grapharea_size, graph_dataobj)
-        train_dataloader = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size, num_workers=1,
+        train_dataloader = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size, num_workers=0,
                                                        collate_fn=DL.collate_fn)
 
-        sum_logsegment_loss = 0
-        previous_epoch_valid_loss = inf
+        sum_epoch_loss = 0
+        epoch_step = 0
+
         flag_earlystop = False
 
-        while(not(flag_earlystop)):
-            try:
-                for batch_input, batch_labels in train_dataloader: # tuple of 2 lists
+        for batch_input, batch_labels in train_dataloader: # tuple of 2 lists
+            # starting operations on one batch
+            optimizer.zero_grad()
+            t0 = time()
+            # compute loss for the batch
+            loss = compute_model_loss(model, batch_input, batch_labels)
+            # running sum of the training loss in the log segment
+            sum_epoch_loss = sum_epoch_loss + loss.item()
 
-                    # starting operations on one batch
-                    optimizer.zero_grad()
-                    t0 = time()
-                    # compute loss for the batch
-                    loss = compute_model_loss(model, batch_input, batch_labels)
-                    # running sum of the training loss in the log segment
-                    sum_logsegment_loss = sum_logsegment_loss + loss.item()
+            loss.backward()
+            optimizer.step()
 
-                    loss.backward()
-                    optimizer.step()
+            global_step = global_step + 1
+            epoch_step = epoch_step + 1
+            if global_step % steps_logging == 0:
+                logging.info("Global step=" + str(global_step) + "\t ; Iteration time=" + str(round(time()-t0,5)))
 
-                    global_step = global_step +1
-                    if global_step % steps_logging == 0:
-                        logging.info("Iteration time=" + str(round(time()-t0,5)))
-                        logsegment_loss = sum_logsegment_loss / steps_logging
-                        logging.info("Global step=" + str(global_step) + ' ; Training nll_loss= ' + str(logsegment_loss))
-                        training_losses_lts.append((global_step,logsegment_loss))
-                        sum_logsegment_loss = 0
+            #Utils.log_chronometer([t0, time()])
+            #logging.info('Epoch step n.' + str(epoch_step) + ", using batch_size=" + str(batch_size))
 
-            except StopIteration:
-                # end of an epoch. Time to check the validation loss
-                valid_dataset = DL.TextDataset('validation', senseindices_db_c, vocab_h5, model,
-                                               grapharea_matrix, grapharea_size, graph_dataobj)
-                valid_dataloader = torch.utils.data.DataLoader(valid_dataset, batch_size=batch_size, num_workers=1,
-                                                               collate_fn=DL.collate_fn)
-                epoch_valid_loss = validation(valid_dataloader, model)
 
-                if epoch_valid_loss > previous_epoch_valid_loss + 0.01:  # ( + epsilon)
-                    pass # flag_earlystop = True -- early stopping disabled for the test of overfitting on small dataset
-                previous_epoch_valid_loss = epoch_valid_loss
+        # except StopIteration: the DataLoader naturally catches StopIteration
+            # end of an epoch.
+        logging.info("-----\n End of epoch. Global step n." + str(global_step) + ", using batch_size=" + str(batch_size))
+        epoch_loss = sum_epoch_loss / epoch_step
+        logging.info("Training, epoch nll_loss= " + str(round(epoch_loss,5)) + '\n------')
+        training_losses_lts.append(epoch_loss) # (num_epochs, epoch_loss)
+        # Time to check the validation loss
+        # early stopping disabled for the test of overfitting on small dataset
+        continue
+        valid_dataset = DL.TextDataset('validation', senseindices_db_c, vocab_h5, model,
+                                       grapharea_matrix, grapharea_size, graph_dataobj)
+        valid_dataloader = torch.utils.data.DataLoader(valid_dataset, batch_size=batch_size, num_workers=1,
+                                                       collate_fn=DL.collate_fn)
+        epoch_valid_loss = validation(valid_dataloader, model)
 
+        if epoch_valid_loss > previous_valid_loss + 0.01:  # ( + epsilon)
+            flag_earlystop = True
+        previous_valid_loss = epoch_valid_loss
+
+        if flag_earlystop:
+            break
 
     torch.save(graph_dataobj, os.path.join(F.FOLDER_GRAPHNN, hyperparams_str +
                                   'step_' + str(global_step) + '_graph.dataobject'))
@@ -187,12 +197,15 @@ def validation(valid_dataloader, model):
     model.eval()  # do not train the model now
     sum_epoch_valid_loss = 0
     validation_step = 0
+    logging_step = 1000
 
     with torch.no_grad: # Deactivates the autograd engine entirely to save some memory
         for batch_input, batch_labels in valid_dataloader:
             valid_loss = compute_model_loss(model, batch_input, batch_labels)
             sum_epoch_valid_loss = sum_epoch_valid_loss + valid_loss
             validation_step = validation_step + 1
+            if validation_step % logging_step == 0:
+                logging.info("Validation step n. " + str(validation_step))
 
     epoch_valid_loss = sum_epoch_valid_loss / validation_step
 
