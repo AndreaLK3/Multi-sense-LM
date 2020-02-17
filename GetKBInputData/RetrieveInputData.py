@@ -37,7 +37,7 @@ def retrieve_data_WordNet(vocabulary_df):
             word = vocabulary_df.iloc[current_index]['word'] # causes exception when we finish reading the vocabulary
         except IndexError:
             logging.info("Finished retrieving input data for the " + str(requests_counter) +
-                         "words of the vocabulary.")
+                         " words of the vocabulary.")
             break
         logging.debug("RetrieveInputData.retrieve_data_WordNet() > " +
                      "word = vocabulary_df.iloc[current_index]['word']. >> Word="+str(word))

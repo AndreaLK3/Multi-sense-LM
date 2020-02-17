@@ -28,11 +28,15 @@ def reset():
                                [F.VOCABULARY_OF_GLOBALS_FILE, F.VOCAB_PHRASED]))
     db_filepaths = [os.path.join(F.FOLDER_INPUT, Utils.INDICES_TABLE_DB)]
 
+    # reset the graph object file, and the area_matrices
+    graph_filepaths = [os.path.join(F.FOLDER_GNN, F.KBGRAPH_FILE)] + \
+                      [os.path.join(F.FOLDER_GRAPH, fname) for fname in os.listdir(F.FOLDER_GRAPH) if '.npy' in fname]
+
     for fpath in archives_filepaths:
         f = pd.HDFStore(fpath, mode='w')
         f.close()
 
-    for fpath in vocab_filepaths + phrased_corpus_filepaths + db_filepaths:
+    for fpath in vocab_filepaths + phrased_corpus_filepaths + db_filepaths + graph_filepaths:
         if os.path.exists(fpath):
             os.remove(fpath)
 
@@ -52,7 +56,7 @@ def reset_embeddings():
 
 
 
-def exe(do_reset=False, compute_single_prototype=False, vocabulary_from_senselabeled=False):
+def exe(do_reset=False, compute_single_prototype=False, vocabulary_from_senselabeled=True):
     Utils.init_logging('Pipeline_CGI.log')
     if do_reset:
         reset()
@@ -61,7 +65,7 @@ def exe(do_reset=False, compute_single_prototype=False, vocabulary_from_senselab
     outvocab_filepath = os.path.join(F.FOLDER_VOCABULARY, F.VOCABULARY_OF_GLOBALS_FILE)
     vocabulary = V.get_vocabulary_df(senselabeled_or_text=vocabulary_from_senselabeled, slc_split_name='training',
                                      corpus_txt_filepath=vocab_text_source,
-                                     out_vocabulary_h5_filepath=outvocab_filepath, min_count=10)
+                                     out_vocabulary_h5_filepath=outvocab_filepath, min_count=5)
 
     if compute_single_prototype:
         reset_embeddings()

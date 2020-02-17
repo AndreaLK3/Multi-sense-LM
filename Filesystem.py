@@ -6,7 +6,7 @@ FOLDER_VOCABULARY = 'Vocabulary'
 FOLDER_TEXT_CORPUSES = 'TextCorpuses'
 FOLDER_UFSAC = 'ufsac-public-2.1'
 FOLDER_GRAPH = "Graph"
-FOLDER_GRAPHNN = 'GNN'
+FOLDER_GNN = 'GNN'
 
 BN_WORD_INTROS = 'BabelNet_word_intros'
 BN_SYNSET_DATA = 'BabelNet_synset_data'

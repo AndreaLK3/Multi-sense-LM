@@ -16,6 +16,7 @@ import numpy as np
 from time import time
 from Utils import DEVICE
 import GNN.DataLoading as DL
+import GNN.ExplorePredictions as EP
 
 ### The Graph Neural Network. Currently, it has:
 ###     1 RGCN layer that operates on the selected area of the the graph
@@ -73,7 +74,7 @@ def compute_sense_loss(predictions_senses, batch_labels_senses):
 
 ########
 
-def compute_model_loss(model,batch_input, batch_labels):
+def compute_model_loss(model,batch_input, batch_labels, verbose=False):
     predictions_globals, predictions_senses = model(batch_input)
 
     batch_labels_t = torch.tensor(batch_labels).t().to(DEVICE)
@@ -84,6 +85,10 @@ def compute_model_loss(model,batch_input, batch_labels):
     loss_global = tfunc.nll_loss(predictions_globals, batch_labels_globals)
     loss_sense = compute_sense_loss(predictions_senses, batch_labels_senses)
     loss = loss_global + loss_sense
+
+    # debug: check the solutions and predictions. Is there anything the model is unable to predict?
+    if verbose:
+        EP.log_batch(batch_labels, predictions_globals, predictions_senses, 5)
 
     return loss
 
@@ -122,8 +127,8 @@ def train(grapharea_size=32, batch_size=8, learning_rate=0.003, num_epochs=100):
                       + '_area' + str(grapharea_size)\
                       + '_lr' + str(learning_rate) \
                       + '_epochs' + str(num_epochs)
-    trainlosses_fpath = os.path.join(F.FOLDER_GRAPHNN, hyperparams_str + '_' + Utils.TRAINING + '_' + F.LOSSES_FILEEND)
-    validlosses_fpath = os.path.join(F.FOLDER_GRAPHNN, hyperparams_str + '_' + Utils.VALIDATION + '_' + F.LOSSES_FILEEND)
+    trainlosses_fpath = os.path.join(F.FOLDER_GNN, hyperparams_str + '_' + Utils.TRAINING + '_' + F.LOSSES_FILEEND)
+    validlosses_fpath = os.path.join(F.FOLDER_GNN, hyperparams_str + '_' + Utils.VALIDATION + '_' + F.LOSSES_FILEEND)
 
     global_step = 0
     previous_valid_loss = inf
@@ -137,6 +142,7 @@ def train(grapharea_size=32, batch_size=8, learning_rate=0.003, num_epochs=100):
 
         sum_epoch_loss = 0
         epoch_step = 0
+        verbose = True if epoch==num_epochs else False # log output if in last epoch
 
         flag_earlystop = False
 
@@ -145,7 +151,7 @@ def train(grapharea_size=32, batch_size=8, learning_rate=0.003, num_epochs=100):
             optimizer.zero_grad()
             t0 = time()
             # compute loss for the batch
-            loss = compute_model_loss(model, batch_input, batch_labels)
+            loss = compute_model_loss(model, batch_input, batch_labels, verbose)
             # running sum of the training loss in the log segment
             sum_epoch_loss = sum_epoch_loss + loss.item()
 
@@ -167,9 +173,11 @@ def train(grapharea_size=32, batch_size=8, learning_rate=0.003, num_epochs=100):
         epoch_loss = sum_epoch_loss / epoch_step
         logging.info("Training, epoch nll_loss= " + str(round(epoch_loss,5)) + '\n------')
         training_losses_lts.append(epoch_loss) # (num_epochs, epoch_loss)
+
+        continue
         # Time to check the validation loss
         # early stopping disabled for the test of overfitting on small dataset
-        continue
+
         valid_dataset = DL.TextDataset('validation', senseindices_db_c, vocab_h5, model,
                                        grapharea_matrix, grapharea_size, graph_dataobj)
         valid_dataloader = torch.utils.data.DataLoader(valid_dataset, batch_size=batch_size, num_workers=1,
@@ -183,9 +191,9 @@ def train(grapharea_size=32, batch_size=8, learning_rate=0.003, num_epochs=100):
         if flag_earlystop:
             break
 
-    torch.save(graph_dataobj, os.path.join(F.FOLDER_GRAPHNN, hyperparams_str +
+    torch.save(graph_dataobj, os.path.join(F.FOLDER_GNN, hyperparams_str +
                                   'step_' + str(global_step) + '_graph.dataobject'))
-    torch.save(model,os.path.join(F.FOLDER_GRAPHNN, hyperparams_str +
+    torch.save(model,os.path.join(F.FOLDER_GNN, hyperparams_str +
                                   'step_' + str(global_step) + '.rgcnmodel'))
 
     np.save(trainlosses_fpath, np.array(training_losses_lts))
