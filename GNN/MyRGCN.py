@@ -61,6 +61,10 @@ class PremadeRGCN(torch.nn.Module):
 # b_L : N x d
 def gcn_convolution(H, A, W_L, b_L):
     support = torch.mm(H, W_L)
+    logging.info("H=" + str(H))
+    logging.info("W_L=" + str(W_L))
+    logging.info("support="+ str(support))
+    logging.info("***")
     gcn_conv_result = torch.mm(A, support) + b_L
     return gcn_conv_result
 
@@ -71,19 +75,34 @@ H = torch.tensor([[5,10], [0.1,0.2], [-1,-1]])
 W_all= torch.stack([torch.ones((d,d)) * 2, torch.ones((d,d)) * 10])
 Ar_all = torch.tensor([[ [0,1,1] , [0,0,1] , [1,0,0] ], [ [0,0,0] , [1,0,0] , [0,1,0] ]]).to(torch.float)
 def rgcn_convolution(H, Ar_all, W_all):
-    # Ar_s is a list of adjacency matrices for the different kinds of edges.
+    # Ar_all is a list of adjacency matrices for the different kinds of edges.
     # we add here the 0-th, that will be used for W_0^l * h_i^l
     A0 = torch.diag(torch.ones(size=(H.shape[0],)))
 
     b_L = torch.zeros((N,d))
-    self_connection = gcn_convolution(H, A0, W_all[0], b_L)
-    print(self_connection.shape)
 
+    self_connection = gcn_convolution(H, A0, W_all[0], b_L)
+    logging.info("Self connection=" + str(self_connection))
+    
     sum = 0
     for r in range(Ar_all.shape[0]):
         Ar = Ar_all[r]
+        logging.info("Ar=" + str(Ar))
         Wr = W_all[r]
+        logging.info("Wr=" + str(Wr))
         rel_contribution = gcn_convolution(H, Ar, Wr, b_L)
-        print(rel_contribution)
-        sum = sum + rel_contribution
+        logging.info("rel_contribution=" + str(rel_contribution))
+        c_ir_s = []
+        for i in range(N):
+            c_ir = [j for j in range(N) if Ar[i][j] != 0].__len__()
+            c_ir_s.append([max(c_ir,1) for col in range(d)])
+        c_ir_s = torch.tensor(c_ir_s)
 
+        logging.info("c_ir_s=" + str(c_ir_s))
+        sum = sum + rel_contribution / c_ir_s
+        logging.info("sum in progress=" + str(sum))
+
+    sum = sum + self_connection
+    logging.info("sum=" + str(sum))
+
+    return sum
