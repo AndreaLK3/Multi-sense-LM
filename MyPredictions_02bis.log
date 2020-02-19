@@ -1,0 +1,3297 @@
+INFO : Data(edge_index=[2, 76050], edge_type=[76050], node_types=[65632], num_relations=[1], x=[65632, 300])
+INFO : Graph-data object loaded, model initialized. Moving them to GPU device(s) if present.
+INFO : Loading graphArea matrix, with area_size=32 from: Graph/nodes_32_graphArea_matrix.npy
+INFO : 
+Training epoch n.1:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=12	 ; Iteration time=0.00829
+INFO : -----
+ End of epoch. Global step n.16, using batch_size=8
+INFO : Training, epoch nll_loss= 18.61952
+------
+INFO : 
+Training epoch n.2:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=24	 ; Iteration time=0.00831
+INFO : -----
+ End of epoch. Global step n.32, using batch_size=8
+INFO : Training, epoch nll_loss= 11.96902
+------
+INFO : 
+Training epoch n.3:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=36	 ; Iteration time=0.01002
+INFO : Global step=48	 ; Iteration time=0.00827
+INFO : -----
+ End of epoch. Global step n.48, using batch_size=8
+INFO : Training, epoch nll_loss= 7.89556
+------
+INFO : 
+Training epoch n.4:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=60	 ; Iteration time=0.01298
+INFO : -----
+ End of epoch. Global step n.64, using batch_size=8
+INFO : Training, epoch nll_loss= 7.31174
+------
+INFO : 
+Training epoch n.5:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=72	 ; Iteration time=0.00803
+INFO : -----
+ End of epoch. Global step n.80, using batch_size=8
+INFO : Training, epoch nll_loss= 7.17568
+------
+INFO : 
+Training epoch n.6:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=84	 ; Iteration time=0.00879
+INFO : Global step=96	 ; Iteration time=0.01283
+INFO : -----
+ End of epoch. Global step n.96, using batch_size=8
+INFO : Training, epoch nll_loss= 7.02917
+------
+INFO : 
+Training epoch n.7:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=108	 ; Iteration time=0.01287
+INFO : -----
+ End of epoch. Global step n.112, using batch_size=8
+INFO : Training, epoch nll_loss= 6.80772
+------
+INFO : 
+Training epoch n.8:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=120	 ; Iteration time=0.01313
+INFO : -----
+ End of epoch. Global step n.128, using batch_size=8
+INFO : Training, epoch nll_loss= 6.54236
+------
+INFO : 
+Training epoch n.9:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=132	 ; Iteration time=0.01328
+INFO : Global step=144	 ; Iteration time=0.0133
+INFO : -----
+ End of epoch. Global step n.144, using batch_size=8
+INFO : Training, epoch nll_loss= 6.24574
+------
+INFO : 
+Training epoch n.10:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=156	 ; Iteration time=0.00827
+INFO : -----
+ End of epoch. Global step n.160, using batch_size=8
+INFO : Training, epoch nll_loss= 5.9435
+------
+INFO : 
+Training epoch n.11:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=168	 ; Iteration time=0.01309
+INFO : -----
+ End of epoch. Global step n.176, using batch_size=8
+INFO : Training, epoch nll_loss= 5.64258
+------
+INFO : 
+Training epoch n.12:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=180	 ; Iteration time=0.00718
+INFO : Global step=192	 ; Iteration time=0.00849
+INFO : -----
+ End of epoch. Global step n.192, using batch_size=8
+INFO : Training, epoch nll_loss= 5.35537
+------
+INFO : 
+Training epoch n.13:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=204	 ; Iteration time=0.00837
+INFO : -----
+ End of epoch. Global step n.208, using batch_size=8
+INFO : Training, epoch nll_loss= 5.10245
+------
+INFO : 
+Training epoch n.14:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=216	 ; Iteration time=0.00815
+INFO : -----
+ End of epoch. Global step n.224, using batch_size=8
+INFO : Training, epoch nll_loss= 4.8945
+------
+INFO : 
+Training epoch n.15:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=228	 ; Iteration time=0.00702
+INFO : Global step=240	 ; Iteration time=0.01287
+INFO : -----
+ End of epoch. Global step n.240, using batch_size=8
+INFO : Training, epoch nll_loss= 4.70064
+------
+INFO : 
+Training epoch n.16:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=252	 ; Iteration time=0.00836
+INFO : -----
+ End of epoch. Global step n.256, using batch_size=8
+INFO : Training, epoch nll_loss= 4.56214
+------
+INFO : 
+Training epoch n.17:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=264	 ; Iteration time=0.00846
+INFO : -----
+ End of epoch. Global step n.272, using batch_size=8
+INFO : Training, epoch nll_loss= 4.41935
+------
+INFO : 
+Training epoch n.18:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=276	 ; Iteration time=0.01314
+INFO : Global step=288	 ; Iteration time=0.01295
+INFO : -----
+ End of epoch. Global step n.288, using batch_size=8
+INFO : Training, epoch nll_loss= 4.30795
+------
+INFO : 
+Training epoch n.19:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=300	 ; Iteration time=0.01325
+INFO : -----
+ End of epoch. Global step n.304, using batch_size=8
+INFO : Training, epoch nll_loss= 4.21743
+------
+INFO : 
+Training epoch n.20:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=312	 ; Iteration time=0.01276
+INFO : -----
+ End of epoch. Global step n.320, using batch_size=8
+INFO : Training, epoch nll_loss= 4.11569
+------
+INFO : 
+Training epoch n.21:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=324	 ; Iteration time=0.01314
+INFO : Global step=336	 ; Iteration time=0.01295
+INFO : -----
+ End of epoch. Global step n.336, using batch_size=8
+INFO : Training, epoch nll_loss= 4.04131
+------
+INFO : 
+Training epoch n.22:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=348	 ; Iteration time=0.01287
+INFO : -----
+ End of epoch. Global step n.352, using batch_size=8
+INFO : Training, epoch nll_loss= 3.96689
+------
+INFO : 
+Training epoch n.23:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=360	 ; Iteration time=0.01305
+INFO : -----
+ End of epoch. Global step n.368, using batch_size=8
+INFO : Training, epoch nll_loss= 3.90362
+------
+INFO : 
+Training epoch n.24:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=372	 ; Iteration time=0.0131
+INFO : Global step=384	 ; Iteration time=0.00822
+INFO : -----
+ End of epoch. Global step n.384, using batch_size=8
+INFO : Training, epoch nll_loss= 3.84281
+------
+INFO : 
+Training epoch n.25:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=396	 ; Iteration time=0.01287
+INFO : -----
+ End of epoch. Global step n.400, using batch_size=8
+INFO : Training, epoch nll_loss= 3.78387
+------
+INFO : 
+Training epoch n.26:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=408	 ; Iteration time=0.01295
+INFO : -----
+ End of epoch. Global step n.416, using batch_size=8
+INFO : Training, epoch nll_loss= 3.73462
+------
+INFO : 
+Training epoch n.27:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=420	 ; Iteration time=0.01322
+INFO : Global step=432	 ; Iteration time=0.01287
+INFO : -----
+ End of epoch. Global step n.432, using batch_size=8
+INFO : Training, epoch nll_loss= 3.67974
+------
+INFO : 
+Training epoch n.28:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=444	 ; Iteration time=0.01298
+INFO : -----
+ End of epoch. Global step n.448, using batch_size=8
+INFO : Training, epoch nll_loss= 3.63142
+------
+INFO : 
+Training epoch n.29:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=456	 ; Iteration time=0.01309
+INFO : -----
+ End of epoch. Global step n.464, using batch_size=8
+INFO : Training, epoch nll_loss= 3.58456
+------
+INFO : 
+Training epoch n.30:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=468	 ; Iteration time=0.01306
+INFO : Global step=480	 ; Iteration time=0.01309
+INFO : -----
+ End of epoch. Global step n.480, using batch_size=8
+INFO : Training, epoch nll_loss= 3.53231
+------
+INFO : 
+Training epoch n.31:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=492	 ; Iteration time=0.013
+INFO : -----
+ End of epoch. Global step n.496, using batch_size=8
+INFO : Training, epoch nll_loss= 3.5007
+------
+INFO : 
+Training epoch n.32:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=504	 ; Iteration time=0.00825
+INFO : -----
+ End of epoch. Global step n.512, using batch_size=8
+INFO : Training, epoch nll_loss= 3.46173
+------
+INFO : 
+Training epoch n.33:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=516	 ; Iteration time=0.00701
+INFO : Global step=528	 ; Iteration time=0.00819
+INFO : -----
+ End of epoch. Global step n.528, using batch_size=8
+INFO : Training, epoch nll_loss= 3.41345
+------
+INFO : 
+Training epoch n.34:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=540	 ; Iteration time=0.01277
+INFO : -----
+ End of epoch. Global step n.544, using batch_size=8
+INFO : Training, epoch nll_loss= 3.36682
+------
+INFO : 
+Training epoch n.35:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=552	 ; Iteration time=0.0129
+INFO : -----
+ End of epoch. Global step n.560, using batch_size=8
+INFO : Training, epoch nll_loss= 3.33746
+------
+INFO : 
+Training epoch n.36:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=564	 ; Iteration time=0.01305
+INFO : Global step=576	 ; Iteration time=0.01296
+INFO : -----
+ End of epoch. Global step n.576, using batch_size=8
+INFO : Training, epoch nll_loss= 3.30062
+------
+INFO : 
+Training epoch n.37:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=588	 ; Iteration time=0.01294
+INFO : -----
+ End of epoch. Global step n.592, using batch_size=8
+INFO : Training, epoch nll_loss= 3.25898
+------
+INFO : 
+Training epoch n.38:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=600	 ; Iteration time=0.01301
+INFO : -----
+ End of epoch. Global step n.608, using batch_size=8
+INFO : Training, epoch nll_loss= 3.22703
+------
+INFO : 
+Training epoch n.39:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=612	 ; Iteration time=0.01319
+INFO : Global step=624	 ; Iteration time=0.01279
+INFO : -----
+ End of epoch. Global step n.624, using batch_size=8
+INFO : Training, epoch nll_loss= 3.1891
+------
+INFO : 
+Training epoch n.40:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=636	 ; Iteration time=0.01276
+INFO : -----
+ End of epoch. Global step n.640, using batch_size=8
+INFO : Training, epoch nll_loss= 3.14843
+------
+INFO : 
+Training epoch n.41:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=648	 ; Iteration time=0.01296
+INFO : -----
+ End of epoch. Global step n.656, using batch_size=8
+INFO : Training, epoch nll_loss= 3.13022
+------
+INFO : 
+Training epoch n.42:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=660	 ; Iteration time=0.01318
+INFO : Global step=672	 ; Iteration time=0.01301
+INFO : -----
+ End of epoch. Global step n.672, using batch_size=8
+INFO : Training, epoch nll_loss= 3.09664
+------
+INFO : 
+Training epoch n.43:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=684	 ; Iteration time=0.01279
+INFO : -----
+ End of epoch. Global step n.688, using batch_size=8
+INFO : Training, epoch nll_loss= 3.08
+------
+INFO : 
+Training epoch n.44:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=696	 ; Iteration time=0.01269
+INFO : -----
+ End of epoch. Global step n.704, using batch_size=8
+INFO : Training, epoch nll_loss= 3.02928
+------
+INFO : 
+Training epoch n.45:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=708	 ; Iteration time=0.0143
+INFO : Global step=720	 ; Iteration time=0.01271
+INFO : -----
+ End of epoch. Global step n.720, using batch_size=8
+INFO : Training, epoch nll_loss= 3.00753
+------
+INFO : 
+Training epoch n.46:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=732	 ; Iteration time=0.01302
+INFO : -----
+ End of epoch. Global step n.736, using batch_size=8
+INFO : Training, epoch nll_loss= 2.97163
+------
+INFO : 
+Training epoch n.47:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=744	 ; Iteration time=0.01272
+INFO : -----
+ End of epoch. Global step n.752, using batch_size=8
+INFO : Training, epoch nll_loss= 2.97088
+------
+INFO : 
+Training epoch n.48:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=756	 ; Iteration time=0.01321
+INFO : Global step=768	 ; Iteration time=0.01297
+INFO : -----
+ End of epoch. Global step n.768, using batch_size=8
+INFO : Training, epoch nll_loss= 2.91657
+------
+INFO : 
+Training epoch n.49:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=780	 ; Iteration time=0.01371
+INFO : -----
+ End of epoch. Global step n.784, using batch_size=8
+INFO : Training, epoch nll_loss= 2.90227
+------
+INFO : 
+Training epoch n.50:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=792	 ; Iteration time=0.01296
+INFO : -----
+ End of epoch. Global step n.800, using batch_size=8
+INFO : Training, epoch nll_loss= 2.87157
+------
+INFO : 
+Training epoch n.51:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=804	 ; Iteration time=0.01338
+INFO : Global step=816	 ; Iteration time=0.01275
+INFO : -----
+ End of epoch. Global step n.816, using batch_size=8
+INFO : Training, epoch nll_loss= 2.85306
+------
+INFO : 
+Training epoch n.52:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=828	 ; Iteration time=0.01285
+INFO : -----
+ End of epoch. Global step n.832, using batch_size=8
+INFO : Training, epoch nll_loss= 2.8364
+------
+INFO : 
+Training epoch n.53:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=840	 ; Iteration time=0.01307
+INFO : -----
+ End of epoch. Global step n.848, using batch_size=8
+INFO : Training, epoch nll_loss= 2.79597
+------
+INFO : 
+Training epoch n.54:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=852	 ; Iteration time=0.01321
+INFO : Global step=864	 ; Iteration time=0.01301
+INFO : -----
+ End of epoch. Global step n.864, using batch_size=8
+INFO : Training, epoch nll_loss= 2.78708
+------
+INFO : 
+Training epoch n.55:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=876	 ; Iteration time=0.01281
+INFO : -----
+ End of epoch. Global step n.880, using batch_size=8
+INFO : Training, epoch nll_loss= 2.75909
+------
+INFO : 
+Training epoch n.56:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=888	 ; Iteration time=0.01287
+INFO : -----
+ End of epoch. Global step n.896, using batch_size=8
+INFO : Training, epoch nll_loss= 2.74996
+------
+INFO : 
+Training epoch n.57:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=900	 ; Iteration time=0.01324
+INFO : Global step=912	 ; Iteration time=0.01283
+INFO : -----
+ End of epoch. Global step n.912, using batch_size=8
+INFO : Training, epoch nll_loss= 2.71934
+------
+INFO : 
+Training epoch n.58:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=924	 ; Iteration time=0.01322
+INFO : -----
+ End of epoch. Global step n.928, using batch_size=8
+INFO : Training, epoch nll_loss= 2.70594
+------
+INFO : 
+Training epoch n.59:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=936	 ; Iteration time=0.01298
+INFO : -----
+ End of epoch. Global step n.944, using batch_size=8
+INFO : Training, epoch nll_loss= 2.68584
+------
+INFO : 
+Training epoch n.60:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=948	 ; Iteration time=0.01337
+INFO : Global step=960	 ; Iteration time=0.01298
+INFO : -----
+ End of epoch. Global step n.960, using batch_size=8
+INFO : Training, epoch nll_loss= 2.67004
+------
+INFO : 
+Training epoch n.61:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=972	 ; Iteration time=0.01315
+INFO : -----
+ End of epoch. Global step n.976, using batch_size=8
+INFO : Training, epoch nll_loss= 2.66593
+------
+INFO : 
+Training epoch n.62:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=984	 ; Iteration time=0.01299
+INFO : -----
+ End of epoch. Global step n.992, using batch_size=8
+INFO : Training, epoch nll_loss= 2.62971
+------
+INFO : 
+Training epoch n.63:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=996	 ; Iteration time=0.01313
+INFO : Global step=1008	 ; Iteration time=0.01302
+INFO : -----
+ End of epoch. Global step n.1008, using batch_size=8
+INFO : Training, epoch nll_loss= 2.63794
+------
+INFO : 
+Training epoch n.64:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=1020	 ; Iteration time=0.01281
+INFO : -----
+ End of epoch. Global step n.1024, using batch_size=8
+INFO : Training, epoch nll_loss= 2.60184
+------
+INFO : 
+Training epoch n.65:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=1032	 ; Iteration time=0.01271
+INFO : -----
+ End of epoch. Global step n.1040, using batch_size=8
+INFO : Training, epoch nll_loss= 2.59878
+------
+INFO : 
+Training epoch n.66:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=1044	 ; Iteration time=0.01424
+INFO : Global step=1056	 ; Iteration time=0.01299
+INFO : -----
+ End of epoch. Global step n.1056, using batch_size=8
+INFO : Training, epoch nll_loss= 2.57032
+------
+INFO : 
+Training epoch n.67:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=1068	 ; Iteration time=0.01284
+INFO : -----
+ End of epoch. Global step n.1072, using batch_size=8
+INFO : Training, epoch nll_loss= 2.55335
+------
+INFO : 
+Training epoch n.68:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=1080	 ; Iteration time=0.013
+INFO : -----
+ End of epoch. Global step n.1088, using batch_size=8
+INFO : Training, epoch nll_loss= 2.54124
+------
+INFO : 
+Training epoch n.69:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=1092	 ; Iteration time=0.01328
+INFO : Global step=1104	 ; Iteration time=0.01275
+INFO : -----
+ End of epoch. Global step n.1104, using batch_size=8
+INFO : Training, epoch nll_loss= 2.52356
+------
+INFO : 
+Training epoch n.70:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=1116	 ; Iteration time=0.01299
+INFO : -----
+ End of epoch. Global step n.1120, using batch_size=8
+INFO : Training, epoch nll_loss= 2.51081
+------
+INFO : 
+Training epoch n.71:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=1128	 ; Iteration time=0.01305
+INFO : -----
+ End of epoch. Global step n.1136, using batch_size=8
+INFO : Training, epoch nll_loss= 2.50224
+------
+INFO : 
+Training epoch n.72:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=1140	 ; Iteration time=0.01299
+INFO : Global step=1152	 ; Iteration time=0.01305
+INFO : -----
+ End of epoch. Global step n.1152, using batch_size=8
+INFO : Training, epoch nll_loss= 2.47884
+------
+INFO : 
+Training epoch n.73:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=1164	 ; Iteration time=0.01305
+INFO : -----
+ End of epoch. Global step n.1168, using batch_size=8
+INFO : Training, epoch nll_loss= 2.47673
+------
+INFO : 
+Training epoch n.74:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=1176	 ; Iteration time=0.01352
+INFO : -----
+ End of epoch. Global step n.1184, using batch_size=8
+INFO : Training, epoch nll_loss= 2.45668
+------
+INFO : 
+Training epoch n.75:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=1188	 ; Iteration time=0.01337
+INFO : Global step=1200	 ; Iteration time=0.01276
+INFO : -----
+ End of epoch. Global step n.1200, using batch_size=8
+INFO : Training, epoch nll_loss= 2.46765
+------
+INFO : 
+Training epoch n.76:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=1212	 ; Iteration time=0.01293
+INFO : -----
+ End of epoch. Global step n.1216, using batch_size=8
+INFO : Training, epoch nll_loss= 2.43395
+------
+INFO : 
+Training epoch n.77:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=1224	 ; Iteration time=0.01279
+INFO : -----
+ End of epoch. Global step n.1232, using batch_size=8
+INFO : Training, epoch nll_loss= 2.44151
+------
+INFO : 
+Training epoch n.78:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=1236	 ; Iteration time=0.01318
+INFO : Global step=1248	 ; Iteration time=0.01302
+INFO : -----
+ End of epoch. Global step n.1248, using batch_size=8
+INFO : Training, epoch nll_loss= 2.41838
+------
+INFO : 
+Training epoch n.79:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=1260	 ; Iteration time=0.01311
+INFO : -----
+ End of epoch. Global step n.1264, using batch_size=8
+INFO : Training, epoch nll_loss= 2.41968
+------
+INFO : 
+Training epoch n.80:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=1272	 ; Iteration time=0.01274
+INFO : -----
+ End of epoch. Global step n.1280, using batch_size=8
+INFO : Training, epoch nll_loss= 2.39848
+------
+INFO : 
+Training epoch n.81:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=1284	 ; Iteration time=0.01304
+INFO : Global step=1296	 ; Iteration time=0.01284
+INFO : -----
+ End of epoch. Global step n.1296, using batch_size=8
+INFO : Training, epoch nll_loss= 2.40015
+------
+INFO : 
+Training epoch n.82:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=1308	 ; Iteration time=0.01283
+INFO : -----
+ End of epoch. Global step n.1312, using batch_size=8
+INFO : Training, epoch nll_loss= 2.37804
+------
+INFO : 
+Training epoch n.83:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=1320	 ; Iteration time=0.01273
+INFO : -----
+ End of epoch. Global step n.1328, using batch_size=8
+INFO : Training, epoch nll_loss= 2.38393
+------
+INFO : 
+Training epoch n.84:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=1332	 ; Iteration time=0.01323
+INFO : Global step=1344	 ; Iteration time=0.01287
+INFO : -----
+ End of epoch. Global step n.1344, using batch_size=8
+INFO : Training, epoch nll_loss= 2.3615
+------
+INFO : 
+Training epoch n.85:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=1356	 ; Iteration time=0.01332
+INFO : -----
+ End of epoch. Global step n.1360, using batch_size=8
+INFO : Training, epoch nll_loss= 2.37126
+------
+INFO : 
+Training epoch n.86:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=1368	 ; Iteration time=0.01279
+INFO : -----
+ End of epoch. Global step n.1376, using batch_size=8
+INFO : Training, epoch nll_loss= 2.33412
+------
+INFO : 
+Training epoch n.87:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=1380	 ; Iteration time=0.01316
+INFO : Global step=1392	 ; Iteration time=0.01274
+INFO : -----
+ End of epoch. Global step n.1392, using batch_size=8
+INFO : Training, epoch nll_loss= 2.34717
+------
+INFO : 
+Training epoch n.88:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=1404	 ; Iteration time=0.01397
+INFO : -----
+ End of epoch. Global step n.1408, using batch_size=8
+INFO : Training, epoch nll_loss= 2.32
+------
+INFO : 
+Training epoch n.89:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=1416	 ; Iteration time=0.01306
+INFO : -----
+ End of epoch. Global step n.1424, using batch_size=8
+INFO : Training, epoch nll_loss= 2.32726
+------
+INFO : 
+Training epoch n.90:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=1428	 ; Iteration time=0.01322
+INFO : Global step=1440	 ; Iteration time=0.01284
+INFO : -----
+ End of epoch. Global step n.1440, using batch_size=8
+INFO : Training, epoch nll_loss= 2.31338
+------
+INFO : 
+Training epoch n.91:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=1452	 ; Iteration time=0.01313
+INFO : -----
+ End of epoch. Global step n.1456, using batch_size=8
+INFO : Training, epoch nll_loss= 2.31315
+------
+INFO : 
+Training epoch n.92:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=1464	 ; Iteration time=0.01275
+INFO : -----
+ End of epoch. Global step n.1472, using batch_size=8
+INFO : Training, epoch nll_loss= 2.2947
+------
+INFO : 
+Training epoch n.93:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=1476	 ; Iteration time=0.01315
+INFO : Global step=1488	 ; Iteration time=0.01296
+INFO : -----
+ End of epoch. Global step n.1488, using batch_size=8
+INFO : Training, epoch nll_loss= 2.30387
+------
+INFO : 
+Training epoch n.94:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=1500	 ; Iteration time=0.01294
+INFO : -----
+ End of epoch. Global step n.1504, using batch_size=8
+INFO : Training, epoch nll_loss= 2.27912
+------
+INFO : 
+Training epoch n.95:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=1512	 ; Iteration time=0.00842
+INFO : -----
+ End of epoch. Global step n.1520, using batch_size=8
+INFO : Training, epoch nll_loss= 2.28001
+------
+INFO : 
+Training epoch n.96:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=1524	 ; Iteration time=0.00699
+INFO : Global step=1536	 ; Iteration time=0.00824
+INFO : -----
+ End of epoch. Global step n.1536, using batch_size=8
+INFO : Training, epoch nll_loss= 2.26741
+------
+INFO : 
+Training epoch n.97:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=1548	 ; Iteration time=0.00825
+INFO : -----
+ End of epoch. Global step n.1552, using batch_size=8
+INFO : Training, epoch nll_loss= 2.26828
+------
+INFO : 
+Training epoch n.98:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=1560	 ; Iteration time=0.00827
+INFO : -----
+ End of epoch. Global step n.1568, using batch_size=8
+INFO : Training, epoch nll_loss= 2.26561
+------
+INFO : 
+Training epoch n.99:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=1572	 ; Iteration time=0.01311
+INFO : Global step=1584	 ; Iteration time=0.01301
+INFO : -----
+ End of epoch. Global step n.1584, using batch_size=8
+INFO : Training, epoch nll_loss= 2.24909
+------
+INFO : 
+Training epoch n.100:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=1596	 ; Iteration time=0.0083
+INFO : -----
+ End of epoch. Global step n.1600, using batch_size=8
+INFO : Training, epoch nll_loss= 2.26158
+------
+INFO : 
+Training epoch n.101:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=1608	 ; Iteration time=0.01268
+INFO : -----
+ End of epoch. Global step n.1616, using batch_size=8
+INFO : Training, epoch nll_loss= 2.24515
+------
+INFO : 
+Training epoch n.102:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=1620	 ; Iteration time=0.01317
+INFO : Global step=1632	 ; Iteration time=0.01278
+INFO : -----
+ End of epoch. Global step n.1632, using batch_size=8
+INFO : Training, epoch nll_loss= 2.23924
+------
+INFO : 
+Training epoch n.103:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=1644	 ; Iteration time=0.00834
+INFO : -----
+ End of epoch. Global step n.1648, using batch_size=8
+INFO : Training, epoch nll_loss= 2.23651
+------
+INFO : 
+Training epoch n.104:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=1656	 ; Iteration time=0.0083
+INFO : -----
+ End of epoch. Global step n.1664, using batch_size=8
+INFO : Training, epoch nll_loss= 2.22993
+------
+INFO : 
+Training epoch n.105:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=1668	 ; Iteration time=0.00731
+INFO : Global step=1680	 ; Iteration time=0.00828
+INFO : -----
+ End of epoch. Global step n.1680, using batch_size=8
+INFO : Training, epoch nll_loss= 2.22409
+------
+INFO : 
+Training epoch n.106:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=1692	 ; Iteration time=0.01301
+INFO : -----
+ End of epoch. Global step n.1696, using batch_size=8
+INFO : Training, epoch nll_loss= 2.21918
+------
+INFO : 
+Training epoch n.107:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=1704	 ; Iteration time=0.01298
+INFO : -----
+ End of epoch. Global step n.1712, using batch_size=8
+INFO : Training, epoch nll_loss= 2.2173
+------
+INFO : 
+Training epoch n.108:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=1716	 ; Iteration time=0.01318
+INFO : Global step=1728	 ; Iteration time=0.01274
+INFO : -----
+ End of epoch. Global step n.1728, using batch_size=8
+INFO : Training, epoch nll_loss= 2.21008
+------
+INFO : 
+Training epoch n.109:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=1740	 ; Iteration time=0.01285
+INFO : -----
+ End of epoch. Global step n.1744, using batch_size=8
+INFO : Training, epoch nll_loss= 2.21331
+------
+INFO : 
+Training epoch n.110:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=1752	 ; Iteration time=0.01283
+INFO : -----
+ End of epoch. Global step n.1760, using batch_size=8
+INFO : Training, epoch nll_loss= 2.20469
+------
+INFO : 
+Training epoch n.111:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=1764	 ; Iteration time=0.01313
+INFO : Global step=1776	 ; Iteration time=0.01285
+INFO : -----
+ End of epoch. Global step n.1776, using batch_size=8
+INFO : Training, epoch nll_loss= 2.1997
+------
+INFO : 
+Training epoch n.112:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=1788	 ; Iteration time=0.01276
+INFO : -----
+ End of epoch. Global step n.1792, using batch_size=8
+INFO : Training, epoch nll_loss= 2.19345
+------
+INFO : 
+Training epoch n.113:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=1800	 ; Iteration time=0.01291
+INFO : -----
+ End of epoch. Global step n.1808, using batch_size=8
+INFO : Training, epoch nll_loss= 2.19067
+------
+INFO : 
+Training epoch n.114:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=1812	 ; Iteration time=0.01334
+INFO : Global step=1824	 ; Iteration time=0.01286
+INFO : -----
+ End of epoch. Global step n.1824, using batch_size=8
+INFO : Training, epoch nll_loss= 2.18865
+------
+INFO : 
+Training epoch n.115:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=1836	 ; Iteration time=0.01322
+INFO : -----
+ End of epoch. Global step n.1840, using batch_size=8
+INFO : Training, epoch nll_loss= 2.17904
+------
+INFO : 
+Training epoch n.116:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=1848	 ; Iteration time=0.0128
+INFO : -----
+ End of epoch. Global step n.1856, using batch_size=8
+INFO : Training, epoch nll_loss= 2.17866
+------
+INFO : 
+Training epoch n.117:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=1860	 ; Iteration time=0.01316
+INFO : Global step=1872	 ; Iteration time=0.01291
+INFO : -----
+ End of epoch. Global step n.1872, using batch_size=8
+INFO : Training, epoch nll_loss= 2.17242
+------
+INFO : 
+Training epoch n.118:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=1884	 ; Iteration time=0.0129
+INFO : -----
+ End of epoch. Global step n.1888, using batch_size=8
+INFO : Training, epoch nll_loss= 2.17124
+------
+INFO : 
+Training epoch n.119:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=1896	 ; Iteration time=0.01301
+INFO : -----
+ End of epoch. Global step n.1904, using batch_size=8
+INFO : Training, epoch nll_loss= 2.17245
+------
+INFO : 
+Training epoch n.120:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=1908	 ; Iteration time=0.01343
+INFO : Global step=1920	 ; Iteration time=0.01278
+INFO : -----
+ End of epoch. Global step n.1920, using batch_size=8
+INFO : Training, epoch nll_loss= 2.15959
+------
+INFO : 
+Training epoch n.121:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=1932	 ; Iteration time=0.01285
+INFO : -----
+ End of epoch. Global step n.1936, using batch_size=8
+INFO : Training, epoch nll_loss= 2.16261
+------
+INFO : 
+Training epoch n.122:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=1944	 ; Iteration time=0.01273
+INFO : -----
+ End of epoch. Global step n.1952, using batch_size=8
+INFO : Training, epoch nll_loss= 2.15338
+------
+INFO : 
+Training epoch n.123:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=1956	 ; Iteration time=0.01327
+INFO : Global step=1968	 ; Iteration time=0.01271
+INFO : -----
+ End of epoch. Global step n.1968, using batch_size=8
+INFO : Training, epoch nll_loss= 2.15602
+------
+INFO : 
+Training epoch n.124:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=1980	 ; Iteration time=0.01285
+INFO : -----
+ End of epoch. Global step n.1984, using batch_size=8
+INFO : Training, epoch nll_loss= 2.15199
+------
+INFO : 
+Training epoch n.125:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=1992	 ; Iteration time=0.01261
+INFO : -----
+ End of epoch. Global step n.2000, using batch_size=8
+INFO : Training, epoch nll_loss= 2.15016
+------
+INFO : 
+Training epoch n.126:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=2004	 ; Iteration time=0.01307
+INFO : Global step=2016	 ; Iteration time=0.01294
+INFO : -----
+ End of epoch. Global step n.2016, using batch_size=8
+INFO : Training, epoch nll_loss= 2.14603
+------
+INFO : 
+Training epoch n.127:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=2028	 ; Iteration time=0.01284
+INFO : -----
+ End of epoch. Global step n.2032, using batch_size=8
+INFO : Training, epoch nll_loss= 2.1482
+------
+INFO : 
+Training epoch n.128:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=2040	 ; Iteration time=0.01271
+INFO : -----
+ End of epoch. Global step n.2048, using batch_size=8
+INFO : Training, epoch nll_loss= 2.14001
+------
+INFO : 
+Training epoch n.129:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=2052	 ; Iteration time=0.01304
+INFO : Global step=2064	 ; Iteration time=0.01304
+INFO : -----
+ End of epoch. Global step n.2064, using batch_size=8
+INFO : Training, epoch nll_loss= 2.14356
+------
+INFO : 
+Training epoch n.130:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=2076	 ; Iteration time=0.01301
+INFO : -----
+ End of epoch. Global step n.2080, using batch_size=8
+INFO : Training, epoch nll_loss= 2.13488
+------
+INFO : 
+Training epoch n.131:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=2088	 ; Iteration time=0.01288
+INFO : -----
+ End of epoch. Global step n.2096, using batch_size=8
+INFO : Training, epoch nll_loss= 2.14197
+------
+INFO : 
+Training epoch n.132:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=2100	 ; Iteration time=0.01294
+INFO : Global step=2112	 ; Iteration time=0.01288
+INFO : -----
+ End of epoch. Global step n.2112, using batch_size=8
+INFO : Training, epoch nll_loss= 2.1348
+------
+INFO : 
+Training epoch n.133:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=2124	 ; Iteration time=0.01282
+INFO : -----
+ End of epoch. Global step n.2128, using batch_size=8
+INFO : Training, epoch nll_loss= 2.12936
+------
+INFO : 
+Training epoch n.134:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=2136	 ; Iteration time=0.0129
+INFO : -----
+ End of epoch. Global step n.2144, using batch_size=8
+INFO : Training, epoch nll_loss= 2.12621
+------
+INFO : 
+Training epoch n.135:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=2148	 ; Iteration time=0.01314
+INFO : Global step=2160	 ; Iteration time=0.01295
+INFO : -----
+ End of epoch. Global step n.2160, using batch_size=8
+INFO : Training, epoch nll_loss= 2.12273
+------
+INFO : 
+Training epoch n.136:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=2172	 ; Iteration time=0.0128
+INFO : -----
+ End of epoch. Global step n.2176, using batch_size=8
+INFO : Training, epoch nll_loss= 2.12108
+------
+INFO : 
+Training epoch n.137:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=2184	 ; Iteration time=0.01279
+INFO : -----
+ End of epoch. Global step n.2192, using batch_size=8
+INFO : Training, epoch nll_loss= 2.11878
+------
+INFO : 
+Training epoch n.138:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=2196	 ; Iteration time=0.01468
+INFO : Global step=2208	 ; Iteration time=0.01299
+INFO : -----
+ End of epoch. Global step n.2208, using batch_size=8
+INFO : Training, epoch nll_loss= 2.11579
+------
+INFO : 
+Training epoch n.139:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=2220	 ; Iteration time=0.01296
+INFO : -----
+ End of epoch. Global step n.2224, using batch_size=8
+INFO : Training, epoch nll_loss= 2.11934
+------
+INFO : 
+Training epoch n.140:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=2232	 ; Iteration time=0.01288
+INFO : -----
+ End of epoch. Global step n.2240, using batch_size=8
+INFO : Training, epoch nll_loss= 2.11282
+------
+INFO : 
+Training epoch n.141:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=2244	 ; Iteration time=0.01313
+INFO : Global step=2256	 ; Iteration time=0.01271
+INFO : -----
+ End of epoch. Global step n.2256, using batch_size=8
+INFO : Training, epoch nll_loss= 2.11691
+------
+INFO : 
+Training epoch n.142:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=2268	 ; Iteration time=0.01281
+INFO : -----
+ End of epoch. Global step n.2272, using batch_size=8
+INFO : Training, epoch nll_loss= 2.10909
+------
+INFO : 
+Training epoch n.143:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=2280	 ; Iteration time=0.01276
+INFO : -----
+ End of epoch. Global step n.2288, using batch_size=8
+INFO : Training, epoch nll_loss= 2.10782
+------
+INFO : 
+Training epoch n.144:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=2292	 ; Iteration time=0.01324
+INFO : Global step=2304	 ; Iteration time=0.01299
+INFO : -----
+ End of epoch. Global step n.2304, using batch_size=8
+INFO : Training, epoch nll_loss= 2.11113
+------
+INFO : 
+Training epoch n.145:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=2316	 ; Iteration time=0.01299
+INFO : -----
+ End of epoch. Global step n.2320, using batch_size=8
+INFO : Training, epoch nll_loss= 2.10799
+------
+INFO : 
+Training epoch n.146:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=2328	 ; Iteration time=0.01302
+INFO : -----
+ End of epoch. Global step n.2336, using batch_size=8
+INFO : Training, epoch nll_loss= 2.10567
+------
+INFO : 
+Training epoch n.147:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=2340	 ; Iteration time=0.01304
+INFO : Global step=2352	 ; Iteration time=0.01271
+INFO : -----
+ End of epoch. Global step n.2352, using batch_size=8
+INFO : Training, epoch nll_loss= 2.10738
+------
+INFO : 
+Training epoch n.148:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=2364	 ; Iteration time=0.01306
+INFO : -----
+ End of epoch. Global step n.2368, using batch_size=8
+INFO : Training, epoch nll_loss= 2.10612
+------
+INFO : 
+Training epoch n.149:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=2376	 ; Iteration time=0.01296
+INFO : -----
+ End of epoch. Global step n.2384, using batch_size=8
+INFO : Training, epoch nll_loss= 2.10257
+------
+INFO : 
+Training epoch n.150:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : 
+-----
+Label: the next global is: <unk>
+INFO : Label: the next sense is: group.n.01
+INFO : tensor([23,  5, 54,  ..., 19, 53, 52], device='cuda:0')
+INFO : The top- 5 predicted globals are:
+INFO : Word: the ; probability = 20.08%
+INFO : Word: of ; probability = 9.72%
+INFO : Word: such ; probability = 9.13%
+INFO : Word: possible ; probability = 9.12%
+INFO : Word: September ; probability = 9.01%
+INFO : tensor([ 7607,  8895, 12037,  ...,  6361,  7724, 13110], device='cuda:0')
+INFO : The top- 5 predicted senses are:
+INFO : Sense: group.n.01 ; probability = 35.62%
+INFO : Sense: jury.n.01 ; probability = 24.91%
+INFO : Sense: potential.a.01 ; probability = 19.65%
+INFO : Sense: such.s.01 ; probability = 19.56%
+INFO : Sense: merely.r.01 ; probability = 0.04%
+INFO : 
+-----
+Label: the next global is: said
+INFO : Label: the next sense is: state.v.01
+INFO : tensor([24,  1, 23,  ..., 37, 55, 49], device='cuda:0')
+INFO : The top- 5 predicted globals are:
+INFO : Word: , ; probability = 42.91%
+INFO : Word: said ; probability = 41.33%
+INFO : Word: the ; probability = 3.35%
+INFO : Word: which ; probability = 3.12%
+INFO : Word: had ; probability = 2.81%
+INFO : tensor([15301,  6361, 12292,  ..., 12946, 14647,  5618], device='cuda:0')
+INFO : The top- 5 predicted senses are:
+INFO : Sense: state.v.01 ; probability = 97.47%
+INFO : Sense: far.r.02 ; probability = 1.55%
+INFO : Sense: produce.v.04 ; probability = 0.78%
+INFO : Sense: jury.n.01 ; probability = 0.07%
+INFO : Sense: primary.n.01 ; probability = 0.07%
+INFO : 
+-----
+Label: the next global is: Friday
+INFO : Label: the next sense is: None
+INFO : tensor([24, 20,  2,  ..., 29, 57, 28], device='cuda:0')
+INFO : The top- 5 predicted globals are:
+INFO : Word: , ; probability = 41.06%
+INFO : Word: in ; probability = 32.24%
+INFO : Word: Friday ; probability = 26.29%
+INFO : Word: was ; probability = 0.27%
+INFO : Word: end ; probability = 0.04%
+INFO : 
+-----
+Label: the next global is: an
+INFO : Label: the next sense is: None
+INFO : tensor([ 3,  4, 18,  ..., 53, 52, 19], device='cuda:0')
+INFO : The top- 5 predicted globals are:
+INFO : Word: an ; probability = 99.32%
+INFO : Word: investigation ; probability = 0.43%
+INFO : Word: jury ; probability = 0.13%
+INFO : Word: the ; probability = 0.06%
+INFO : Word: evidence ; probability = 0.02%
+INFO : 
+-----
+Label: the next global is: investigation
+INFO : Label: the next sense is: None
+INFO : tensor([   4,   23, 9857,  ...,   53,   19,   52], device='cuda:0')
+INFO : The top- 5 predicted globals are:
+INFO : Word: investigation ; probability = 98.36%
+INFO : Word: the ; probability = 0.92%
+INFO : Word: <unk> ; probability = 0.24%
+INFO : Word: jury ; probability = 0.16%
+INFO : Word: an ; probability = 0.11%
+INFO : 
+-----
+Label: the next global is: of
+INFO : Label: the next sense is: None
+INFO : tensor([23,  5, 54,  ..., 19, 53, 52], device='cuda:0')
+INFO : The top- 5 predicted globals are:
+INFO : Word: the ; probability = 20.08%
+INFO : Word: of ; probability = 9.72%
+INFO : Word: such ; probability = 9.13%
+INFO : Word: possible ; probability = 9.12%
+INFO : Word: September ; probability = 9.01%
+INFO : 
+-----
+Label: the next global is: Atlanta
+INFO : Label: the next sense is: None
+INFO : tensor([23,  5, 54,  ..., 19, 53, 52], device='cuda:0')
+INFO : The top- 5 predicted globals are:
+INFO : Word: the ; probability = 20.08%
+INFO : Word: of ; probability = 9.72%
+INFO : Word: such ; probability = 9.13%
+INFO : Word: possible ; probability = 9.12%
+INFO : Word: September ; probability = 9.01%
+INFO : 
+-----
+Label: the next global is: s
+INFO : Label: the next sense is: None
+INFO : tensor([23,  5, 54,  ..., 19, 53, 52], device='cuda:0')
+INFO : The top- 5 predicted globals are:
+INFO : Word: the ; probability = 20.08%
+INFO : Word: of ; probability = 9.72%
+INFO : Word: such ; probability = 9.13%
+INFO : Word: possible ; probability = 9.12%
+INFO : Word: September ; probability = 9.01%
+INFO : 
+-----
+Label: the next global is: recent
+INFO : Label: the next sense is: late.s.03
+INFO : tensor([ 8,  5, 10,  ..., 37, 55, 49], device='cuda:0')
+INFO : The top- 5 predicted globals are:
+INFO : Word: recent ; probability = 96.77%
+INFO : Word: of ; probability = 1.48%
+INFO : Word: " ; probability = 0.99%
+INFO : Word: the ; probability = 0.62%
+INFO : Word: was ; probability = 0.06%
+INFO : tensor([ 9120,  8895,  5740,  ..., 14882,    15, 10954], device='cuda:0')
+INFO : The top- 5 predicted senses are:
+INFO : Sense: late.s.03 ; probability = 99.21%
+INFO : Sense: jury.n.01 ; probability = 0.5%
+INFO : Sense: end.n.02 ; probability = 0.18%
+INFO : Sense: primary.n.01 ; probability = 0.08%
+INFO : Sense: state.v.01 ; probability = 0.01%
+INFO : 
+-----
+Label: the next global is: <unk>
+INFO : Label: the next sense is: primary.n.01
+INFO : tensor([9857,   10,    0,  ..., 6609, 9073, 3675], device='cuda:0')
+INFO : The top- 5 predicted globals are:
+INFO : Word: <unk> ; probability = 100.0%
+INFO : Word: " ; probability = 0.0%
+INFO : Word: The ; probability = 0.0%
+INFO : Word: primary ; probability = 0.0%
+INFO : Word: was ; probability = 0.0%
+INFO : tensor([12207,  9120,  8895,  ..., 10954, 15360, 17645], device='cuda:0')
+INFO : The top- 5 predicted senses are:
+INFO : Sense: primary.n.01 ; probability = 99.94%
+INFO : Sense: late.s.03 ; probability = 0.05%
+INFO : Sense: jury.n.01 ; probability = 0.0%
+INFO : Sense: end.n.02 ; probability = 0.0%
+INFO : Sense: thanks.n.01 ; probability = 0.0%
+INFO : 
+-----
+Label: the next global is: produced
+INFO : Label: the next sense is: produce.v.04
+INFO : tensor([  25,    9,   10,  ..., 3518, 8322,    4], device='cuda:0')
+INFO : The top- 5 predicted globals are:
+INFO : Word: which ; probability = 53.35%
+INFO : Word: produced ; probability = 34.99%
+INFO : Word: " ; probability = 3.56%
+INFO : Word: had ; probability = 3.48%
+INFO : Word: said ; probability = 1.76%
+INFO : tensor([12292, 15301,  6361,  ..., 12946,  5875,  5618], device='cuda:0')
+INFO : The top- 5 predicted senses are:
+INFO : Sense: produce.v.04 ; probability = 95.62%
+INFO : Sense: state.v.01 ; probability = 2.01%
+INFO : Sense: far.r.02 ; probability = 1.4%
+INFO : Sense: person.n.01 ; probability = 0.8%
+INFO : Sense: late.s.03 ; probability = 0.05%
+INFO : 
+-----
+Label: the next global is: "
+INFO : Label: the next sense is: None
+INFO : tensor([  10,   23,    8,  ..., 6110,  597, 5175], device='cuda:0')
+INFO : The top- 5 predicted globals are:
+INFO : Word: " ; probability = 88.34%
+INFO : Word: the ; probability = 6.08%
+INFO : Word: recent ; probability = 1.79%
+INFO : Word: was ; probability = 1.56%
+INFO : Word: of ; probability = 1.15%
+INFO : 
+-----
+Label: the next global is: no
+INFO : Label: the next sense is: None
+INFO : tensor([17, 20, 34,  ..., 37, 49, 55], device='cuda:0')
+INFO : The top- 5 predicted globals are:
+INFO : Word: . ; probability = 11.47%
+INFO : Word: in ; probability = 10.84%
+INFO : Word: for ; probability = 10.24%
+INFO : Word: considering ; probability = 10.21%
+INFO : Word: Only ; probability = 10.19%
+INFO : 
+-----
+Label: the next global is: evidence
+INFO : Label: the next sense is: evidence.n.01
+INFO : tensor([12, 23, 14,  ..., 32, 63, 19], device='cuda:0')
+INFO : The top- 5 predicted globals are:
+INFO : Word: evidence ; probability = 93.18%
+INFO : Word: the ; probability = 4.5%
+INFO : Word: any ; probability = 2.27%
+INFO : Word: of ; probability = 0.02%
+INFO : Word: by ; probability = 0.02%
+INFO : tensor([ 5964,  9120,  3614,  ...,  2869, 11284, 11524], device='cuda:0')
+INFO : The top- 5 predicted senses are:
+INFO : Sense: evidence.n.01 ; probability = 99.95%
+INFO : Sense: late.s.03 ; probability = 0.01%
+INFO : Sense: consider.v.04 ; probability = 0.01%
+INFO : Sense: deserve.v.01 ; probability = 0.01%
+INFO : Sense: merely.r.01 ; probability = 0.01%
+INFO : 
+-----
+Label: the next global is: "
+INFO : Label: the next sense is: None
+INFO : tensor([10,  1, 24,  ...,  4, 55, 49], device='cuda:0')
+INFO : The top- 5 predicted globals are:
+INFO : Word: " ; probability = 64.52%
+INFO : Word: said ; probability = 15.48%
+INFO : Word: , ; probability = 6.4%
+INFO : Word: <unk> ; probability = 4.41%
+INFO : Word: was ; probability = 2.81%
+INFO : 
+-----
+Label: the next global is: that
+INFO : Label: the next sense is: None
+INFO : tensor([17, 20, 34,  ..., 37, 49, 55], device='cuda:0')
+INFO : The top- 5 predicted globals are:
+INFO : Word: . ; probability = 11.47%
+INFO : Word: in ; probability = 10.84%
+INFO : Word: for ; probability = 10.24%
+INFO : Word: considering ; probability = 10.21%
+INFO : Word: Only ; probability = 10.19%
+INFO : 
+-----
+Label: the next global is: any
+INFO : Label: the next sense is: None
+INFO : tensor([23, 14, 15,  ..., 32, 19, 63], device='cuda:0')
+INFO : The top- 5 predicted globals are:
+INFO : Word: the ; probability = 63.82%
+INFO : Word: any ; probability = 30.36%
+INFO : Word: irregularities ; probability = 2.97%
+INFO : Word: evidence ; probability = 2.04%
+INFO : Word: of ; probability = 0.6%
+INFO : 
+-----
+Label: the next global is: irregularities
+INFO : Label: the next sense is: None
+INFO : tensor([15, 23, 14,  ..., 19, 32, 63], device='cuda:0')
+INFO : The top- 5 predicted globals are:
+INFO : Word: irregularities ; probability = 95.46%
+INFO : Word: the ; probability = 3.02%
+INFO : Word: any ; probability = 1.44%
+INFO : Word: of ; probability = 0.07%
+INFO : Word: by ; probability = 0.0%
+INFO : 
+-----
+Label: the next global is: took place
+INFO : Label: the next sense is: happen.v.01
+INFO : tensor([  10,   16, 9857,  ..., 3812,   27,   22], device='cuda:0')
+INFO : The top- 5 predicted globals are:
+INFO : Word: " ; probability = 68.32%
+INFO : Word: took place ; probability = 30.77%
+INFO : Word: <unk> ; probability = 0.74%
+INFO : Word: irregularities ; probability = 0.14%
+INFO : Word: Fulton ; probability = 0.02%
+INFO : tensor([ 7750, 11522,  9559,  ..., 10239, 12996, 14080], device='cuda:0')
+INFO : The top- 5 predicted senses are:
+INFO : Sense: happen.v.01 ; probability = 99.88%
+INFO : Sense: person.n.01 ; probability = 0.12%
+INFO : Sense: location.n.01 ; probability = 0.0%
+INFO : Sense: deserve.v.01 ; probability = 0.0%
+INFO : Sense: consider.v.04 ; probability = 0.0%
+INFO : 
+-----
+Label: the next global is: .
+INFO : Label: the next sense is: None
+INFO : tensor([  17,   10,    1,  ..., 3796, 5175, 6853], device='cuda:0')
+INFO : The top- 5 predicted globals are:
+INFO : Word: . ; probability = 93.1%
+INFO : Word: " ; probability = 2.77%
+INFO : Word: said ; probability = 2.29%
+INFO : Word: <unk> ; probability = 0.78%
+INFO : Word: in ; probability = 0.38%
+INFO : 
+-----
+Label: the next global is: <unk>
+INFO : Label: the next sense is: None
+INFO : tensor([9857,   10,    1,  ..., 3812,  851, 1277], device='cuda:0')
+INFO : The top- 5 predicted globals are:
+INFO : Word: <unk> ; probability = 99.36%
+INFO : Word: " ; probability = 0.58%
+INFO : Word: said ; probability = 0.03%
+INFO : Word: took place ; probability = 0.02%
+INFO : Word: Fulton ; probability = 0.0%
+INFO : 
+-----
+Label: the next global is: The
+INFO : Label: the next sense is: None
+INFO : tensor([   0,   10,   48,  ..., 2795, 6853,   49], device='cuda:0')
+INFO : The top- 5 predicted globals are:
+INFO : Word: The ; probability = 34.5%
+INFO : Word: " ; probability = 24.65%
+INFO : Word: primary ; probability = 19.74%
+INFO : Word: that ; probability = 14.9%
+INFO : Word: of ; probability = 2.7%
+INFO : 
+-----
+Label: the next global is: jury
+INFO : Label: the next sense is: jury.n.01
+INFO : tensor([23,  5, 54,  ..., 19, 53, 52], device='cuda:0')
+INFO : The top- 5 predicted globals are:
+INFO : Word: the ; probability = 19.4%
+INFO : Word: of ; probability = 10.84%
+INFO : Word: such ; probability = 9.16%
+INFO : Word: voters ; probability = 8.99%
+INFO : Word: <unk> ; probability = 8.77%
+INFO : tensor([ 7607,  8895, 15743,  ...,  6361,  7724, 13110], device='cuda:0')
+INFO : The top- 5 predicted senses are:
+INFO : Sense: group.n.01 ; probability = 37.59%
+INFO : Sense: jury.n.01 ; probability = 23.48%
+INFO : Sense: such.s.01 ; probability = 19.5%
+INFO : Sense: potential.a.01 ; probability = 19.18%
+INFO : Sense: merely.r.01 ; probability = 0.04%
+INFO : 
+-----
+Label: the next global is: further
+INFO : Label: the next sense is: far.r.02
+INFO : tensor([ 1, 26, 19,  ..., 55, 49,  4], device='cuda:0')
+INFO : The top- 5 predicted globals are:
+INFO : Word: said ; probability = 41.82%
+INFO : Word: had ; probability = 26.42%
+INFO : Word: further ; probability = 23.04%
+INFO : Word: " ; probability = 3.28%
+INFO : Word: which ; probability = 1.38%
+INFO : tensor([15301,  6361, 12292,  ...,  2620,  4021,  5618], device='cuda:0')
+INFO : The top- 5 predicted senses are:
+INFO : Sense: state.v.01 ; probability = 49.95%
+INFO : Sense: far.r.02 ; probability = 48.45%
+INFO : Sense: produce.v.04 ; probability = 1.01%
+INFO : Sense: person.n.01 ; probability = 0.5%
+INFO : Sense: location.n.01 ; probability = 0.02%
+INFO : 
+-----
+Label: the next global is: said
+INFO : Label: the next sense is: state.v.01
+INFO : tensor([   1, 9857,   10,  ..., 5175, 3796,   28], device='cuda:0')
+INFO : The top- 5 predicted globals are:
+INFO : Word: said ; probability = 91.34%
+INFO : Word: <unk> ; probability = 5.29%
+INFO : Word: " ; probability = 1.23%
+INFO : Word: . ; probability = 1.18%
+INFO : Word: and ; probability = 0.93%
+INFO : tensor([15301, 12207,  6361,  ...,  7584, 16656,  4965], device='cuda:0')
+INFO : The top- 5 predicted senses are:
+INFO : Sense: state.v.01 ; probability = 99.15%
+INFO : Sense: primary.n.01 ; probability = 0.33%
+INFO : Sense: far.r.02 ; probability = 0.17%
+INFO : Sense: investigate.v.02 ; probability = 0.16%
+INFO : Sense: late.s.03 ; probability = 0.09%
+INFO : 
+-----
+Label: the next global is: in
+INFO : Label: the next sense is: None
+INFO : tensor([24,  2, 20,  ..., 29, 57, 28], device='cuda:0')
+INFO : The top- 5 predicted globals are:
+INFO : Word: , ; probability = 42.44%
+INFO : Word: Friday ; probability = 34.19%
+INFO : Word: in ; probability = 22.98%
+INFO : Word: was ; probability = 0.24%
+INFO : Word: end ; probability = 0.04%
+INFO : 
+-----
+Label: the next global is: term
+INFO : Label: the next sense is: term.n.02
+INFO : tensor([23, 25, 21,  ..., 52, 32, 19], device='cuda:0')
+INFO : The top- 5 predicted globals are:
+INFO : Word: the ; probability = 58.67%
+INFO : Word: which ; probability = 20.11%
+INFO : Word: term ; probability = 18.65%
+INFO : Word: was ; probability = 0.85%
+INFO : Word: <unk> ; probability = 0.55%
+INFO : tensor([16157,  8895,  3499,  ...,  6361, 13110,  7724], device='cuda:0')
+INFO : The top- 5 predicted senses are:
+INFO : Sense: term.n.02 ; probability = 97.72%
+INFO : Sense: jury.n.01 ; probability = 0.46%
+INFO : Sense: conduct.v.01 ; probability = 0.32%
+INFO : Sense: receive.v.02 ; probability = 0.26%
+INFO : Sense: primary.n.01 ; probability = 0.22%
+INFO : 
+-----
+Label: the next global is: end
+INFO : Label: the next sense is: end.n.02
+INFO : tensor([18, 22, 20,  ..., 37, 49, 55], device='cuda:0')
+INFO : The top- 5 predicted globals are:
+INFO : Word: jury ; probability = 52.29%
+INFO : Word: end ; probability = 40.49%
+INFO : Word: in ; probability = 6.07%
+INFO : Word: . ; probability = 0.64%
+INFO : Word: the ; probability = 0.26%
+INFO : tensor([ 8895,  5740,  9120,  ..., 17526, 16345, 10595], device='cuda:0')
+INFO : The top- 5 predicted senses are:
+INFO : Sense: jury.n.01 ; probability = 69.77%
+INFO : Sense: end.n.02 ; probability = 29.74%
+INFO : Sense: late.s.03 ; probability = 0.27%
+INFO : Sense: primary.n.01 ; probability = 0.13%
+INFO : Sense: state.v.01 ; probability = 0.04%
+INFO : 
+-----
+Label: the next global is: <unk>
+INFO : Label: the next sense is: None
+INFO : tensor([9857,   10,   36,  ..., 1894, 7293, 1347], device='cuda:0')
+INFO : The top- 5 predicted globals are:
+INFO : Word: <unk> ; probability = 89.93%
+INFO : Word: " ; probability = 6.0%
+INFO : Word: was ; probability = 2.52%
+INFO : Word: in ; probability = 0.48%
+INFO : Word: . ; probability = 0.41%
+INFO : 
+-----
+Label: the next global is: that
+INFO : Label: the next sense is: None
+INFO : tensor([   0,   10,   48,  ..., 2795, 6853,   49], device='cuda:0')
+INFO : The top- 5 predicted globals are:
+INFO : Word: The ; probability = 37.2%
+INFO : Word: " ; probability = 23.83%
+INFO : Word: primary ; probability = 19.31%
+INFO : Word: that ; probability = 13.96%
+INFO : Word: of ; probability = 2.53%
+INFO : 
+-----
+Label: the next global is: the
+INFO : Label: the next sense is: None
+INFO : tensor([23, 14, 15,  ..., 32, 19, 63], device='cuda:0')
+INFO : The top- 5 predicted globals are:
+INFO : Word: the ; probability = 54.68%
+INFO : Word: any ; probability = 38.94%
+INFO : Word: irregularities ; probability = 3.07%
+INFO : Word: evidence ; probability = 2.45%
+INFO : Word: of ; probability = 0.64%
+INFO : 
+-----
+Label: the next global is: <unk>
+INFO : Label: the next sense is: group.n.01
+INFO : tensor([9857,   29,   18,  ...,   32,   52,   53], device='cuda:0')
+INFO : The top- 5 predicted globals are:
+INFO : Word: <unk> ; probability = 22.72%
+INFO : Word: election ; probability = 21.88%
+INFO : Word: jury ; probability = 8.53%
+INFO : Word: size ; probability = 7.54%
+INFO : Word: number ; probability = 7.47%
+INFO : tensor([ 5633, 14686,  9823,  ...,  6361, 13110,  7724], device='cuda:0')
+INFO : The top- 5 predicted senses are:
+INFO : Sense: election.n.01 ; probability = 28.41%
+INFO : Sense: size.n.01 ; probability = 12.36%
+INFO : Sense: manner.n.01 ; probability = 12.15%
+INFO : Sense: location.n.01 ; probability = 11.61%
+INFO : Sense: number.n.02 ; probability = 8.31%
+INFO : Global step=2388	 ; Iteration time=0.67341
+INFO : 
+-----
+Label: the next global is: ,
+INFO : Label: the next sense is: None
+INFO : tensor([ 1, 24, 23,  ..., 37, 55, 49], device='cuda:0')
+INFO : The top- 5 predicted globals are:
+INFO : Word: said ; probability = 58.52%
+INFO : Word: , ; probability = 30.02%
+INFO : Word: the ; probability = 2.02%
+INFO : Word: had ; probability = 1.87%
+INFO : Word: which ; probability = 1.64%
+INFO : 
+-----
+Label: the next global is: which
+INFO : Label: the next sense is: None
+INFO : tensor([23, 10, 25,  ..., 32, 52, 53], device='cuda:0')
+INFO : The top- 5 predicted globals are:
+INFO : Word: the ; probability = 39.36%
+INFO : Word: " ; probability = 38.4%
+INFO : Word: which ; probability = 17.75%
+INFO : Word: <unk> ; probability = 2.45%
+INFO : Word: jury ; probability = 0.28%
+INFO : 
+-----
+Label: the next global is: had
+INFO : Label: the next sense is: own.v.01
+INFO : tensor([36, 23, 26,  ..., 53, 32, 19], device='cuda:0')
+INFO : The top- 5 predicted globals are:
+INFO : Word: was ; probability = 38.14%
+INFO : Word: the ; probability = 36.62%
+INFO : Word: had ; probability = 24.6%
+INFO : Word: jury ; probability = 0.32%
+INFO : Word: a ; probability = 0.12%
+INFO : tensor([11167,  3499, 12913,  ..., 13110,  7724,  6361], device='cuda:0')
+INFO : The top- 5 predicted senses are:
+INFO : Sense: own.v.01 ; probability = 99.96%
+INFO : Sense: conduct.v.01 ; probability = 0.02%
+INFO : Sense: receive.v.02 ; probability = 0.01%
+INFO : Sense: win.v.01 ; probability = 0.01%
+INFO : Sense: term.n.02 ; probability = 0.0%
+INFO : 
+-----
+Label: the next global is: over-all
+INFO : Label: the next sense is: None
+INFO : tensor([27,  5,  0,  ..., 49, 29, 57], device='cuda:0')
+INFO : The top- 5 predicted globals are:
+INFO : Word: over-all ; probability = 94.27%
+INFO : Word: of ; probability = 3.15%
+INFO : Word: The ; probability = 0.55%
+INFO : Word: . ; probability = 0.43%
+INFO : Word: that ; probability = 0.37%
+INFO : 
+-----
+Label: the next global is: charge
+INFO : Label: the next sense is: mission.n.03
+INFO : tensor([28, 23, 62,  ..., 52, 19, 32], device='cuda:0')
+INFO : The top- 5 predicted globals are:
+INFO : Word: charge ; probability = 98.82%
+INFO : Word: the ; probability = 0.5%
+INFO : Word: of this ; probability = 0.47%
+INFO : Word: which ; probability = 0.14%
+INFO : Word: term ; probability = 0.03%
+INFO : tensor([10213, 16157,  3499,  ...,  7724,  6361, 13110], device='cuda:0')
+INFO : The top- 5 predicted senses are:
+INFO : Sense: mission.n.03 ; probability = 99.47%
+INFO : Sense: term.n.02 ; probability = 0.26%
+INFO : Sense: conduct.v.01 ; probability = 0.11%
+INFO : Sense: win.v.01 ; probability = 0.09%
+INFO : Sense: receive.v.02 ; probability = 0.07%
+INFO : 
+-----
+Label: the next global is: of
+INFO : Label: the next sense is: None
+INFO : tensor([   5,   10,   23,  ..., 5322, 8412,   49], device='cuda:0')
+INFO : The top- 5 predicted globals are:
+INFO : Word: of ; probability = 97.45%
+INFO : Word: " ; probability = 1.83%
+INFO : Word: the ; probability = 0.32%
+INFO : Word: The ; probability = 0.18%
+INFO : Word: that ; probability = 0.1%
+INFO : 
+-----
+Label: the next global is: the
+INFO : Label: the next sense is: None
+INFO : tensor([  23,    5, 9857,  ...,   19,   53,   52], device='cuda:0')
+INFO : The top- 5 predicted globals are:
+INFO : Word: the ; probability = 16.74%
+INFO : Word: of ; probability = 10.38%
+INFO : Word: <unk> ; probability = 9.64%
+INFO : Word: voters ; probability = 9.2%
+INFO : Word: such ; probability = 9.2%
+INFO : 
+-----
+Label: the next global is: election
+INFO : Label: the next sense is: election.n.01
+INFO : tensor([9857,   29,   18,  ...,   32,   52,   53], device='cuda:0')
+INFO : The top- 5 predicted globals are:
+INFO : Word: <unk> ; probability = 23.39%
+INFO : Word: election ; probability = 21.63%
+INFO : Word: jury ; probability = 8.82%
+INFO : Word: size ; probability = 7.59%
+INFO : Word: number ; probability = 7.45%
+INFO : tensor([ 5633, 14686,  9823,  ...,  6361, 13110,  7724], device='cuda:0')
+INFO : The top- 5 predicted senses are:
+INFO : Sense: election.n.01 ; probability = 27.68%
+INFO : Sense: size.n.01 ; probability = 12.55%
+INFO : Sense: manner.n.01 ; probability = 12.04%
+INFO : Sense: location.n.01 ; probability = 11.45%
+INFO : Sense: number.n.02 ; probability = 8.37%
+INFO : 
+-----
+Label: the next global is: ,
+INFO : Label: the next sense is: None
+INFO : tensor([  24,   36, 9857,  ...,   37,   49,   55], device='cuda:0')
+INFO : The top- 5 predicted globals are:
+INFO : Word: , ; probability = 65.01%
+INFO : Word: was ; probability = 16.98%
+INFO : Word: <unk> ; probability = 6.9%
+INFO : Word: " ; probability = 4.48%
+INFO : Word: . ; probability = 2.59%
+INFO : 
+-----
+Label: the next global is: "
+INFO : Label: the next sense is: None
+INFO : tensor([23, 10, 25,  ..., 32, 52, 53], device='cuda:0')
+INFO : The top- 5 predicted globals are:
+INFO : Word: the ; probability = 39.81%
+INFO : Word: " ; probability = 36.59%
+INFO : Word: which ; probability = 18.84%
+INFO : Word: <unk> ; probability = 2.56%
+INFO : Word: jury ; probability = 0.31%
+INFO : 
+-----
+Label: the next global is: deserves
+INFO : Label: the next sense is: deserve.v.01
+INFO : tensor([17, 20, 56,  ..., 37, 49, 55], device='cuda:0')
+INFO : The top- 5 predicted globals are:
+INFO : Word: . ; probability = 12.48%
+INFO : Word: in ; probability = 10.49%
+INFO : Word: considering ; probability = 10.23%
+INFO : Word: Only ; probability = 10.16%
+INFO : Word: no ; probability = 9.59%
+INFO : tensor([10075,  4698,  3614,  ..., 11167, 17584, 12913], device='cuda:0')
+INFO : The top- 5 predicted senses are:
+INFO : Sense: merely.r.01 ; probability = 38.19%
+INFO : Sense: deserve.v.01 ; probability = 32.37%
+INFO : Sense: consider.v.04 ; probability = 29.08%
+INFO : Sense: late.s.03 ; probability = 0.11%
+INFO : Sense: jury.n.01 ; probability = 0.06%
+INFO : 
+-----
+Label: the next global is: the
+INFO : Label: the next sense is: None
+INFO : tensor([23,  5, 10,  ..., 55, 49, 29], device='cuda:0')
+INFO : The top- 5 predicted globals are:
+INFO : Word: the ; probability = 59.12%
+INFO : Word: of ; probability = 17.72%
+INFO : Word: " ; probability = 6.42%
+INFO : Word: of this ; probability = 4.15%
+INFO : Word: . ; probability = 3.42%
+INFO : 
+-----
+Label: the next global is: praise
+INFO : Label: the next sense is: praise.n.01
+INFO : tensor([9857,   29,   18,  ...,   32,   52,   53], device='cuda:0')
+INFO : The top- 5 predicted globals are:
+INFO : Word: <unk> ; probability = 23.15%
+INFO : Word: election ; probability = 22.14%
+INFO : Word: jury ; probability = 8.78%
+INFO : Word: size ; probability = 7.67%
+INFO : Word: number ; probability = 7.46%
+INFO : tensor([ 5633, 14686,  9823,  ...,  6361, 13110,  7724], device='cuda:0')
+INFO : The top- 5 predicted senses are:
+INFO : Sense: election.n.01 ; probability = 27.81%
+INFO : Sense: size.n.01 ; probability = 12.65%
+INFO : Sense: manner.n.01 ; probability = 11.83%
+INFO : Sense: location.n.01 ; probability = 11.18%
+INFO : Sense: number.n.02 ; probability = 8.37%
+INFO : 
+-----
+Label: the next global is: and
+INFO : Label: the next sense is: None
+INFO : tensor([  32,    1,   17,  ...,   49, 1894,    4], device='cuda:0')
+INFO : The top- 5 predicted globals are:
+INFO : Word: and ; probability = 90.77%
+INFO : Word: said ; probability = 3.55%
+INFO : Word: . ; probability = 2.93%
+INFO : Word: to ; probability = 0.98%
+INFO : Word: " ; probability = 0.7%
+INFO : 
+-----
+Label: the next global is: thanks
+INFO : Label: the next sense is: thanks.n.01
+INFO : tensor([  23,   33,   37,  ..., 6600,   19,   32], device='cuda:0')
+INFO : The top- 5 predicted globals are:
+INFO : Word: the ; probability = 61.01%
+INFO : Word: thanks ; probability = 38.89%
+INFO : Word: conducted ; probability = 0.05%
+INFO : Word: won ; probability = 0.04%
+INFO : Word: received ; probability = 0.02%
+INFO : tensor([16206,  3499, 17584,  ...,  7322, 17344,  6361], device='cuda:0')
+INFO : The top- 5 predicted senses are:
+INFO : Sense: thanks.n.01 ; probability = 99.94%
+INFO : Sense: conduct.v.01 ; probability = 0.04%
+INFO : Sense: win.v.01 ; probability = 0.02%
+INFO : Sense: receive.v.02 ; probability = 0.01%
+INFO : Sense: evidence.n.01 ; probability = 0.0%
+INFO : 
+-----
+Label: the next global is: of
+INFO : Label: the next sense is: None
+INFO : tensor([   5,   23,   62,  ..., 7279, 2463, 5959], device='cuda:0')
+INFO : The top- 5 predicted globals are:
+INFO : Word: of ; probability = 100.0%
+INFO : Word: the ; probability = 0.0%
+INFO : Word: of this ; probability = 0.0%
+INFO : Word: which ; probability = 0.0%
+INFO : Word: charge ; probability = 0.0%
+INFO : 
+-----
+Label: the next global is: the
+INFO : Label: the next sense is: None
+INFO : tensor([23,  5, 18,  ..., 19, 53, 52], device='cuda:0')
+INFO : The top- 5 predicted globals are:
+INFO : Word: the ; probability = 15.58%
+INFO : Word: of ; probability = 9.89%
+INFO : Word: jury ; probability = 9.71%
+INFO : Word: <unk> ; probability = 9.7%
+INFO : Word: Atlanta ; probability = 9.39%
+INFO : 
+-----
+Label: the next global is: <unk>
+INFO : Label: the next sense is: location.n.01
+INFO : tensor([  29, 9857,   18,  ...,   32,   52,   53], device='cuda:0')
+INFO : The top- 5 predicted globals are:
+INFO : Word: election ; probability = 22.49%
+INFO : Word: <unk> ; probability = 22.29%
+INFO : Word: jury ; probability = 8.85%
+INFO : Word: size ; probability = 7.76%
+INFO : Word: number ; probability = 7.48%
+INFO : tensor([ 5633, 14686,  9823,  ...,  6361, 13110,  7724], device='cuda:0')
+INFO : The top- 5 predicted senses are:
+INFO : Sense: election.n.01 ; probability = 27.78%
+INFO : Sense: size.n.01 ; probability = 12.68%
+INFO : Sense: manner.n.01 ; probability = 11.65%
+INFO : Sense: location.n.01 ; probability = 10.81%
+INFO : Sense: number.n.02 ; probability = 8.3%
+INFO : 
+-----
+Label: the next global is: "
+INFO : Label: the next sense is: None
+INFO : tensor([9857,   10,   26,  ..., 1313, 1277, 8322], device='cuda:0')
+INFO : The top- 5 predicted globals are:
+INFO : Word: <unk> ; probability = 56.37%
+INFO : Word: " ; probability = 38.55%
+INFO : Word: had ; probability = 1.48%
+INFO : Word: said ; probability = 1.23%
+INFO : Word: Fulton ; probability = 0.7%
+INFO : 
+-----
+Label: the next global is: for
+INFO : Label: the next sense is: None
+INFO : tensor([17, 20, 56,  ..., 37, 49, 55], device='cuda:0')
+INFO : The top- 5 predicted globals are:
+INFO : Word: . ; probability = 12.33%
+INFO : Word: in ; probability = 10.47%
+INFO : Word: considering ; probability = 9.97%
+INFO : Word: Only ; probability = 9.92%
+INFO : Word: that ; probability = 9.88%
+INFO : 
+-----
+Label: the next global is: the
+INFO : Label: the next sense is: None
+INFO : tensor([ 23,  37,  55,  ..., 671,  19,  32], device='cuda:0')
+INFO : The top- 5 predicted globals are:
+INFO : Word: the ; probability = 95.95%
+INFO : Word: conducted ; probability = 0.82%
+INFO : Word: received ; probability = 0.68%
+INFO : Word: won ; probability = 0.64%
+INFO : Word: of this ; probability = 0.55%
+INFO : 
+-----
+Label: the next global is: manner
+INFO : Label: the next sense is: manner.n.01
+INFO : tensor([  29, 9857,   18,  ...,   32,   52,   53], device='cuda:0')
+INFO : The top- 5 predicted globals are:
+INFO : Word: election ; probability = 22.49%
+INFO : Word: <unk> ; probability = 22.29%
+INFO : Word: jury ; probability = 8.85%
+INFO : Word: size ; probability = 7.76%
+INFO : Word: number ; probability = 7.48%
+INFO : tensor([ 5633, 14686,  9823,  ...,  6361, 13110,  7724], device='cuda:0')
+INFO : The top- 5 predicted senses are:
+INFO : Sense: election.n.01 ; probability = 27.78%
+INFO : Sense: size.n.01 ; probability = 12.68%
+INFO : Sense: manner.n.01 ; probability = 11.65%
+INFO : Sense: location.n.01 ; probability = 10.81%
+INFO : Sense: number.n.02 ; probability = 8.3%
+INFO : 
+-----
+Label: the next global is: in
+INFO : Label: the next sense is: None
+INFO : tensor([  20,   51,   10,  ..., 5675, 5175, 6853], device='cuda:0')
+INFO : The top- 5 predicted globals are:
+INFO : Word: in ; probability = 90.96%
+INFO : Word: a ; probability = 6.72%
+INFO : Word: " ; probability = 1.07%
+INFO : Word: . ; probability = 0.61%
+INFO : Word: evidence ; probability = 0.29%
+INFO : 
+-----
+Label: the next global is: which
+INFO : Label: the next sense is: None
+INFO : tensor([23, 21, 25,  ..., 52, 32, 19], device='cuda:0')
+INFO : The top- 5 predicted globals are:
+INFO : Word: the ; probability = 53.7%
+INFO : Word: term ; probability = 25.08%
+INFO : Word: which ; probability = 18.11%
+INFO : Word: was ; probability = 0.91%
+INFO : Word: <unk> ; probability = 0.74%
+INFO : 
+-----
+Label: the next global is: the
+INFO : Label: the next sense is: None
+INFO : tensor([26, 36, 23,  ..., 53, 32, 19], device='cuda:0')
+INFO : The top- 5 predicted globals are:
+INFO : Word: had ; probability = 43.03%
+INFO : Word: was ; probability = 34.65%
+INFO : Word: the ; probability = 21.68%
+INFO : Word: jury ; probability = 0.33%
+INFO : Word: a ; probability = 0.13%
+INFO : 
+-----
+Label: the next global is: election
+INFO : Label: the next sense is: election.n.01
+INFO : tensor([9857,   29,   18,  ...,   32,   52,   53], device='cuda:0')
+INFO : The top- 5 predicted globals are:
+INFO : Word: <unk> ; probability = 22.34%
+INFO : Word: election ; probability = 22.32%
+INFO : Word: jury ; probability = 8.56%
+INFO : Word: size ; probability = 7.77%
+INFO : Word: praise ; probability = 7.53%
+INFO : tensor([ 5633, 14686,  9823,  ...,  6361, 13110,  7724], device='cuda:0')
+INFO : The top- 5 predicted senses are:
+INFO : Sense: election.n.01 ; probability = 27.24%
+INFO : Sense: size.n.01 ; probability = 12.61%
+INFO : Sense: manner.n.01 ; probability = 12.0%
+INFO : Sense: location.n.01 ; probability = 11.27%
+INFO : Sense: praise.n.01 ; probability = 8.23%
+INFO : 
+-----
+Label: the next global is: was
+INFO : Label: the next sense is: None
+INFO : tensor([  24,   36, 9857,  ...,   37,   49,   55], device='cuda:0')
+INFO : The top- 5 predicted globals are:
+INFO : Word: , ; probability = 74.2%
+INFO : Word: was ; probability = 12.16%
+INFO : Word: <unk> ; probability = 4.56%
+INFO : Word: " ; probability = 3.22%
+INFO : Word: . ; probability = 2.32%
+INFO : 
+-----
+Label: the next global is: conducted
+INFO : Label: the next sense is: conduct.v.01
+INFO : tensor([  55,   49,   37,  ..., 7107,   19,   32], device='cuda:0')
+INFO : The top- 5 predicted globals are:
+INFO : Word: received ; probability = 38.01%
+INFO : Word: won ; probability = 32.43%
+INFO : Word: conducted ; probability = 26.78%
+INFO : Word: the ; probability = 1.61%
+INFO : Word: term ; probability = 0.36%
+INFO : tensor([17584,  3499, 12913,  ..., 14038,   862,  6361], device='cuda:0')
+INFO : The top- 5 predicted senses are:
+INFO : Sense: win.v.01 ; probability = 42.13%
+INFO : Sense: conduct.v.01 ; probability = 34.77%
+INFO : Sense: receive.v.02 ; probability = 22.5%
+INFO : Sense: term.n.02 ; probability = 0.42%
+INFO : Sense: mission.n.03 ; probability = 0.14%
+INFO : 
+-----
+Label: the next global is: .
+INFO : Label: the next sense is: None
+INFO : tensor([17, 20, 23,  ..., 37, 49, 55], device='cuda:0')
+INFO : The top- 5 predicted globals are:
+INFO : Word: . ; probability = 80.66%
+INFO : Word: in ; probability = 12.73%
+INFO : Word: the ; probability = 2.27%
+INFO : Word: , ; probability = 1.7%
+INFO : Word: was ; probability = 0.63%
+INFO : 
+-----
+Label: the next global is: <unk>
+INFO : Label: the next sense is: None
+INFO : tensor([9857,   10,    1,  ..., 3812,  851, 1277], device='cuda:0')
+INFO : The top- 5 predicted globals are:
+INFO : Word: <unk> ; probability = 99.64%
+INFO : Word: " ; probability = 0.31%
+INFO : Word: said ; probability = 0.03%
+INFO : Word: took place ; probability = 0.03%
+INFO : Word: Fulton ; probability = 0.0%
+INFO : 
+-----
+Label: the next global is: The
+INFO : Label: the next sense is: None
+INFO : tensor([   0,   13,   48,  ..., 6853,   57,   49], device='cuda:0')
+INFO : The top- 5 predicted globals are:
+INFO : Word: The ; probability = 38.3%
+INFO : Word: that ; probability = 23.01%
+INFO : Word: primary ; probability = 17.73%
+INFO : Word: " ; probability = 15.69%
+INFO : Word: of ; probability = 1.89%
+INFO : 
+-----
+Label: the next global is: September
+INFO : Label: the next sense is: None
+INFO : tensor([23,  5, 18,  ..., 19, 53, 52], device='cuda:0')
+INFO : The top- 5 predicted globals are:
+INFO : Word: the ; probability = 15.9%
+INFO : Word: of ; probability = 9.86%
+INFO : Word: jury ; probability = 9.81%
+INFO : Word: Atlanta ; probability = 9.57%
+INFO : Word: s ; probability = 9.55%
+INFO : 
+-----
+Label: the next global is: October
+INFO : Label: the next sense is: None
+INFO : tensor([  41,   39,   42,  ..., 2733, 5979, 6215], device='cuda:0')
+INFO : The top- 5 predicted globals are:
+INFO : Word: charged ; probability = 59.19%
+INFO : Word: October ; probability = 38.96%
+INFO : Word: by ; probability = 0.58%
+INFO : Word: investigate ; probability = 0.57%
+INFO : Word: term ; probability = 0.42%
+INFO : 
+-----
+Label: the next global is: term
+INFO : Label: the next sense is: term.n.02
+INFO : tensor([  21,   42, 9857,  ..., 2733,   22, 6215], device='cuda:0')
+INFO : The top- 5 predicted globals are:
+INFO : Word: term ; probability = 74.88%
+INFO : Word: by ; probability = 20.9%
+INFO : Word: <unk> ; probability = 1.09%
+INFO : Word: Fulton ; probability = 0.68%
+INFO : Word: charged ; probability = 0.68%
+INFO : tensor([16157,  9559, 11522,  ..., 10415,   742, 12933], device='cuda:0')
+INFO : The top- 5 predicted senses are:
+INFO : Sense: term.n.02 ; probability = 95.5%
+INFO : Sense: location.n.01 ; probability = 2.07%
+INFO : Sense: person.n.01 ; probability = 1.19%
+INFO : Sense: conduct.v.01 ; probability = 0.36%
+INFO : Sense: win.v.01 ; probability = 0.28%
+INFO : 
+-----
+Label: the next global is: jury
+INFO : Label: the next sense is: jury.n.01
+INFO : tensor([22, 18, 20,  ..., 37, 49, 55], device='cuda:0')
+INFO : The top- 5 predicted globals are:
+INFO : Word: end ; probability = 55.49%
+INFO : Word: jury ; probability = 35.95%
+INFO : Word: in ; probability = 7.5%
+INFO : Word: . ; probability = 0.71%
+INFO : Word: the ; probability = 0.14%
+INFO : tensor([ 8895,  5740,  9120,  ..., 17526, 10595, 16345], device='cuda:0')
+INFO : The top- 5 predicted senses are:
+INFO : Sense: jury.n.01 ; probability = 52.74%
+INFO : Sense: end.n.02 ; probability = 46.78%
+INFO : Sense: late.s.03 ; probability = 0.23%
+INFO : Sense: primary.n.01 ; probability = 0.16%
+INFO : Sense: state.v.01 ; probability = 0.04%
+INFO : 
+-----
+Label: the next global is: had
+INFO : Label: the next sense is: None
+INFO : tensor([ 1, 19, 26,  ..., 55, 49,  4], device='cuda:0')
+INFO : The top- 5 predicted globals are:
+INFO : Word: said ; probability = 37.99%
+INFO : Word: further ; probability = 34.7%
+INFO : Word: had ; probability = 18.17%
+INFO : Word: " ; probability = 2.91%
+INFO : Word: , ; probability = 1.74%
+INFO : 
+-----
+Label: the next global is: been
+INFO : Label: the next sense is: None
+INFO : tensor([  29, 9857,   18,  ...,   32,   52,   53], device='cuda:0')
+INFO : The top- 5 predicted globals are:
+INFO : Word: election ; probability = 22.94%
+INFO : Word: <unk> ; probability = 21.89%
+INFO : Word: jury ; probability = 8.28%
+INFO : Word: size ; probability = 7.74%
+INFO : Word: praise ; probability = 7.67%
+INFO : 
+-----
+Label: the next global is: charged
+INFO : Label: the next sense is: None
+INFO : tensor([  41,   39,   42,  ..., 2733, 5979, 6215], device='cuda:0')
+INFO : The top- 5 predicted globals are:
+INFO : Word: charged ; probability = 59.19%
+INFO : Word: October ; probability = 38.96%
+INFO : Word: by ; probability = 0.58%
+INFO : Word: investigate ; probability = 0.57%
+INFO : Word: term ; probability = 0.42%
+INFO : 
+-----
+Label: the next global is: by
+INFO : Label: the next sense is: None
+INFO : tensor([  21,   42, 9857,  ..., 2733,   22, 6215], device='cuda:0')
+INFO : The top- 5 predicted globals are:
+INFO : Word: term ; probability = 74.88%
+INFO : Word: by ; probability = 20.9%
+INFO : Word: <unk> ; probability = 1.09%
+INFO : Word: Fulton ; probability = 0.68%
+INFO : Word: charged ; probability = 0.68%
+INFO : 
+-----
+Label: the next global is: Fulton
+INFO : Label: the next sense is: location.n.01
+INFO : tensor([9857,   43,   21,  ..., 6215,   22,   27], device='cuda:0')
+INFO : The top- 5 predicted globals are:
+INFO : Word: <unk> ; probability = 71.74%
+INFO : Word: Fulton ; probability = 27.52%
+INFO : Word: term ; probability = 0.44%
+INFO : Word: by ; probability = 0.12%
+INFO : Word: investigate ; probability = 0.05%
+INFO : tensor([11522,  9559, 16157,  ...,  8724, 13340,  8257], device='cuda:0')
+INFO : The top- 5 predicted senses are:
+INFO : Sense: person.n.01 ; probability = 56.69%
+INFO : Sense: location.n.01 ; probability = 42.31%
+INFO : Sense: term.n.02 ; probability = 0.75%
+INFO : Sense: investigate.v.02 ; probability = 0.09%
+INFO : Sense: happen.v.01 ; probability = 0.04%
+INFO : 
+-----
+Label: the next global is: <unk>
+INFO : Label: the next sense is: person.n.01
+INFO : tensor([  10, 9857,   26,  ..., 1313, 1277, 8322], device='cuda:0')
+INFO : The top- 5 predicted globals are:
+INFO : Word: " ; probability = 51.28%
+INFO : Word: <unk> ; probability = 42.78%
+INFO : Word: had ; probability = 1.72%
+INFO : Word: said ; probability = 1.15%
+INFO : Word: Fulton ; probability = 0.87%
+INFO : tensor([11522,  9559, 12292,  ..., 13599, 11173, 11231], device='cuda:0')
+INFO : The top- 5 predicted senses are:
+INFO : Sense: person.n.01 ; probability = 97.7%
+INFO : Sense: location.n.01 ; probability = 1.13%
+INFO : Sense: produce.v.04 ; probability = 0.74%
+INFO : Sense: far.r.02 ; probability = 0.25%
+INFO : Sense: happen.v.01 ; probability = 0.07%
+INFO : 
+-----
+Label: the next global is: to
+INFO : Label: the next sense is: None
+INFO : tensor([17, 44, 32,  ..., 57,  4, 29], device='cuda:0')
+INFO : The top- 5 predicted globals are:
+INFO : Word: . ; probability = 64.85%
+INFO : Word: to ; probability = 29.85%
+INFO : Word: and ; probability = 1.23%
+INFO : Word: said ; probability = 0.94%
+INFO : Word: , ; probability = 0.84%
+INFO : 
+-----
+Label: the next global is: investigate
+INFO : Label: the next sense is: investigate.v.02
+INFO : tensor([  45,   53,   52,  ...,  718, 6215,    4], device='cuda:0')
+INFO : The top- 5 predicted globals are:
+INFO : Word: investigate ; probability = 97.3%
+INFO : Word: handful ; probability = 0.64%
+INFO : Word: relative ; probability = 0.62%
+INFO : Word: charged ; probability = 0.44%
+INFO : Word: <unk> ; probability = 0.44%
+INFO : tensor([ 8742, 13110,  7724,  ...,  4877,  3791, 12026], device='cuda:0')
+INFO : The top- 5 predicted senses are:
+INFO : Sense: investigate.v.02 ; probability = 98.18%
+INFO : Sense: relative.a.01 ; probability = 0.81%
+INFO : Sense: handful.n.01 ; probability = 0.71%
+INFO : Sense: location.n.01 ; probability = 0.11%
+INFO : Sense: person.n.01 ; probability = 0.07%
+INFO : 
+-----
+Label: the next global is: reports
+INFO : Label: the next sense is: report.n.03
+INFO : tensor([  46,   17,   42,  ..., 1337,  511, 1189], device='cuda:0')
+INFO : The top- 5 predicted globals are:
+INFO : Word: reports ; probability = 99.95%
+INFO : Word: . ; probability = 0.04%
+INFO : Word: by ; probability = 0.01%
+INFO : Word: " ; probability = 0.0%
+INFO : Word: and ; probability = 0.0%
+INFO : tensor([13215, 16157,  9120,  ...,  8777, 16467,  9520], device='cuda:0')
+INFO : The top- 5 predicted senses are:
+INFO : Sense: report.n.03 ; probability = 99.98%
+INFO : Sense: term.n.02 ; probability = 0.01%
+INFO : Sense: late.s.03 ; probability = 0.01%
+INFO : Sense: happen.v.01 ; probability = 0.0%
+INFO : Sense: deserve.v.01 ; probability = 0.0%
+INFO : 
+-----
+Label: the next global is: of
+INFO : Label: the next sense is: None
+INFO : tensor([   5,   10,   36,  ..., 5175, 5675,   57], device='cuda:0')
+INFO : The top- 5 predicted globals are:
+INFO : Word: of ; probability = 51.76%
+INFO : Word: " ; probability = 24.29%
+INFO : Word: was ; probability = 17.15%
+INFO : Word: the ; probability = 4.05%
+INFO : Word: that ; probability = 0.44%
+INFO : 
+-----
+Label: the next global is: possible
+INFO : Label: the next sense is: potential.a.01
+INFO : tensor([23, 18,  6,  ..., 19, 53, 52], device='cuda:0')
+INFO : The top- 5 predicted globals are:
+INFO : Word: the ; probability = 16.43%
+INFO : Word: jury ; probability = 10.14%
+INFO : Word: Atlanta ; probability = 9.69%
+INFO : Word: s ; probability = 9.61%
+INFO : Word: of ; probability = 9.56%
+INFO : tensor([ 7607,  8895, 15743,  ...,  6361,  7724, 13110], device='cuda:0')
+INFO : The top- 5 predicted senses are:
+INFO : Sense: group.n.01 ; probability = 39.51%
+INFO : Sense: jury.n.01 ; probability = 25.77%
+INFO : Sense: such.s.01 ; probability = 17.59%
+INFO : Sense: potential.a.01 ; probability = 16.88%
+INFO : Sense: merely.r.01 ; probability = 0.04%
+INFO : 
+-----
+Label: the next global is: "
+INFO : Label: the next sense is: None
+INFO : tensor([  10,    1,    8,  ..., 9249, 1189, 3572], device='cuda:0')
+INFO : The top- 5 predicted globals are:
+INFO : Word: " ; probability = 99.11%
+INFO : Word: said ; probability = 0.58%
+INFO : Word: recent ; probability = 0.16%
+INFO : Word: and ; probability = 0.13%
+INFO : Word: <unk> ; probability = 0.02%
+INFO : 
+-----
+Label: the next global is: irregularities
+INFO : Label: the next sense is: None
+INFO : tensor([17, 13, 30,  ..., 37, 49, 55], device='cuda:0')
+INFO : The top- 5 predicted globals are:
+INFO : Word: . ; probability = 11.66%
+INFO : Word: that ; probability = 10.58%
+INFO : Word: deserves ; probability = 10.44%
+INFO : Word: in ; probability = 10.25%
+INFO : Word: for ; probability = 10.21%
+INFO : 
+-----
+Label: the next global is: "
+INFO : Label: the next sense is: None
+INFO : tensor([  16,   10, 9857,  ..., 3812,   27,   22], device='cuda:0')
+INFO : The top- 5 predicted globals are:
+INFO : Word: took place ; probability = 64.61%
+INFO : Word: " ; probability = 34.59%
+INFO : Word: <unk> ; probability = 0.59%
+INFO : Word: irregularities ; probability = 0.16%
+INFO : Word: Fulton ; probability = 0.03%
+INFO : 
+-----
+Label: the next global is: in
+INFO : Label: the next sense is: None
+INFO : tensor([13, 17, 30,  ..., 37, 49, 55], device='cuda:0')
+INFO : The top- 5 predicted globals are:
+INFO : Word: that ; probability = 10.84%
+INFO : Word: . ; probability = 10.69%
+INFO : Word: deserves ; probability = 10.66%
+INFO : Word: for ; probability = 10.38%
+INFO : Word: no ; probability = 9.83%
+INFO : 
+-----
+Label: the next global is: the
+INFO : Label: the next sense is: None
+INFO : tensor([23, 21, 25,  ..., 52, 32, 19], device='cuda:0')
+INFO : The top- 5 predicted globals are:
+INFO : Word: the ; probability = 44.04%
+INFO : Word: term ; probability = 27.92%
+INFO : Word: which ; probability = 25.49%
+INFO : Word: was ; probability = 0.79%
+INFO : Word: <unk> ; probability = 0.49%
+INFO : 
+-----
+Label: the next global is: <unk>
+INFO : Label: the next sense is: None
+INFO : tensor([  29, 9857,   31,  ...,   32,   52,   53], device='cuda:0')
+INFO : The top- 5 predicted globals are:
+INFO : Word: election ; probability = 23.72%
+INFO : Word: <unk> ; probability = 19.73%
+INFO : Word: praise ; probability = 8.03%
+INFO : Word: manner ; probability = 7.96%
+INFO : Word: been ; probability = 7.89%
+INFO : 
+-----
+Label: the next global is: primary
+INFO : Label: the next sense is: primary.n.01
+INFO : tensor([   0,   13,   48,  ..., 6853,   57,   49], device='cuda:0')
+INFO : The top- 5 predicted globals are:
+INFO : Word: The ; probability = 45.24%
+INFO : Word: that ; probability = 22.98%
+INFO : Word: primary ; probability = 15.0%
+INFO : Word: " ; probability = 11.87%
+INFO : Word: of ; probability = 1.65%
+INFO : tensor([12207, 15301,  5740,  ...,  9188, 16259,  7584], device='cuda:0')
+INFO : The top- 5 predicted senses are:
+INFO : Sense: primary.n.01 ; probability = 99.46%
+INFO : Sense: state.v.01 ; probability = 0.45%
+INFO : Sense: end.n.02 ; probability = 0.03%
+INFO : Sense: jury.n.01 ; probability = 0.03%
+INFO : Sense: late.s.03 ; probability = 0.03%
+INFO : 
+-----
+Label: the next global is: which
+INFO : Label: the next sense is: None
+INFO : tensor([   9,   25,   10,  ..., 3518, 8322,    4], device='cuda:0')
+INFO : The top- 5 predicted globals are:
+INFO : Word: produced ; probability = 54.21%
+INFO : Word: which ; probability = 35.59%
+INFO : Word: " ; probability = 3.24%
+INFO : Word: had ; probability = 2.56%
+INFO : Word: of this ; probability = 1.47%
+INFO : 
+-----
+Label: the next global is: was
+INFO : Label: the next sense is: None
+INFO : tensor([26, 23, 36,  ..., 53, 32, 19], device='cuda:0')
+INFO : The top- 5 predicted globals are:
+INFO : Word: had ; probability = 44.4%
+INFO : Word: the ; probability = 29.7%
+INFO : Word: was ; probability = 25.33%
+INFO : Word: jury ; probability = 0.24%
+INFO : Word: a ; probability = 0.12%
+INFO : 
+-----
+Label: the next global is: won
+INFO : Label: the next sense is: win.v.01
+INFO : tensor([  55,   37,   49,  ..., 7107,   19,   32], device='cuda:0')
+INFO : The top- 5 predicted globals are:
+INFO : Word: received ; probability = 34.19%
+INFO : Word: conducted ; probability = 34.02%
+INFO : Word: won ; probability = 29.28%
+INFO : Word: the ; probability = 1.38%
+INFO : Word: term ; probability = 0.31%
+INFO : tensor([ 3499, 17584, 12913,  ..., 14038,   862,  6361], device='cuda:0')
+INFO : The top- 5 predicted senses are:
+INFO : Sense: conduct.v.01 ; probability = 43.28%
+INFO : Sense: win.v.01 ; probability = 35.9%
+INFO : Sense: receive.v.02 ; probability = 20.22%
+INFO : Sense: term.n.02 ; probability = 0.42%
+INFO : Sense: mission.n.03 ; probability = 0.15%
+INFO : 
+-----
+Label: the next global is: by
+INFO : Label: the next sense is: None
+INFO : tensor([  42,   10,   36,  ..., 5175, 6853,   57], device='cuda:0')
+INFO : The top- 5 predicted globals are:
+INFO : Word: by ; probability = 87.04%
+INFO : Word: " ; probability = 4.27%
+INFO : Word: was ; probability = 2.54%
+INFO : Word: that ; probability = 1.51%
+INFO : Word: The ; probability = 1.34%
+INFO : 
+-----
+Label: the next global is: <unk>
+INFO : Label: the next sense is: person.n.01
+INFO : tensor([9857,   43,   21,  ..., 6215,   22,   27], device='cuda:0')
+INFO : The top- 5 predicted globals are:
+INFO : Word: <unk> ; probability = 51.49%
+INFO : Word: Fulton ; probability = 47.55%
+INFO : Word: term ; probability = 0.42%
+INFO : Word: by ; probability = 0.29%
+INFO : Word: investigate ; probability = 0.07%
+INFO : tensor([ 9559, 11522, 16157,  ..., 13340, 12933,  8257], device='cuda:0')
+INFO : The top- 5 predicted senses are:
+INFO : Sense: location.n.01 ; probability = 60.03%
+INFO : Sense: person.n.01 ; probability = 38.63%
+INFO : Sense: term.n.02 ; probability = 1.04%
+INFO : Sense: investigate.v.02 ; probability = 0.13%
+INFO : Sense: happen.v.01 ; probability = 0.04%
+INFO : 
+-----
+Label: the next global is: .
+INFO : Label: the next sense is: None
+INFO : tensor([44, 17, 32,  ..., 57,  4, 29], device='cuda:0')
+INFO : The top- 5 predicted globals are:
+INFO : Word: to ; probability = 49.69%
+INFO : Word: . ; probability = 44.46%
+INFO : Word: and ; probability = 1.39%
+INFO : Word: , ; probability = 0.91%
+INFO : Word: said ; probability = 0.73%
+INFO : 
+-----
+Label: the next global is: <unk>
+INFO : Label: the next sense is: None
+INFO : tensor([9857,   10,   16,  ...,  851, 3812, 1277], device='cuda:0')
+INFO : The top- 5 predicted globals are:
+INFO : Word: <unk> ; probability = 99.47%
+INFO : Word: " ; probability = 0.46%
+INFO : Word: took place ; probability = 0.05%
+INFO : Word: said ; probability = 0.03%
+INFO : Word: Fulton ; probability = 0.0%
+INFO : 
+-----
+Label: the next global is: "
+INFO : Label: the next sense is: None
+INFO : tensor([   0,   13,   48,  ..., 6853,   49,   57], device='cuda:0')
+INFO : The top- 5 predicted globals are:
+INFO : Word: The ; probability = 45.66%
+INFO : Word: that ; probability = 22.1%
+INFO : Word: primary ; probability = 17.35%
+INFO : Word: " ; probability = 9.95%
+INFO : Word: of ; probability = 1.71%
+INFO : 
+-----
+Label: the next global is: Only
+INFO : Label: the next sense is: merely.r.01
+INFO : tensor([30, 13, 34,  ..., 37, 49, 55], device='cuda:0')
+INFO : The top- 5 predicted globals are:
+INFO : Word: deserves ; probability = 10.71%
+INFO : Word: that ; probability = 10.69%
+INFO : Word: for ; probability = 10.47%
+INFO : Word: in ; probability = 10.25%
+INFO : Word: no ; probability = 9.9%
+INFO : tensor([ 4698, 10075,  3614,  ..., 11167, 17584, 12913], device='cuda:0')
+INFO : The top- 5 predicted senses are:
+INFO : Sense: deserve.v.01 ; probability = 38.68%
+INFO : Sense: merely.r.01 ; probability = 33.71%
+INFO : Sense: consider.v.04 ; probability = 27.26%
+INFO : Sense: late.s.03 ; probability = 0.11%
+INFO : Sense: jury.n.01 ; probability = 0.06%
+INFO : 
+-----
+Label: the next global is: a
+INFO : Label: the next sense is: None
+INFO : tensor([  51,   20,   17,  ..., 5175, 5675, 6853], device='cuda:0')
+INFO : The top- 5 predicted globals are:
+INFO : Word: a ; probability = 91.76%
+INFO : Word: in ; probability = 6.29%
+INFO : Word: . ; probability = 0.5%
+INFO : Word: The ; probability = 0.31%
+INFO : Word: primary ; probability = 0.28%
+INFO : 
+-----
+Label: the next global is: relative
+INFO : Label: the next sense is: relative.a.01
+INFO : tensor([  53,   52,   45,  ..., 6215,   27,    4], device='cuda:0')
+INFO : The top- 5 predicted globals are:
+INFO : Word: handful ; probability = 52.22%
+INFO : Word: relative ; probability = 45.58%
+INFO : Word: investigate ; probability = 1.15%
+INFO : Word: and ; probability = 0.51%
+INFO : Word: <unk> ; probability = 0.35%
+INFO : tensor([13110,  7724,  8742,  ..., 12026,  8257,  4877], device='cuda:0')
+INFO : The top- 5 predicted senses are:
+INFO : Sense: relative.a.01 ; probability = 55.34%
+INFO : Sense: handful.n.01 ; probability = 43.78%
+INFO : Sense: investigate.v.02 ; probability = 0.64%
+INFO : Sense: location.n.01 ; probability = 0.14%
+INFO : Sense: person.n.01 ; probability = 0.07%
+INFO : 
+-----
+Label: the next global is: handful
+INFO : Label: the next sense is: handful.n.01
+INFO : tensor([  52,   53,   45,  ..., 6215,   27,    4], device='cuda:0')
+INFO : The top- 5 predicted globals are:
+INFO : Word: relative ; probability = 51.9%
+INFO : Word: handful ; probability = 46.01%
+INFO : Word: investigate ; probability = 1.09%
+INFO : Word: and ; probability = 0.48%
+INFO : Word: <unk> ; probability = 0.34%
+INFO : tensor([13110,  7724,  8742,  ..., 12026,  4877,  8257], device='cuda:0')
+INFO : The top- 5 predicted senses are:
+INFO : Sense: relative.a.01 ; probability = 61.8%
+INFO : Sense: handful.n.01 ; probability = 37.37%
+INFO : Sense: investigate.v.02 ; probability = 0.6%
+INFO : Sense: location.n.01 ; probability = 0.13%
+INFO : Sense: person.n.01 ; probability = 0.07%
+INFO : 
+-----
+Label: the next global is: of
+INFO : Label: the next sense is: None
+INFO : tensor([ 5, 10, 24,  ..., 37, 49, 55], device='cuda:0')
+INFO : The top- 5 predicted globals are:
+INFO : Word: of ; probability = 99.84%
+INFO : Word: " ; probability = 0.06%
+INFO : Word: , ; probability = 0.05%
+INFO : Word: said ; probability = 0.03%
+INFO : Word: in ; probability = 0.02%
+INFO : 
+-----
+Label: the next global is: such
+INFO : Label: the next sense is: such.s.01
+INFO : tensor([23, 18,  6,  ..., 19, 53, 52], device='cuda:0')
+INFO : The top- 5 predicted globals are:
+INFO : Word: the ; probability = 16.5%
+INFO : Word: jury ; probability = 10.09%
+INFO : Word: Atlanta ; probability = 9.51%
+INFO : Word: September ; probability = 9.44%
+INFO : Word: of ; probability = 9.39%
+INFO : tensor([ 7607,  8895, 12037,  ...,  6361,  7724, 13110], device='cuda:0')
+INFO : The top- 5 predicted senses are:
+INFO : Sense: group.n.01 ; probability = 38.7%
+INFO : Sense: jury.n.01 ; probability = 25.7%
+INFO : Sense: potential.a.01 ; probability = 18.5%
+INFO : Sense: such.s.01 ; probability = 16.84%
+INFO : Sense: election.n.01 ; probability = 0.04%
+INFO : 
+-----
+Label: the next global is: reports
+INFO : Label: the next sense is: report.n.03
+INFO : tensor([  46,   42,   17,  ..., 8676, 5556,   57], device='cuda:0')
+INFO : The top- 5 predicted globals are:
+INFO : Word: reports ; probability = 99.99%
+INFO : Word: by ; probability = 0.0%
+INFO : Word: . ; probability = 0.0%
+INFO : Word: a ; probability = 0.0%
+INFO : Word: in ; probability = 0.0%
+INFO : tensor([13215, 12207,  9120,  ...,  6120, 13310,  9520], device='cuda:0')
+INFO : The top- 5 predicted senses are:
+INFO : Sense: report.n.03 ; probability = 99.98%
+INFO : Sense: primary.n.01 ; probability = 0.02%
+INFO : Sense: late.s.03 ; probability = 0.0%
+INFO : Sense: investigate.v.02 ; probability = 0.0%
+INFO : Sense: evidence.n.01 ; probability = 0.0%
+INFO : 
+-----
+Label: the next global is: was
+INFO : Label: the next sense is: None
+INFO : tensor([   5,   10,   36,  ..., 5322, 5675,   57], device='cuda:0')
+INFO : The top- 5 predicted globals are:
+INFO : Word: of ; probability = 63.54%
+INFO : Word: " ; probability = 16.05%
+INFO : Word: was ; probability = 14.57%
+INFO : Word: the ; probability = 3.59%
+INFO : Word: by ; probability = 0.53%
+INFO : 
+-----
+Label: the next global is: received
+INFO : Label: the next sense is: receive.v.02
+INFO : tensor([  37,   49,   55,  ..., 7107,   19,   32], device='cuda:0')
+INFO : The top- 5 predicted globals are:
+INFO : Word: conducted ; probability = 34.7%
+INFO : Word: won ; probability = 33.73%
+INFO : Word: received ; probability = 29.17%
+INFO : Word: the ; probability = 1.28%
+INFO : Word: term ; probability = 0.27%
+INFO : tensor([ 3499, 17584, 12913,  ..., 14038,   862,  6361], device='cuda:0')
+INFO : The top- 5 predicted senses are:
+INFO : Sense: conduct.v.01 ; probability = 42.31%
+INFO : Sense: win.v.01 ; probability = 39.8%
+INFO : Sense: receive.v.02 ; probability = 17.26%
+INFO : Sense: term.n.02 ; probability = 0.44%
+INFO : Sense: mission.n.03 ; probability = 0.15%
+INFO : 
+-----
+Label: the next global is: "
+INFO : Label: the next sense is: None
+INFO : tensor([  10,    5,   36,  ..., 2458, 5675,   57], device='cuda:0')
+INFO : The top- 5 predicted globals are:
+INFO : Word: " ; probability = 44.82%
+INFO : Word: of ; probability = 26.58%
+INFO : Word: was ; probability = 20.03%
+INFO : Word: the ; probability = 3.82%
+INFO : Word: a ; probability = 0.66%
+INFO : 
+-----
+Label: the next global is: ,
+INFO : Label: the next sense is: None
+INFO : tensor([30, 34, 20,  ..., 37, 49, 55], device='cuda:0')
+INFO : The top- 5 predicted globals are:
+INFO : Word: deserves ; probability = 10.74%
+INFO : Word: for ; probability = 10.54%
+INFO : Word: in ; probability = 10.51%
+INFO : Word: that ; probability = 10.24%
+INFO : Word: no ; probability = 9.85%
+INFO : 
+-----
+Label: the next global is: the
+INFO : Label: the next sense is: None
+INFO : tensor([10, 23, 25,  ..., 32, 52, 53], device='cuda:0')
+INFO : The top- 5 predicted globals are:
+INFO : Word: " ; probability = 43.57%
+INFO : Word: the ; probability = 29.12%
+INFO : Word: which ; probability = 22.58%
+INFO : Word: <unk> ; probability = 2.45%
+INFO : Word: jury ; probability = 0.27%
+INFO : 
+-----
+Label: the next global is: jury
+INFO : Label: the next sense is: jury.n.01
+INFO : tensor([  29, 9857,   40,  ...,   32,   52,   53], device='cuda:0')
+INFO : The top- 5 predicted globals are:
+INFO : Word: election ; probability = 23.61%
+INFO : Word: <unk> ; probability = 21.69%
+INFO : Word: been ; probability = 8.0%
+INFO : Word: manner ; probability = 7.91%
+INFO : Word: praise ; probability = 7.82%
+INFO : tensor([ 5633,  9559,  9823,  ...,  6361, 13110,  7724], device='cuda:0')
+INFO : The top- 5 predicted senses are:
+INFO : Sense: election.n.01 ; probability = 29.3%
+INFO : Sense: location.n.01 ; probability = 13.07%
+INFO : Sense: manner.n.01 ; probability = 12.28%
+INFO : Sense: size.n.01 ; probability = 11.79%
+INFO : Sense: praise.n.01 ; probability = 8.38%
+INFO : 
+-----
+Label: the next global is: said
+INFO : Label: the next sense is: state.v.01
+INFO : tensor([19, 26,  1,  ..., 55, 49,  4], device='cuda:0')
+INFO : The top- 5 predicted globals are:
+INFO : Word: further ; probability = 37.97%
+INFO : Word: had ; probability = 29.13%
+INFO : Word: said ; probability = 21.3%
+INFO : Word: " ; probability = 3.95%
+INFO : Word: , ; probability = 1.98%
+INFO : tensor([ 6361, 15301, 12292,  ...,  2620,  3825,  5618], device='cuda:0')
+INFO : The top- 5 predicted senses are:
+INFO : Sense: far.r.02 ; probability = 60.56%
+INFO : Sense: state.v.01 ; probability = 38.01%
+INFO : Sense: produce.v.04 ; probability = 0.94%
+INFO : Sense: person.n.01 ; probability = 0.39%
+INFO : Sense: location.n.01 ; probability = 0.03%
+INFO : 
+-----
+Label: the next global is: ,
+INFO : Label: the next sense is: None
+INFO : tensor([20,  2, 24,  ..., 29, 57, 28], device='cuda:0')
+INFO : The top- 5 predicted globals are:
+INFO : Word: in ; probability = 40.01%
+INFO : Word: Friday ; probability = 35.79%
+INFO : Word: , ; probability = 23.78%
+INFO : Word: was ; probability = 0.25%
+INFO : Word: end ; probability = 0.05%
+INFO : 
+-----
+Label: the next global is: "
+INFO : Label: the next sense is: None
+INFO : tensor([10, 23, 25,  ..., 32, 52, 53], device='cuda:0')
+INFO : The top- 5 predicted globals are:
+INFO : Word: " ; probability = 43.57%
+INFO : Word: the ; probability = 29.12%
+INFO : Word: which ; probability = 22.58%
+INFO : Word: <unk> ; probability = 2.45%
+INFO : Word: jury ; probability = 0.27%
+INFO : 
+-----
+Label: the next global is: considering
+INFO : Label: the next sense is: consider.v.04
+INFO : tensor([20, 30, 34,  ..., 37, 49, 55], device='cuda:0')
+INFO : The top- 5 predicted globals are:
+INFO : Word: in ; probability = 10.7%
+INFO : Word: deserves ; probability = 10.59%
+INFO : Word: for ; probability = 10.38%
+INFO : Word: irregularities ; probability = 10.16%
+INFO : Word: that ; probability = 9.89%
+INFO : tensor([ 4698, 10075,  3614,  ..., 11167, 17584, 12913], device='cuda:0')
+INFO : The top- 5 predicted senses are:
+INFO : Sense: deserve.v.01 ; probability = 37.73%
+INFO : Sense: merely.r.01 ; probability = 36.22%
+INFO : Sense: consider.v.04 ; probability = 25.71%
+INFO : Sense: late.s.03 ; probability = 0.1%
+INFO : Sense: jury.n.01 ; probability = 0.06%
+INFO : 
+-----
+Label: the next global is: the
+INFO : Label: the next sense is: None
+INFO : tensor([23, 36, 10,  ..., 57, 49, 55], device='cuda:0')
+INFO : The top- 5 predicted globals are:
+INFO : Word: the ; probability = 49.66%
+INFO : Word: was ; probability = 11.14%
+INFO : Word: " ; probability = 8.37%
+INFO : Word: of ; probability = 8.36%
+INFO : Word: jury ; probability = 6.26%
+INFO : 
+-----
+Label: the next global is: widespread
+INFO : Label: the next sense is: widespread.s.01
+INFO : tensor([  29, 9857,   40,  ...,   32,   52,   53], device='cuda:0')
+INFO : The top- 5 predicted globals are:
+INFO : Word: election ; probability = 23.61%
+INFO : Word: <unk> ; probability = 21.69%
+INFO : Word: been ; probability = 8.0%
+INFO : Word: manner ; probability = 7.91%
+INFO : Word: praise ; probability = 7.82%
+INFO : tensor([ 5633,  9559,  9823,  ...,  6361, 13110,  7724], device='cuda:0')
+INFO : The top- 5 predicted senses are:
+INFO : Sense: election.n.01 ; probability = 29.3%
+INFO : Sense: location.n.01 ; probability = 13.07%
+INFO : Sense: manner.n.01 ; probability = 12.28%
+INFO : Sense: size.n.01 ; probability = 11.79%
+INFO : Sense: praise.n.01 ; probability = 8.38%
+INFO : 
+-----
+Label: the next global is: interest
+INFO : Label: the next sense is: interest.n.01
+INFO : tensor([  58,   22,    8,  ..., 1738, 3725,   28], device='cuda:0')
+INFO : The top- 5 predicted globals are:
+INFO : Word: interest ; probability = 99.99%
+INFO : Word: end ; probability = 0.01%
+INFO : Word: recent ; probability = 0.0%
+INFO : Word: . ; probability = 0.0%
+INFO : Word: <unk> ; probability = 0.0%
+INFO : tensor([ 8668,  5740,  8895,  ..., 16938, 17027, 10213], device='cuda:0')
+INFO : The top- 5 predicted senses are:
+INFO : Sense: interest.n.01 ; probability = 100.0%
+INFO : Sense: end.n.02 ; probability = 0.0%
+INFO : Sense: jury.n.01 ; probability = 0.0%
+INFO : Sense: city.n.01 ; probability = 0.0%
+INFO : Sense: late.s.03 ; probability = 0.0%
+INFO : 
+-----
+Label: the next global is: in
+INFO : Label: the next sense is: None
+INFO : tensor([20, 17, 23,  ..., 37, 49, 55], device='cuda:0')
+INFO : The top- 5 predicted globals are:
+INFO : Word: in ; probability = 77.62%
+INFO : Word: . ; probability = 7.11%
+INFO : Word: the ; probability = 3.87%
+INFO : Word: jury ; probability = 3.19%
+INFO : Word: , ; probability = 2.32%
+INFO : 
+-----
+Label: the next global is: the
+INFO : Label: the next sense is: None
+INFO : tensor([23, 25, 21,  ..., 52, 32, 19], device='cuda:0')
+INFO : The top- 5 predicted globals are:
+INFO : Word: the ; probability = 40.94%
+INFO : Word: which ; probability = 29.79%
+INFO : Word: term ; probability = 26.81%
+INFO : Word: was ; probability = 0.95%
+INFO : Word: <unk> ; probability = 0.4%
+INFO : 
+-----
+Label: the next global is: election
+INFO : Label: the next sense is: election.n.01
+INFO : tensor([  29, 9857,   40,  ...,   32,   52,   53], device='cuda:0')
+INFO : The top- 5 predicted globals are:
+INFO : Word: election ; probability = 23.06%
+INFO : Word: <unk> ; probability = 22.03%
+INFO : Word: been ; probability = 8.08%
+INFO : Word: manner ; probability = 7.86%
+INFO : Word: praise ; probability = 7.76%
+INFO : tensor([ 5633,  9559,  9823,  ...,  6361, 13110,  7724], device='cuda:0')
+INFO : The top- 5 predicted senses are:
+INFO : Sense: election.n.01 ; probability = 29.06%
+INFO : Sense: location.n.01 ; probability = 13.05%
+INFO : Sense: manner.n.01 ; probability = 12.38%
+INFO : Sense: size.n.01 ; probability = 11.63%
+INFO : Sense: praise.n.01 ; probability = 8.41%
+INFO : 
+-----
+Label: the next global is: ,
+INFO : Label: the next sense is: None
+INFO : tensor([24, 36, 10,  ...,  4, 49, 55], device='cuda:0')
+INFO : The top- 5 predicted globals are:
+INFO : Word: , ; probability = 62.72%
+INFO : Word: was ; probability = 26.46%
+INFO : Word: " ; probability = 3.72%
+INFO : Word: <unk> ; probability = 2.84%
+INFO : Word: in ; probability = 1.93%
+INFO : 
+-----
+Label: the next global is: the
+INFO : Label: the next sense is: None
+INFO : tensor([10, 23, 25,  ..., 32, 52, 53], device='cuda:0')
+INFO : The top- 5 predicted globals are:
+INFO : Word: " ; probability = 44.42%
+INFO : Word: the ; probability = 29.01%
+INFO : Word: which ; probability = 21.85%
+INFO : Word: <unk> ; probability = 2.48%
+INFO : Word: jury ; probability = 0.28%
+INFO : 
+-----
+Label: the next global is: number
+INFO : Label: the next sense is: number.n.02
+INFO : tensor([  29, 9857,   40,  ...,   32,   52,   53], device='cuda:0')
+INFO : The top- 5 predicted globals are:
+INFO : Word: election ; probability = 23.06%
+INFO : Word: <unk> ; probability = 22.03%
+INFO : Word: been ; probability = 8.08%
+INFO : Word: manner ; probability = 7.86%
+INFO : Word: praise ; probability = 7.76%
+INFO : tensor([ 5633,  9559,  9823,  ...,  6361, 13110,  7724], device='cuda:0')
+INFO : The top- 5 predicted senses are:
+INFO : Sense: election.n.01 ; probability = 29.06%
+INFO : Sense: location.n.01 ; probability = 13.05%
+INFO : Sense: manner.n.01 ; probability = 12.38%
+INFO : Sense: size.n.01 ; probability = 11.63%
+INFO : Sense: praise.n.01 ; probability = 8.41%
+INFO : 
+-----
+Label: the next global is: of
+INFO : Label: the next sense is: None
+INFO : tensor([ 5, 23, 27,  ..., 29, 55, 49], device='cuda:0')
+INFO : The top- 5 predicted globals are:
+INFO : Word: of ; probability = 86.6%
+INFO : Word: the ; probability = 3.42%
+INFO : Word: over-all ; probability = 2.34%
+INFO : Word: was ; probability = 1.9%
+INFO : Word: that ; probability = 1.06%
+INFO : 
+-----
+Label: the next global is: voters
+INFO : Label: the next sense is: None
+INFO : tensor([23, 18, 38,  ..., 19, 53, 52], device='cuda:0')
+INFO : The top- 5 predicted globals are:
+INFO : Word: the ; probability = 16.71%
+INFO : Word: jury ; probability = 10.09%
+INFO : Word: September ; probability = 9.71%
+INFO : Word: possible ; probability = 9.71%
+INFO : Word: Atlanta ; probability = 9.42%
+INFO : 
+-----
+Label: the next global is: and
+INFO : Label: the next sense is: None
+INFO : tensor([  32,   52,   53,  ..., 6215,   62,    4], device='cuda:0')
+INFO : The top- 5 predicted globals are:
+INFO : Word: and ; probability = 99.19%
+INFO : Word: relative ; probability = 0.38%
+INFO : Word: handful ; probability = 0.27%
+INFO : Word: investigate ; probability = 0.16%
+INFO : Word: said ; probability = 0.0%
+INFO : 
+-----
+Label: the next global is: the
+INFO : Label: the next sense is: None
+INFO : tensor([  33,   23,   37,  ..., 6600,   19,   32], device='cuda:0')
+INFO : The top- 5 predicted globals are:
+INFO : Word: thanks ; probability = 65.36%
+INFO : Word: the ; probability = 34.53%
+INFO : Word: conducted ; probability = 0.05%
+INFO : Word: won ; probability = 0.04%
+INFO : Word: received ; probability = 0.01%
+INFO : 
+-----
+Label: the next global is: size
+INFO : Label: the next sense is: size.n.01
+INFO : tensor([  29, 9857,   40,  ...,   32,   52,   53], device='cuda:0')
+INFO : The top- 5 predicted globals are:
+INFO : Word: election ; probability = 23.11%
+INFO : Word: <unk> ; probability = 21.63%
+INFO : Word: been ; probability = 8.1%
+INFO : Word: manner ; probability = 7.83%
+INFO : Word: praise ; probability = 7.68%
+INFO : tensor([ 5633,  9559,  9823,  ...,  6361, 13110,  7724], device='cuda:0')
+INFO : The top- 5 predicted senses are:
+INFO : Sense: election.n.01 ; probability = 29.14%
+INFO : Sense: location.n.01 ; probability = 12.84%
+INFO : Sense: manner.n.01 ; probability = 12.39%
+INFO : Sense: size.n.01 ; probability = 11.32%
+INFO : Sense: praise.n.01 ; probability = 8.33%
+INFO : 
+-----
+Label: the next global is: of this
+INFO : Label: the next sense is: None
+INFO : tensor([  62,   23,   25,  ..., 6338, 7006, 8412], device='cuda:0')
+INFO : The top- 5 predicted globals are:
+INFO : Word: of this ; probability = 89.41%
+INFO : Word: the ; probability = 7.47%
+INFO : Word: which ; probability = 1.06%
+INFO : Word: " ; probability = 0.68%
+INFO : Word: was ; probability = 0.63%
+INFO : 
+-----
+Label: the next global is: city
+INFO : Label: the next sense is: city.n.01
+INFO : tensor([  63,   26,   25,  ..., 5826, 8257, 1440], device='cuda:0')
+INFO : The top- 5 predicted globals are:
+INFO : Word: city ; probability = 100.0%
+INFO : Word: had ; probability = 0.0%
+INFO : Word: which ; probability = 0.0%
+INFO : Word: was ; probability = 0.0%
+INFO : Word: term ; probability = 0.0%
+INFO : tensor([ 2869, 12292, 16157,  ...,   758,  1689,  2870], device='cuda:0')
+INFO : The top- 5 predicted senses are:
+INFO : Sense: city.n.01 ; probability = 100.0%
+INFO : Sense: produce.v.04 ; probability = 0.0%
+INFO : Sense: term.n.02 ; probability = 0.0%
+INFO : Sense: conduct.v.01 ; probability = 0.0%
+INFO : Sense: interest.n.01 ; probability = 0.0%
+INFO : 
+-----
+Label: the next global is: "
+INFO : Label: the next sense is: None
+INFO : tensor([  10,   26,   25,  ..., 7542, 4396, 4434], device='cuda:0')
+INFO : The top- 5 predicted globals are:
+INFO : Word: " ; probability = 100.0%
+INFO : Word: had ; probability = 0.0%
+INFO : Word: which ; probability = 0.0%
+INFO : Word: produced ; probability = 0.0%
+INFO : Word: said ; probability = 0.0%
+INFO : 
+-----
+Label: the next global is: .
+INFO : Label: the next sense is: None
+INFO : tensor([24, 15, 20,  ..., 37, 49, 55], device='cuda:0')
+INFO : The top- 5 predicted globals are:
+INFO : Word: , ; probability = 11.08%
+INFO : Word: irregularities ; probability = 10.77%
+INFO : Word: in ; probability = 10.72%
+INFO : Word: considering ; probability = 10.27%
+INFO : Word: deserves ; probability = 10.14%
+INFO : Global step=2400	 ; Iteration time=0.67683
+INFO : -----
+ End of epoch. Global step n.2400, using batch_size=8
+INFO : Training, epoch nll_loss= 2.09754
+------
