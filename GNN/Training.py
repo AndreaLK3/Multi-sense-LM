@@ -57,11 +57,11 @@ def compute_model_loss(model,batch_input, batch_labels, verbose=False):
 
 ########
 
-def train(grapharea_size=32, batch_size=8, learning_rate=0.003, num_epochs=150):
+def train(grapharea_size=32, batch_size=8, learning_rate=0.003, num_epochs=100):
     Utils.init_logging('MyRGCN.log')
     graph_dataobj = DG.get_graph_dataobject(new=False)
     logging.info(graph_dataobj)
-    model = MyRGCN.PremadeRGCN(graph_dataobj)
+    model = MyRGCN.MyNetRGCN(graph_dataobj)
     logging.info("Graph-data object loaded, model initialized. Moving them to GPU device(s) if present.")
     graph_dataobj.to(DEVICE)
     model.to(DEVICE)
@@ -128,7 +128,7 @@ def train(grapharea_size=32, batch_size=8, learning_rate=0.003, num_epochs=150):
             if global_step % steps_logging == 0:
                 logging.info("Global step=" + str(global_step) + "\t ; Iteration time=" + str(round(time()-t0,5)))
 
-            #Utils.log_chronometer([t0, time()])
+            Utils.log_chronometer([t0, time()])
             #logging.info('Epoch step n.' + str(epoch_step) + ", using batch_size=" + str(batch_size))
 
 
