@@ -1,4 +1,5 @@
 import torch
+import torch.nn.functional as tfunc
 import GNN.SenseLabeledCorpus as SLC
 import GNN.NumericalIndices as NI
 import logging
@@ -86,7 +87,12 @@ def get_forwardinput_forelement(global_idx, sense_idx, grapharea_matrix, area_si
     else:
         sourcenode_idx = sense_idx
     nodes_ls, edge_index, edge_type = AD.get_node_data(grapharea_matrix, sourcenode_idx, area_size)
-    node_indices = torch.Tensor(sorted(nodes_ls)).to(torch.int64).to(DEVICE)
+    node_indices = torch.sort(nodes_ls)[0].to(torch.int64).to(DEVICE)
     area_x = graph_dataobj.x.index_select(0, node_indices)
+
+    # pad with 0s. The adjacency matrices will make it so that they do not enter the computation.
+    if area_x.shape[0] < area_size:
+        zeros = torch.zeros(size=(area_size-area_x.shape[0],area_x.shape[1])).to(torch.float).to(DEVICE)
+        area_x = torch.cat([area_x, zeros])
 
     return (area_x, edge_index, edge_type)

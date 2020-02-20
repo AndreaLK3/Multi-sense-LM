@@ -1,5 +1,5 @@
 import torch
-from torch_geometric.nn import RGCNConv
+from torch_geometric.nn import RGCNConv, GCNConv
 import Utils
 import Filesystem as F
 import logging
@@ -75,19 +75,18 @@ def rgcn_convolution(H, Ar_ls, W_all, b_all):
 
     Ar_all = torch.stack([A0] + Ar_ls).to(DEVICE) # prepend
 
-    b_L = torch.zeros((N,d)).to(DEVICE) # no bias in our convolutions for now. We may add it as a learnable parameter.
-
-    self_connection = gcn_convolution(H, Ar_all[0], W_all[0], b_L)
+    self_connection = gcn_convolution(H, Ar_all[0], W_all[0], b_all[0])
     
     sum = 0
     for r in range(1, Ar_all.shape[0]):
-        Ar = Ar_all[r]
-        Wr = W_all[r]
-        rel_contribution = gcn_convolution(H, Ar, Wr, b_L)
+        A_r = Ar_all[r]
+        W_r = W_all[r]
+        b_r = b_all[r]
+        rel_contribution = gcn_convolution(H, A_r, W_r, b_r)
         # Normalizing constant: cardinality of the neighbourhood (if > 1)
         c_ir_s = []
         for i in range(N):
-            c_ir = [j for j in range(N) if Ar[i][j] != 0].__len__()
+            c_ir = [j for j in range(N) if A_r[i][j] != 0].__len__()
             c_ir_s.append([max(c_ir,1) for col in range(d)])
         c_ir_s = torch.tensor(c_ir_s).to(DEVICE)
         sum = sum + rel_contribution / c_ir_s
@@ -146,19 +145,26 @@ def create_adj_matrices(x, edge_index, edge_type):
 ###     1 RGCN layer that operates on the selected area of the the graph
 ###     2 linear layers, that go from the RGCN representation to the global classes and the senses' classes
 class MyNetRGCN(torch.nn.Module):
-    def __init__(self, data):
+    def __init__(self, data, grapharea_size):
         super(MyNetRGCN, self).__init__()
         self.last_idx_senses = data.node_types.tolist().index(1)
         self.last_idx_globals = data.node_types.tolist().index(2)
+        self.N = grapharea_size
         self.d = data.x.shape[1]
 
-        # Weights matrices, Wr. W0 for the previous layer's connection, the others for the relations in R
+        # Weights matrices Wr, for the GCN convolution of each relation. W0 is for the previous layer's connection
         self.Wr_ls = []
+        self.biasr_ls = []
         for r in range(data.num_relations+1):
-            W_r = torch.empty(size=(self.d,self.d))
-            torch.nn.init.normal_(W_r, mean=0.0, std=1.0)
-            self.Wr_ls.append(W_r)
+            self.W_r = torch.empty(size=(self.d,self.d))
+            self.Wr_ls.append(self.W_r)
+            # bias
+            self.bias_r = torch.empty(size=(self.N,self.d))
+            self.biasr_ls.append(self.bias_r)
         self.Wr_all = torch.stack(self.Wr_ls).to(DEVICE)
+        logging.info(self.bias_r.shape)
+        self.biasr_all = torch.stack(self.biasr_ls).to(DEVICE)
+        logging.info(self.biasr_all.shape)
 
         # 2nd part of the network as before: 2 linear layers from the RGCN representation to the logits
         self.linear2global = torch.nn.Linear(in_features=self.d,
@@ -172,9 +178,61 @@ class MyNetRGCN(torch.nn.Module):
 
             Ar_ls = create_adj_matrices(x, edge_index, edge_type)
             # rgcn_conv = self.conv1(x, edge_index, edge_type)
-            rgcn_conv_rep = rgcn_convolution(x, Ar_ls, self.Wr_all)
+            rgcn_conv = rgcn_convolution(x, Ar_ls, self.Wr_all, self.biasr_all)
 
-            x_Lplus1 = tfunc.relu(rgcn_conv_rep)
+            x_Lplus1 = tfunc.relu(rgcn_conv)
+
+            x1_current_node = x_Lplus1[0]  # current_node_index
+            logits_global = self.linear2global(x1_current_node)  # shape=torch.Size([5])
+            logits_sense = self.linear2sense(x1_current_node)
+
+            sample_predictions_globals = tfunc.log_softmax(logits_global, dim=0)
+            predictions_globals_ls.append(sample_predictions_globals)
+            sample_predictions_senses = tfunc.log_softmax(logits_sense, dim=0)
+            predictions_senses_ls.append(sample_predictions_senses)
+
+        return torch.stack(predictions_globals_ls, dim=0), torch.stack(predictions_senses_ls, dim=0)
+
+
+
+# Executing separately the convolution on for each relation, I use the pre-made standard GCNs
+class HybridRGCN(torch.nn.Module):
+    def __init__(self, data, grapharea_size):
+        super(HybridRGCN, self).__init__()
+        self.last_idx_senses = data.node_types.tolist().index(1)
+        self.last_idx_globals = data.node_types.tolist().index(2)
+        self.N = grapharea_size
+        self.d = data.x.shape[1]
+
+        self.convs_ls = [GCNConv(in_channels=data.x.shape[1],
+                              out_channels=data.x.shape[1]).to(DEVICE) for r in range(data.num_relations)]
+        self.W_0 = torch.empty(size=(self.d, self.d))
+        torch.nn.init.normal_(self.W_0, mean=0.0, std=1.0)
+
+        # 2nd part of the network as before: 2 linear layers from the RGCN representation to the logits
+        self.linear2global = torch.nn.Linear(in_features=self.d,
+                                             out_features=self.last_idx_globals - self.last_idx_senses, bias=True)
+        self.linear2sense = torch.nn.Linear(in_features=self.d, out_features=self.last_idx_senses, bias=True)
+
+    def forward(self, batchinput_ls):  # given the batches, the current node is at index 0
+        predictions_globals_ls = []
+        predictions_senses_ls = []
+        for (x, edge_index, edge_type) in batchinput_ls:
+
+            (split_sources, split_destinations) = split_edge_index(edge_index, edge_type)
+            split_edge_index_ls = []
+            for i in range(len(split_sources)):
+                split_edge_index_ls.append(torch.stack([split_sources[i], split_destinations[i]]))
+
+            rels_gcnconv_output_ls = [self.convs_ls[i](x, split_edge_index_ls[i]) for i in range(len(split_edge_index_ls))]
+
+            A0_selfadj = torch.eye(self.N)
+            prevlayer_connection = torch.mm(torch.mm(x, self.W_0), A0_selfadj)
+            relgcn_conv = sum(rels_gcnconv_output_ls)
+            # adding contribution from h_v^(l-1), the previous layer of the same node
+            relgcn_conv = relgcn_conv + prevlayer_connection
+
+            x_Lplus1 = tfunc.relu(relgcn_conv)
 
             x1_current_node = x_Lplus1[0]  # current_node_index
             logits_global = self.linear2global(x1_current_node)  # shape=torch.Size([5])

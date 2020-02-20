@@ -57,11 +57,11 @@ def compute_model_loss(model,batch_input, batch_labels, verbose=False):
 
 ########
 
-def train(grapharea_size=32, batch_size=4, learning_rate=0.001, num_epochs=250):
-    Utils.init_logging('MyRGCN.log')
+def train(grapharea_size=32, batch_size=8, learning_rate=0.002, num_epochs=200):
+    Utils.init_logging('Training.log')
     graph_dataobj = DG.get_graph_dataobject(new=False)
     logging.info(graph_dataobj)
-    model = MyRGCN.MyNetRGCN(graph_dataobj)
+    model = MyRGCN.MyNetRGCN(graph_dataobj, grapharea_size)
     logging.info("Graph-data object loaded, model initialized. Moving them to GPU device(s) if present.")
     graph_dataobj.to(DEVICE)
     model.to(DEVICE)
@@ -86,15 +86,26 @@ def train(grapharea_size=32, batch_size=4, learning_rate=0.001, num_epochs=250):
     training_losses_lts = []
     validation_losses_lts = []
     steps_logging = 100 // batch_size
-    hyperparams_str = 'batch' + str(batch_size) \
+    hyperparams_str = 'model' + str(type(model).__name__) \
+                      + '_batch' + str(batch_size) \
                       + '_area' + str(grapharea_size)\
                       + '_lr' + str(learning_rate) \
                       + '_epochs' + str(num_epochs)
+    logging.info("Parameters:")
+    for parameter in model.parameters():
+        logging.info(parameter)
+
+    model_parameters = filter(lambda p: p.requires_grad, model.parameters())
+    params = sum([np.prod(p.size()) for p in model_parameters])
+    logging.info("Number of trainable parameters=" + str(params))
+
+
     trainlosses_fpath = os.path.join(F.FOLDER_GNN, hyperparams_str + '_' + Utils.TRAINING + '_' + F.LOSSES_FILEEND)
     validlosses_fpath = os.path.join(F.FOLDER_GNN, hyperparams_str + '_' + Utils.VALIDATION + '_' + F.LOSSES_FILEEND)
 
     global_step = 0
     previous_valid_loss = inf
+
 
     for epoch in range(1,num_epochs+1):
         logging.info("\nTraining epoch n."+str(epoch) + ":")
@@ -113,10 +124,10 @@ def train(grapharea_size=32, batch_size=4, learning_rate=0.001, num_epochs=250):
             # starting operations on one batch
             optimizer.zero_grad()
             t0 = time()
-            logging.debug(batch_input)
-            logging.debug(batch_labels)
+
             # compute loss for the batch
             loss = compute_model_loss(model, batch_input, batch_labels, verbose)
+
             # running sum of the training loss in the log segment
             sum_epoch_loss = sum_epoch_loss + loss.item()
 
@@ -128,7 +139,7 @@ def train(grapharea_size=32, batch_size=4, learning_rate=0.001, num_epochs=250):
             if global_step % steps_logging == 0:
                 logging.info("Global step=" + str(global_step) + "\t ; Iteration time=" + str(round(time()-t0,5)))
 
-            Utils.log_chronometer([t0, time()])
+            #Utils.log_chronometer([t0, time()])
             #logging.info('Epoch step n.' + str(epoch_step) + ", using batch_size=" + str(batch_size))
 
 
