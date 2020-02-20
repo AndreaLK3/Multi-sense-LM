@@ -14,7 +14,7 @@ import torch.nn.functional as tfunc
 # import Graph.Adjacencies as AD
 # import numpy as np
 # from time import time
-# from Utils import DEVICE
+from Utils import DEVICE
 # import GNN.DataLoading as DL
 # import GNN.ExplorePredictions as EP
 # import math
@@ -65,7 +65,7 @@ def gcn_convolution(H, A, W_L, b_L):
     return gcn_conv_result
 
 
-def rgcn_convolution(H, Ar_ls, W_all):
+def rgcn_convolution(H, Ar_ls, W_all, b_all):
     N = H.shape[0]
     d = H.shape[1]
 
@@ -73,10 +73,9 @@ def rgcn_convolution(H, Ar_ls, W_all):
     # we add here the 0-th, that will be used for W_0^l * h_i^l
     A0 = torch.diag(torch.ones(size=(H.shape[0],)))
 
-    X = [A0] + Ar_ls
-    Ar_all = torch.stack([A0] + Ar_ls) # prepend
+    Ar_all = torch.stack([A0] + Ar_ls).to(DEVICE) # prepend
 
-    b_L = torch.zeros((N,d)) # we have no bias in our convolutions for now. We may add it as a learnable parameter.
+    b_L = torch.zeros((N,d)).to(DEVICE) # no bias in our convolutions for now. We may add it as a learnable parameter.
 
     self_connection = gcn_convolution(H, Ar_all[0], W_all[0], b_L)
     
@@ -90,7 +89,7 @@ def rgcn_convolution(H, Ar_ls, W_all):
         for i in range(N):
             c_ir = [j for j in range(N) if Ar[i][j] != 0].__len__()
             c_ir_s.append([max(c_ir,1) for col in range(d)])
-        c_ir_s = torch.tensor(c_ir_s)
+        c_ir_s = torch.tensor(c_ir_s).to(DEVICE)
         sum = sum + rel_contribution / c_ir_s
 
     sum = sum + self_connection
@@ -159,6 +158,7 @@ class MyNetRGCN(torch.nn.Module):
             W_r = torch.empty(size=(self.d,self.d))
             torch.nn.init.normal_(W_r, mean=0.0, std=1.0)
             self.Wr_ls.append(W_r)
+        self.Wr_all = torch.stack(self.Wr_ls).to(DEVICE)
 
         # 2nd part of the network as before: 2 linear layers from the RGCN representation to the logits
         self.linear2global = torch.nn.Linear(in_features=self.d,
@@ -170,9 +170,9 @@ class MyNetRGCN(torch.nn.Module):
         predictions_senses_ls = []
         for (x, edge_index, edge_type) in batchinput_ls:
 
-            Ar_ls = (create_adj_matrices(x, edge_index, edge_type))
+            Ar_ls = create_adj_matrices(x, edge_index, edge_type)
             # rgcn_conv = self.conv1(x, edge_index, edge_type)
-            rgcn_conv_rep = rgcn_convolution(x, Ar_ls, self.Wr_ls)
+            rgcn_conv_rep = rgcn_convolution(x, Ar_ls, self.Wr_all)
 
             x_Lplus1 = tfunc.relu(rgcn_conv_rep)
 

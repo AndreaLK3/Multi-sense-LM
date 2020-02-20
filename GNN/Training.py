@@ -57,7 +57,7 @@ def compute_model_loss(model,batch_input, batch_labels, verbose=False):
 
 ########
 
-def train(grapharea_size=32, batch_size=8, learning_rate=0.003, num_epochs=100):
+def train(grapharea_size=32, batch_size=4, learning_rate=0.001, num_epochs=250):
     Utils.init_logging('MyRGCN.log')
     graph_dataobj = DG.get_graph_dataobject(new=False)
     logging.info(graph_dataobj)
