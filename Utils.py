@@ -76,10 +76,10 @@ def log_chronometer(time_measurements):
         logging.info('t'+str(i+1)+' - t'+str(i)+' = '+str(round(t2-t1,5)))
 
 
-def display_ygraph_fromfile(npy_fpath, axis_labels=None):
+def display_ygraph_fromfile(npy_fpath, axis_labels=None, label=None):
 
     data_y_array = np.load(npy_fpath, allow_pickle=True)
-    plt.plot(data_y_array)
+    plt.plot(data_y_array, label=label)
     plt.xticks(range(0,len(data_y_array), len(data_y_array)//20))
     plt.yticks(range(0, int(max(data_y_array)) + 1, 1))
     plt.xlim((0, len(data_y_array)))

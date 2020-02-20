@@ -13,12 +13,12 @@ import torch.nn.functional as tfunc
 # from math import inf
 # import Graph.Adjacencies as AD
 # import numpy as np
-# from time import time
+from time import time
 from Utils import DEVICE
 # import GNN.DataLoading as DL
 # import GNN.ExplorePredictions as EP
 # import math
-# from torch.nn.parameter import Parameter
+from torch.nn.parameter import Parameter
 # from torch.nn.modules.module import Module
 
 ### RGCN, using the torch-geometric rgcn-conv implementation. Currently, it has:
@@ -80,15 +80,14 @@ def rgcn_convolution(H, Ar_ls, W_all, b_all):
     sum = 0
     for r in range(1, Ar_all.shape[0]):
         A_r = Ar_all[r]
+        #logging.info("A_r.shape=" + str(A_r.shape))
         W_r = W_all[r]
         b_r = b_all[r]
         rel_contribution = gcn_convolution(H, A_r, W_r, b_r)
-        # Normalizing constant: cardinality of the neighbourhood (if > 1)
-        c_ir_s = []
-        for i in range(N):
-            c_ir = [j for j in range(N) if A_r[i][j] != 0].__len__()
-            c_ir_s.append([max(c_ir,1) for col in range(d)])
-        c_ir_s = torch.tensor(c_ir_s).to(DEVICE)
+        #logging.info("rel_contribution.shape=" + str(rel_contribution.shape))
+        c_ir_s = torch.nonzero(A_r).t()[0].bincount(minlength=N).unsqueeze(0).t().repeat((1,d)).to(DEVICE)
+        c_ir_s[c_ir_s==0] = 1 # avoid division by 0 if the node has no neighbours (mainly due to the edges' directions)
+        #logging.info("c_ir_s.shape=" + str(c_ir_s.shape))
         sum = sum + rel_contribution / c_ir_s
 
     sum = sum + self_connection
@@ -157,16 +156,16 @@ class MyNetRGCN(torch.nn.Module):
         self.biasr_ls = []
         for r in range(data.num_relations+1):
             self.W_r = torch.empty(size=(self.d,self.d))
+            torch.nn.init.xavier_normal_(self.W_r)
             self.Wr_ls.append(self.W_r)
             # bias
             self.bias_r = torch.empty(size=(self.N,self.d))
+            torch.nn.init.xavier_normal_(self.bias_r)
             self.biasr_ls.append(self.bias_r)
-        self.Wr_all = torch.stack(self.Wr_ls).to(DEVICE)
-        logging.info(self.bias_r.shape)
-        self.biasr_all = torch.stack(self.biasr_ls).to(DEVICE)
-        logging.info(self.biasr_all.shape)
+        self.Wr_all = Parameter(torch.stack(self.Wr_ls).to(DEVICE))
+        self.biasr_all = Parameter(torch.stack(self.biasr_ls).to(DEVICE))
 
-        # 2nd part of the network as before: 2 linear layers from the RGCN representation to the logits
+        # 2nd part of the network is as before: 2 linear layers from the RGCN representation to the logits
         self.linear2global = torch.nn.Linear(in_features=self.d,
                                              out_features=self.last_idx_globals - self.last_idx_senses, bias=True)
         self.linear2sense = torch.nn.Linear(in_features=self.d, out_features=self.last_idx_senses, bias=True)
@@ -177,15 +176,12 @@ class MyNetRGCN(torch.nn.Module):
         for (x, edge_index, edge_type) in batchinput_ls:
 
             Ar_ls = create_adj_matrices(x, edge_index, edge_type)
-            # rgcn_conv = self.conv1(x, edge_index, edge_type)
             rgcn_conv = rgcn_convolution(x, Ar_ls, self.Wr_all, self.biasr_all)
-
             x_Lplus1 = tfunc.relu(rgcn_conv)
 
             x1_current_node = x_Lplus1[0]  # current_node_index
             logits_global = self.linear2global(x1_current_node)  # shape=torch.Size([5])
             logits_sense = self.linear2sense(x1_current_node)
-
             sample_predictions_globals = tfunc.log_softmax(logits_global, dim=0)
             predictions_globals_ls.append(sample_predictions_globals)
             sample_predictions_senses = tfunc.log_softmax(logits_sense, dim=0)
@@ -196,17 +192,17 @@ class MyNetRGCN(torch.nn.Module):
 
 
 # Executing separately the convolution on for each relation, I use the pre-made standard GCNs
-class HybridRGCN(torch.nn.Module):
+class CompositeRGCN(torch.nn.Module):
     def __init__(self, data, grapharea_size):
-        super(HybridRGCN, self).__init__()
+        super(CompositeRGCN, self).__init__()
         self.last_idx_senses = data.node_types.tolist().index(1)
         self.last_idx_globals = data.node_types.tolist().index(2)
         self.N = grapharea_size
         self.d = data.x.shape[1]
 
-        self.convs_ls = [GCNConv(in_channels=data.x.shape[1],
-                              out_channels=data.x.shape[1]).to(DEVICE) for r in range(data.num_relations)]
-        self.W_0 = torch.empty(size=(self.d, self.d))
+        self.convs_ls = torch.nn.ModuleList([GCNConv(in_channels=data.x.shape[1],
+                              out_channels=data.x.shape[1], bias=False).to(DEVICE) for r in range(data.num_relations)])
+        self.W_0 = Parameter(torch.empty(size=(self.d, self.d)))
         torch.nn.init.normal_(self.W_0, mean=0.0, std=1.0)
 
         # 2nd part of the network as before: 2 linear layers from the RGCN representation to the logits
@@ -226,8 +222,8 @@ class HybridRGCN(torch.nn.Module):
 
             rels_gcnconv_output_ls = [self.convs_ls[i](x, split_edge_index_ls[i]) for i in range(len(split_edge_index_ls))]
 
-            A0_selfadj = torch.eye(self.N)
-            prevlayer_connection = torch.mm(torch.mm(x, self.W_0), A0_selfadj)
+            A0_selfadj = torch.eye(self.N).to(DEVICE)
+            prevlayer_connection = torch.mm(A0_selfadj, torch.mm(x, self.W_0))
             relgcn_conv = sum(rels_gcnconv_output_ls)
             # adding contribution from h_v^(l-1), the previous layer of the same node
             relgcn_conv = relgcn_conv + prevlayer_connection

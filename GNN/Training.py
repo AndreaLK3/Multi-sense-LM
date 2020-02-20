@@ -57,11 +57,11 @@ def compute_model_loss(model,batch_input, batch_labels, verbose=False):
 
 ########
 
-def train(grapharea_size=32, batch_size=8, learning_rate=0.002, num_epochs=200):
+def train(grapharea_size=32, batch_size=8, learning_rate=0.002, num_epochs=150):
     Utils.init_logging('Training.log')
     graph_dataobj = DG.get_graph_dataobject(new=False)
     logging.info(graph_dataobj)
-    model = MyRGCN.MyNetRGCN(graph_dataobj, grapharea_size)
+    model = MyRGCN.CompositeRGCN(graph_dataobj, grapharea_size) #
     logging.info("Graph-data object loaded, model initialized. Moving them to GPU device(s) if present.")
     graph_dataobj.to(DEVICE)
     model.to(DEVICE)
@@ -92,20 +92,18 @@ def train(grapharea_size=32, batch_size=8, learning_rate=0.002, num_epochs=200):
                       + '_lr' + str(learning_rate) \
                       + '_epochs' + str(num_epochs)
     logging.info("Parameters:")
-    for parameter in model.parameters():
-        logging.info(parameter)
+    parameters_list = [(name, param.shape, param.requires_grad) for (name, param) in model.named_parameters()]
+    logging.info(parameters_list)
 
     model_parameters = filter(lambda p: p.requires_grad, model.parameters())
     params = sum([np.prod(p.size()) for p in model_parameters])
     logging.info("Number of trainable parameters=" + str(params))
-
 
     trainlosses_fpath = os.path.join(F.FOLDER_GNN, hyperparams_str + '_' + Utils.TRAINING + '_' + F.LOSSES_FILEEND)
     validlosses_fpath = os.path.join(F.FOLDER_GNN, hyperparams_str + '_' + Utils.VALIDATION + '_' + F.LOSSES_FILEEND)
 
     global_step = 0
     previous_valid_loss = inf
-
 
     for epoch in range(1,num_epochs+1):
         logging.info("\nTraining epoch n."+str(epoch) + ":")

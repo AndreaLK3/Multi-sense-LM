@@ -1,5 +1,0 @@
-INFO : Data(edge_index=[2, 76050], edge_type=[76050], node_types=[65632], num_relations=[1], x=[65632, 300])
-INFO : torch.Size([32, 300])
-INFO : torch.Size([6, 32, 300])
-INFO : Graph-data object loaded, model initialized. Moving them to GPU device(s) if present.
-INFO : Loading graphArea matrix, with area_size=32 from: Graph/nodes_32_graphArea_matrix.npy

@@ -1,0 +1,7 @@
+INFO : Data(edge_index=[2, 76050], edge_type=[76050], node_types=[65632], num_relations=[1], x=[65632, 300])
+INFO : Graph-data object loaded, model initialized. Moving them to GPU device(s) if present.
+INFO : Loading graphArea matrix, with area_size=32 from: Graph/nodes_32_graphArea_matrix.npy
+INFO : NumExpr defaulting to 8 threads.
+INFO : Parameters:
+INFO : [('W_0', torch.Size([300, 300]), True), ('convs_ls.0.weight', torch.Size([300, 300]), True), ('convs_ls.0.bias', torch.Size([300]), True), ('convs_ls.1.weight', torch.Size([300, 300]), True), ('convs_ls.1.bias', torch.Size([300]), True), ('convs_ls.2.weight', torch.Size([300, 300]), True), ('convs_ls.2.bias', torch.Size([300]), True), ('convs_ls.3.weight', torch.Size([300, 300]), True), ('convs_ls.3.bias', torch.Size([300]), True), ('convs_ls.4.weight', torch.Size([300, 300]), True), ('convs_ls.4.bias', torch.Size([300]), True), ('linear2global.weight', torch.Size([9858, 300]), True), ('linear2global.bias', torch.Size([9858]), True), ('linear2sense.weight', torch.Size([17843, 300]), True), ('linear2sense.bias', torch.Size([17843]), True)]
+INFO : Number of trainable parameters=8879501

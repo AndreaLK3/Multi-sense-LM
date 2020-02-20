@@ -1,0 +1,339 @@
+INFO : Data(edge_index=[2, 76050], edge_type=[76050], node_types=[65632], num_relations=[1], x=[65632, 300])
+INFO : Graph-data object loaded, model initialized. Moving them to GPU device(s) if present.
+INFO : Loading graphArea matrix, with area_size=32 from: Graph/nodes_32_graphArea_matrix.npy
+INFO : Parameters:
+INFO : Parameter containing:
+tensor([[[-0.0077, -0.0058, -0.0056,  ...,  0.0154, -0.0145, -0.0165],
+         [ 0.0143, -0.0189,  0.0201,  ...,  0.0128,  0.0106, -0.0033],
+         [-0.0062,  0.0219,  0.0080,  ...,  0.0043, -0.0106,  0.0076],
+         ...,
+         [-0.0166, -0.0150, -0.0043,  ..., -0.0195,  0.0174, -0.0032],
+         [ 0.0004,  0.0108, -0.0015,  ...,  0.0022,  0.0223,  0.0221],
+         [ 0.0208,  0.0072,  0.0088,  ..., -0.0131, -0.0096,  0.0205]],
+
+        [[-0.0159, -0.0175, -0.0142,  ..., -0.0071, -0.0025, -0.0030],
+         [-0.0108,  0.0166, -0.0006,  ..., -0.0108, -0.0023,  0.0212],
+         [ 0.0251, -0.0081,  0.0023,  ...,  0.0042,  0.0145, -0.0044],
+         ...,
+         [ 0.0202,  0.0072,  0.0093,  ..., -0.0012,  0.0230,  0.0063],
+         [-0.0007,  0.0153, -0.0112,  ..., -0.0063,  0.0173, -0.0150],
+         [-0.0105, -0.0202,  0.0179,  ..., -0.0132, -0.0035, -0.0210]],
+
+        [[ 0.0033, -0.0173,  0.0060,  ..., -0.0123, -0.0246,  0.0181],
+         [-0.0176,  0.0068,  0.0238,  ..., -0.0171,  0.0067, -0.0227],
+         [-0.0216, -0.0055, -0.0022,  ...,  0.0021, -0.0028, -0.0144],
+         ...,
+         [ 0.0025, -0.0183,  0.0108,  ...,  0.0127,  0.0185, -0.0194],
+         [-0.0104,  0.0257,  0.0219,  ..., -0.0219, -0.0238,  0.0113],
+         [-0.0144,  0.0240,  0.0140,  ...,  0.0027, -0.0043,  0.0236]],
+
+        [[ 0.0216,  0.0067,  0.0077,  ...,  0.0242,  0.0157,  0.0205],
+         [-0.0137,  0.0136,  0.0116,  ..., -0.0017, -0.0186, -0.0044],
+         [-0.0115, -0.0124, -0.0180,  ..., -0.0122,  0.0214, -0.0176],
+         ...,
+         [-0.0082,  0.0245, -0.0113,  ..., -0.0044,  0.0139,  0.0242],
+         [-0.0255, -0.0106, -0.0249,  ..., -0.0204,  0.0197, -0.0110],
+         [ 0.0220,  0.0097, -0.0083,  ...,  0.0219, -0.0127,  0.0111]],
+
+        [[ 0.0137,  0.0251,  0.0173,  ...,  0.0246,  0.0048, -0.0187],
+         [ 0.0134,  0.0070, -0.0085,  ...,  0.0056, -0.0092,  0.0070],
+         [ 0.0058, -0.0062,  0.0018,  ..., -0.0240, -0.0127,  0.0085],
+         ...,
+         [ 0.0238, -0.0005,  0.0182,  ..., -0.0206, -0.0241, -0.0123],
+         [ 0.0240, -0.0024,  0.0072,  ..., -0.0185, -0.0175,  0.0135],
+         [ 0.0206,  0.0069, -0.0063,  ...,  0.0226, -0.0147,  0.0186]]],
+       device='cuda:0', requires_grad=True)
+INFO : Parameter containing:
+tensor([[ 2.5103e-02, -2.4382e-02,  1.3515e-02,  2.7003e-03,  1.3744e-02],
+        [-9.3675e-03,  2.0630e-02, -2.4165e-02, -1.7194e-02,  2.5442e-02],
+        [ 6.1086e-03,  1.9576e-02, -1.7729e-02,  1.0210e-02, -2.1171e-02],
+        [ 6.6829e-03,  1.1208e-02,  1.6438e-02, -2.3023e-02,  1.1355e-05],
+        [-1.9318e-02,  2.7050e-03,  1.9095e-02, -1.1380e-02, -1.6884e-02]],
+       device='cuda:0', requires_grad=True)
+INFO : Parameter containing:
+tensor([[ 0.0227,  0.0115, -0.0158,  ..., -0.0067, -0.0177,  0.0036],
+        [-0.0186, -0.0101, -0.0093,  ..., -0.0148,  0.0171,  0.0162],
+        [ 0.0147, -0.0221,  0.0120,  ..., -0.0107,  0.0184,  0.0078],
+        ...,
+        [ 0.0148,  0.0162,  0.0065,  ...,  0.0031, -0.0100, -0.0009],
+        [-0.0073, -0.0056, -0.0235,  ...,  0.0217, -0.0220, -0.0199],
+        [ 0.0131,  0.0131, -0.0054,  ...,  0.0070,  0.0211,  0.0059]],
+       device='cuda:0', requires_grad=True)
+INFO : Parameter containing:
+tensor([-1.2373e-03,  1.2100e-04,  1.4684e-02,  1.3529e-02, -1.0329e-02,
+        -1.4648e-02,  6.9470e-03, -2.3648e-03,  1.1626e-02,  9.2682e-03,
+         1.4330e-02, -4.0398e-03, -1.3150e-02, -1.6338e-02,  1.0853e-02,
+         4.2708e-03, -2.5719e-02, -8.6008e-03, -2.3356e-02,  1.2661e-02,
+        -1.7010e-02,  1.7275e-03, -1.0753e-02,  2.4976e-02,  6.2484e-03,
+         8.8077e-04, -7.3403e-04,  9.4825e-03, -1.6504e-02,  1.5297e-03,
+         1.2359e-02, -1.8077e-02, -5.0432e-03,  2.2901e-02,  1.1117e-02,
+        -8.6360e-03, -2.1006e-02,  1.1416e-03,  2.3288e-02, -2.1581e-02,
+        -1.2765e-02, -5.4596e-03,  2.2588e-02,  1.9581e-02,  2.2267e-03,
+         1.0259e-02,  8.4057e-03,  7.8904e-03, -2.5178e-02, -1.7539e-02,
+        -1.8917e-02,  2.1567e-02, -2.3854e-02,  2.1715e-04,  1.7178e-02,
+         1.1142e-02, -1.6132e-02, -9.4094e-03, -9.4848e-03, -1.2986e-02,
+        -1.3805e-02,  1.4920e-02,  1.8715e-02, -5.2236e-03, -2.0799e-04,
+         1.6237e-02,  2.2430e-02,  1.1013e-02,  4.9454e-04, -1.0477e-02,
+        -1.2455e-02,  1.8901e-03, -1.3064e-02,  2.7721e-03, -1.7214e-02,
+        -1.3933e-02,  2.4725e-02,  2.3524e-02, -1.2099e-02,  2.3966e-02,
+        -2.5217e-02,  2.7357e-03,  1.5741e-02, -4.3854e-03, -9.1374e-03,
+         8.7326e-03, -2.1315e-02,  1.9169e-02,  2.2101e-02, -2.5307e-02,
+        -1.3680e-02, -7.3346e-03,  2.1746e-05, -2.1989e-02, -2.5627e-02,
+        -2.1609e-02, -1.6964e-02, -1.3211e-02, -2.0326e-02,  1.9787e-02,
+        -1.4991e-02, -2.0015e-02, -4.0718e-03, -1.8630e-02,  2.3878e-02,
+        -2.4792e-02, -1.4942e-02, -9.4018e-03, -7.4953e-03, -5.9934e-03,
+         1.6685e-02, -8.5000e-03, -2.4800e-02,  2.5802e-02, -1.8259e-02,
+        -1.6566e-02, -1.6493e-02, -1.5661e-02, -1.0699e-02, -1.6375e-02,
+         7.2526e-03, -1.3862e-02, -4.3819e-03,  2.4550e-02, -6.2656e-03,
+        -4.2764e-03, -2.0154e-02,  1.2701e-02, -5.7585e-04, -1.3921e-02,
+         2.2870e-02, -1.4899e-02,  6.5506e-03,  9.4900e-03, -2.1158e-02,
+         8.5815e-03,  1.2557e-02, -2.1733e-02, -2.0769e-02, -1.1341e-02,
+         1.8664e-02,  2.3898e-02,  1.2183e-02,  9.7921e-03,  1.5600e-03,
+         1.5036e-02, -1.2420e-02, -1.6777e-03,  2.2488e-02, -1.7779e-03,
+         1.6427e-02, -2.0458e-02, -1.0604e-02, -1.1363e-02, -5.4423e-03,
+        -2.1213e-02,  1.6299e-02,  1.7237e-02,  1.7990e-02, -2.0852e-02,
+        -2.5428e-02,  1.1683e-02,  4.4497e-04, -1.9251e-02, -1.3368e-02,
+        -1.3482e-02,  1.2181e-02,  2.0135e-02,  1.2845e-02, -9.3952e-03,
+         7.1109e-03, -2.2350e-02,  2.5204e-02,  1.0290e-03,  2.2076e-02,
+         2.8874e-03,  2.4662e-02,  8.6836e-03, -6.7197e-03,  1.0770e-02,
+         6.8911e-03,  6.3774e-04,  2.3248e-02,  2.0899e-02,  1.8218e-02,
+        -1.0440e-02,  2.2839e-03,  2.3030e-02, -6.7532e-03, -2.5286e-03,
+         7.9504e-03, -2.5581e-02, -8.2416e-03, -6.5949e-03, -2.0855e-02,
+        -8.2473e-03, -1.7310e-02, -4.3573e-03, -2.5245e-02, -9.6299e-03,
+         1.9843e-02, -7.1126e-03,  1.3717e-02, -1.4776e-02, -1.7439e-02,
+         1.1017e-02,  6.1622e-04,  2.4860e-02, -7.6429e-03, -1.5113e-02,
+         2.4573e-02,  2.1181e-02, -5.0658e-03, -3.2009e-03,  7.4126e-03,
+         2.1618e-02,  1.1287e-03,  9.0905e-03,  1.7066e-02, -2.2795e-02,
+        -1.8208e-02, -1.6043e-03, -4.4566e-03,  2.2706e-02,  9.0256e-03,
+        -7.4088e-03,  2.3399e-02, -2.0768e-02, -1.5770e-02,  3.3104e-03,
+        -1.0235e-02,  2.4646e-02, -1.8503e-02,  2.6353e-04, -1.2650e-02,
+        -7.7673e-03,  1.9566e-02, -8.1999e-03,  6.2012e-03,  2.3612e-02,
+         1.5530e-02,  1.3542e-02,  2.0379e-02, -1.2909e-02,  5.1669e-03,
+        -1.2802e-03,  6.2032e-03,  9.4343e-03,  8.4000e-03,  2.1764e-02,
+         1.1764e-03, -7.3040e-03,  7.7920e-03,  1.7499e-02,  2.0137e-02,
+        -1.4310e-02,  2.5261e-02, -2.1763e-02,  1.6299e-02,  1.0064e-03,
+        -1.6837e-02, -1.0472e-02, -6.1829e-03, -3.5536e-03,  2.7805e-03,
+         1.8247e-02,  2.0783e-02,  1.1141e-02, -1.4447e-02,  3.7416e-03,
+         1.4161e-02, -2.3755e-02,  2.3981e-02,  1.1372e-02, -4.5498e-03,
+        -9.0963e-03, -7.5357e-04, -2.7894e-03, -1.3487e-02,  1.1770e-02,
+         4.6347e-03,  1.1091e-02,  2.6106e-03, -2.0262e-04,  5.9458e-03,
+        -7.0615e-03, -1.9957e-02,  2.1624e-02, -7.7951e-03,  2.4229e-02,
+        -2.3913e-02, -1.3327e-02,  6.4003e-03,  7.6224e-03,  9.4092e-03,
+         1.0818e-02,  2.0790e-02,  2.3643e-02,  1.7073e-03, -8.8284e-03],
+       device='cuda:0', requires_grad=True)
+INFO : Parameter containing:
+tensor([[-0.0526, -0.0524,  0.0401,  ...,  0.0336,  0.0022,  0.0106],
+        [ 0.0565,  0.0561,  0.0465,  ..., -0.0232, -0.0529, -0.0220],
+        [ 0.0549, -0.0230,  0.0003,  ..., -0.0006,  0.0414, -0.0405],
+        ...,
+        [ 0.0101,  0.0508, -0.0308,  ...,  0.0183, -0.0020,  0.0178],
+        [ 0.0371, -0.0282, -0.0079,  ..., -0.0259,  0.0294, -0.0452],
+        [-0.0572, -0.0540,  0.0466,  ..., -0.0063, -0.0109,  0.0133]],
+       device='cuda:0', requires_grad=True)
+INFO : Parameter containing:
+tensor([ 0.0490, -0.0013, -0.0401,  ...,  0.0303, -0.0312,  0.0429],
+       device='cuda:0', requires_grad=True)
+INFO : Parameter containing:
+tensor([[ 0.0024, -0.0119,  0.0468,  ..., -0.0544,  0.0263,  0.0141],
+        [ 0.0052,  0.0464,  0.0156,  ..., -0.0226, -0.0087,  0.0493],
+        [ 0.0552, -0.0292, -0.0524,  ..., -0.0261, -0.0438, -0.0248],
+        ...,
+        [ 0.0116,  0.0282, -0.0101,  ...,  0.0545, -0.0029,  0.0332],
+        [ 0.0228, -0.0105,  0.0259,  ..., -0.0381, -0.0486, -0.0213],
+        [ 0.0161, -0.0143,  0.0105,  ...,  0.0511, -0.0234,  0.0234]],
+       device='cuda:0', requires_grad=True)
+INFO : Parameter containing:
+tensor([-0.0312, -0.0565,  0.0239,  ...,  0.0047,  0.0187, -0.0360],
+       device='cuda:0', requires_grad=True)
+INFO : Number of trainable parameters=8878326
+INFO : 
+Training epoch n.1:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=12	 ; Iteration time=0.00816
+INFO : -----
+ End of epoch. Global step n.16, using batch_size=8
+INFO : Training, epoch nll_loss= 18.8441
+------
+INFO : 
+Training epoch n.2:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=24	 ; Iteration time=0.00804
+INFO : -----
+ End of epoch. Global step n.32, using batch_size=8
+INFO : Training, epoch nll_loss= 15.5295
+------
+INFO : 
+Training epoch n.3:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=36	 ; Iteration time=0.00803
+INFO : Global step=48	 ; Iteration time=0.008
+INFO : -----
+ End of epoch. Global step n.48, using batch_size=8
+INFO : Training, epoch nll_loss= 8.72675
+------
+INFO : 
+Training epoch n.4:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=60	 ; Iteration time=0.00803
+INFO : -----
+ End of epoch. Global step n.64, using batch_size=8
+INFO : Training, epoch nll_loss= 7.48579
+------
+INFO : 
+Training epoch n.5:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=72	 ; Iteration time=0.00804
+INFO : -----
+ End of epoch. Global step n.80, using batch_size=8
+INFO : Training, epoch nll_loss= 7.24219
+------
+INFO : 
+Training epoch n.6:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=84	 ; Iteration time=0.00811
+INFO : Global step=96	 ; Iteration time=0.008
+INFO : -----
+ End of epoch. Global step n.96, using batch_size=8
+INFO : Training, epoch nll_loss= 7.16146
+------
+INFO : 
+Training epoch n.7:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=108	 ; Iteration time=0.00751
+INFO : -----
+ End of epoch. Global step n.112, using batch_size=8
+INFO : Training, epoch nll_loss= 7.04921
+------
+INFO : 
+Training epoch n.8:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=120	 ; Iteration time=0.01239
+INFO : -----
+ End of epoch. Global step n.128, using batch_size=8
+INFO : Training, epoch nll_loss= 6.89016
+------
+INFO : 
+Training epoch n.9:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=132	 ; Iteration time=0.01271
+INFO : Global step=144	 ; Iteration time=0.01227
+INFO : -----
+ End of epoch. Global step n.144, using batch_size=8
+INFO : Training, epoch nll_loss= 6.69448
+------
+INFO : 
+Training epoch n.10:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=156	 ; Iteration time=0.0126
+INFO : -----
+ End of epoch. Global step n.160, using batch_size=8
+INFO : Training, epoch nll_loss= 6.46798
+------
+INFO : 
+Training epoch n.11:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=168	 ; Iteration time=0.01388
+INFO : -----
+ End of epoch. Global step n.176, using batch_size=8
+INFO : Training, epoch nll_loss= 6.22698
+------
+INFO : 
+Training epoch n.12:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=180	 ; Iteration time=0.01246
+INFO : Global step=192	 ; Iteration time=0.01233
+INFO : -----
+ End of epoch. Global step n.192, using batch_size=8
+INFO : Training, epoch nll_loss= 5.98139
+------
+INFO : 
+Training epoch n.13:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=204	 ; Iteration time=0.0125
+INFO : -----
+ End of epoch. Global step n.208, using batch_size=8
+INFO : Training, epoch nll_loss= 5.74627
+------
+INFO : 
+Training epoch n.14:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=216	 ; Iteration time=0.01232
+INFO : -----
+ End of epoch. Global step n.224, using batch_size=8
+INFO : Training, epoch nll_loss= 5.52384
+------
+INFO : 
+Training epoch n.15:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=228	 ; Iteration time=0.01277
+INFO : Global step=240	 ; Iteration time=0.01251
+INFO : -----
+ End of epoch. Global step n.240, using batch_size=8
+INFO : Training, epoch nll_loss= 5.31261
+------
+INFO : 
+Training epoch n.16:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=252	 ; Iteration time=0.01265
+INFO : -----
+ End of epoch. Global step n.256, using batch_size=8
+INFO : Training, epoch nll_loss= 5.12498
+------
+INFO : 
+Training epoch n.17:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=264	 ; Iteration time=0.0123
+INFO : -----
+ End of epoch. Global step n.272, using batch_size=8
+INFO : Training, epoch nll_loss= 4.95593
+------
+INFO : 
+Training epoch n.18:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Global step=276	 ; Iteration time=0.01248
+INFO : Global step=288	 ; Iteration time=0.01231
+INFO : -----
+ End of epoch. Global step n.288, using batch_size=8
+INFO : Training, epoch nll_loss= 4.81065
+------
+INFO : 
+Training epoch n.19:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
