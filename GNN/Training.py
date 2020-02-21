@@ -57,11 +57,11 @@ def compute_model_loss(model,batch_input, batch_labels, verbose=False):
 
 ########
 
-def train(grapharea_size=32, batch_size=8, learning_rate=0.002, num_epochs=150):
+def train(grapharea_size=32, batch_size=8, learning_rate=0.002, num_epochs=100):
     Utils.init_logging('Training.log')
     graph_dataobj = DG.get_graph_dataobject(new=False)
     logging.info(graph_dataobj)
-    model = MyRGCN.CompositeRGCN(graph_dataobj, grapharea_size) #
+    model = MyRGCN.CompositeOneGRU(graph_dataobj, grapharea_size) #
     logging.info("Graph-data object loaded, model initialized. Moving them to GPU device(s) if present.")
     graph_dataobj.to(DEVICE)
     model.to(DEVICE)
@@ -119,6 +119,7 @@ def train(grapharea_size=32, batch_size=8, learning_rate=0.002, num_epochs=150):
         flag_earlystop = False
 
         for batch_input, batch_labels in train_dataloader: # tuple of 2 lists
+
             # starting operations on one batch
             optimizer.zero_grad()
             t0 = time()
@@ -134,6 +135,7 @@ def train(grapharea_size=32, batch_size=8, learning_rate=0.002, num_epochs=150):
 
             global_step = global_step + 1
             epoch_step = epoch_step + 1
+
             if global_step % steps_logging == 0:
                 logging.info("Global step=" + str(global_step) + "\t ; Iteration time=" + str(round(time()-t0,5)))
 

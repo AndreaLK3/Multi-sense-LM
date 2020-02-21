@@ -184,7 +184,7 @@ class CompositeRGCN(torch.nn.Module):
         self.convs_ls = torch.nn.ModuleList([GCNConv(in_channels=data.x.shape[1],
                               out_channels=data.x.shape[1], bias=False).to(DEVICE) for r in range(data.num_relations)])
         self.W_0 = Parameter(torch.empty(size=(self.d, self.d)), requires_grad=True)
-        torch.nn.init.normal_(self.W_0, mean=0.0, std=1.0)
+        torch.nn.init.xavier_normal_(self.W_0)
 
         # 2nd part of the network as before: 2 linear layers from the RGCN representation to the logits
         self.linear2global = torch.nn.Linear(in_features=self.d,
@@ -209,7 +209,7 @@ class CompositeRGCN(torch.nn.Module):
             # adding contribution from h_v^(l-1), the previous layer of the same node
             relgcn_conv = relgcn_conv + prevlayer_connection
 
-            x_Lplus1 = tfunc.relu(relgcn_conv)
+            x_Lplus1 = tfunc.leaky_relu(relgcn_conv, negative_slope=0.1)
 
             x1_current_node = x_Lplus1[0]  # current_node_index
             logits_global = self.linear2global(x1_current_node)  # shape=torch.Size([5])
@@ -234,37 +234,38 @@ class CompositeOneGRU(torch.nn.Module):
         # Representation built using the RGCN mechanism, by combining |R| GCNs and the previousLayer-selfConnection
         self.convs_ls = torch.nn.ModuleList([GCNConv(in_channels=data.x.shape[1],
                               out_channels=data.x.shape[1], bias=False).to(DEVICE) for r in range(data.num_relations)])
-        self.W_0 = Parameter(torch.empty(size=(self.d, self.d)), requires_grad=True)
+        self.W_0 = Parameter(torch.empty(size=(self.d, self.d)).to(DEVICE), requires_grad=True)
 
+        # GRU: I decide to have a update_gate
+        # The update_gate will be based on (x, edge_index, edge_type), i.e. the input of each batch element
 
-        # GRU: I decide to have a reset_gate, with update_gate = 1-reset_gate
-        # The reset_gate will be updated based on (x, edge_index, edge_type), i.e. the input of each batch element
-
-        # Following (partially) the formula: r_v^t = σ(W^r * a_v^t +  U^r * h_v^(t-1) ),
+        # Following (partially) the formula: u_v^t = σ(W^u * a_v^t +  U^u * h_v^(t-1) ),
         #   where a_v^t is just the concatenation of the neighbourhood, a_v^t= A_(v:)^T [h_1^(t−1),…,h_(|V|)^(t−1) ] + b
         # So for us a_v^t will be the selected graph_area, in order to operate on fixed input dimensions.
 
-        # It is necessary to have 2 matrices, reset_gate_W ( 32*300 x 1 )  and reset_gate_U ( 300 x 1)
-        self.reset_gate_W = Parameter(torch.empty(size=(self.N * self.d,1)) , requires_grad=True)
-        self.reset_gate_U = Parameter(torch.empty(size=(self.d, 1)), requires_grad=True)
+        # It is necessary to have 2 matrices, update_gate_W ( 32*300 x 1 )  and update_gate_U ( 300 x 1)
+        self.update_gate_W = Parameter(torch.empty(size=(self.N * self.d,1)).to(DEVICE), requires_grad=True)
+        self.update_gate_U = Parameter(torch.empty(size=(self.d, 1)).to(DEVICE), requires_grad=True)
 
-        self.reset_gate = Parameter(torch.empty(size=(1,)), requires_grad=True)
-
-        self.previous_rgcnconv_rep = torch.empty(size=(self.d)) # It is not an optimized parameter, it's our memory
+        self.update_gate = Parameter(torch.ones(size=(1,)).to(DEVICE), requires_grad=True)
+        self.memory_previous_rgcnconv = torch.zeros(size=(self.d,)).to(DEVICE)
 
         # 2nd part of the network as before: 2 linear layers from the RGCN representation to the logits
         self.linear2global = torch.nn.Linear(in_features=self.d,
                                              out_features=self.last_idx_globals - self.last_idx_senses, bias=True)
         self.linear2sense = torch.nn.Linear(in_features=self.d, out_features=self.last_idx_senses, bias=True)
 
-        # Once the structure has been specified, we initialize all the Parameters we defined
-        [torch.nn.init.xavier_normal(my_param) for my_param in [self.W_0,
-                                                                self.reset_gate_W, self.reset_gate_U] ]
+        # Once the structure has been specified, we initialize the Parameters we defined
+        [torch.nn.init.xavier_normal_(my_param) for my_param in [self.W_0,
+                                                                self.update_gate_W, self.update_gate_U]]
 
 
     def forward(self, batchinput_ls):  # given the batches, the current node is at index 0
         predictions_globals_ls = []
         predictions_senses_ls = []
+        # T-BPTT: at the start of each batch, we detach_() the hidden state from the graph&history that created it
+        self.memory_previous_rgcnconv.detach_()
+
         for (x, edge_index, edge_type) in batchinput_ls:
 
             (split_sources, split_destinations) = split_edge_index(edge_index, edge_type)
@@ -276,11 +277,16 @@ class CompositeOneGRU(torch.nn.Module):
 
             A0_selfadj = torch.eye(self.N).to(DEVICE)
             prevlayer_connection = torch.mm(A0_selfadj, torch.mm(x, self.W_0))
-            relgcn_conv = sum(rels_gcnconv_output_ls)
+            composite_rgcn_conv = sum(rels_gcnconv_output_ls)
             # adding contribution from h_v^(l-1), the previous layer of the same node
-            relgcn_conv = relgcn_conv + prevlayer_connection
+            proposed_rgcn_conv = composite_rgcn_conv + prevlayer_connection
 
-            x_Lplus1 = tfunc.relu(relgcn_conv)
+            # GRU update: h^{t+1}=u∙(̃h^{t+1}) + (1-u)∙h^t
+            rgcn_conv = self.update_gate * proposed_rgcn_conv + \
+                        (torch.tensor(1)-self.update_gate) * self.memory_previous_rgcnconv
+            self.memory_previous_rgcnconv = rgcn_conv.clone() # store h in memory
+
+            x_Lplus1 = tfunc.relu(rgcn_conv)
 
             x1_current_node = x_Lplus1[0]  # current_node_index
             logits_global = self.linear2global(x1_current_node)  # shape=torch.Size([5])
