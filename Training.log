@@ -1,20 +1,11 @@
 INFO : Data(edge_index=[2, 76050], edge_type=[76050], node_types=[65632], num_relations=[1], x=[65632, 300])
 INFO : Graph-data object loaded, model initialized. Moving them to GPU device(s) if present.
 INFO : Loading graphArea matrix, with area_size=32 from: Graph/nodes_32_graphArea_matrix.npy
-INFO : NumExpr defaulting to 8 threads.
 INFO : Parameters:
-INFO : [('W_0', torch.Size([300, 300]), True), ('update_gate_W', torch.Size([9600, 1]), True), ('update_gate_U', torch.Size([300, 1]), True), ('update_gate', torch.Size([1]), True), ('convs_ls.0.weight', torch.Size([300, 300]), True), ('convs_ls.1.weight', torch.Size([300, 300]), True), ('convs_ls.2.weight', torch.Size([300, 300]), True), ('convs_ls.3.weight', torch.Size([300, 300]), True), ('convs_ls.4.weight', torch.Size([300, 300]), True), ('linear2global.weight', torch.Size([9858, 300]), True), ('linear2global.bias', torch.Size([9858]), True), ('linear2sense.weight', torch.Size([17843, 300]), True), ('linear2sense.bias', torch.Size([17843]), True)]
-INFO : Number of trainable parameters=8887902
+INFO : [('W_0', torch.Size([300, 300]), True), ('update_gate_W', torch.Size([9600, 1]), True), ('update_gate_U', torch.Size([300, 1]), True), ('convs_ls.0.weight', torch.Size([300, 300]), True), ('convs_ls.1.weight', torch.Size([300, 300]), True), ('convs_ls.2.weight', torch.Size([300, 300]), True), ('convs_ls.3.weight', torch.Size([300, 300]), True), ('convs_ls.4.weight', torch.Size([300, 300]), True), ('linear2global.weight', torch.Size([9858, 300]), True), ('linear2global.bias', torch.Size([9858]), True), ('linear2sense.weight', torch.Size([17843, 300]), True), ('linear2sense.bias', torch.Size([17843]), True)]
+INFO : Number of trainable parameters=8887901
 INFO : 
 Training epoch n.1:
 INFO : Preliminary: reading the dataset to determine the number of samples
 INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
 INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
-INFO : ((0, -1), (9857, 7607))
-INFO : ((9857, 7607), (1, 15301))
-INFO : ((1, 15301), (2, -1))
-INFO : ((2, -1), (3, -1))
-INFO : ((3, -1), (4, -1))
-INFO : ((4, -1), (5, -1))
-INFO : ((5, -1), (6, -1))
-INFO : ((6, -1), (3845, -1))

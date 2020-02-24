@@ -61,7 +61,7 @@ def train(grapharea_size=32, batch_size=8, learning_rate=0.002, num_epochs=100):
     Utils.init_logging('Training.log')
     graph_dataobj = DG.get_graph_dataobject(new=False)
     logging.info(graph_dataobj)
-    model = MyRGCN.GRU_RGCN_1(graph_dataobj, grapharea_size) #
+    model = MyRGCN.GRU_RGCN_1wordHiddenState(graph_dataobj, grapharea_size)
     logging.info("Graph-data object loaded, model initialized. Moving them to GPU device(s) if present.")
     graph_dataobj.to(DEVICE)
     model.to(DEVICE)
