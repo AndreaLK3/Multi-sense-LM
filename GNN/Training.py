@@ -57,11 +57,11 @@ def compute_model_loss(model,batch_input, batch_labels, verbose=False):
 
 ########
 
-def train(grapharea_size=32, batch_size=8, learning_rate=0.002, num_epochs=100):
+def train(grapharea_size=32, batch_size=8, learning_rate=0.001, num_epochs=100):
     Utils.init_logging('Training.log')
     graph_dataobj = DG.get_graph_dataobject(new=False)
     logging.info(graph_dataobj)
-    model = MyRGCN.GRU_RGCN_1wordHiddenState(graph_dataobj, grapharea_size)
+    model = MyRGCN.GRU_RGCN(graph_dataobj, grapharea_size)
     logging.info("Graph-data object loaded, model initialized. Moving them to GPU device(s) if present.")
     graph_dataobj.to(DEVICE)
     model.to(DEVICE)
@@ -85,7 +85,7 @@ def train(grapharea_size=32, batch_size=8, learning_rate=0.002, num_epochs=100):
     model.train()
     training_losses_lts = []
     validation_losses_lts = []
-    steps_logging = 100 // batch_size
+    steps_logging = 5000 // batch_size
     hyperparams_str = 'model' + str(type(model).__name__) \
                       + '_batch' + str(batch_size) \
                       + '_area' + str(grapharea_size)\
@@ -103,7 +103,7 @@ def train(grapharea_size=32, batch_size=8, learning_rate=0.002, num_epochs=100):
     validlosses_fpath = os.path.join(F.FOLDER_GNN, hyperparams_str + '_' + Utils.VALIDATION + '_' + F.LOSSES_FILEEND)
 
     global_step = 0
-    previous_valid_loss = inf
+    previous_valid_losses = [inf, inf, inf] # we keep the previous 3
 
     for epoch in range(1,num_epochs+1):
         logging.info("\nTraining epoch n."+str(epoch) + ":")
@@ -150,27 +150,28 @@ def train(grapharea_size=32, batch_size=8, learning_rate=0.002, num_epochs=100):
         logging.info("Training, epoch nll_loss= " + str(round(epoch_loss,5)) + '\n------')
         training_losses_lts.append(epoch_loss) # (num_epochs, epoch_loss)
 
-        continue
         # Time to check the validation loss
-        # early stopping disabled for the test of overfitting on small dataset
-
         valid_dataset = DL.TextDataset('validation', senseindices_db_c, vocab_h5, model,
                                        grapharea_matrix, grapharea_size, graph_dataobj)
-        valid_dataloader = torch.utils.data.DataLoader(valid_dataset, batch_size=batch_size, num_workers=1,
+        valid_dataloader = torch.utils.data.DataLoader(valid_dataset, batch_size=batch_size, num_workers=0,
                                                        collate_fn=DL.collate_fn)
         epoch_valid_loss = validation(valid_dataloader, model)
+        validation_losses_lts.append(epoch_valid_loss.item())
+        logging.info("-----\n After training " + str(epoch)+
+                     " epochs, validation nll_loss= " + str(round(epoch_valid_loss.item(), 5)) + '\n------')
 
-        if epoch_valid_loss > previous_valid_loss + 0.01:  # ( + epsilon)
+        if all([epoch_valid_loss < previous_valid_losses[i] for i in range(len(previous_valid_losses))]):
+            torch.save(model, os.path.join(F.FOLDER_GNN, hyperparams_str +
+                                           'step_' + str(global_step) + '.rgcnmodel'))
+
+        if all([epoch_valid_loss > previous_valid_losses[i] + 0.01 for i in range(len(previous_valid_losses))]):
+            logging.info("Early stopping")
             flag_earlystop = True
-        previous_valid_loss = epoch_valid_loss
+        previous_valid_losses.pop(0) # remove the oldest
+        previous_valid_losses.append(epoch_valid_loss) # insert the most recent validation loss. (queue logic)
 
         if flag_earlystop:
             break
-
-    torch.save(graph_dataobj, os.path.join(F.FOLDER_GNN, hyperparams_str +
-                                  'step_' + str(global_step) + '_graph.dataobject'))
-    torch.save(model,os.path.join(F.FOLDER_GNN, hyperparams_str +
-                                  'step_' + str(global_step) + '.rgcnmodel'))
 
     np.save(trainlosses_fpath, np.array(training_losses_lts))
     np.save(validlosses_fpath, np.array(validation_losses_lts))
@@ -186,7 +187,7 @@ def validation(valid_dataloader, model):
     validation_step = 0
     logging_step = 1000
 
-    with torch.no_grad: # Deactivates the autograd engine entirely to save some memory
+    with torch.no_grad(): # Deactivates the autograd engine entirely to save some memory
         for batch_input, batch_labels in valid_dataloader:
             valid_loss = compute_model_loss(model, batch_input, batch_labels)
             sum_epoch_valid_loss = sum_epoch_valid_loss + valid_loss

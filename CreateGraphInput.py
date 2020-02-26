@@ -14,9 +14,7 @@ import logging
 def reset():
 
     # reset the hdf5 archives for dictionary information: definitions, examples, synonyms, antonyms
-    archives_core_filenames = Utils.CATEGORIES + \
-                    list(map(lambda c: Utils.PROCESSED + '_' + c, Utils.CATEGORIES))
-    archives_filenames = list(map(lambda core_fname : core_fname + '.h5', archives_core_filenames))
+    archives_filenames = list(filter(lambda fname: 'h5' in fname, os.listdir(F.FOLDER_INPUT)))
     archives_filepaths = list(map(lambda fname: os.path.join(F.FOLDER_INPUT, fname), archives_filenames))
 
     # reset the modified training corpus, where we added the phrases
@@ -56,7 +54,7 @@ def reset_embeddings():
 
 
 
-def exe(do_reset=False, compute_single_prototype=False, vocabulary_from_senselabeled=True):
+def exe(do_reset=True, compute_single_prototype=True, vocabulary_from_senselabeled=True):
     Utils.init_logging('Pipeline_CGI.log')
     if do_reset:
         reset()
@@ -76,6 +74,6 @@ def exe(do_reset=False, compute_single_prototype=False, vocabulary_from_senselab
 
     kb_data_chunk = RID.retrieve_data_WordNet(vocabulary)
     logging.info("CreateGraphInput.exe() > "
-                 + " Words included in the vocabulary chunk, to be prepared: " + str(kb_data_chunk))
+                 + " number of ords included in the vocabulary chunk, to be prepared: " + str(len(kb_data_chunk)))
     PI.prepare(kb_data_chunk, CE.Method.FASTTEXT)
     tables.file._open_files.close_all()

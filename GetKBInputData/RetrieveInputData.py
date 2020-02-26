@@ -21,7 +21,7 @@ def retrieve_data_WordNet(vocabulary_df):
         current_index = int(vi_file.readline().strip())   # where were we?
     logging.info(current_index)
 
-    requests_segment_size = 50000
+    requests_segment_size = 100000
     requests_counter = 0
 
     # define and open (in 'append') the output archives for the KB data

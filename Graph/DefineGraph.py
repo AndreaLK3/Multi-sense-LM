@@ -14,7 +14,7 @@ def load_senses_elements(embeddings_method, elements_name):
     senses_elems_fname = Utils.VECTORIZED + '_' + str(embeddings_method.value) + '_' + elements_name + '.npy'
     senses_elems_fpath = os.path.join(F.FOLDER_INPUT, senses_elems_fname)
     senses_elems_X = np.load(senses_elems_fpath)
-    return torch.Tensor(senses_elems_X)
+    return torch.tensor(senses_elems_X).to(torch.float32)
 
 
 def initialize_senses(X_defs, X_examples, average_or_random):
@@ -52,7 +52,7 @@ def initialize_senses(X_defs, X_examples, average_or_random):
         X_senses_random = torch.from_numpy(X_senses_random_ndarray)
         X_senses = X_senses_random
 
-    return torch.Tensor(X_senses)
+    return torch.tensor(X_senses)
 
 
 # definitions -> senses : [se+sp, se+sp+d) -> [0,se)
@@ -165,15 +165,20 @@ def get_edges_nyms(nyms_name, globals_voc_df, globals_start_index_toadd):
     return edges_ls
 
 
+def create_graph(method):
+    if method == Method.FASTTEXT:
+        single_prototypes_file = F.SPVs_FASTTEXT_FILE
+    elif method == Method.DISTILBERT:
+        single_prototypes_file = F.SPVs_DISTILBERT_FILE
+    else:
+        logging.error("Method not implemented")
+        raise AssertionError
 
-
-
-def create_graph():
     Utils.init_logging('DefineGraph.log')
-    X_definitions = load_senses_elements(Method.FASTTEXT, Utils.DEFINITIONS)
-    X_examples = load_senses_elements(Method.FASTTEXT, Utils.EXAMPLES)
+    X_definitions = load_senses_elements(method, Utils.DEFINITIONS)
+    X_examples = load_senses_elements(method, Utils.EXAMPLES)
     X_senses = initialize_senses(X_definitions, X_examples, average_or_random=True)
-    X_globals = torch.Tensor(np.load(os.path.join(F.FOLDER_INPUT, F.SPVs_FASTTEXT_FILE)))
+    X_globals = torch.tensor(np.load(os.path.join(F.FOLDER_INPUT, single_prototypes_file))).to(torch.float32)
 
     logging.info("Constructing X, matrix of node features")
     logging.info("X_definitions.shape=" + str(X_definitions.shape)) # X_definitions.shape=torch.Size([19008, 300])
@@ -197,7 +202,7 @@ def create_graph():
 
     logging.info("Defining the edges: sc")
     globals_vocabulary_fpath = os.path.join(F.FOLDER_VOCABULARY, F.VOCABULARY_OF_GLOBALS_FILE )
-    globals_vocabulary_df =  pd.read_hdf(globals_vocabulary_fpath, mode='r')
+    globals_vocabulary_df = pd.read_hdf(globals_vocabulary_fpath, mode='r')
     sc_edges = get_edges_sensechildren(globals_vocabulary_df, X_senses.shape[0])
     logging.info("sc_edges.__len__()=" + str(sc_edges.__len__()))
     # Note: we also add self-loops to all globals without a sense.
@@ -231,9 +236,11 @@ def create_graph():
 
 
 # Entry point function: try to load the graph, else create it if it does not exist
-def get_graph_dataobject(new=False):
+def get_graph_dataobject(new=False, method=Method.FASTTEXT):
     graph_fpath = os.path.join('GNN', F.KBGRAPH_FILE)
     if os.path.exists(graph_fpath) and not new:
         return torch.load(graph_fpath)
     else:
-        return create_graph()
+        graph_dataobj = create_graph(method)
+        torch.save(graph_dataobj, graph_fpath)
+        return graph_dataobj

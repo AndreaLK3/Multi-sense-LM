@@ -19,9 +19,9 @@ def get_node_data(grapharea_matrix, i, grapharea_size, edges_added_per_node=64):
     edgeindex_targets_ls = list(filter(lambda num: num != -1, grapharea_matrix[i][k + m:k + 2 * m]))
     edgetype_ls = list(filter(lambda num: num != -1, grapharea_matrix[i][k + 2 * m: k + 3 * m]))
 
-    nodes = torch.Tensor(nodes_ls).to(DEVICE)
-    edgeindex = torch.Tensor([edgeindex_sources_ls, edgeindex_targets_ls]).to(torch.int64).to(DEVICE)
-    edgetype = torch.Tensor(edgetype_ls).to(torch.int64).to(DEVICE)
+    nodes = torch.tensor(nodes_ls).to(DEVICE)
+    edgeindex = torch.tensor([edgeindex_sources_ls, edgeindex_targets_ls]).to(torch.int64).to(DEVICE)
+    edgetype = torch.tensor(edgetype_ls).to(torch.int64).to(DEVICE)
 
     return nodes, edgeindex, edgetype
 
@@ -29,7 +29,7 @@ def get_node_data(grapharea_matrix, i, grapharea_size, edges_added_per_node=64):
 
 ### Creation function - numpy version
 def create_adjacencies_matrix_numpy(graph_dataobj, area_size, edges_added_per_node=64):
-    Utils.init_logging('create_adjacencies_matrix_numpy.log')
+    #Utils.init_logging('create_adjacencies_matrix_numpy.log')
     out_fpath = os.path.join(F.FOLDER_GRAPH, 'nodes_' + str(area_size) + '_' + F.GRAPHAREA_FILE)
     out_file = open(out_fpath, 'wb') # -- used with numpy
 

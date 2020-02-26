@@ -59,7 +59,7 @@ def get_grapharea_elements(starting_node_index, area_size, graph):
     edges_retrieved_ls = list(filter(lambda edge_idx: graph.edge_index[0][edge_idx].item() in set(node_indices_ls)
                                                       and graph.edge_index[1][edge_idx].item() in set(node_indices_ls),
                                      all_edges_retrieved_ls))  # to include an edge, both source and target node must be in the batch
-    edges_indices = torch.Tensor(sorted(edges_retrieved_ls)).to(torch.int64).to(DEVICE)
+    edges_indices = torch.tensor(sorted(edges_retrieved_ls)).to(torch.int64).to(DEVICE)
     edges_defaultValues = graph.edge_index.t().index_select(0, edges_indices)
     logging.debug("edges_defaultValues= " + str(edges_defaultValues))
     edges_reindexed = []
@@ -70,7 +70,7 @@ def get_grapharea_elements(starting_node_index, area_size, graph):
     logging.debug("edges_reindexed= " + str(edges_reindexed))
 
     with torch.no_grad():
-        area_edge_index = torch.autograd.Variable(torch.Tensor(edges_reindexed).t().to(torch.int64)).to(DEVICE)
+        area_edge_index = torch.autograd.Variable(torch.tensor(edges_reindexed).t().to(torch.int64)).to(DEVICE)
 
 
     area_edge_type = graph.edge_type.index_select(0, index=edges_indices).to(torch.int64).to(DEVICE)

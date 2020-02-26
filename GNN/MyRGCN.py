@@ -47,7 +47,7 @@ def create_adj_matrices(x, edge_index, edge_type):
 ######
 
 class GRU_RGCN(torch.nn.Module):
-    def __init__(self, data, grapharea_size, gate_dim):
+    def __init__(self, data, grapharea_size):
         super(GRU_RGCN, self).__init__()
         self.last_idx_senses = data.node_types.tolist().index(1)
         self.last_idx_globals = data.node_types.tolist().index(2)
@@ -59,16 +59,16 @@ class GRU_RGCN(torch.nn.Module):
                               out_channels=data.x.shape[1], bias=False).to(DEVICE) for r in range(data.num_relations)])
         self.W_0 = Parameter(torch.empty(size=(self.d, self.d)).to(DEVICE), requires_grad=True)
 
-        # GRU: I decide to have a update_gate
+        # GRU: I decide to have 1 update_gate
         # The update_gate will be based on (x, edge_index, edge_type), i.e. the input of each batch element
 
-        # Following (partially) the formula: u_v^t = σ(W^u * a_v^t +  U^u * h_v^(t-1) ),
-        #   where a_v^t is just the concatenation of the neighbourhood, a_v^t= A_(v:)^T [h_1^(t−1),…,h_(|V|)^(t−1) ] + b
+        # Following (partially) the formula: u_v^t = σ(W^u * a_v^t +  U^u * h_v^(t-1)),
+        #   where a_v^t is just the concatenation of the neighbourhood, a_v^t= A_(v:)^T [h_1^(t−1),…,h_(|V|)^(t−1)] + b
         # So for us a_v^t will be the selected graph_area, in order to operate on fixed input dimensions.
 
         # It is necessary to have 2 matrices, update_gate_W ( 32*300 x 300)  and update_gate_U ( 300 x 300)
-        self.update_gate_W = Parameter(torch.empty(size=(self.N * self.d, gate_dim)).to(DEVICE), requires_grad=True)
-        self.update_gate_U = Parameter(torch.empty(size=(self.d, gate_dim)).to(DEVICE), requires_grad=True)
+        self.update_gate_W = Parameter(torch.empty(size=(self.N * self.d, self.d)).to(DEVICE), requires_grad=True)
+        self.update_gate_U = Parameter(torch.empty(size=(self.d, self.d)).to(DEVICE), requires_grad=True)
 
         self.memory_previous_rgcnconv = torch.zeros(size=(grapharea_size,self.d)).to(DEVICE)
 
