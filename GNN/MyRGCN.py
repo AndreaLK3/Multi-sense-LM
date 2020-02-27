@@ -54,6 +54,9 @@ class GRU_RGCN(torch.nn.Module):
         self.N = grapharea_size
         self.d = data.x.shape[1]
 
+        # The embeddings matrix for: senses, globals, definitions, examples (the latter 2 will have gradient set to 0)
+        self.X = Parameter(data.x.clone().detach().to(DEVICE), requires_grad=True)
+
         # Representation built using the RGCN mechanism, by combining |R| GCNs and the previousLayer-selfConnection
         self.convs_ls = torch.nn.ModuleList([GCNConv(in_channels=data.x.shape[1],
                               out_channels=data.x.shape[1], bias=False).to(DEVICE) for r in range(data.num_relations)])
@@ -88,24 +91,30 @@ class GRU_RGCN(torch.nn.Module):
         # T-BPTT: at the start of each batch, we detach_() the hidden state from the graph&history that created it
         self.memory_previous_rgcnconv.detach_()
 
-        for (x, edge_index, edge_type) in batchinput_ls:
+        for (x_indices, edge_index, edge_type) in batchinput_ls:
+
+            grapharea_x = self.X.index_select(dim=0, index=x_indices)
+            # pad with 0s.
+            if grapharea_x.shape[0] < self.N:
+                zeros = torch.zeros(size=(self.N-grapharea_x.shape[0],grapharea_x.shape[1])).to(torch.float).to(DEVICE)
+                grapharea_x = torch.cat([grapharea_x, zeros])
 
             (split_sources, split_destinations) = split_edge_index(edge_index, edge_type)
             split_edge_index_ls = []
             for i in range(len(split_sources)):
                 split_edge_index_ls.append(torch.stack([split_sources[i], split_destinations[i]]))
 
-            rels_gcnconv_output_ls = [self.convs_ls[i](x, split_edge_index_ls[i]) for i in range(len(split_edge_index_ls))]
+            rels_gcnconv_output_ls = [self.convs_ls[i](grapharea_x, split_edge_index_ls[i]) for i in range(len(split_edge_index_ls))]
 
             A0_selfadj = torch.eye(self.N).to(DEVICE)
-            prevlayer_connection = torch.mm(A0_selfadj, torch.mm(x, self.W_0))
+            prevlayer_connection = torch.mm(A0_selfadj, torch.mm(grapharea_x, self.W_0))
             composite_rgcn_conv = sum(rels_gcnconv_output_ls)
             # adding contribution from h_v^(l-1), the previous layer of the same node
             proposed_rgcn_conv = composite_rgcn_conv + prevlayer_connection
 
             # Update gate: u_v^t = σ(W^u * a_v^t +  U^u * h_v^(t-1)).
             # I don't have h_v^(t-1). In practice, I can use either h_v^t or
-            neighbourhood_contribution_update_gate = torch.mm(torch.flatten(x).unsqueeze(dim=0), self.update_gate_W)
+            neighbourhood_contribution_update_gate = torch.mm(torch.flatten(grapharea_x).unsqueeze(dim=0), self.update_gate_W)
             prevstate_contribution_update_gate = torch.mm(
                 self.memory_previous_rgcnconv.index_select(dim=0, index=torch.tensor([0]).to(DEVICE)),
                 self.update_gate_U)

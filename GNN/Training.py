@@ -58,7 +58,7 @@ def compute_model_loss(model,batch_input, batch_labels, verbose=False):
 ########
 
 def train(grapharea_size=32, batch_size=8, learning_rate=0.001, num_epochs=100):
-    Utils.init_logging('Training.log')
+    Utils.init_logging('Training'+Utils.get_timestamp_month_to_min()+'.log')
     graph_dataobj = DG.get_graph_dataobject(new=False)
     logging.info(graph_dataobj)
     model = MyRGCN.GRU_RGCN(graph_dataobj, grapharea_size)
@@ -103,7 +103,8 @@ def train(grapharea_size=32, batch_size=8, learning_rate=0.001, num_epochs=100):
     validlosses_fpath = os.path.join(F.FOLDER_GNN, hyperparams_str + '_' + Utils.VALIDATION + '_' + F.LOSSES_FILEEND)
 
     global_step = 0
-    previous_valid_losses = [inf, inf, inf] # we keep the previous 3
+    previous_valid_loss = inf
+    flag_firstvalidationhigher = False
 
     for epoch in range(1,num_epochs+1):
         logging.info("\nTraining epoch n."+str(epoch) + ":")
@@ -131,6 +132,8 @@ def train(grapharea_size=32, batch_size=8, learning_rate=0.001, num_epochs=100):
             sum_epoch_loss = sum_epoch_loss + loss.item()
 
             loss.backward()
+            last_embedding_to_update = model.last_idx_senses + model.last_idx_globals
+            model.X.grad.data[last_embedding_to_update:,:].fill_(0) # defs and examples should not change
             optimizer.step()
 
             global_step = global_step + 1
@@ -160,15 +163,17 @@ def train(grapharea_size=32, batch_size=8, learning_rate=0.001, num_epochs=100):
         logging.info("-----\n After training " + str(epoch)+
                      " epochs, validation nll_loss= " + str(round(epoch_valid_loss.item(), 5)) + '\n------')
 
-        if all([epoch_valid_loss < previous_valid_losses[i] for i in range(len(previous_valid_losses))]):
+        if epoch_valid_loss < previous_valid_loss:
             torch.save(model, os.path.join(F.FOLDER_GNN, hyperparams_str +
                                            'step_' + str(global_step) + '.rgcnmodel'))
 
-        if all([epoch_valid_loss > previous_valid_losses[i] + 0.01 for i in range(len(previous_valid_losses))]):
-            logging.info("Early stopping")
-            flag_earlystop = True
-        previous_valid_losses.pop(0) # remove the oldest
-        previous_valid_losses.append(epoch_valid_loss) # insert the most recent validation loss. (queue logic)
+        if epoch_valid_loss > previous_valid_loss + 0.01 :
+            if not flag_firstvalidationhigher:
+                flag_firstvalidationhigher = True
+            else: # already did first offence. Must early-stop
+                logging.info("Early stopping")
+                flag_earlystop = True
+        previous_valid_loss = epoch_valid_loss
 
         if flag_earlystop:
             break

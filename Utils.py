@@ -7,7 +7,7 @@ import re
 import subprocess
 import numpy as np
 import matplotlib.pyplot as plt
-import torch
+import time
 
 ########## Constants ##########
 import torch
@@ -75,6 +75,9 @@ def log_chronometer(time_measurements):
         t2 = time_measurements[i+1]
         logging.info('t'+str(i+1)+' - t'+str(i)+' = '+str(round(t2-t1,5)))
 
+def get_timestamp_month_to_min():
+    return '_'.join([str(time.localtime().tm_mon), str(time.localtime().tm_mday), str(time.localtime().tm_hour),
+              str(time.localtime().tm_min)])
 
 def display_ygraph_fromfile(npy_fpath, axis_labels=None, label=None):
 
