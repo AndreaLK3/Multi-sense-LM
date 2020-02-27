@@ -133,7 +133,7 @@ def train(grapharea_size=32, batch_size=8, learning_rate=0.001, num_epochs=100):
 
             loss.backward()
             last_embedding_to_update = model.last_idx_senses + model.last_idx_globals
-            model.X.grad.data[last_embedding_to_update:,:].fill_(0) # defs and examples should not change
+            #model.X.grad.data[last_embedding_to_update:,:].fill_(0) # defs and examples should not change
             optimizer.step()
 
             global_step = global_step + 1

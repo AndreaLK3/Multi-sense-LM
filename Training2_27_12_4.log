@@ -1,0 +1,458 @@
+INFO : Data(edge_index=[2, 76050], edge_type=[76050], node_types=[65632], num_relations=[1], x=[65632, 300])
+INFO : Graph-data object loaded, model initialized. Moving them to GPU device(s) if present.
+INFO : Loading graphArea matrix, with area_size=32 from: Graph/nodes_32_graphArea_matrix.npy
+INFO : Parameters:
+INFO : [('X', torch.Size([65632, 300]), True), ('W_0', torch.Size([300, 300]), True), ('update_gate_W', torch.Size([9600, 300]), True), ('update_gate_U', torch.Size([300, 300]), True), ('convs_ls.0.weight', torch.Size([300, 300]), True), ('convs_ls.1.weight', torch.Size([300, 300]), True), ('convs_ls.2.weight', torch.Size([300, 300]), True), ('convs_ls.3.weight', torch.Size([300, 300]), True), ('convs_ls.4.weight', torch.Size([300, 300]), True), ('linear2global.weight', torch.Size([9858, 300]), True), ('linear2global.bias', torch.Size([9858]), True), ('linear2sense.weight', torch.Size([17843, 300]), True), ('linear2sense.bias', torch.Size([17843]), True)]
+INFO : Number of trainable parameters=31537601
+INFO : 
+Training epoch n.1:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='governor's_race.n.01' . Skipping sense
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='master's_degree.n.01' . Skipping sense
+INFO : Global step=625	 ; Iteration time=0.04327
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='o'clock.r.01' . Skipping sense
+INFO : Global step=1250	 ; Iteration time=0.04544IINFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='o'clock.r.01' . Skipping sense
+INFO : Global step=1875	 ; Iteration time=0.04208
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='sow_one's_oats.v.01' . Skipping sense
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='bull's_eye.n.02' . Skipping senseIINFO : Global step=2500	 ; Iteration time=0.04389IINFO : Global step=3125	 ; Iteration time=0.05559IINFO : Global step=3750	 ; Iteration time=0.0435
+INFO : Global step=4375	 ; Iteration time=0.04514
+INFO : Global step=5000	 ; Iteration time=0.04402
+INFO : Global step=5625	 ; Iteration time=0.04132
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='old_wives'_tale.n.01' . Skipping sense
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='collector's_item.n.01' . Skipping sense
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='at_arm's_length.r.01' . Skipping sense
+INFO : Global step=6250	 ; Iteration time=0.04636
+INFO : Global step=6875	 ; Iteration time=0.04718
+INFO : Global step=7500	 ; Iteration time=0.03888
+INFO : Global step=8125	 ; Iteration time=0.04428
+INFO : Global step=8750	 ; Iteration time=0.037
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='printer's_ink.n.01' . Skipping sense
+INFO : Global step=9375	 ; Iteration time=0.04161
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='van_der_waal's_forces.n.01' . Skipping sense
+INFO : Global step=10000	 ; Iteration time=0.03893
+INFO : Global step=10625	 ; Iteration time=0.04513
+INFO : Global step=11250	 ; Iteration time=0.04571
+INFO : Global step=11875	 ; Iteration time=0.04843
+INFO : Global step=12500	 ; Iteration time=0.04272
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='addison's_disease.n.01' . Skipping sense
+INFO : Global step=13125	 ; Iteration time=0.04183
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='bull's_eye.n.02' . Skipping sense
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='bull's_eye.n.01' . Skipping sense
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='bull's_eye.n.01' . Skipping sense
+INFO : Global step=13750	 ; Iteration time=0.04474
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='bull's_eye.n.01' . Skipping sense
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='bull's_eye.n.01' . Skipping sense
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='bull's_eye.n.01' . Skipping sense
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='bull's_eye.n.01' . Skipping sense
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='bull's_eye.n.01' . Skipping sense
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='bull's_eye.n.01' . Skipping sense
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='bull's_eye.n.01' . Skipping sense
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='bull's_eye.n.01' . Skipping sense
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='bull's_eye.n.01' . Skipping sense
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='bull's_eye.n.01' . Skipping sense
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='bull's_eye.n.01' . Skipping sense
+INFO : Global step=14375	 ; Iteration time=0.0415
+INFO : Global step=15000	 ; Iteration time=0.0459
+INFO : Global step=15625	 ; Iteration time=0.04238
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='o'clock.r.01' . Skipping sense
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='o'clock.r.01' . Skipping sense
+INFO : Global step=16250	 ; Iteration time=0.04409
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='all_souls'_day.n.01' . Skipping sense
+INFO : Global step=16875	 ; Iteration time=0.04321
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='arm's_length.n.01' . Skipping sense
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='trompe_l'oeil.n.01' . Skipping sense
+INFO : Global step=17500	 ; Iteration time=0.04611
+INFO : Global step=18125	 ; Iteration time=0.04568
+INFO : Global step=18750	 ; Iteration time=0.04503
+INFO : Global step=19375	 ; Iteration time=0.04078
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='o'clock.r.01' . Skipping sense
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='talk_through_one's_hat.v.01' . Skipping sense
+INFO : Global step=20000	 ; Iteration time=0.04584
+INFO : Global step=20625	 ; Iteration time=0.04419
+INFO : Global step=21250	 ; Iteration time=0.04141
+INFO : Global step=21875	 ; Iteration time=0.04682
+INFO : Global step=22500	 ; Iteration time=0.04291
+INFO : Global step=23125	 ; Iteration time=0.0442
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='o'clock.r.01' . Skipping sense
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='o'clock.r.01' . Skipping sense
+INFO : Global step=23750	 ; Iteration time=0.04577
+INFO : Global step=24375	 ; Iteration time=0.04351
+INFO : Global step=25000	 ; Iteration time=0.03573
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='new_year's_day.n.01' . Skipping sense
+INFO : Global step=25625	 ; Iteration time=0.04607
+INFO : Global step=26250	 ; Iteration time=0.04786
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='new_year's_eve.n.01' . Skipping sense
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='new_year's_eve.n.01' . Skipping sense
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='o'clock.r.01' . Skipping sense
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='new_year's_day.n.01' . Skipping sense
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='new_year's_eve.n.01' . Skipping sense
+INFO : Global step=26875	 ; Iteration time=0.0425
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='o'clock.r.01' . Skipping sense
+INFO : Global step=27500	 ; Iteration time=0.04469
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='no_man's_land.n.01' . Skipping sense
+INFO : Global step=28125	 ; Iteration time=0.04619
+INFO : Global step=28750	 ; Iteration time=0.03985
+INFO : Global step=29375	 ; Iteration time=0.04573
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='objet_d'art.n.01' . Skipping sense
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='objet_d'art.n.01' . Skipping sense
+INFO : Global step=30000	 ; Iteration time=0.04262
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='collector's_item.n.01' . Skipping sense
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='hooker's_green.n.01' . Skipping sense
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='payne's_grey.n.01' . Skipping sense
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='mind's_eye.n.01' . Skipping sense
+INFO : Global step=30625	 ; Iteration time=0.0454
+INFO : Global step=31250	 ; Iteration time=0.04434
+INFO : Global step=31875	 ; Iteration time=0.04475
+INFO : Global step=32500	 ; Iteration time=0.04122
+INFO : Global step=33125	 ; Iteration time=0.04585
+INFO : Global step=33750	 ; Iteration time=0.04656
+INFO : Global step=34375	 ; Iteration time=0.04135
+INFO : Global step=35000	 ; Iteration time=0.0443
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='coup_d'etat.n.01' . Skipping sense
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='coup_d'etat.n.01' . Skipping sense
+INFO : Global step=35625	 ; Iteration time=0.04252
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='doctor's_degree.n.01' . Skipping sense
+INFO : Global step=36250	 ; Iteration time=0.04379
+INFO : Global step=36875	 ; Iteration time=0.04167
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='o'clock.r.01' . Skipping sense
+INFO : Global step=37500	 ; Iteration time=0.04422
+INFO : Global step=38125	 ; Iteration time=0.04194
+INFO : Global step=38750	 ; Iteration time=0.043
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='bird's-eye.s.01' . Skipping sense
+INFO : Global step=39375	 ; Iteration time=0.04453
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='mother's_daughter.n.01' . Skipping sense
+INFO : Global step=40000	 ; Iteration time=0.04644
+INFO : Global step=40625	 ; Iteration time=0.04244
+INFO : Global step=41250	 ; Iteration time=0.04325
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='new_year's_eve.n.01' . Skipping sense
+INFO : Global step=41875	 ; Iteration time=0.04737
+INFO : Global step=42500	 ; Iteration time=0.04456
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='sheriff's_sale.n.01' . Skipping sense
+INFO : Global step=43125	 ; Iteration time=0.04395
+INFO : Global step=43750	 ; Iteration time=0.04109
+INFO : Global step=44375	 ; Iteration time=0.04121
+INFO : Global step=45000	 ; Iteration time=0.04528
+INFO : Global step=45625	 ; Iteration time=0.0412
+INFO : Global step=46250	 ; Iteration time=0.04117
+INFO : Global step=46875	 ; Iteration time=0.04554
+INFO : Global step=47500	 ; Iteration time=0.04473
+INFO : Global step=48125	 ; Iteration time=0.04356
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='o'clock.r.01' . Skipping sense
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='o'clock.r.01' . Skipping sense
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='o'clock.r.01' . Skipping sense
+INFO : Global step=48750	 ; Iteration time=0.04496
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='o'clock.r.01' . Skipping sense
+INFO : Global step=49375	 ; Iteration time=0.04731
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='levi's.n.01' . Skipping sense
+INFO : Global step=50000	 ; Iteration time=0.04872
+INFO : Global step=50625	 ; Iteration time=0.04406
+INFO : Global step=51250	 ; Iteration time=0.04386
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='o'clock.r.01' . Skipping sense
+INFO : Global step=51875	 ; Iteration time=0.04684
+INFO : Global step=52500	 ; Iteration time=0.04502
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='jeweler's_glass.n.01' . Skipping sense
+INFO : Global step=53125	 ; Iteration time=0.04658
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='o'clock.r.01' . Skipping sense
+INFO : Global step=53750	 ; Iteration time=0.04432
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='batter's_box.n.01' . Skipping sense
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='batter's_box.n.01' . Skipping sense
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='batter's_box.n.01' . Skipping sense
+INFO : Global step=54375	 ; Iteration time=0.04683
+INFO : Global step=55000	 ; Iteration time=0.04556
+INFO : Global step=55625	 ; Iteration time=0.04496
+INFO : Global step=56250	 ; Iteration time=0.04385
+INFO : Global step=56875	 ; Iteration time=0.0428
+INFO : Global step=57500	 ; Iteration time=0.04162
+INFO : Global step=58125	 ; Iteration time=0.04131
+INFO : Global step=58750	 ; Iteration time=0.04526
+INFO : Global step=59375	 ; Iteration time=0.04254
+INFO : Global step=60000	 ; Iteration time=0.04545
+INFO : Global step=60625	 ; Iteration time=0.04403
+INFO : Global step=61250	 ; Iteration time=0.04883
+INFO : Global step=61875	 ; Iteration time=0.04067
+INFO : Global step=62500	 ; Iteration time=0.04017
+INFO : Global step=63125	 ; Iteration time=0.04758
+INFO : Global step=63750	 ; Iteration time=0.04413
+INFO : Global step=64375	 ; Iteration time=0.03946
+INFO : Global step=65000	 ; Iteration time=0.04548
+INFO : Global step=65625	 ; Iteration time=0.04372
+INFO : Global step=66250	 ; Iteration time=0.04643
+INFO : Global step=66875	 ; Iteration time=0.04081
+INFO : Global step=67500	 ; Iteration time=0.04593
+INFO : Global step=68125	 ; Iteration time=0.04378
+INFO : Global step=68750	 ; Iteration time=0.04224
+INFO : Global step=69375	 ; Iteration time=0.04008
+INFO : Global step=70000	 ; Iteration time=0.04637
+INFO : Global step=70625	 ; Iteration time=0.04129
+INFO : Global step=71250	 ; Iteration time=0.04512
+INFO : Global step=71875	 ; Iteration time=0.04132
+INFO : Global step=72500	 ; Iteration time=0.04577
+INFO : Global step=73125	 ; Iteration time=0.043
+INFO : Global step=73750	 ; Iteration time=0.04007
+INFO : Global step=74375	 ; Iteration time=0.04451
+INFO : Global step=75000	 ; Iteration time=0.04393
+INFO : Global step=75625	 ; Iteration time=0.04445
+INFO : Global step=76250	 ; Iteration time=0.03535
+INFO : Global step=76875	 ; Iteration time=0.04406
+INFO : Global step=77500	 ; Iteration time=0.04317
+INFO : Global step=78125	 ; Iteration time=0.04601
+INFO : Global step=78750	 ; Iteration time=0.04237
+INFO : Global step=79375	 ; Iteration time=0.04622
+INFO : Global step=80000	 ; Iteration time=0.03983
+INFO : Global step=80625	 ; Iteration time=0.04228
+INFO : -----
+ End of epoch. Global step n.80754, using batch_size=8
+INFO : Training, epoch nll_loss= 60.37617
+------
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Validation/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Validation/semcor.xml
+INFO : Validation step n. 1000
+INFO : Validation step n. 2000
+INFO : Validation step n. 3000
+INFO : Validation step n. 4000
+INFO : Validation step n. 5000
+INFO : Validation step n. 6000
+INFO : Validation step n. 7000
+INFO : Validation step n. 8000
+INFO : Validation step n. 9000
+INFO : Validation step n. 10000
+INFO : -----
+ After training 1 epochs, validation nll_loss= 15.81648
+------
+INFO : 
+Training epoch n.2:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='governor's_race.n.01' . Skipping sense
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='master's_degree.n.01' . Skipping sense
+INFO : Global step=81250	 ; Iteration time=0.0425
+INFO : Global step=81875	 ; Iteration time=0.04172
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='o'clock.r.01' . Skipping sense
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='o'clock.r.01' . Skipping sense
+INFO : Global step=82500	 ; Iteration time=0.04323
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='sow_one's_oats.v.01' . Skipping sense
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='bull's_eye.n.02' . Skipping sense
+INFO : Global step=83125	 ; Iteration time=0.04158
+INFO : Global step=83750	 ; Iteration time=0.04361
+INFO : Global step=84375	 ; Iteration time=0.0428
+INFO : Global step=85000	 ; Iteration time=0.04455
+INFO : Global step=85625	 ; Iteration time=0.04578
+INFO : Global step=86250	 ; Iteration time=0.04755
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='old_wives'_tale.n.01' . Skipping sense
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='collector's_item.n.01' . Skipping sense
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='at_arm's_length.r.01' . Skipping sense
+INFO : Global step=86875	 ; Iteration time=0.04351
+INFO : Global step=87500	 ; Iteration time=0.04113
+INFO : Global step=88125	 ; Iteration time=0.05557
+INFO : Global step=88750	 ; Iteration time=0.05802
+INFO : Global step=89375	 ; Iteration time=0.05537
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='printer's_ink.n.01' . Skipping sense
+INFO : Global step=90000	 ; Iteration time=0.04089
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='van_der_waal's_forces.n.01' . Skipping sense
+INFO : Global step=90625	 ; Iteration time=0.05754
+INFO : Global step=91250	 ; Iteration time=0.05441
+INFO : Global step=91875	 ; Iteration time=0.05412
+INFO : Global step=92500	 ; Iteration time=0.05851
+INFO : Global step=93125	 ; Iteration time=0.04431
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='addison's_disease.n.01' . Skipping sense
+INFO : Global step=93750	 ; Iteration time=0.04443
+INFO : Global step=94375	 ; Iteration time=0.03964
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='bull's_eye.n.02' . Skipping sense
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='bull's_eye.n.01' . Skipping sense
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='bull's_eye.n.01' . Skipping sense
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='bull's_eye.n.01' . Skipping sense
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='bull's_eye.n.01' . Skipping sense
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='bull's_eye.n.01' . Skipping sense
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='bull's_eye.n.01' . Skipping sense
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='bull's_eye.n.01' . Skipping sense
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='bull's_eye.n.01' . Skipping sense
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='bull's_eye.n.01' . Skipping sense
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='bull's_eye.n.01' . Skipping sense
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='bull's_eye.n.01' . Skipping sense
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='bull's_eye.n.01' . Skipping sense
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='bull's_eye.n.01' . Skipping sense
+INFO : Global step=95000	 ; Iteration time=0.INFO :INFO : Global step=95625	 ; Iteration time=0.05534
+INFO : Global step=96250	 ; Iteration time=0.05175
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='o'clock.r.01' . Skipping sense
+INFO : Global step=96875	 ; Iteration time=0.05764
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='o'clock.r.01' . Skipping sense
+INFO : Global step=97500	 ; Iteration time=0.05596
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='all_souls'_day.n.01' . Skipping sense
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='arm's_length.n.01' . Skipping sense
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='trompe_l'oeil.n.01' . Skipping sense
+INFO : Global step=98125	 ; Iteration time=0.054
+INFO : Global step=98750	 ; Iteration time=0.04254
+INFO : Global step=99375	 ; Iteration time=0.04277
+INFO : Global step=100000	 ; Iteration time=0.04315
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='o'clock.r.01' . Skipping sense
+INFO : Global step=100625	 ; Iteration time=0.05482
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='talk_through_one's_hat.v.01' . Skipping sense
+INFO : Global step=101250	 ; Iteration time=0.0427
+INFO : Global step=101875	 ; Iteration time=0.04985
+INFO : Global step=102500	 ; Iteration time=0.04657
+INFO : Global step=103125	 ; Iteration time=0.05829
+INFO : Global step=103750	 ; Iteration time=0.05708
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='o'clock.r.01' . Skipping sense
+INFO : Global step=104375	 ; Iteration time=0.04901
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='o'clock.r.01' . Skipping sense
+INFO : Global step=105000	 ; Iteration time=0.05813
+INFO : Global step=105625	 ; Iteration time=0.06146
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='new_year's_day.n.01' . Skipping sense
+INFO : Global step=106250	 ; Iteration time=0.04629
+INFO : Global step=106875	 ; Iteration time=0.05706
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='new_year's_eve.n.01' . Skipping sense
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='new_year's_eve.n.01' . Skipping sense
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='o'clock.r.01' . Skipping sense
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='new_year's_day.n.01' . Skipping sense
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='new_year's_eve.n.01' . Skipping sense
+INFO : Global step=107500	 ; Iteration time=0.05525
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='o'clock.r.01' . Skipping sense
+INFO : Global step=108125	 ; Iteration time=0.057
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='no_man's_land.n.01' . Skipping sense
+INFO : Global step=108750	 ; Iteration time=0.04419
+INFO : Global step=109375	 ; Iteration time=0.05555
+INFO : Global step=110000	 ; Iteration time=0.04393
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='objet_d'art.n.01' . Skipping sense
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='objet_d'art.n.01' . Skipping sense
+INFO : Global step=110625	 ; Iteration time=0.05767
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='collector's_item.n.01' . Skipping sense
+INFO : Global step=111250	 ; Iteration time=0.05508
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='hooker's_green.n.01' . Skipping sense
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='payne's_grey.n.01' . Skipping sense
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='mind's_eye.n.01' . Skipping sense
+INFO : Global step=111875	 ; Iteration time=0.04426
+INFO : Global step=112500	 ; Iteration time=0.04639
+INFO : Global step=113125	 ; Iteration time=0.05509
+INFO : Global step=113750	 ; Iteration time=0.05514
+INFO : Global step=114375	 ; Iteration time=0.05603
+INFO : Global step=115000	 ; Iteration time=0.04606
+INFO : Global step=115625	 ; Iteration time=0.04714
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='coup_d'etat.n.01' . Skipping sense
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='coup_d'etat.n.01' . Skipping sense
+INFO : Global step=116250	 ; Iteration time=0.0397
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='doctor's_degree.n.01' . Skipping sense
+INFO : Global step=116875	 ; Iteration time=0.05315
+INFO : Global step=117500	 ; Iteration time=0.04424
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='o'clock.r.01' . Skipping sense
+INFO : Global step=118125	 ; Iteration time=0.05665
+INFO : Global step=118750	 ; Iteration time=0.05397
+INFO : Global step=119375	 ; Iteration time=0.05391
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='bird's-eye.s.01' . Skipping sense
+INFO : Global step=120000	 ; Iteration time=0.03808
+INFO : Global step=120625	 ; Iteration time=0.05603
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='mother's_daughter.n.01' . Skipping sense
+INFO : Global step=121250	 ; Iteration time=0.0551
+INFO : Global step=121875	 ; Iteration time=0.04554
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='new_year's_eve.n.01' . Skipping sense
+INFO : Global step=122500	 ; Iteration time=0.04268
+INFO : Global step=123125	 ; Iteration time=0.05235
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='sheriff's_sale.n.01' . Skipping sense
+INFO : Global step=123750	 ; Iteration time=0.0486ININFO : Global step=124375	 ; Iteration time=0.0590ININFO : Global step=125000	 ; Iteration time=0.0528ININFO : Global step=125625	 ; Iteration time=0.0513ININFO : Global step=126250	 ; Iteration time=0.05601
+INFO : Global step=126875	 ; Iteration time=0.046INFINFO : Global step=127500	 ; Iteration time=0.0INFO INFO : Global step=128125	 ; Iteration time=0.0INFO INFO : Global step=128750	 ; Iteration time=0.05399
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='o'clock.r.01' . Skipping sense
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='o'clock.r.01' . Skipping sense
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='o'clock.r.01' . Skipping sense
+INFO : Global step=129375	 ; Iteration time=0INFO : INFO : Global step=130000	 ; Iteration time=0.04309
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='o'clock.r.01' . SkippingINFO : INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='levi's.n.01' . Skipping sense
+INFO : Global step=130625	 ; Iteration time=0INFO :INFO : Global step=131250	 ; Iteration time=0.INFO :INFO : Global step=131875	 ; Iteration time=0.05565
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='o'clock.r.01' . Skipping sense
+INFO : Global step=132500	 ; Iteration time=0.INFO :INFO : Global step=133125	 ; Iteration time=0.INFO :INFO : Global step=133750	 ; Iteration time=0.04567
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='jeweler's_glass.n.01' . Skipping INFO :INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='o'clock.r.01' . Skipping sense
+INFO : Global step=134375	 ; Iteration time=0.05294
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='batter's_box.n.01' . Skipping sense
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='batter's_box.n.01' . Skipping sense
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='batter's_box.n.01' . Skipping INFO :INFO : Global step=135000	 ; Iteration time=0.INFO :INFO : Global step=135625	 ; Iteration time=0.INFO :INFO : Global step=136250	 ; Iteration time=INFO : GINFO : Global step=136875	 ; Iteration time=INFO : GINFO : Global step=137500	 ; Iteration time=INFO : GINFO : Global step=138125	 ; Iteration time=INFO : GINFO : Global step=138750	 ; Iteration time=INFO : GINFO : Global step=139375	 ; Iteration time=0.05408
+INFO : Global step=140000	 ; Iteration time=0.05155
+INFO : Global step=140625	 ; Iteration time=0.04133
+INFO : Global step=141250	 ; Iteration time=0.05371
+INFO : Global step=141875	 ; Iteration time=0.046
+INFO : Global step=142500	 ; Iteration time=0.04743
+INFO : Global step=143125	 ; Iteration time=0.05265
+INFO : Global step=143750	 ; Iteration time=0.05229
+INFO : Global step=144375	 ; Iteration time=0.05411
+INFO : Global step=145000	 ; Iteration time=0.04251
+INFO : Global step=145625	 ; Iteration time=0.04479
+INFO : Global step=146250	 ; Iteration time=0.06032
+INFO : Global step=146875	 ; Iteration time=0.05872
+INFO : Global step=147500	 ; Iteration time=0.05851
+INFO : Global step=148125	 ; Iteration time=0.04871
+INFO : Global step=148750	 ; Iteration time=0.04469
+INFO : Global step=149375	 ; Iteration time=0.05309
+INFO : Global step=150000	 ; Iteration time=0.04703
+INFO : Global step=150625	 ; Iteration time=0.04748
+INFO : Global step=151250	 ; Iteration time=0.04312
+INFO : Global step=151875	 ; Iteration time=0.05174
+INFO : Global step=152500	 ; Iteration time=0.04123
+INFO : Global step=153125	 ; Iteration time=0.04667
+INFO : Global step=153750	 ; Iteration time=0.0381
+INFO : Global step=154375	 ; Iteration time=0.05239
+INFO : Global step=155000	 ; Iteration time=0.05543
+INFO : Global step=155625	 ; Iteration time=0.03895
+INFO : Global step=156250	 ; Iteration time=0.05453
+INFO : Global step=156875	 ; Iteration time=0.05654
+INFO : Global step=157500	 ; Iteration time=0.04019
+INFO : Global step=158125	 ; Iteration time=0.05414
+INFO : Global step=158750	 ; Iteration time=0.04393
+INFO : Global step=159375	 ; Iteration time=0.03905
+INFO : Global step=160000	 ; Iteration time=0.05305
+INFO : Global step=160625	 ; Iteration time=0.05403
+INFO : Global step=161250	 ; Iteration time=0.05409
+INFO : -----
+ End of epoch. Global step n.161508, using batch_size=8
+INFO : Training, epoch nll_loss= 20.11934
+------
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Validation/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/ValidationINFO : ValidINFO : Validation sINFO : ValidINFO : Validation sINFO : ValidINFO : Validation sINFO : ValidINFO : Validation sINFO : ValidINFO : Validation sINFO : ValidINFO : Validation sINFO : ValidINFO : Validation sINFO : ValidINFO : Validation sINFO : ValidINFO : Validation sINFO : ValidINFO : Validation step n. 10000
+INFO : -----
+ After training 2 epochs, validation nll_loss= 14.22001
+------
+INFO : 
+Training epoch n.3:
+INFO : Preliminary: reading the dataset to determine the number of samples
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='governor's_race.n.01' . Skipping sense
+INFO : Global step=161875	 ; Iteration time=0.0581
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='master's_degree.n.01' . Skipping sense
+INFO : Global step=162500	 ; Iteration time=0.05481
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='o'clock.r.01' . Skipping sense
+INFO : Global step=163125	 ; Iteration time=0.0531
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='o'clock.r.01' . Skipping sense
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='sow_one's_oats.v.01' . Skipping sense
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='bull's_eye.n.02' . Skipping sense
+INFO : Global step=163750	 ; Iteration tINFO : GlobaINFO : Global step=164375	 ; Iteration tINFO : GlobaINFO : Global step=165000	 ; Iteration tINFO : GlobaINFO : Global step=165625	 ; Iteration tINFO : GlobaINFO : Global step=166250	 ; Iteration tINFO : GlobaINFO : Global step=166875	 ; Iteration time=0.05429
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='old_wives'_tale.n.01' . Skipping sense
+INFO : Global step=167500	 ; Iteration time=0.05428
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='collector's_item.n.01' . Skipping sense
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='at_arm's_length.r.01' . Skipping sense
+INFO : Global step=168125	 ; Iteration time=0.05394
+INFO : Global step=168750	 ; Iteration time=0.04451
+INFO : Global step=169375	 ; IterationINFO : Global INFO : Global step=170000	 ; IteratioINFO : Global sINFO : Global step=170625	 ; Iteration time=0.04538
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='printer's_ink.n.01' . Skipping sense
+INFO : Global step=171250	 ; Iteration time=0.05482
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='van_der_waal's_forces.n.01' .INFO : Global stINFO : Global step=171875	 ; IteratiINFO : Global stINFO : Global step=172500	 ; IteratiINFO : Global stINFO : Global step=173125	 ; IteratiINFO : Global stINFO : Global step=173750	 ; Iteration time=0.0558
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='addison's_disease.n.01' . Skipping sense
+INFO : Global step=174375	 ; Iteration time=0.05348
+INFO : Global step=175000	 ; Iteration time=0.04474
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='bull's_eye.n.02' . Skipping sense
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='bull's_eye.n.01' . Skipping sense
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='bull's_eye.n.01' . Skipping sense
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='bull's_eye.n.01' . Skipping sense
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='bull's_eye.n.01' . Skipping sense
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='bull's_eye.n.01' . Skipping sense
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='bull's_eye.n.01' . Skipping sense
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='bull's_eye.n.01' . Skipping sense
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='bull's_eye.n.01' . Skipping sense
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='bull's_eye.n.01' . Skipping sense
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='bull's_eye.n.01' . Skipping sense
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='bull's_eye.n.01' . Skipping sense
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='bull's_eye.n.01' . Skipping sense
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='bull's_eye.n.01' . Skipping sense
+INFO : Global step=175625	 ; Iteration time=0.05716
+INFO : Global step=176250	 ; Iteration time=0.05746
+p=176875	 ; Iteration time=0.05762

@@ -56,10 +56,10 @@ class TextDataset(torch.utils.data.Dataset):
                                                                self.gnn_model.last_idx_senses)
 
         global_idx, sense_idx = self.current_token_tpl
-        (self.area_x, self.edge_index, self.edge_type) = \
+        (self.area_x_indices, self.edge_index, self.edge_type) = \
             get_forwardinput_forelement(global_idx, sense_idx, self.grapharea_matrix, self.area_size, self.graph_dataobj)
 
-        return ((self.area_x, self.edge_index, self.edge_type), self.next_token_tpl)
+        return ((self.area_x_indices, self.edge_index, self.edge_type), self.next_token_tpl)
 
     def __len__(self):
         if self.counter == 0:
@@ -87,12 +87,12 @@ def get_forwardinput_forelement(global_idx, sense_idx, grapharea_matrix, area_si
     else:
         sourcenode_idx = sense_idx
     nodes_ls, edge_index, edge_type = AD.get_node_data(grapharea_matrix, sourcenode_idx, area_size)
-    node_indices = torch.sort(nodes_ls)[0].to(torch.int64).to(DEVICE)
-    area_x = graph_dataobj.x.index_select(0, node_indices)
+    area_x_indices = torch.sort(nodes_ls)[0].to(torch.int64).to(DEVICE)
+    # area_x = graph_dataobj.x.index_select(0, node_indices)
+    #
+    # # pad with 0s. The adjacency matrices will make it so that they do not enter the computation.
+    # if area_x.shape[0] < area_size:
+    #     zeros = torch.zeros(size=(area_size-area_x.shape[0],area_x.shape[1])).to(torch.float).to(DEVICE)
+    #     area_x = torch.cat([area_x, zeros])
 
-    # pad with 0s. The adjacency matrices will make it so that they do not enter the computation.
-    if area_x.shape[0] < area_size:
-        zeros = torch.zeros(size=(area_size-area_x.shape[0],area_x.shape[1])).to(torch.float).to(DEVICE)
-        area_x = torch.cat([area_x, zeros])
-
-    return (area_x, edge_index, edge_type)
+    return (area_x_indices, edge_index, edge_type)
