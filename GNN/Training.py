@@ -19,6 +19,21 @@ import GNN.DataLoading as DL
 import GNN.ExplorePredictions as EP
 import GNN.MyRGCN as MyRGCN
 
+# Auxiliary function to pack an input tuple (x_indices, edge_index, edge_type)
+# into a tensor [x_indices; edge_sources; edge_destinations; edge_type]
+def pack_input_tuple_into_tensor(input_tuple, graph_area, max_edges=128):
+    in_tensor = - 1 * torch.ones(size=(graph_area + max_edges*3,)).to(DEVICE)
+    x_indices = input_tuple[0]
+    edge_sources = input_tuple[1][0]
+    edge_destinations = input_tuple[1][1]
+    edge_type = input_tuple[2]
+    in_tensor[0:len(x_indices)] = x_indices
+    in_tensor[graph_area: graph_area+len(edge_sources)] = edge_sources
+    in_tensor[graph_area+max_edges:graph_area+max_edges+len(edge_destinations)] = edge_destinations
+    in_tensor[graph_area+2*max_edges:graph_area+2*max_edges+len(edge_type)] = edge_type
+    return in_tensor
+
+
 # Auxiliary function for compute_model_loss
 def compute_sense_loss(predictions_senses, batch_labels_senses):
     batch_validsenses_predicted = []
@@ -57,7 +72,7 @@ def compute_model_loss(model,batch_input, batch_labels, verbose=False):
 
 ########
 
-def train(grapharea_size=32, batch_size=8, learning_rate=0.001, num_epochs=100):
+def train(grapharea_size=32, batch_size=4, sequence_length=2, learning_rate=0.001, num_epochs=100):
     Utils.init_logging('Training'+Utils.get_timestamp_month_to_min()+'.log')
     graph_dataobj = DG.get_graph_dataobject(new=False)
     logging.info(graph_dataobj)
@@ -85,9 +100,9 @@ def train(grapharea_size=32, batch_size=8, learning_rate=0.001, num_epochs=100):
     model.train()
     training_losses_lts = []
     validation_losses_lts = []
-    steps_logging = 5000 // batch_size
+    steps_logging = 5000 // sequence_length
     hyperparams_str = 'model' + str(type(model).__name__) \
-                      + '_batch' + str(batch_size) \
+                      + '_batch' + str(sequence_length) \
                       + '_area' + str(grapharea_size)\
                       + '_lr' + str(learning_rate) \
                       + '_epochs' + str(num_epochs)
@@ -110,8 +125,8 @@ def train(grapharea_size=32, batch_size=8, learning_rate=0.001, num_epochs=100):
         logging.info("\nTraining epoch n."+str(epoch) + ":")
         train_dataset = DL.TextDataset('training', senseindices_db_c, vocab_h5, model,
                                        grapharea_matrix, grapharea_size, graph_dataobj)
-        train_dataloader = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size, num_workers=0,
-                                                       collate_fn=DL.collate_fn)
+        train_dataloader = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size*sequence_length,
+                                                       num_workers=0, collate_fn=DL.collate_fn)
 
         sum_epoch_loss = 0
         epoch_step = 0
@@ -119,7 +134,14 @@ def train(grapharea_size=32, batch_size=8, learning_rate=0.001, num_epochs=100):
 
         flag_earlystop = False
 
-        for batch_input, batch_labels in train_dataloader: # tuple of 2 lists
+        for batch_input_ls, batch_labels_ls in train_dataloader: # tuple of 2 lists
+            # package the batch into the dimensions [batch_size, sequence_length, etc.] eg. 4x8 to allow for parallelism
+            logging.debug([batch_input_ls[i][0] for i in range(len(batch_input_ls))])
+            batch_input_tensors = torch.stack([pack_input_tuple_into_tensor(input_tpl, grapharea_size)
+                                      for input_tpl in batch_input_ls], dim=0)
+            batch_input = batch_input_tensors.view((batch_size, sequence_length, batch_input_tensors[0].shape[0]))
+            batch_labels = torch.tensor(batch_labels_ls).view((batch_size, sequence_length, 2))
+
 
             # starting operations on one batch
             optimizer.zero_grad()
@@ -148,7 +170,7 @@ def train(grapharea_size=32, batch_size=8, learning_rate=0.001, num_epochs=100):
 
         # except StopIteration: the DataLoader naturally catches StopIteration
             # end of an epoch.
-        logging.info("-----\n End of epoch. Global step n." + str(global_step) + ", using batch_size=" + str(batch_size))
+        logging.info("-----\n End of epoch. Global step n." + str(global_step) + ", using batch_size=" + str(sequence_length))
         epoch_loss = sum_epoch_loss / epoch_step
         logging.info("Training, epoch nll_loss= " + str(round(epoch_loss,5)) + '\n------')
         training_losses_lts.append(epoch_loss) # (num_epochs, epoch_loss)
@@ -156,7 +178,7 @@ def train(grapharea_size=32, batch_size=8, learning_rate=0.001, num_epochs=100):
         # Time to check the validation loss
         valid_dataset = DL.TextDataset('validation', senseindices_db_c, vocab_h5, model,
                                        grapharea_matrix, grapharea_size, graph_dataobj)
-        valid_dataloader = torch.utils.data.DataLoader(valid_dataset, batch_size=batch_size, num_workers=0,
+        valid_dataloader = torch.utils.data.DataLoader(valid_dataset, batch_size=sequence_length, num_workers=0,
                                                        collate_fn=DL.collate_fn)
         epoch_valid_loss = validation(valid_dataloader, model)
         validation_losses_lts.append(epoch_valid_loss.item())

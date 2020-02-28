@@ -46,6 +46,16 @@ def create_adj_matrices(x, edge_index, edge_type):
     return A_ls
 ######
 
+def unpack_input_tensor(in_tensor, grapharea_size, max_edges=128):
+    x_indices = in_tensor[0:grapharea_size]
+    edge_sources = in_tensor[ (in_tensor[grapharea_size:grapharea_size+max_edges] != -1).nonzero().flatten() ]
+    edge_destinations = in_tensor[ (in_tensor[grapharea_size+max_edges:grapharea_size+2*max_edges] != -1).nonzero().flatten() ]
+    edge_type = in_tensor[ (in_tensor[grapharea_size+2*max_edges:] != -1).nonzero().flatten() ]
+
+    edge_index = torch.stack([edge_sources, edge_destinations], dim=0)
+    return (x_indices, edge_index, edge_type)
+
+
 class GRU_RGCN(torch.nn.Module):
     def __init__(self, data, grapharea_size):
         super(GRU_RGCN, self).__init__()
@@ -85,11 +95,13 @@ class GRU_RGCN(torch.nn.Module):
                                                                 self.update_gate_W, self.update_gate_U]]
 
 
-    def forward(self, batchinput_ls):  # given the batches, the current node is at index 0
+    def forward(self, batchinput_tensor):  # given the batches, the current node is at index 0
         predictions_globals_ls = []
         predictions_senses_ls = []
         # T-BPTT: at the start of each batch, we detach_() the hidden state from the graph&history that created it
         self.memory_previous_rgcnconv.detach_()
+
+        batchinput_ls = unpack_input_tensor(batchinput_tensor, self.N)
 
         for (x_indices, edge_index, edge_type) in batchinput_ls:
 
