@@ -1,10 +1,12 @@
 *.bin
+*.log
 *.h5
 *.vec
 *.db
 *.dataobject
 *.npy
-*.rgcn_model
+*rgcn_model
+*.rgcnmodel
 *.torchobj
 WikiText-103/
 runs/

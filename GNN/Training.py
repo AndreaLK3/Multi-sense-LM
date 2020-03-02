@@ -6,7 +6,7 @@ import logging
 import torch.nn.functional as tfunc
 import torch.nn.modules.batchnorm as batchnorm
 import Graph.DefineGraph as DG
-import GNN.SenseLabeledCorpus as SLC
+from math import exp
 import sqlite3
 import os
 import pandas as pd
@@ -41,7 +41,7 @@ def compute_sense_loss(predictions_senses, batch_labels_senses):
 def compute_model_loss(model,batch_input, batch_labels, verbose=False):
     predictions_globals, predictions_senses = model(batch_input)
 
-    batch_labels_t = torch.tensor(batch_labels).t().to(DEVICE)
+    batch_labels_t = (batch_labels).clone().t().to(DEVICE)
     batch_labels_globals = batch_labels_t[0]
     batch_labels_senses = batch_labels_t[1]
 
@@ -58,7 +58,7 @@ def compute_model_loss(model,batch_input, batch_labels, verbose=False):
 
 ########
 
-def train(grapharea_size=32, sequence_length=8, learning_rate=0.0001, num_epochs=100):
+def train(grapharea_size=32, sequence_length=8, learning_rate=0.001, num_epochs=100):
     Utils.init_logging('Training'+Utils.get_timestamp_month_to_min()+'.log')
     graph_dataobj = DG.get_graph_dataobject(new=False)
     logging.info(graph_dataobj)
@@ -110,15 +110,17 @@ def train(grapharea_size=32, sequence_length=8, learning_rate=0.0001, num_epochs
     validlosses_fpath = os.path.join(F.FOLDER_GNN, hyperparams_str + '_' + Utils.VALIDATION + '_' + F.LOSSES_FILEEND)
 
     global_step = 0
+    starting_time = time()
     previous_valid_loss = inf
     flag_firstvalidationhigher = False
+
+    bptt_collator = DL.BPTTBatchCollator(grapharea_size, sequence_length)
 
     for epoch in range(1,num_epochs+1):
         logging.info("\nTraining epoch n."+str(epoch) + ":")
         train_dataset = DL.TextDataset('training', senseindices_db_c, vocab_h5, model_forDataLoading,
                                        grapharea_matrix, grapharea_size, graph_dataobj)
-        bptt_collator = DL.BPTTBatchCollator(grapharea_size, sequence_length)
-        train_dataloader = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size*sequence_length,
+        train_dataloader = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size * sequence_length,
                                                        num_workers=0, collate_fn=bptt_collator)
 
         sum_epoch_loss = 0
@@ -143,8 +145,8 @@ def train(grapharea_size=32, sequence_length=8, learning_rate=0.0001, num_epochs
             sum_epoch_loss = sum_epoch_loss + loss.item()
 
             loss.backward()
-            last_embedding_to_update = model.last_idx_senses + model.last_idx_globals
-            model.X.grad.data[last_embedding_to_update:,:].fill_(0) # defs and examples should not change
+            last_embedding_to_update = model_forDataLoading.last_idx_senses + model_forDataLoading.last_idx_globals
+            model_forDataLoading.X.grad.data[last_embedding_to_update:,:].fill_(0) # defs and examples should not change
             optimizer.step()
 
             global_step = global_step + 1
@@ -153,26 +155,26 @@ def train(grapharea_size=32, sequence_length=8, learning_rate=0.0001, num_epochs
             if global_step % steps_logging == 0:
                 logging.info("Global step=" + str(global_step) + "\t ; Iteration time=" + str(round(time()-t0,5)))
 
-            Utils.log_chronometer([t0, time()])
-            #logging.info('Epoch step n.' + str(epoch_step) + ", using batch_size=" + str(batch_size))
-
+            #Utils.log_chronometer([t0, t1, t2, t3, time()])
 
         # except StopIteration: the DataLoader naturally catches StopIteration
             # end of an epoch.
-        logging.info("-----\n End of epoch. Global step n." + str(global_step) + ", using batch_size=" + str(sequence_length))
+        logging.info("-----\n End of epoch. Global step n." + str(global_step)
+                     + ", using batch_size=" + str(sequence_length) + ". Time = " + str(round(time()-starting_time,2)))
         epoch_loss = sum_epoch_loss / epoch_step
-        logging.info("Training, epoch nll_loss= " + str(round(epoch_loss,5)) + '\n------')
+        logging.info("Training, epoch nll_loss= " + str(round(epoch_loss,5))
+                     + ". Perplexity= "+ str(str(round(exp(epoch_loss),2)))  + '\n------')
         training_losses_lts.append(epoch_loss) # (num_epochs, epoch_loss)
 
         # Time to check the validation loss
         valid_dataset = DL.TextDataset('validation', senseindices_db_c, vocab_h5, model,
                                        grapharea_matrix, grapharea_size, graph_dataobj)
         valid_dataloader = torch.utils.data.DataLoader(valid_dataset, batch_size=sequence_length, num_workers=0,
-                                                       collate_fn=DL.collate_fn)
-        epoch_valid_loss = validation(valid_dataloader, model)
-        validation_losses_lts.append(epoch_valid_loss.item())
-        logging.info("-----\n After training " + str(epoch)+
-                     " epochs, validation nll_loss= " + str(round(epoch_valid_loss.item(), 5)) + '\n------')
+                                                       collate_fn=bptt_collator)
+        epoch_valid_loss = validation(valid_dataloader, model).item()
+        validation_losses_lts.append(epoch_valid_loss)
+        logging.info("-----\n After training " + str(epoch)+  " epochs, validation nll_loss= " + str(round(epoch_valid_loss, 5))
+                     + ". Perplexity= "+ (str(round(exp(epoch_valid_loss),2))) + "-----\n")
 
         if epoch_valid_loss < previous_valid_loss:
             torch.save(model, os.path.join(F.FOLDER_GNN, hyperparams_str +

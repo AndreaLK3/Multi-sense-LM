@@ -2,6 +2,7 @@ import torch
 from torch_geometric.nn import RGCNConv, GCNConv, GatedGraphConv
 import Utils
 import Filesystem as F
+import numpy as np
 import logging
 import torch.nn.functional as tfunc
 from time import time
@@ -77,8 +78,7 @@ class GRU_RGCN(torch.nn.Module):
                               out_channels=data.x.shape[1], bias=False).to(DEVICE) for r in range(data.num_relations)])
         self.W_0 = Parameter(torch.empty(size=(self.d, self.d)).to(DEVICE), requires_grad=True)
 
-        # GRU: I decide to have 1 update_gate
-        # The update_gate will be based on (x, edge_index, edge_type), i.e. the input of each batch element
+        # GRU: There is 1 update_gate, based on (x, edge_index, edge_type), i.e. the input of each batch element
 
         # Following (partially) the formula: u_v^t = σ(W^u * a_v^t +  U^u * h_v^(t-1)),
         #   where a_v^t is just the concatenation of the neighbourhood, a_v^t= A_(v:)^T [h_1^(t−1),…,h_(|V|)^(t−1)] + b
@@ -91,6 +91,7 @@ class GRU_RGCN(torch.nn.Module):
         # We update this memory buffer manually, there is no gradient. We set it as a Parameter to DataParallel-ize it
         self.memory_previous_rgcnconv = Parameter(torch.zeros(size=(grapharea_size,self.d)).to(DEVICE), requires_grad=False)
         self.select_first_node = Parameter(torch.tensor([0]).to(DEVICE), requires_grad=False)
+        #self.true_mask = Parameter(torch.tensor([True]).to(DEVICE), requires_grad=False) # used to update the memory
 
         # 2nd part of the network as before: 2 linear layers from the RGCN representation to the logits
         self.linear2global = torch.nn.Linear(in_features=self.d,
@@ -104,25 +105,23 @@ class GRU_RGCN(torch.nn.Module):
 
     def forward(self, batchinput_tensor):  # given the batches, the current node is at index 0
 
-        for (name, component) in self.named_parameters():
-             logging.debug("Current device for the code: " + str(torch.cuda.current_device()) +
-                          " ; " + name + " on: " + str(component.get_device()))
-             if torch.cuda.current_device() != component.get_device():
-                 logging.warning("Current device : " + str(torch.cuda.current_device()) +
-                                 " but component " + str(name) + " is on device : " + str(component.get_device()))
+        # for (name, component) in self.named_parameters():
+        #      logging.debug("Current device for the code: " + str(torch.cuda.current_device()) +
+        #                   " ; " + name + " on: " + str(component.get_device()))
+        #      if torch.cuda.current_device() != component.get_device():
+        #          logging.warning("Current device : " + str(torch.cuda.current_device()) +
+        #                          " but component " + str(name) + " is on device : " + str(component.get_device()))
 
         predictions_globals_ls = []
         predictions_senses_ls = []
         # T-BPTT: at the start of each batch, we detach_() the hidden state from the graph&history that created it
         self.memory_previous_rgcnconv.detach_()
 
-        logging.info("batchinput_tensor.shape=" + str(batchinput_tensor.shape))
-
-        paddedtensors_ls = torch.chunk(batchinput_tensor, chunks=batchinput_tensor.shape[1], dim=1)
-        batchinput_ls = [unpack_input_tensor(batchinput_tensor.squeeze(), self.N) for batchinput_tensor in paddedtensors_ls]
+        padded_sample_tensors_ls = torch.chunk(batchinput_tensor, chunks=batchinput_tensor.shape[1], dim=1)
+        batchinput_ls = [unpack_input_tensor(inputsample_tensor.squeeze(), self.N) for inputsample_tensor
+                         in padded_sample_tensors_ls]
 
         for (x_indices, edge_index, edge_type) in batchinput_ls:
-
             grapharea_x = self.X.index_select(dim=0, index=x_indices.to(torch.long).squeeze())
             # pad with 0s.
             if grapharea_x.shape[0] < self.N:
@@ -144,9 +143,6 @@ class GRU_RGCN(torch.nn.Module):
 
             # Update gate: u_v^t = σ(W^u * a_v^t +  U^u * h_v^(t-1)).
             neighbourhood_contribution_update_gate = torch.mm(torch.flatten(grapharea_x).unsqueeze(dim=0), self.update_gate_W)
-            #logging.info("\n current device: " + str(torch.cuda.current_device()))
-            #logging.info("self.update_gate_U - device: " + str(self.update_gate_U.get_device()))
-            #logging.info("self.select_first_node - device: " + str(self.select_first_node.get_device()))
             prevstate_contribution_update_gate = torch.mm(
                 self.memory_previous_rgcnconv.index_select(dim=0, index=self.select_first_node),
                 self.update_gate_U)
@@ -154,7 +150,7 @@ class GRU_RGCN(torch.nn.Module):
             # GRU update: h^{t+1}=u∙(̃h^{t+1}) + (1-u)∙h^t
             rgcn_conv = update_gate * proposed_rgcn_conv + \
                         (torch.tensor(1)-update_gate) * self.memory_previous_rgcnconv
-            self.memory_previous_rgcnconv = rgcn_conv.clone() # store h in memory
+            self.memory_previous_rgcnconv.data.copy_(rgcn_conv.clone()) # store h in memory
 
             x_Lplus1 = tfunc.relu(rgcn_conv)
 
