@@ -7,30 +7,50 @@ from Utils import DEVICE
 import Graph.Adjacencies as AD
 
 
-# Auxiliary function: pad with -1s
-def pad_tensor(tensor, target_shape):
-    padded_t = torch.ones(size=target_shape) * -1
-    if len(tensor.shape) <=1: # 1 row
-        padded_t[0][0:len(tensor)] = tensor
-    else: # 2 or more rows
-        for i in range(tensor.shape[0]):
-            padded_t[i,0:len(tensor[i])] = tensor[i]
-    return padded_t
+# Auxiliary function to pack an input tuple (x_indices, edge_index, edge_type)
+# into a tensor [x_indices; edge_sources; edge_destinations; edge_type]
+def pack_input_tuple_into_tensor(input_tuple, graph_area, max_edges=128):
+    in_tensor = - 1 * torch.ones(size=(graph_area + max_edges*3,)).to(torch.long)
+    x_indices = input_tuple[0]
+    edge_sources = input_tuple[1][0]
+    edge_destinations = input_tuple[1][1]
+    edge_type = input_tuple[2]
+    in_tensor[0:len(x_indices)] = x_indices
+    in_tensor[graph_area: graph_area+len(edge_sources)] = edge_sources
+    in_tensor[graph_area+max_edges:graph_area+max_edges+len(edge_destinations)] = edge_destinations
+    in_tensor[graph_area+2*max_edges:graph_area+2*max_edges+len(edge_type)] = edge_type
+    #logging.info("packing. in_tensor=" + str(in_tensor))
+    return in_tensor
 
 
 # When automatic batching is enabled, collate_fn is called with a list of data samples at each time.
 # It is expected to collate the input samples into a batch for yielding from the data loader iterator.
-# At the moment, I am just returning a list, because the input of different sizes in the rgcn layer call
-# does not allow me to stack the tensors to do proper batching
-def collate_fn(data):
-    padded_input_ls = []
-    labels_ls = []
+class BPTTBatchCollator():
 
-    for ((x, edge_index, edge_type), label_next_token_tpl) in data:
-        padded_input_ls.append((x, edge_index, edge_type))
-        labels_ls.append(label_next_token_tpl)
+    def __init__(self, grapharea_size, sequence_length):
+        self.grapharea_size = grapharea_size
+        self.sequence_length = sequence_length
 
-    return padded_input_ls, labels_ls
+    def __call__(self, data): # This was collate_fn
+
+        input_lls = []
+        labels_ls = []
+
+        i = 0
+        input_ls = []
+        for ((x, edge_index, edge_type), label_next_token_tpl) in data:
+            if i >= self.sequence_length:
+                input_lls.append(torch.stack(input_ls, dim=0))
+                i=0
+                input_ls = []
+
+            input_ls.append(pack_input_tuple_into_tensor((x, edge_index, edge_type), self.grapharea_size))
+            i = i + 1
+            labels_ls.append(torch.tensor(label_next_token_tpl).to(torch.int64).to(DEVICE))
+        # add the last one
+        input_lls.append(torch.stack(input_ls, dim=0))
+        return torch.stack(input_lls, dim=0), torch.stack(labels_ls, dim=0)
+
 
 
 ##### The Dataset
@@ -56,7 +76,7 @@ class TextDataset(torch.utils.data.Dataset):
                                                                self.gnn_model.last_idx_senses)
 
         global_idx, sense_idx = self.current_token_tpl
-        logging.info("current_token_tpl=" + str(self.current_token_tpl))
+        logging.debug("current_token_tpl=" + str(self.current_token_tpl))
         (self.area_x_indices, self.edge_index, self.edge_type) = \
             get_forwardinput_forelement(global_idx, sense_idx, self.grapharea_matrix, self.area_size, self.graph_dataobj)
 
@@ -88,6 +108,6 @@ def get_forwardinput_forelement(global_idx, sense_idx, grapharea_matrix, area_si
     else:
         sourcenode_idx = sense_idx
     nodes, edge_index, edge_type = AD.get_node_data(grapharea_matrix, sourcenode_idx, area_size)
-    area_x_indices = nodes.to(torch.int64).to(DEVICE)
+    area_x_indices = nodes.to(torch.long).to(DEVICE)
 
     return (area_x_indices, edge_index, edge_type)

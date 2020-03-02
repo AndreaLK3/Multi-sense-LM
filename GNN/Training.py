@@ -19,20 +19,6 @@ import GNN.DataLoading as DL
 import GNN.ExplorePredictions as EP
 import GNN.MyRGCN as MyRGCN
 
-# Auxiliary function to pack an input tuple (x_indices, edge_index, edge_type)
-# into a tensor [x_indices; edge_sources; edge_destinations; edge_type]
-def pack_input_tuple_into_tensor(input_tuple, graph_area, max_edges=128):
-    in_tensor = - 1 * torch.ones(size=(graph_area + max_edges*3,)).to(DEVICE)
-    x_indices = input_tuple[0]
-    edge_sources = input_tuple[1][0]
-    edge_destinations = input_tuple[1][1]
-    edge_type = input_tuple[2]
-    in_tensor[0:len(x_indices)] = x_indices
-    in_tensor[graph_area: graph_area+len(edge_sources)] = edge_sources
-    in_tensor[graph_area+max_edges:graph_area+max_edges+len(edge_destinations)] = edge_destinations
-    in_tensor[graph_area+2*max_edges:graph_area+2*max_edges+len(edge_type)] = edge_type
-    return in_tensor
-
 
 # Auxiliary function for compute_model_loss
 def compute_sense_loss(predictions_senses, batch_labels_senses):
@@ -72,19 +58,25 @@ def compute_model_loss(model,batch_input, batch_labels, verbose=False):
 
 ########
 
-def train(grapharea_size=32, batch_size=4, sequence_length=2, learning_rate=0.001, num_epochs=100):
+def train(grapharea_size=32, sequence_length=8, learning_rate=0.0001, num_epochs=100):
     Utils.init_logging('Training'+Utils.get_timestamp_month_to_min()+'.log')
     graph_dataobj = DG.get_graph_dataobject(new=False)
     logging.info(graph_dataobj)
     model = MyRGCN.GRU_RGCN(graph_dataobj, grapharea_size)
     logging.info("Graph-data object loaded, model initialized. Moving them to GPU device(s) if present.")
     graph_dataobj.to(DEVICE)
-    model.to(DEVICE)
+
 
     n_gpu = torch.cuda.device_count()
     if n_gpu > 1:
+         logging.info("Using "  +str(n_gpu) + " GPUs")
          model = torch.nn.DataParallel(model)
-         model = model.module
+         model_forDataLoading = model.module
+         batch_size = n_gpu
+    else:
+        model_forDataLoading = model
+        batch_size = 1
+    model.to(DEVICE)
 
     grapharea_matrix = AD.get_grapharea_matrix(graph_dataobj, grapharea_size)
 
@@ -123,10 +115,11 @@ def train(grapharea_size=32, batch_size=4, sequence_length=2, learning_rate=0.00
 
     for epoch in range(1,num_epochs+1):
         logging.info("\nTraining epoch n."+str(epoch) + ":")
-        train_dataset = DL.TextDataset('training', senseindices_db_c, vocab_h5, model,
+        train_dataset = DL.TextDataset('training', senseindices_db_c, vocab_h5, model_forDataLoading,
                                        grapharea_matrix, grapharea_size, graph_dataobj)
+        bptt_collator = DL.BPTTBatchCollator(grapharea_size, sequence_length)
         train_dataloader = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size*sequence_length,
-                                                       num_workers=0, collate_fn=DL.collate_fn)
+                                                       num_workers=0, collate_fn=bptt_collator)
 
         sum_epoch_loss = 0
         epoch_step = 0
@@ -134,14 +127,10 @@ def train(grapharea_size=32, batch_size=4, sequence_length=2, learning_rate=0.00
 
         flag_earlystop = False
 
-        for batch_input_ls, batch_labels_ls in train_dataloader: # tuple of 2 lists
-            # package the batch into the dimensions [batch_size, sequence_length, etc.] eg. 4x8 to allow for parallelism
-            logging.debug([batch_input_ls[i][0] for i in range(len(batch_input_ls))])
-            batch_input_tensors = torch.stack([pack_input_tuple_into_tensor(input_tpl, grapharea_size)
-                                      for input_tpl in batch_input_ls], dim=0)
-            batch_input = batch_input_tensors.view((batch_size, sequence_length, batch_input_tensors[0].shape[0]))
-            batch_labels = torch.tensor(batch_labels_ls).view((batch_size, sequence_length, 2))
+        for batch_input, batch_labels in train_dataloader: # tuple of 2 lists
 
+            batch_input = batch_input.to(DEVICE)
+            batch_labels = batch_labels.to(DEVICE)
 
             # starting operations on one batch
             optimizer.zero_grad()
@@ -155,7 +144,7 @@ def train(grapharea_size=32, batch_size=4, sequence_length=2, learning_rate=0.00
 
             loss.backward()
             last_embedding_to_update = model.last_idx_senses + model.last_idx_globals
-            #model.X.grad.data[last_embedding_to_update:,:].fill_(0) # defs and examples should not change
+            model.X.grad.data[last_embedding_to_update:,:].fill_(0) # defs and examples should not change
             optimizer.step()
 
             global_step = global_step + 1
@@ -164,7 +153,7 @@ def train(grapharea_size=32, batch_size=4, sequence_length=2, learning_rate=0.00
             if global_step % steps_logging == 0:
                 logging.info("Global step=" + str(global_step) + "\t ; Iteration time=" + str(round(time()-t0,5)))
 
-            #Utils.log_chronometer([t0, time()])
+            Utils.log_chronometer([t0, time()])
             #logging.info('Epoch step n.' + str(epoch_step) + ", using batch_size=" + str(batch_size))
 
 

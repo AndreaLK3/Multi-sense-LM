@@ -1,0 +1,59 @@
+INFO : Data(edge_index=[2, 76050], edge_type=[76050], node_types=[65632], num_relations=[1], x=[65632, 300])
+INFO : Graph-data object loaded, model initialized. Moving them to GPU device(s) if present.
+INFO : Using 4 GPUs
+INFO : Loading graphArea matrix, with area_size=32 from: Graph/nodes_32_graphArea_matrix.npy
+INFO : Parameters:
+INFO : [('module.X', torch.Size([65632, 300]), True), ('module.W_0', torch.Size([300, 300]), True), ('module.update_gate_W', torch.Size([9600, 300]), True), ('module.update_gate_U', torch.Size([300, 300]), True), ('module.convs_ls.0.weight', torch.Size([300, 300]), True), ('module.convs_ls.1.weight', torch.Size([300, 300]), True), ('module.convs_ls.2.weight', torch.Size([300, 300]), True), ('module.convs_ls.3.weight', torch.Size([300, 300]), True), ('module.convs_ls.4.weight', torch.Size([300, 300]), True), ('module.linear2global.weight', torch.Size([9858, 300]), True), ('module.linear2global.bias', torch.Size([9858]), True), ('module.linear2sense.weight', torch.Size([17843, 300]), True), ('module.linear2sense.bias', torch.Size([17843]), True)]
+INFO : Number of trainable parameters=31537601
+INFO : 
+Training epoch n.1:
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/ufsac-public-2.1/Training/semcor.xml
+INFO : batchinput_tensor.shape=torch.Size([1, 8, 416])
+INFO : batchinput_tensor.shape=torch.Size([1, 8, 416])
+INFO : batchinput_tensor.shape=torch.Size([1, 8, 416])
+INFO : batchinput_tensor.shape=torch.Size([1, 8, 416])
+INFO : 
+ current device: 1
+INFO : self.update_gate_U - device: 1
+INFO : self.select_first_node - device: 0
+INFO : 
+ current device: 2
+INFO : self.update_gate_U - device: 2
+INFO : self.select_first_node - device: 0
+INFO : 
+ current device: 3
+INFO : self.update_gate_U - device: 3
+INFO : self.select_first_node - device: 0
+INFO : 
+ current device: 0
+INFO : self.update_gate_U - device: 0
+INFO : self.select_first_node - device: 0
+INFO : 
+ current device: 0
+INFO : self.update_gate_U - device: 0
+INFO : self.select_first_node - device: 0
+INFO : 
+ current device: 0
+INFO : self.update_gate_U - device: 0
+INFO : self.select_first_node - device: 0
+INFO : 
+ current device: 0
+INFO : self.update_gate_U - device: 0
+INFO : self.select_first_node - device: 0
+INFO : 
+ current device: 0
+INFO : self.update_gate_U - device: 0
+INFO : self.select_first_node - device: 0
+INFO : 
+ current device: 0
+INFO : self.update_gate_U - device: 0
+INFO : self.select_first_node - device: 0
+INFO : 
+ current device: 0
+INFO : self.update_gate_U - device: 0
+INFO : self.select_first_node - device: 0
+INFO : 
+ current device: 0
+INFO : self.update_gate_U - device: 0
+INFO : self.select_first_node - device: 0
