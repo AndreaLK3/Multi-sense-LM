@@ -36,7 +36,7 @@ def compute_sense_loss(predictions_senses, batch_labels_senses):
         loss_sense = 0
     return loss_sense
 
-########
+################
 
 def compute_model_loss(model,batch_input, batch_labels, verbose=False):
     predictions_globals, predictions_senses = model(batch_input)
@@ -56,9 +56,9 @@ def compute_model_loss(model,batch_input, batch_labels, verbose=False):
 
     return loss
 
-########
+################
 
-def train(grapharea_size=32, sequence_length=8, learning_rate=0.001, num_epochs=100):
+def train(grapharea_size=32, size_batch=None, sequence_length=8, learning_rate=0.001, num_epochs=100):
     Utils.init_logging('Training'+Utils.get_timestamp_month_to_min()+'.log')
     graph_dataobj = DG.get_graph_dataobject(new=False)
     logging.info(graph_dataobj)
@@ -66,16 +66,15 @@ def train(grapharea_size=32, sequence_length=8, learning_rate=0.001, num_epochs=
     logging.info("Graph-data object loaded, model initialized. Moving them to GPU device(s) if present.")
     graph_dataobj.to(DEVICE)
 
-
     n_gpu = torch.cuda.device_count()
     if n_gpu > 1:
          logging.info("Using "  +str(n_gpu) + " GPUs")
          model = torch.nn.DataParallel(model)
          model_forDataLoading = model.module
-         batch_size = n_gpu
+         batch_size = n_gpu if size_batch is None else size_batch # if not specified, default batch_size = n. GPUs
     else:
         model_forDataLoading = model
-        batch_size = 1
+        batch_size = 1 if size_batch is None else size_batch
     model.to(DEVICE)
 
     grapharea_matrix = AD.get_grapharea_matrix(graph_dataobj, grapharea_size)
@@ -116,87 +115,95 @@ def train(grapharea_size=32, sequence_length=8, learning_rate=0.001, num_epochs=
 
     bptt_collator = DL.BPTTBatchCollator(grapharea_size, sequence_length)
 
-    for epoch in range(1,num_epochs+1):
-        logging.info("\nTraining epoch n."+str(epoch) + ":")
-        train_dataset = DL.TextDataset('training', senseindices_db_c, vocab_h5, model_forDataLoading,
-                                       grapharea_matrix, grapharea_size, graph_dataobj)
-        train_dataloader = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size * sequence_length,
-                                                       num_workers=0, collate_fn=bptt_collator)
+    try: # to catch KeyboardInterrupt-s and still save the training & validation losses
+        ########## The training loop ##########
 
-        sum_epoch_loss = 0
-        epoch_step = 0
-        verbose = True if epoch==num_epochs else False # log output if in last epoch
+        for epoch in range(1,num_epochs+1):
+            logging.info("\nTraining epoch n."+str(epoch) + ":")
+            train_dataset = DL.TextDataset('training', senseindices_db_c, vocab_h5, model_forDataLoading,
+                                           grapharea_matrix, grapharea_size, graph_dataobj)
+            train_dataloader = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size * sequence_length,
+                                                           num_workers=0, collate_fn=bptt_collator)
 
-        flag_earlystop = False
+            sum_epoch_loss = 0
+            epoch_step = 0
+            verbose = True if epoch==num_epochs else False # log output if in last epoch
 
-        for batch_input, batch_labels in train_dataloader: # tuple of 2 lists
+            flag_earlystop = False
 
-            batch_input = batch_input.to(DEVICE)
-            batch_labels = batch_labels.to(DEVICE)
+            for batch_input, batch_labels in train_dataloader: # tuple of 2 lists
 
-            # starting operations on one batch
-            optimizer.zero_grad()
-            t0 = time()
+                batch_input = batch_input.to(DEVICE)
+                batch_labels = batch_labels.to(DEVICE)
 
-            # compute loss for the batch
-            loss = compute_model_loss(model, batch_input, batch_labels, verbose)
+                # starting operations on one batch
+                optimizer.zero_grad()
+                t0 = time()
 
-            # running sum of the training loss in the log segment
-            sum_epoch_loss = sum_epoch_loss + loss.item()
+                # compute loss for the batch
+                loss = compute_model_loss(model, batch_input, batch_labels, verbose)
 
-            loss.backward()
-            last_embedding_to_update = model_forDataLoading.last_idx_senses + model_forDataLoading.last_idx_globals
-            model_forDataLoading.X.grad.data[last_embedding_to_update:,:].fill_(0) # defs and examples should not change
-            optimizer.step()
+                # running sum of the training loss in the log segment
+                sum_epoch_loss = sum_epoch_loss + loss.item()
 
-            global_step = global_step + 1
-            epoch_step = epoch_step + 1
+                loss.backward()
+                last_embedding_to_update = model_forDataLoading.last_idx_senses + model_forDataLoading.last_idx_globals
+                model_forDataLoading.X.grad.data[last_embedding_to_update:,:].fill_(0) # defs and examples should not change
+                optimizer.step()
 
-            if global_step % steps_logging == 0:
-                logging.info("Global step=" + str(global_step) + "\t ; Iteration time=" + str(round(time()-t0,5)))
+                global_step = global_step + 1
+                epoch_step = epoch_step + 1
 
-            #Utils.log_chronometer([t0, t1, t2, t3, time()])
+                if global_step % steps_logging == 0:
+                    logging.info("Global step=" + str(global_step) + "\t ; Iteration time=" + str(round(time()-t0,5)))
 
-        # except StopIteration: the DataLoader naturally catches StopIteration
-            # end of an epoch.
-        logging.info("-----\n End of epoch. Global step n." + str(global_step)
-                     + ", using batch_size=" + str(sequence_length) + ". Time = " + str(round(time()-starting_time,2)))
-        epoch_loss = sum_epoch_loss / epoch_step
-        logging.info("Training, epoch nll_loss= " + str(round(epoch_loss,5))
-                     + ". Perplexity= "+ str(str(round(exp(epoch_loss),2)))  + '\n------')
-        training_losses_lts.append(epoch_loss) # (num_epochs, epoch_loss)
+                #Utils.log_chronometer([t0, t1, t2, t3, time()])
 
-        # Time to check the validation loss
-        valid_dataset = DL.TextDataset('validation', senseindices_db_c, vocab_h5, model,
-                                       grapharea_matrix, grapharea_size, graph_dataobj)
-        valid_dataloader = torch.utils.data.DataLoader(valid_dataset, batch_size=sequence_length, num_workers=0,
-                                                       collate_fn=bptt_collator)
-        epoch_valid_loss = validation(valid_dataloader, model).item()
-        validation_losses_lts.append(epoch_valid_loss)
-        logging.info("-----\n After training " + str(epoch)+  " epochs, validation nll_loss= " + str(round(epoch_valid_loss, 5))
-                     + ". Perplexity= "+ (str(round(exp(epoch_valid_loss),2))) + "-----\n")
+            # except StopIteration: the DataLoader naturally catches StopIteration
+                # end of an epoch.
+            logging.info("-----\n End of epoch. Global step n." + str(global_step)
+                         + ", using batch_size=" + str(sequence_length) + ". Time = " + str(round(time()-starting_time,2)))
+            epoch_loss = sum_epoch_loss / epoch_step
+            logging.info("Training, epoch nll_loss= " + str(round(epoch_loss,3))
+                         + ". Perplexity= "+ str(str(round(exp(epoch_loss),2)))  + '\n------')
+            training_losses_lts.append(epoch_loss) # (num_epochs, epoch_loss)
 
-        if epoch_valid_loss < previous_valid_loss:
-            torch.save(model, os.path.join(F.FOLDER_GNN, hyperparams_str +
-                                           'step_' + str(global_step) + '.rgcnmodel'))
+            # Time to check the validation loss
+            valid_dataset = DL.TextDataset('validation', senseindices_db_c, vocab_h5, model_forDataLoading,
+                                           grapharea_matrix, grapharea_size, graph_dataobj)
+            valid_dataloader = torch.utils.data.DataLoader(valid_dataset, batch_size=sequence_length, num_workers=0,
+                                                           collate_fn=bptt_collator)
+            epoch_valid_loss = validation(valid_dataloader, model).item()
+            validation_losses_lts.append(epoch_valid_loss)
+            logging.info("-----\n After training " + str(epoch)+  " epochs, validation nll_loss= " + str(round(epoch_valid_loss, 3))
+                         + ". Perplexity= "+ (str(round(exp(epoch_valid_loss),2))) + "\n-----")
 
-        if epoch_valid_loss > previous_valid_loss + 0.01 :
-            if not flag_firstvalidationhigher:
-                flag_firstvalidationhigher = True
-            else: # already did first offence. Must early-stop
-                logging.info("Early stopping")
-                flag_earlystop = True
-        previous_valid_loss = epoch_valid_loss
+            #if epoch_valid_loss < previous_valid_loss:
+                # save model
 
-        if flag_earlystop:
-            break
+            if epoch_valid_loss > previous_valid_loss + 0.01 :
+                if not flag_firstvalidationhigher:
+                    flag_firstvalidationhigher = True
+                else: # already did first offence. Must early-stop
+                    logging.info("Early stopping")
+                    flag_earlystop = True
+            previous_valid_loss = epoch_valid_loss
 
+            if flag_earlystop:
+                break
+
+    except KeyboardInterrupt:
+        logging.info("Training loop interrupted manually by keyboard")
+
+    logging.info("Saving losses and RGCN model.")
     np.save(trainlosses_fpath, np.array(training_losses_lts))
     np.save(validlosses_fpath, np.array(validation_losses_lts))
+    torch.save(model, os.path.join(F.FOLDER_GNN, hyperparams_str +
+                                   'step_' + str(global_step) + '.rgcnmodel'))
 
 
 
-#####
+################
 
 def validation(valid_dataloader, model):
 

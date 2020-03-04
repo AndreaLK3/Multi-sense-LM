@@ -105,13 +105,6 @@ class GRU_RGCN(torch.nn.Module):
 
     def forward(self, batchinput_tensor):  # given the batches, the current node is at index 0
 
-        # for (name, component) in self.named_parameters():
-        #      logging.debug("Current device for the code: " + str(torch.cuda.current_device()) +
-        #                   " ; " + name + " on: " + str(component.get_device()))
-        #      if torch.cuda.current_device() != component.get_device():
-        #          logging.warning("Current device : " + str(torch.cuda.current_device()) +
-        #                          " but component " + str(name) + " is on device : " + str(component.get_device()))
-
         predictions_globals_ls = []
         predictions_senses_ls = []
         # T-BPTT: at the start of each batch, we detach_() the hidden state from the graph&history that created it
