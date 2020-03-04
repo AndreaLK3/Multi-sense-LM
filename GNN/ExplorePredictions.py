@@ -62,8 +62,8 @@ def log_predicted_senses(predictions_senses, k=5):
 
 ### logs the solution and prediction for 1 sample
 def log_solution_and_predictions(label_tpl, predictions_globals, predictions_senses, k):
-    solution_global_idx = label_tpl[0]
-    solution_sense_idx = label_tpl[1]
+    solution_global_idx = label_tpl[0].item()
+    solution_sense_idx = label_tpl[1].item()
 
     nextglobal = get_globalword_fromindex(solution_global_idx)
     nextsense = get_sense_fromindex(solution_sense_idx)

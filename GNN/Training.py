@@ -29,11 +29,11 @@ def compute_sense_loss(predictions_senses, batch_labels_senses):
         if senselabel != -1:
             batch_validsenses_labels.append(senselabel.item())
             batch_validsenses_predicted.append(predictions_senses[i])
-    if len(batch_validsenses_labels) > 1:
+    if len(batch_validsenses_labels) >= 1:
         loss_sense = tfunc.nll_loss(torch.stack(batch_validsenses_predicted).to(DEVICE),
                                     torch.tensor(batch_validsenses_labels, dtype=torch.int64).to(DEVICE))
     else:
-        loss_sense = 0
+        loss_sense = torch.tensor(0).to(DEVICE)
     return loss_sense
 
 ################
@@ -48,13 +48,27 @@ def compute_model_loss(model,batch_input, batch_labels, verbose=False):
     # compute the loss for the batch
     loss_global = tfunc.nll_loss(predictions_globals, batch_labels_globals)
     loss_sense = compute_sense_loss(predictions_senses, batch_labels_senses)
-    loss = loss_global + loss_sense
 
     # debug: check the solutions and predictions. Is there anything the model is unable to predict?
     if verbose:
         EP.log_batch(batch_labels, predictions_globals, predictions_senses, 5)
 
-    return loss
+    return loss_global, loss_sense
+
+
+################
+
+def record_statistics(sum_epoch_loss_global, sum_epoch_loss_sense, epoch_step, num_steps_withsense, losses_lts):
+    epoch_loss_globals = sum_epoch_loss_global / epoch_step
+    epoch_loss_senses = sum_epoch_loss_sense / num_steps_withsense
+    epoch_loss = epoch_loss_globals + epoch_loss_senses
+    logging.info("Losses: " + " Globals loss=" + str(round(epoch_loss_globals,3)) +
+                               " \tSense loss=" + str(round(epoch_loss_senses,3)) +
+                               " \tTotal loss=" + str(round(epoch_loss,3)) )
+    logging.info("Perplexity: " + " Globals perplexity=" + str(round(exp(epoch_loss_globals),3)) +
+                 " \tSense perplexity=" + str(round(exp(epoch_loss_senses),3)) + "\n-------")
+    losses_lts.append((epoch_loss_globals, epoch_loss_senses))
+
 
 ################
 
@@ -89,7 +103,7 @@ def train(grapharea_size=32, size_batch=None, sequence_length=8, learning_rate=0
     optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate) #  weight_decay=0.0005
 
     model.train()
-    training_losses_lts = []
+    training_losses_lts = [] # mutated into a lts, with (global_loss, sense_loss)
     validation_losses_lts = []
     steps_logging = 5000 // sequence_length
     hyperparams_str = 'model' + str(type(model).__name__) \
@@ -105,10 +119,8 @@ def train(grapharea_size=32, size_batch=None, sequence_length=8, learning_rate=0
     params = sum([np.prod(p.size()) for p in model_parameters])
     logging.info("Number of trainable parameters=" + str(params))
 
-    trainlosses_fpath = os.path.join(F.FOLDER_GNN, hyperparams_str + '_' + Utils.TRAINING + '_' + F.LOSSES_FILEEND)
-    validlosses_fpath = os.path.join(F.FOLDER_GNN, hyperparams_str + '_' + Utils.VALIDATION + '_' + F.LOSSES_FILEEND)
 
-    global_step = 0
+    overall_step = 0
     starting_time = time()
     previous_valid_loss = inf
     flag_firstvalidationhigher = False
@@ -125,8 +137,10 @@ def train(grapharea_size=32, size_batch=None, sequence_length=8, learning_rate=0
             train_dataloader = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size * sequence_length,
                                                            num_workers=0, collate_fn=bptt_collator)
 
-            sum_epoch_loss = 0
+            sum_epoch_loss_global = 0
+            sum_epoch_loss_sense = 0
             epoch_step = 0
+            epoch_senselabeled_tokens = 0
             verbose = True if epoch==num_epochs else False # log output if in last epoch
 
             flag_earlystop = False
@@ -141,42 +155,49 @@ def train(grapharea_size=32, size_batch=None, sequence_length=8, learning_rate=0
                 t0 = time()
 
                 # compute loss for the batch
-                loss = compute_model_loss(model, batch_input, batch_labels, verbose)
+                loss_global, loss_sense = compute_model_loss(model, batch_input, batch_labels, verbose)
 
                 # running sum of the training loss in the log segment
-                sum_epoch_loss = sum_epoch_loss + loss.item()
+                sum_epoch_loss_global = sum_epoch_loss_global + loss_global.item()
+                # the senses are weighted depending on the number of sense labels, so they are not skewed from no-labels
+                batch_sense_tokens = (batch_labels.t()[1][batch_labels.t()[1]!=-1].shape[0])
+                sum_epoch_loss_sense = sum_epoch_loss_sense + loss_sense.item() * batch_sense_tokens
 
+                loss = loss_global + loss_sense
                 loss.backward()
-                last_embedding_to_update = model_forDataLoading.last_idx_senses + model_forDataLoading.last_idx_globals
-                model_forDataLoading.X.grad.data[last_embedding_to_update:,:].fill_(0) # defs and examples should not change
+                #In the current version, we allow for defs and examples to be moved
+                #last_embedding_to_update = model_forDataLoading.last_idx_senses + model_forDataLoading.last_idx_globals
+                #model_forDataLoading.X.grad.data[last_embedding_to_update:,:].fill_(0) # defs and examples should not change
                 optimizer.step()
 
-                global_step = global_step + 1
+                overall_step = overall_step + 1
                 epoch_step = epoch_step + 1
+                epoch_senselabeled_tokens = epoch_senselabeled_tokens + batch_sense_tokens
 
-                if global_step % steps_logging == 0:
-                    logging.info("Global step=" + str(global_step) + "\t ; Iteration time=" + str(round(time()-t0,5)))
+
+                if overall_step % steps_logging == 0:
+                    logging.info("Global step=" + str(overall_step) + "\t ; Iteration time=" + str(round(time()-t0,5)))
 
                 #Utils.log_chronometer([t0, t1, t2, t3, time()])
 
             # except StopIteration: the DataLoader naturally catches StopIteration
                 # end of an epoch.
-            logging.info("-----\n End of epoch. Global step n." + str(global_step)
-                         + ", using batch_size=" + str(sequence_length) + ". Time = " + str(round(time()-starting_time,2)))
-            epoch_loss = sum_epoch_loss / epoch_step
-            logging.info("Training, epoch nll_loss= " + str(round(epoch_loss,3))
-                         + ". Perplexity= "+ str(str(round(exp(epoch_loss),2)))  + '\n------')
-            training_losses_lts.append(epoch_loss) # (num_epochs, epoch_loss)
+            logging.info("-----\n Training, end of epoch " + str(epoch) + ". Global step n." + str(overall_step) +
+                         ". Time = " + str(round(time() - starting_time, 2)) + ". The training losses are: ")
+            record_statistics(sum_epoch_loss_global, sum_epoch_loss_sense, epoch_step, epoch_senselabeled_tokens, training_losses_lts)
 
+            continue
+            #toDO: Reintroduce validation
             # Time to check the validation loss
             valid_dataset = DL.TextDataset('validation', senseindices_db_c, vocab_h5, model_forDataLoading,
                                            grapharea_matrix, grapharea_size, graph_dataobj)
             valid_dataloader = torch.utils.data.DataLoader(valid_dataset, batch_size=sequence_length, num_workers=0,
                                                            collate_fn=bptt_collator)
-            epoch_valid_loss = validation(valid_dataloader, model).item()
-            validation_losses_lts.append(epoch_valid_loss)
-            logging.info("-----\n After training " + str(epoch)+  " epochs, validation nll_loss= " + str(round(epoch_valid_loss, 3))
-                         + ". Perplexity= "+ (str(round(exp(epoch_valid_loss),2))) + "\n-----")
+            valid_loss_globals, valid_loss_senses = validation(valid_dataloader, model)
+            validation_losses_lts.append((valid_loss_globals, valid_loss_senses))
+            logging.info("-----\n After training " + str(epoch)+  " epochs, the validation losses are:")
+            record_statistics(valid_loss_globals, valid_loss_senses, 1,1, losses_lts=validation_losses_lts)
+            epoch_valid_loss = valid_loss_globals + valid_loss_senses
 
             #if epoch_valid_loss < previous_valid_loss:
                 # save model
@@ -196,10 +217,10 @@ def train(grapharea_size=32, size_batch=None, sequence_length=8, learning_rate=0
         logging.info("Training loop interrupted manually by keyboard")
 
     logging.info("Saving losses and RGCN model.")
-    np.save(trainlosses_fpath, np.array(training_losses_lts))
-    np.save(validlosses_fpath, np.array(validation_losses_lts))
+    np.save(hyperparams_str + '_' + Utils.TRAINING + '_' + F.LOSSES_FILEEND, np.array(training_losses_lts))
+    np.save(hyperparams_str + '_' + Utils.VALIDATION + '_' + F.LOSSES_FILEEND, np.array(validation_losses_lts))
     torch.save(model, os.path.join(F.FOLDER_GNN, hyperparams_str +
-                                   'step_' + str(global_step) + '.rgcnmodel'))
+                                   'step_' + str(overall_step) + '.rgcnmodel'))
 
 
 
@@ -208,23 +229,31 @@ def train(grapharea_size=32, size_batch=None, sequence_length=8, learning_rate=0
 def validation(valid_dataloader, model):
 
     model.eval()  # do not train the model now
-    sum_epoch_valid_loss = 0
+    sum_valid_loss_globals = 0
+    sum_valid_loss_sense = 0
+
     validation_step = 0
+    validation_senselabeled_tokens = 0
     logging_step = 1000
 
     with torch.no_grad(): # Deactivates the autograd engine entirely to save some memory
         for batch_input, batch_labels in valid_dataloader:
-            valid_loss = compute_model_loss(model, batch_input, batch_labels)
-            sum_epoch_valid_loss = sum_epoch_valid_loss + valid_loss
+            valid_loss_globals, valid_loss_sense = compute_model_loss(model, batch_input, batch_labels, verbose=False)
+            sum_valid_loss_globals = sum_valid_loss_globals + valid_loss_globals.item()
+            num_batch_sense_tokens = batch_labels.t()[1][batch_labels.t()[1]!=-1].shape[0]
+            sum_valid_loss_sense = sum_valid_loss_sense + valid_loss_sense.item() * num_batch_sense_tokens
+
+            validation_senselabeled_tokens = validation_senselabeled_tokens + num_batch_sense_tokens
             validation_step = validation_step + 1
             if validation_step % logging_step == 0:
                 logging.info("Validation step n. " + str(validation_step))
 
-    epoch_valid_loss = sum_epoch_valid_loss / validation_step
+    globals_validation_loss = sum_valid_loss_globals / validation_step
+    senses_validation_loss = sum_valid_loss_sense / validation_senselabeled_tokens
 
     model.train()  # training can resume
 
-    return epoch_valid_loss
+    return globals_validation_loss, senses_validation_loss
 
 
 

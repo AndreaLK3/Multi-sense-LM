@@ -79,9 +79,9 @@ def get_timestamp_month_to_min():
     return '_'.join([str(time.localtime().tm_mon), str(time.localtime().tm_mday), str(time.localtime().tm_hour),
               str(time.localtime().tm_min)])
 
-def display_ygraph_fromfile(npy_fpath, axis_labels=None, label=None):
+def display_ygraph_from_nparray(data_y_array, axis_labels=None, label=None):
 
-    data_y_array = np.load(npy_fpath, allow_pickle=True)
+    # data_y_array = np.load(npy_fpath, allow_pickle=True)
     plt.plot(data_y_array, label=label)
     plt.xticks(range(0,len(data_y_array), max(len(data_y_array)//20, 1)))
     plt.yticks(range(0, int(max(data_y_array)) + 1, 1))
