@@ -55,7 +55,7 @@ def reset_embeddings():
 
 
 def exe_from_input_to_vectors(do_reset=True, compute_single_prototype=True, sp_method=CE.Method.FASTTEXT,
-                              vocabulary_from_senselabeled=True):
+                              vocabulary_from_senselabeled=True, min_count=2):
     Utils.init_logging('Pipeline_CGI.log')
     if do_reset:
         reset()
@@ -64,7 +64,7 @@ def exe_from_input_to_vectors(do_reset=True, compute_single_prototype=True, sp_m
     outvocab_filepath = os.path.join(F.FOLDER_VOCABULARY, F.VOCABULARY_OF_GLOBALS_FILE)
     vocabulary = V.get_vocabulary_df(senselabeled_or_text=vocabulary_from_senselabeled, slc_split_name='training',
                                      corpus_txt_filepath=vocab_text_source,
-                                     out_vocabulary_h5_filepath=outvocab_filepath, min_count=5)
+                                     out_vocabulary_h5_filepath=outvocab_filepath, min_count=min_count)
 
     if compute_single_prototype:
         reset_embeddings()

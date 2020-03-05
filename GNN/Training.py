@@ -48,7 +48,12 @@ def compute_model_loss(model,batch_input, batch_labels, verbose=False):
 
     # compute the loss for the batch
     loss_global = tfunc.nll_loss(predictions_globals, batch_labels_globals)
-    loss_sense = compute_sense_loss(predictions_senses, batch_labels_senses)
+
+    model_forParameters = model.module if torch.cuda.device_count() > 1 else model
+    if model_forParameters.include_senses:
+        loss_sense = compute_sense_loss(predictions_senses, batch_labels_senses)
+    else:
+        loss_sense = torch.tensor(0)
 
     # debug: check the solutions and predictions. Is there anything the model is unable to predict?
     if verbose:
@@ -59,9 +64,9 @@ def compute_model_loss(model,batch_input, batch_labels, verbose=False):
 
 ################
 
-def training_setup(slc_or_text_corpus, method, grapharea_size, batch_size, sequence_length):
+def training_setup(slc_or_text_corpus, include_senses, method, grapharea_size, batch_size, sequence_length):
     graph_dataobj = DG.get_graph_dataobject(new=False, method=method)
-    model = MyRGCN.GRU_RGCN(graph_dataobj, grapharea_size)
+    model = MyRGCN.GRU_RGCN(graph_dataobj, grapharea_size, include_senses)
     grapharea_matrix = AD.get_grapharea_matrix(graph_dataobj, grapharea_size)
     logging.info("Graph-data object loaded, model initialized. Moving them to GPU device(s) if present.")
     graph_dataobj.to(DEVICE)
@@ -160,11 +165,14 @@ def training_loop(model, learning_rate, train_dataloader, valid_dataloader, num_
 
                 # running sum of the training loss in the log segment
                 sum_epoch_loss_global = sum_epoch_loss_global + loss_global.item()
-                # the senses are weighted depending on the number of sense labels, so they are not skewed from no-labels
-                batch_sense_tokens = (batch_labels.t()[1][batch_labels.t()[1]!=-1].shape[0])
-                sum_epoch_loss_sense = sum_epoch_loss_sense + loss_sense.item() * batch_sense_tokens
-
-                loss = loss_global + loss_sense
+                if model_forParameters.include_senses:
+                    # the senses are weighted depending on the number of sense labels, so they are not skewed from no-labels
+                    batch_sense_tokens = (batch_labels.t()[1][batch_labels.t()[1]!=-1].shape[0])
+                    sum_epoch_loss_sense = sum_epoch_loss_sense + loss_sense.item() * batch_sense_tokens
+                    epoch_senselabeled_tokens = epoch_senselabeled_tokens + batch_sense_tokens
+                    loss = loss_global + loss_sense
+                else:
+                    loss = loss_global
                 loss.backward()
                 #In the current version, we allow for defs and examples to be moved
                 #last_embedding_to_update = model_forDataLoading.last_idx_senses + model_forDataLoading.last_idx_globals
@@ -173,8 +181,6 @@ def training_loop(model, learning_rate, train_dataloader, valid_dataloader, num_
 
                 overall_step = overall_step + 1
                 epoch_step = epoch_step + 1
-                epoch_senselabeled_tokens = epoch_senselabeled_tokens + batch_sense_tokens
-
 
                 if overall_step % steps_logging == 0:
                     logging.info("Global step=" + str(overall_step) + "\t ; Iteration time=" + str(round(time()-t0,5)))
@@ -185,11 +191,12 @@ def training_loop(model, learning_rate, train_dataloader, valid_dataloader, num_
                 # end of an epoch.
             logging.info("-----\n Training, end of epoch " + str(epoch) + ". Global step n." + str(overall_step) +
                          ". Time = " + str(round(time() - starting_time, 2)) + ". The training losses are: ")
-            Utils.record_statistics(sum_epoch_loss_global, sum_epoch_loss_sense, epoch_step, epoch_senselabeled_tokens, training_losses_lts)
+            Utils.record_statistics(sum_epoch_loss_global, sum_epoch_loss_sense, epoch_step,
+                                    max(1,epoch_senselabeled_tokens), training_losses_lts)
 
             # Time to check the validation loss
 
-            valid_loss_globals, valid_loss_senses = evaluation(valid_dataiter, model)
+            valid_loss_globals, valid_loss_senses = evaluation(valid_dataloader, valid_dataiter, model)
             validation_losses_lts.append((valid_loss_globals, valid_loss_senses))
             logging.info("-----\n After training " + str(epoch)+  " epochs, the validation losses are:")
             Utils.record_statistics(valid_loss_globals, valid_loss_senses, 1,1, losses_lts=validation_losses_lts)
@@ -222,7 +229,9 @@ def training_loop(model, learning_rate, train_dataloader, valid_dataloader, num_
 
 ################
 
-def evaluation(evaluation_dataiter, model):
+def evaluation(evaluation_dataloader, evaluation_dataiter, model):
+    model_forParameters = model.module if torch.cuda.device_count() > 1 else model
+    including_senses = model_forParameters.include_senses
 
     model.eval()  # do not train the model now
     sum_eval_loss_globals = 0
@@ -233,20 +242,26 @@ def evaluation(evaluation_dataiter, model):
     logging_step = 1000
 
     with torch.no_grad(): # Deactivates the autograd engine entirely to save some memory
-        for b_idx in range(len(evaluation_dataiter)):
+        for b_idx in range(len(evaluation_dataloader)):
             batch_input, batch_labels = evaluation_dataiter.__next__()
             loss_globals, loss_sense = compute_model_loss(model, batch_input, batch_labels, verbose=False)
             sum_eval_loss_globals = sum_eval_loss_globals + loss_globals.item()
-            num_batch_sense_tokens = batch_labels.t()[1][batch_labels.t()[1]!=-1].shape[0]
-            sum_eval_loss_sense = sum_eval_loss_sense + loss_sense.item() * num_batch_sense_tokens
 
-            evaluation_senselabeled_tokens = evaluation_senselabeled_tokens + num_batch_sense_tokens
+            if including_senses:
+                num_batch_sense_tokens = batch_labels.t()[1][batch_labels.t()[1]!=-1].shape[0]
+                sum_eval_loss_sense = sum_eval_loss_sense + loss_sense.item() * num_batch_sense_tokens
+                evaluation_senselabeled_tokens = evaluation_senselabeled_tokens + num_batch_sense_tokens
+
+
             evaluation_step = evaluation_step + 1
             if evaluation_step % logging_step == 0:
                 logging.info("Evaluation step n. " + str(evaluation_step))
 
     globals_evaluation_loss = sum_eval_loss_globals / evaluation_step
-    senses_evaluation_loss = sum_eval_loss_sense / evaluation_senselabeled_tokens
+    if including_senses:
+        senses_evaluation_loss = sum_eval_loss_sense / evaluation_senselabeled_tokens
+    else:
+        senses_evaluation_loss = 0
 
     model.train()  # training can resume
 

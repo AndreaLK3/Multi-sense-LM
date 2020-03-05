@@ -80,8 +80,9 @@ def unpack_bptt_elem(sequence_lts, elem_idx):
 
 
 class GRU_RGCN(torch.nn.Module):
-    def __init__(self, data, grapharea_size):
+    def __init__(self, data, grapharea_size, include_senses):
         super(GRU_RGCN, self).__init__()
+        self.include_senses = include_senses
         self.last_idx_senses = data.node_types.tolist().index(1)
         self.last_idx_globals = data.node_types.tolist().index(2)
         self.N = grapharea_size
@@ -108,12 +109,13 @@ class GRU_RGCN(torch.nn.Module):
         # We update this memory buffer manually, there is no gradient. We set it as a Parameter to DataParallel-ize it
         self.memory_previous_rgcnconv = Parameter(torch.zeros(size=(grapharea_size,self.d)).to(DEVICE), requires_grad=False)
         self.select_first_node = Parameter(torch.tensor([0]).to(DEVICE), requires_grad=False)
-        #self.true_mask = Parameter(torch.tensor([True]).to(DEVICE), requires_grad=False) # used to update the memory
 
         # 2nd part of the network as before: 2 linear layers from the RGCN representation to the logits
         self.linear2global = torch.nn.Linear(in_features=self.d,
                                              out_features=self.last_idx_globals - self.last_idx_senses, bias=True)
-        self.linear2sense = torch.nn.Linear(in_features=self.d, out_features=self.last_idx_senses, bias=True)
+
+        if self.include_senses:
+            self.linear2sense = torch.nn.Linear(in_features=self.d, out_features=self.last_idx_senses, bias=True)
 
         # Once the structure has been specified, we initialize the Parameters we defined
         [torch.nn.init.xavier_normal_(my_param) for my_param in [self.W_0,
@@ -158,7 +160,6 @@ class GRU_RGCN(torch.nn.Module):
             # adding contribution from h_v^(l-1), the previous layer of the same node
             proposed_rgcn_conv = composite_rgcn_conv + prevlayer_connection
 
-
             # Update gate: u_v^t = σ(W^u * a_v^t +  U^u * h_v^(t-1)).
             neighbourhood_contribution_update_gate = torch.mm(torch.flatten(grapharea_x).unsqueeze(dim=0), self.update_gate_W)
             prevstate_contribution_update_gate = torch.mm(
@@ -175,13 +176,14 @@ class GRU_RGCN(torch.nn.Module):
 
             x1_current_node = x_Lplus1[0]  # current_node_index
             logits_global = self.linear2global(x1_current_node)  # shape=torch.Size([5])
-            logits_sense = self.linear2sense(x1_current_node)
-
             sample_predictions_globals = tfunc.log_softmax(logits_global, dim=0)
             predictions_globals_ls.append(sample_predictions_globals)
-            sample_predictions_senses = tfunc.log_softmax(logits_sense, dim=0)
-            predictions_senses_ls.append(sample_predictions_senses)
-
+            if self.include_senses:
+                logits_sense = self.linear2sense(x1_current_node)
+                sample_predictions_senses = tfunc.log_softmax(logits_sense, dim=0)
+                predictions_senses_ls.append(sample_predictions_senses)
+            else:
+                predictions_senses_ls.append(torch.tensor(0).to(DEVICE)) # so I don't have to change the interface elsewhere
 
             #Utils.log_chronometer([t0,t1,t2,t3,t4,t5, t6, t7, t8])
         return torch.stack(predictions_globals_ls, dim=0), torch.stack(predictions_senses_ls, dim=0)
