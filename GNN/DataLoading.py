@@ -5,7 +5,10 @@ import GNN.NumericalIndices as NI
 import logging
 from Utils import DEVICE
 import Graph.Adjacencies as AD
-
+import Vocabulary.Vocabulary_Utilities as VU
+import os
+import Filesystem as F
+import Utils
 
 # Auxiliary function to pack an input tuple (x_indices, edge_index, edge_type)
 # into a tensor [x_indices; edge_sources; edge_destinations; edge_type]
@@ -52,13 +55,34 @@ class BPTTBatchCollator():
         return torch.stack(input_lls, dim=0), torch.stack(labels_ls, dim=0)
 
 
+##### Auxiliary function: reading a standard text corpus into the dataset,
+##### without the need to use the SLC facility to process a sense-labeled XML
+def standardtextcorpus_generator(split_name):
+    if split_name==Utils.TRAINING:
+        folder = F.FOLDER_TRAIN
+    elif split_name==Utils.VALIDATION:
+        folder = F.FOLDER_VALIDATION
+    else: # Utils.TEST
+        folder = F.FOLDER_TEST
+
+    in_folder_path = os.path.join(F.FOLDER_MYTEXTCORPUS, folder)
+    textfiles_fnames = os.listdir(in_folder_path)
+    with [open(os.path.join(in_folder_path, fname),'r',encoding="utf-8") for fname in textfiles_fnames][0] as text_file:
+        for i, line in enumerate(text_file):
+            if line == '':
+                break
+            tokens_in_line_truecase, _tot_tokens = VU.process_line(line, tot_tokens=0)
+            for token in tokens_in_line_truecase:
+                token_dict ={'surface_form':token} # to use the same refinement as the tokens from sense-labeled corpus
+                yield VU.process_slc_token(token_dict)
+
 
 ##### The Dataset
 class TextDataset(torch.utils.data.Dataset):
-    def __init__(self, split_name, senseindices_db_c, vocab_h5, model,
+    def __init__(self, sensecorpus_or_text, split_name, senseindices_db_c, vocab_h5, model,
                        grapharea_matrix, area_size, graph_dataobj):
         self.split_name = split_name
-        self.generator = SLC.read_split(self.split_name)
+        self.generator = SLC.read_split(split_name) if sensecorpus_or_text else standardtextcorpus_generator(split_name)
         self.senseindices_db_c = senseindices_db_c
         self.vocab_h5 = vocab_h5
         self.gnn_model = model

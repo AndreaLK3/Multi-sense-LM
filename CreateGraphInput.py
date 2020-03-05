@@ -54,12 +54,13 @@ def reset_embeddings():
 
 
 
-def exe(do_reset=True, compute_single_prototype=True, vocabulary_from_senselabeled=True):
+def exe_from_input_to_vectors(do_reset=True, compute_single_prototype=True, sp_method=CE.Method.FASTTEXT,
+                              vocabulary_from_senselabeled=True):
     Utils.init_logging('Pipeline_CGI.log')
     if do_reset:
         reset()
 
-    vocab_text_source = os.path.join(F.FOLDER_TEXT_CORPUSES, F.FOLDER_WT2, F.WT_TRAIN_FILE)
+    vocab_text_source = os.listdir(os.path.join(F.FOLDER_TEXT_CORPUSES, F.FOLDER_MYTEXTCORPUS, F.FOLDER_TRAIN))[0]
     outvocab_filepath = os.path.join(F.FOLDER_VOCABULARY, F.VOCABULARY_OF_GLOBALS_FILE)
     vocabulary = V.get_vocabulary_df(senselabeled_or_text=vocabulary_from_senselabeled, slc_split_name='training',
                                      corpus_txt_filepath=vocab_text_source,
@@ -67,13 +68,13 @@ def exe(do_reset=True, compute_single_prototype=True, vocabulary_from_senselabel
 
     if compute_single_prototype:
         reset_embeddings()
-
+        single_prototypes_file = F.SPVs_FASTTEXT_FILE if sp_method==CE.Method.FASTTEXT else F.SPVs_DISTILBERT_FILE
         CE.compute_single_prototype_embeddings(vocabulary,
-                                               os.path.join(F.FOLDER_INPUT, F.SPVs_FASTTEXT_FILE),
-                                               CE.Method.FASTTEXT)
+                                               os.path.join(F.FOLDER_INPUT, single_prototypes_file),
+                                               sp_method)
 
     kb_data_chunk = RID.retrieve_data_WordNet(vocabulary)
     logging.info("CreateGraphInput.exe() > "
                  + " number of ords included in the vocabulary chunk, to be prepared: " + str(len(kb_data_chunk)))
-    PI.prepare(kb_data_chunk, CE.Method.FASTTEXT)
+    PI.prepare(kb_data_chunk, sp_method)
     tables.file._open_files.close_all()

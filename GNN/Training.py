@@ -119,7 +119,6 @@ def train(grapharea_size=32, size_batch=None, sequence_length=8, learning_rate=0
     params = sum([np.prod(p.size()) for p in model_parameters])
     logging.info("Number of trainable parameters=" + str(params))
 
-
     overall_step = 0
     starting_time = time()
     previous_valid_loss = inf
@@ -146,7 +145,7 @@ def train(grapharea_size=32, size_batch=None, sequence_length=8, learning_rate=0
             flag_earlystop = False
 
             for batch_input, batch_labels in train_dataloader: # tuple of 2 lists
-
+                #logging.info("Step " + str(epoch_step))
                 batch_input = batch_input.to(DEVICE)
                 batch_labels = batch_labels.to(DEVICE)
 
@@ -178,7 +177,7 @@ def train(grapharea_size=32, size_batch=None, sequence_length=8, learning_rate=0
                 if overall_step % steps_logging == 0:
                     logging.info("Global step=" + str(overall_step) + "\t ; Iteration time=" + str(round(time()-t0,5)))
 
-                #Utils.log_chronometer([t0, t1, t2, t3, time()])
+                #Utils.log_chronometer([t0, time()])
 
             # except StopIteration: the DataLoader naturally catches StopIteration
                 # end of an epoch.
@@ -186,8 +185,6 @@ def train(grapharea_size=32, size_batch=None, sequence_length=8, learning_rate=0
                          ". Time = " + str(round(time() - starting_time, 2)) + ". The training losses are: ")
             record_statistics(sum_epoch_loss_global, sum_epoch_loss_sense, epoch_step, epoch_senselabeled_tokens, training_losses_lts)
 
-            continue
-            #toDO: Reintroduce validation
             # Time to check the validation loss
             valid_dataset = DL.TextDataset('validation', senseindices_db_c, vocab_h5, model_forDataLoading,
                                            grapharea_matrix, grapharea_size, graph_dataobj)

@@ -15,9 +15,9 @@ def build_vocabulary_from_text(corpus_txt_filepath):
     for i, line in enumerate(open(corpus_txt_filepath, "r", encoding="utf-8")):
         if line == '':
             break
-        tokens_in_line_lowercase, tot_tokens = VocabUtils.process_line(line, tot_tokens)
+        tokens_in_line_truecase, tot_tokens = VocabUtils.process_line(line, tot_tokens)
 
-        different_tokens = set(token for token in tokens_in_line_lowercase)
+        different_tokens = set(token for token in tokens_in_line_truecase)
 
         update_lts = [(token.replace('_', ' '), line.count(token) ) for token in different_tokens] # '_' was used for phrases.
         for word, freq in update_lts:
