@@ -18,6 +18,7 @@ from Utils import DEVICE
 import GNN.DataLoading as DL
 import GNN.ExplorePredictions as EP
 import GNN.MyRGCN as MyRGCN
+from itertools import cycle
 
 
 # Auxiliary function for compute_model_loss
@@ -58,57 +59,63 @@ def compute_model_loss(model,batch_input, batch_labels, verbose=False):
 
 ################
 
-def record_statistics(sum_epoch_loss_global, sum_epoch_loss_sense, epoch_step, num_steps_withsense, losses_lts):
-    epoch_loss_globals = sum_epoch_loss_global / epoch_step
-    epoch_loss_senses = sum_epoch_loss_sense / num_steps_withsense
-    epoch_loss = epoch_loss_globals + epoch_loss_senses
-    logging.info("Losses: " + " Globals loss=" + str(round(epoch_loss_globals,3)) +
-                               " \tSense loss=" + str(round(epoch_loss_senses,3)) +
-                               " \tTotal loss=" + str(round(epoch_loss,3)) )
-    logging.info("Perplexity: " + " Globals perplexity=" + str(round(exp(epoch_loss_globals),3)) +
-                 " \tSense perplexity=" + str(round(exp(epoch_loss_senses),3)) + "\n-------")
-    losses_lts.append((epoch_loss_globals, epoch_loss_senses))
-
-
-################
-
-def train(grapharea_size=32, size_batch=None, sequence_length=8, learning_rate=0.001, num_epochs=100):
-    Utils.init_logging('Training'+Utils.get_timestamp_month_to_min()+'.log')
-    graph_dataobj = DG.get_graph_dataobject(new=False)
-    logging.info(graph_dataobj)
+def training_setup(slc_or_text_corpus, method, grapharea_size, batch_size, sequence_length):
+    graph_dataobj = DG.get_graph_dataobject(new=False, method=method)
     model = MyRGCN.GRU_RGCN(graph_dataobj, grapharea_size)
+    grapharea_matrix = AD.get_grapharea_matrix(graph_dataobj, grapharea_size)
     logging.info("Graph-data object loaded, model initialized. Moving them to GPU device(s) if present.")
     graph_dataobj.to(DEVICE)
 
     n_gpu = torch.cuda.device_count()
     if n_gpu > 1:
-         logging.info("Using "  +str(n_gpu) + " GPUs")
-         model = torch.nn.DataParallel(model)
-         model_forDataLoading = model.module
-         batch_size = n_gpu if size_batch is None else size_batch # if not specified, default batch_size = n. GPUs
+        logging.info("Using " + str(n_gpu) + " GPUs")
+        model = torch.nn.DataParallel(model)
+        model_forDataLoading = model.module
+        batch_size = n_gpu if batch_size is None else batch_size  # if not specified, default batch_size = n. GPUs
     else:
         model_forDataLoading = model
-        batch_size = 1 if size_batch is None else size_batch
+        batch_size = 1 if batch_size is None else batch_size
     model.to(DEVICE)
 
-    grapharea_matrix = AD.get_grapharea_matrix(graph_dataobj, grapharea_size)
+    globals_vocabulary_fpath = os.path.join(F.FOLDER_VOCABULARY, F.VOCABULARY_OF_GLOBALS_FILE)
+    vocab_h5 = pd.HDFStore(globals_vocabulary_fpath, mode='r')
 
     senseindices_db_filepath = os.path.join(F.FOLDER_INPUT, Utils.INDICES_TABLE_DB)
     senseindices_db = sqlite3.connect(senseindices_db_filepath)
     senseindices_db_c = senseindices_db.cursor()
 
-    globals_vocabulary_fpath = os.path.join(F.FOLDER_VOCABULARY, F.VOCABULARY_OF_GLOBALS_FILE)
-    vocab_h5 = pd.HDFStore(globals_vocabulary_fpath, mode='r')
+    bptt_collator = DL.BPTTBatchCollator(grapharea_size, sequence_length)
+
+    train_dataset = DL.TextDataset(slc_or_text_corpus, 'training', senseindices_db_c, vocab_h5, model_forDataLoading,
+                                   grapharea_matrix, grapharea_size, graph_dataobj)
+    train_dataloader = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size * sequence_length,
+                                                   num_workers=0, collate_fn=bptt_collator)
+
+    valid_dataset = DL.TextDataset(slc_or_text_corpus, 'validation', senseindices_db_c, vocab_h5, model_forDataLoading,
+                                   grapharea_matrix, grapharea_size, graph_dataobj)
+    valid_dataloader = torch.utils.data.DataLoader(valid_dataset, batch_size=sequence_length, num_workers=0,
+                                                   collate_fn=bptt_collator)
+
+    return model, train_dataloader, valid_dataloader
+
+
+################
+def training_loop(model, learning_rate, train_dataloader, valid_dataloader, num_epochs=100):
+
+    Utils.init_logging('Training' + Utils.get_timestamp_month_to_min() + '.log')
 
     optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate) #  weight_decay=0.0005
 
     model.train()
     training_losses_lts = [] # mutated into a lts, with (global_loss, sense_loss)
     validation_losses_lts = []
-    steps_logging = 5000 // sequence_length
+
+    model_forParameters = model.module if torch.cuda.device_count() > 1 else model
+
+    steps_logging = 1000
     hyperparams_str = 'model' + str(type(model).__name__) \
-                      + '_batch' + str(sequence_length) \
-                      + '_area' + str(grapharea_size)\
+                      + '_batchPerSeqlen' + str(train_dataloader.batch_size) \
+                      + '_area' + str(model_forParameters.N)\
                       + '_lr' + str(learning_rate) \
                       + '_epochs' + str(num_epochs)
     logging.info("Parameters:")
@@ -124,17 +131,12 @@ def train(grapharea_size=32, size_batch=None, sequence_length=8, learning_rate=0
     previous_valid_loss = inf
     flag_firstvalidationhigher = False
 
-    bptt_collator = DL.BPTTBatchCollator(grapharea_size, sequence_length)
-
     try: # to catch KeyboardInterrupt-s and still save the training & validation losses
         ########## The training loop ##########
-
+        train_dataiter = iter(cycle(train_dataloader))
+        valid_dataiter = iter(cycle(valid_dataloader))
         for epoch in range(1,num_epochs+1):
             logging.info("\nTraining epoch n."+str(epoch) + ":")
-            train_dataset = DL.TextDataset('training', senseindices_db_c, vocab_h5, model_forDataLoading,
-                                           grapharea_matrix, grapharea_size, graph_dataobj)
-            train_dataloader = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size * sequence_length,
-                                                           num_workers=0, collate_fn=bptt_collator)
 
             sum_epoch_loss_global = 0
             sum_epoch_loss_sense = 0
@@ -144,8 +146,8 @@ def train(grapharea_size=32, size_batch=None, sequence_length=8, learning_rate=0
 
             flag_earlystop = False
 
-            for batch_input, batch_labels in train_dataloader: # tuple of 2 lists
-                #logging.info("Step " + str(epoch_step))
+            for b_idx in range(len(train_dataloader)):
+                batch_input, batch_labels = train_dataiter.__next__()
                 batch_input = batch_input.to(DEVICE)
                 batch_labels = batch_labels.to(DEVICE)
 
@@ -183,17 +185,14 @@ def train(grapharea_size=32, size_batch=None, sequence_length=8, learning_rate=0
                 # end of an epoch.
             logging.info("-----\n Training, end of epoch " + str(epoch) + ". Global step n." + str(overall_step) +
                          ". Time = " + str(round(time() - starting_time, 2)) + ". The training losses are: ")
-            record_statistics(sum_epoch_loss_global, sum_epoch_loss_sense, epoch_step, epoch_senselabeled_tokens, training_losses_lts)
+            Utils.record_statistics(sum_epoch_loss_global, sum_epoch_loss_sense, epoch_step, epoch_senselabeled_tokens, training_losses_lts)
 
             # Time to check the validation loss
-            valid_dataset = DL.TextDataset('validation', senseindices_db_c, vocab_h5, model_forDataLoading,
-                                           grapharea_matrix, grapharea_size, graph_dataobj)
-            valid_dataloader = torch.utils.data.DataLoader(valid_dataset, batch_size=sequence_length, num_workers=0,
-                                                           collate_fn=bptt_collator)
-            valid_loss_globals, valid_loss_senses = validation(valid_dataloader, model)
+
+            valid_loss_globals, valid_loss_senses = evaluation(valid_dataiter, model)
             validation_losses_lts.append((valid_loss_globals, valid_loss_senses))
             logging.info("-----\n After training " + str(epoch)+  " epochs, the validation losses are:")
-            record_statistics(valid_loss_globals, valid_loss_senses, 1,1, losses_lts=validation_losses_lts)
+            Utils.record_statistics(valid_loss_globals, valid_loss_senses, 1,1, losses_lts=validation_losses_lts)
             epoch_valid_loss = valid_loss_globals + valid_loss_senses
 
             #if epoch_valid_loss < previous_valid_loss:
@@ -223,34 +222,35 @@ def train(grapharea_size=32, size_batch=None, sequence_length=8, learning_rate=0
 
 ################
 
-def validation(valid_dataloader, model):
+def evaluation(evaluation_dataiter, model):
 
     model.eval()  # do not train the model now
-    sum_valid_loss_globals = 0
-    sum_valid_loss_sense = 0
+    sum_eval_loss_globals = 0
+    sum_eval_loss_sense = 0
 
-    validation_step = 0
-    validation_senselabeled_tokens = 0
+    evaluation_step = 0
+    evaluation_senselabeled_tokens = 0
     logging_step = 1000
 
     with torch.no_grad(): # Deactivates the autograd engine entirely to save some memory
-        for batch_input, batch_labels in valid_dataloader:
-            valid_loss_globals, valid_loss_sense = compute_model_loss(model, batch_input, batch_labels, verbose=False)
-            sum_valid_loss_globals = sum_valid_loss_globals + valid_loss_globals.item()
+        for b_idx in range(len(evaluation_dataiter)):
+            batch_input, batch_labels = evaluation_dataiter.__next__()
+            loss_globals, loss_sense = compute_model_loss(model, batch_input, batch_labels, verbose=False)
+            sum_eval_loss_globals = sum_eval_loss_globals + loss_globals.item()
             num_batch_sense_tokens = batch_labels.t()[1][batch_labels.t()[1]!=-1].shape[0]
-            sum_valid_loss_sense = sum_valid_loss_sense + valid_loss_sense.item() * num_batch_sense_tokens
+            sum_eval_loss_sense = sum_eval_loss_sense + loss_sense.item() * num_batch_sense_tokens
 
-            validation_senselabeled_tokens = validation_senselabeled_tokens + num_batch_sense_tokens
-            validation_step = validation_step + 1
-            if validation_step % logging_step == 0:
-                logging.info("Validation step n. " + str(validation_step))
+            evaluation_senselabeled_tokens = evaluation_senselabeled_tokens + num_batch_sense_tokens
+            evaluation_step = evaluation_step + 1
+            if evaluation_step % logging_step == 0:
+                logging.info("Evaluation step n. " + str(evaluation_step))
 
-    globals_validation_loss = sum_valid_loss_globals / validation_step
-    senses_validation_loss = sum_valid_loss_sense / validation_senselabeled_tokens
+    globals_evaluation_loss = sum_eval_loss_globals / evaluation_step
+    senses_evaluation_loss = sum_eval_loss_sense / evaluation_senselabeled_tokens
 
     model.train()  # training can resume
 
-    return globals_validation_loss, senses_validation_loss
+    return globals_evaluation_loss, senses_evaluation_loss
 
 
 

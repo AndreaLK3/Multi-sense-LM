@@ -8,6 +8,7 @@ import subprocess
 import numpy as np
 import matplotlib.pyplot as plt
 import time
+from math import exp
 
 ########## Constants ##########
 import torch
@@ -56,6 +57,9 @@ EMPTY = 'EMPTY'
 
 ########## Logging and development ##########
 
+
+########## Text logging ##########
+
 def init_logging(logfilename, loglevel=logging.INFO):
   for handler in logging.root.handlers[:]:
         logging.root.removeHandler(handler)
@@ -78,6 +82,22 @@ def log_chronometer(time_measurements):
 def get_timestamp_month_to_min():
     return '_'.join([str(time.localtime().tm_mon), str(time.localtime().tm_mday), str(time.localtime().tm_hour),
               str(time.localtime().tm_min)])
+
+
+def record_statistics(sum_epoch_loss_global, sum_epoch_loss_sense, epoch_step, num_steps_withsense, losses_lts):
+    epoch_loss_globals = sum_epoch_loss_global / epoch_step
+    epoch_loss_senses = sum_epoch_loss_sense / num_steps_withsense
+    epoch_loss = epoch_loss_globals + epoch_loss_senses
+    logging.info("Losses: " + " Globals loss=" + str(round(epoch_loss_globals,3)) +
+                               " \tSense loss=" + str(round(epoch_loss_senses,3)) +
+                               " \tTotal loss=" + str(round(epoch_loss,3)) )
+    logging.info("Perplexity: " + " Globals perplexity=" + str(round(exp(epoch_loss_globals),3)) +
+                 " \tSense perplexity=" + str(round(exp(epoch_loss_senses),3)) + "\n-------")
+    losses_lts.append((epoch_loss_globals, epoch_loss_senses))
+
+##########
+
+########## Graphics logging ##########
 
 def display_ygraph_from_nparray(data_y_array, axis_labels=None, label=None):
 
@@ -108,7 +128,11 @@ def display_xygraph_from_files(npy_fpaths_ls):
     ax.legend()
 
 
-#####
+
+
+##########
+
+########## Other utilities ##########
 
 ### Note: must add the vocabularies of other languages
 def check_language(text, lang_id):
@@ -170,28 +194,6 @@ def close_list_of_files(files_ls):
     for file in files_ls:
         file.close()
 
-
-
-# Utility for examining GPU memory usage
-
-def get_gpu_memory_map():
-    """Get the current gpu usage.
-
-    Returns
-    -------
-    usage: dict
-        Keys are device ids as integers.
-        Values are memory usage as integers in MB.
-    """
-    result = subprocess.check_output(
-        [
-            'nvidia-smi', '--query-gpu=memory.used',
-            '--format=csv,nounits,noheader'
-        ], encoding='utf-8')
-    # Convert lines into a dictionary
-    gpu_memory = [int(x) for x in result.strip().split('\n')]
-    gpu_memory_map = dict(zip(range(len(gpu_memory)), gpu_memory))
-    return gpu_memory_map
 
 
 ### Selecting from a HDF5 archive, and dealing with the possible syntax errors
