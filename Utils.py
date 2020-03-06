@@ -45,6 +45,8 @@ TRAINING = 'training'
 VALIDATION = 'validation'
 TEST = 'test'
 
+MAX_EDGES_PACKED=160 # used in the tensor packing&unpacking for the GNN
+
 INDICES_TABLE_DB = 'indices_table.sql'
 
 UNK_TOKEN = '<unk>'

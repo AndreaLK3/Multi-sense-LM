@@ -6,10 +6,9 @@ import numpy as np
 import logging
 import torch.nn.functional as tfunc
 from time import time
-from Utils import DEVICE
+from Utils import DEVICE, MAX_EDGES_PACKED
 from torch.nn.parameter import Parameter
 
-MAX_EDGES = 128 # used when packing/unpacking the tensor for the batch
 
 ######## Tools to split the input of the forward call, (x, edge_index, edge_type),
 ######## into subgraphs using different adjacency matrices.
@@ -131,7 +130,7 @@ class GRU_RGCN(torch.nn.Module):
 
         #logging.info(batchinput_tensor.squeeze().shape)
         splitdim = 1 if 1 in batchinput_tensor.shape else 2
-        sequenceinput_lts = torch.split(batchinput_tensor.squeeze(), [self.N] + [MAX_EDGES] * 3, dim=splitdim)
+        sequenceinput_lts = torch.split(batchinput_tensor.squeeze(), [self.N] + [MAX_EDGES_PACKED] * 3, dim=splitdim)
 
         #for (x_indices, edge_index, edge_type) in batchinput_ls:
         for elem_i in range(len(sequenceinput_lts[0])):

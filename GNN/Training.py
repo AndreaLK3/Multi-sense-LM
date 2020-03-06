@@ -65,7 +65,7 @@ def compute_model_loss(model,batch_input, batch_labels, verbose=False):
 ################
 
 def training_setup(slc_or_text_corpus, include_senses, method, grapharea_size, batch_size, sequence_length):
-    graph_dataobj = DG.get_graph_dataobject(new=False, method=method)
+    graph_dataobj = DG.get_graph_dataobject(new=False, method=method).to(DEVICE)
     model = MyRGCN.GRU_RGCN(graph_dataobj, grapharea_size, include_senses)
     grapharea_matrix = AD.get_grapharea_matrix(graph_dataobj, grapharea_size)
     logging.info("Graph-data object loaded, model initialized. Moving them to GPU device(s) if present.")
@@ -117,7 +117,7 @@ def training_loop(model, learning_rate, train_dataloader, valid_dataloader, num_
 
     model_forParameters = model.module if torch.cuda.device_count() > 1 else model
 
-    steps_logging = 1000
+    steps_logging = 500
     hyperparams_str = 'model' + str(type(model).__name__) \
                       + '_batchPerSeqlen' + str(train_dataloader.batch_size) \
                       + '_area' + str(model_forParameters.N)\

@@ -11,6 +11,7 @@
 WikiText-103/
 runs/
 GraphNN/pyGAT
+InputData/
 TextCorpuses/
 Saved_Results
 Media/IntermediateResults

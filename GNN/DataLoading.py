@@ -1,5 +1,5 @@
 import torch
-import torch.nn.functional as tfunc
+import copy
 import GNN.SenseLabeledCorpus as SLC
 import GNN.NumericalIndices as NI
 import logging
@@ -9,22 +9,24 @@ import Vocabulary.Vocabulary_Utilities as VU
 import os
 import Filesystem as F
 import Utils
+from Utils import MAX_EDGES_PACKED
 
 # Auxiliary function to pack an input tuple (x_indices, edge_index, edge_type)
 # into a tensor [x_indices; edge_sources; edge_destinations; edge_type]
-def pack_input_tuple_into_tensor(input_tuple, graph_area, max_edges=128):
+def pack_input_tuple_into_tensor(input_tuple, graph_area, max_edges=MAX_EDGES_PACKED):
+
     in_tensor = - 1 * torch.ones(size=(graph_area + max_edges*3,)).to(torch.long)
     x_indices = input_tuple[0]
     edge_sources = input_tuple[1][0]
     edge_destinations = input_tuple[1][1]
     edge_type = input_tuple[2]
+    if len(edge_sources) > max_edges:
+        logging.warning("Num edges=" + str(len(edge_sources)) + " , while max_edges packed=" + str(max_edges))
     in_tensor[0:len(x_indices)] = x_indices
-    in_tensor[graph_area: graph_area+len(edge_sources)] = edge_sources
-    in_tensor[graph_area+max_edges:graph_area+max_edges+len(edge_destinations)] = edge_destinations
-    in_tensor[graph_area+2*max_edges:graph_area+2*max_edges+len(edge_type)] = edge_type
-    #logging.info("packing. in_tensor=" + str(in_tensor))
+    in_tensor[graph_area: graph_area+min(len(edge_sources), max_edges)] = edge_sources[0:max_edges]
+    in_tensor[graph_area+max_edges:graph_area+max_edges+min(len(edge_destinations), max_edges)] = edge_destinations[0:max_edges]
+    in_tensor[graph_area+2*max_edges:graph_area+2*max_edges+min(len(edge_type), max_edges)] = edge_type[0:max_edges]
     return in_tensor
-
 
 # When automatic batching is enabled, collate_fn is called with a list of data samples at each time.
 # It is expected to collate the input samples into a batch for yielding from the data loader iterator.
@@ -65,7 +67,7 @@ def standardtextcorpus_generator(split_name):
     else: # Utils.TEST
         folder = F.FOLDER_TEST
 
-    in_folder_path = os.path.join(F.FOLDER_MYTEXTCORPUS, folder)
+    in_folder_path = os.path.join(F.FOLDER_TEXT_CORPUSES, F.FOLDER_MYTEXTCORPUS, folder)
     textfiles_fnames = os.listdir(in_folder_path)
     with [open(os.path.join(in_folder_path, fname),'r',encoding="utf-8") for fname in textfiles_fnames][0] as text_file:
         for i, line in enumerate(text_file):
@@ -74,8 +76,7 @@ def standardtextcorpus_generator(split_name):
             tokens_in_line_truecase, _tot_tokens = VU.process_line(line, tot_tokens=0)
             for token in tokens_in_line_truecase:
                 token_dict ={'surface_form':token} # to use the same refinement as the tokens from sense-labeled corpus
-                yield VU.process_slc_token(token_dict)
-
+                yield token_dict
 
 ##### The Dataset
 class TextDataset(torch.utils.data.Dataset):
@@ -93,7 +94,6 @@ class TextDataset(torch.utils.data.Dataset):
         self.graph_dataobj = graph_dataobj
         self.next_token_tpl = None
 
-
     def __getitem__(self, index):
         self.current_token_tpl, self.next_token_tpl = NI.get_tokens_tpls(self.next_token_tpl , self.generator,
                                                                self.senseindices_db_c, self.vocab_h5,
@@ -108,7 +108,8 @@ class TextDataset(torch.utils.data.Dataset):
 
     def __len__(self):
         if self.counter == 0:
-            length_reader = SLC.read_split(self.split_name)
+            length_reader = standardtextcorpus_generator(self.split_name) \
+                if self.generator.__name__ == 'standardtextcorpus_generator' else SLC.read_split(self.split_name)
             logging.debug("Preliminary: reading the dataset to determine the number of samples")
             try:
                 while True:
@@ -119,7 +120,6 @@ class TextDataset(torch.utils.data.Dataset):
         else:
             return self.counter
 #####
-
 
 ### Auxiliary function:
 ### Getting the graph-input (x, edge_index, edge_type)
