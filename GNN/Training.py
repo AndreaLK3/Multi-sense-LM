@@ -189,6 +189,7 @@ def training_loop(model, learning_rate, train_dataloader, valid_dataloader, num_
 
             # except StopIteration: the DataLoader naturally catches StopIteration
                 # end of an epoch.
+
             logging.info("-----\n Training, end of epoch " + str(epoch) + ". Global step n." + str(overall_step) +
                          ". Time = " + str(round(time() - starting_time, 2)) + ". The training losses are: ")
             Utils.record_statistics(sum_epoch_loss_global, sum_epoch_loss_sense, epoch_step,

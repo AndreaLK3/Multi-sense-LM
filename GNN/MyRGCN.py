@@ -14,10 +14,14 @@ from torch.nn.parameter import Parameter
 ######## into subgraphs using different adjacency matrices.
 
 def split_edge_index(edge_index, edge_type):
-
-    sections_cutoffs = [i for i in range(edge_type.shape[0]-1) if edge_type[i] != edge_type[i-1]] + [edge_type.shape[0]]
+    # logging.info("Edge_index.shape=" + str(edge_index.shape) + " ; edge_type.shape=" + str(edge_type.shape))
+    # if edge_type.shape[0] in [1, 16, 47, 85,4, 51, 58, 62, 4, 65, 38, 56]:
+    #     logging.info("edge_index=" + str(edge_index))
+    #     logging.info("edge_type=" + str(edge_type))
+    sections_cutoffs = [i for i in range(edge_type.shape[0]) if edge_type[i] != edge_type[i-1]] + [edge_type.shape[0]]
+    if 0 not in sections_cutoffs:
+        sections_cutoffs = [0] + sections_cutoffs # prepend, to deal with the case of 1 edge
     sections_lengths = [sections_cutoffs[i+1] - sections_cutoffs[i] for i in range(len(sections_cutoffs)-1)]
-
     split_sources = torch.split(edge_index[0], sections_lengths)
     split_destinations = torch.split(edge_index[1], sections_lengths)
 
