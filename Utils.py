@@ -104,9 +104,9 @@ def record_statistics(sum_epoch_loss_global, sum_epoch_loss_sense, epoch_step, n
 def display_ygraph_from_nparray(data_y_array, axis_labels=None, label=None):
 
     # data_y_array = np.load(npy_fpath, allow_pickle=True)
-    plt.plot(data_y_array, label=label)
-    plt.xticks(range(0,len(data_y_array), max(len(data_y_array)//20, 1)))
-    plt.yticks(range(0, int(max(data_y_array)) + 1, 1))
+    plt.plot(data_y_array, label=label, marker='.')
+    plt.xticks(np.arange(len(data_y_array)), np.arange(1, len(data_y_array)+1))
+    plt.yticks(range(0, int(max(data_y_array)) + 1, max(int(max(data_y_array))//20, 1)))
     plt.xlim((0, len(data_y_array)))
     plt.ylim((0, max(data_y_array)))
     plt.grid(b=True, color='lightgrey', linestyle='-', linewidth=0.5)
@@ -199,13 +199,15 @@ def close_list_of_files(files_ls):
 
 
 ### Selecting from a HDF5 archive, and dealing with the possible syntax errors
-### e.g.: where word == and, or where word ==''s '
+### e.g.: where word == and, or ==''s ' or =='\'
 def select_from_hdf5(input_db, table_key, field_names, values):
     #word_df = input_db.select(key=elements_name, where="word == '" + str(word) + "'")
     values = list(map(lambda v: v.replace("'", ""), values))
+    values = list(filter(lambda v:'\\' not in v, values))
     fields_values_lts = zip(field_names, values)
     query = ""
     for field_value_tpl in fields_values_lts:
+
         query_part = field_value_tpl[0] + " == '" + field_value_tpl[1] + "'"
         if len(query) == 0:
             query = query_part

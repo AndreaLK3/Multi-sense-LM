@@ -184,6 +184,9 @@ def training_loop(model, learning_rate, train_dataloader, valid_dataloader, num_
 
                 if overall_step % steps_logging == 0:
                     logging.info("Global step=" + str(overall_step) + "\t ; Iteration time=" + str(round(time()-t0,5)))
+                    logging.info("Running in-epoch loss, on training data: ")
+                    Utils.record_statistics(sum_epoch_loss_global, sum_epoch_loss_sense,
+                                            epoch_step, max(1,epoch_senselabeled_tokens), training_losses_lts)
 
                 #Utils.log_chronometer([t0, time()])
 
@@ -196,7 +199,6 @@ def training_loop(model, learning_rate, train_dataloader, valid_dataloader, num_
                                     max(1,epoch_senselabeled_tokens), training_losses_lts)
 
             # Time to check the validation loss
-
             valid_loss_globals, valid_loss_senses = evaluation(valid_dataloader, valid_dataiter, model)
             validation_losses_lts.append((valid_loss_globals, valid_loss_senses))
             logging.info("-----\n After training " + str(epoch)+  " epochs, the validation losses are:")

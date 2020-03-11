@@ -3,9 +3,13 @@
   <component name="ChangeListManager">
     <list default="true" id="d35dca92-959c-489d-8a61-f337e4cce7fa" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/GNN/DataLoading.py" beforeDir="false" afterPath="$PROJECT_DIR$/GNN/DataLoading.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/GNN/MyRGCN.py" beforeDir="false" afterPath="$PROJECT_DIR$/GNN/MyRGCN.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/GNN/Training.py" beforeDir="false" afterPath="$PROJECT_DIR$/GNN/Training.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Media/Plan_Task1.png" beforeDir="false" afterPath="$PROJECT_DIR$/Media/Plan_Task1.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Media/Plan_Task1.pptx" beforeDir="false" afterPath="$PROJECT_DIR$/Media/Plan_Task1.pptx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Media/Task1_DeveloperDiary_2.docx" beforeDir="false" afterPath="$PROJECT_DIR$/Media/Task1_DeveloperDiary_2.docx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/Utils.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -18,11 +22,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/GNN/MyRGCN.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="106">
-              <caret line="16" column="6" selection-start-line="16" selection-start-column="6" selection-end-line="16" selection-end-column="6" />
+            <state relative-caret-position="401">
+              <caret line="193" column="12" selection-start-line="193" selection-start-column="12" selection-end-line="193" selection-end-column="12" />
               <folding>
                 <element signature="e#0#12#0" expanded="true" />
               </folding>
@@ -30,11 +34,11 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/GNN/Training.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="134">
-              <caret line="119" column="23" selection-start-line="119" selection-start-column="23" selection-end-line="119" selection-end-column="23" />
+            <state relative-caret-position="356">
+              <caret line="186" column="75" selection-start-line="186" selection-start-column="75" selection-end-line="186" selection-end-column="75" />
               <folding>
                 <element signature="e#0#12#0" expanded="true" />
               </folding>
@@ -45,8 +49,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/GNN/DataLoading.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="60">
-              <caret line="15" column="84" selection-start-line="15" selection-start-column="84" selection-end-line="15" selection-end-column="84" />
+            <state relative-caret-position="975">
+              <caret line="76" column="86" selection-start-line="76" selection-start-column="86" selection-end-line="76" selection-end-column="86" />
               <folding>
                 <element signature="e#0#12#0" expanded="true" />
               </folding>
@@ -57,8 +61,20 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/GNN/NumericalIndices.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="795">
-              <caret line="59" selection-start-line="59" selection-end-line="59" />
+            <state relative-caret-position="660">
+              <caret line="50" column="47" selection-start-line="50" selection-start-column="47" selection-end-line="50" selection-end-column="47" />
+              <folding>
+                <element signature="e#0#14#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Utils.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="196">
+              <caret line="107" column="74" selection-start-line="107" selection-start-column="74" selection-end-line="107" selection-end-column="74" />
               <folding>
                 <element signature="e#0#14#0" expanded="true" />
               </folding>
@@ -81,8 +97,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Vocabulary/Vocabulary_Utilities.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1590">
-              <caret line="112" column="14" selection-start-line="112" selection-start-column="14" selection-end-line="112" selection-end-column="14" />
+            <state relative-caret-position="1275">
+              <caret line="91" column="12" selection-start-line="91" selection-start-column="12" selection-end-line="91" selection-end-column="12" />
               <folding>
                 <element signature="e#0#11#0" expanded="true" />
               </folding>
@@ -212,10 +228,10 @@
         <option value="$PROJECT_DIR$/CreateGraphInput.py" />
         <option value="$PROJECT_DIR$/Vocabulary/Vocabulary.py" />
         <option value="$PROJECT_DIR$/trainmodel_script.py" />
-        <option value="$PROJECT_DIR$/GNN/DataLoading.py" />
-        <option value="$PROJECT_DIR$/Utils.py" />
         <option value="$PROJECT_DIR$/GNN/MyRGCN.py" />
+        <option value="$PROJECT_DIR$/GNN/DataLoading.py" />
         <option value="$PROJECT_DIR$/GNN/Training.py" />
+        <option value="$PROJECT_DIR$/Utils.py" />
       </list>
     </option>
   </component>
@@ -230,7 +246,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -277,6 +292,7 @@
           <select />
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -342,23 +358,22 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1440" height="801" extended-state="6" />
-    <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.49499" visible="true" weight="0.2746781" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.49499" visible="true" weight="0.28755364" />
       <window_info id="Structure" order="1" sideWeight="0.50501" side_tool="true" weight="0.17596567" />
       <window_info id="Favorites" order="2" sideWeight="0.50220263" side_tool="true" weight="0.18597998" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.30596176" />
       <window_info anchor="bottom" id="Run" order="2" />
-      <window_info anchor="bottom" id="Debug" order="3" sideWeight="0.49893504" weight="0.32863188" />
+      <window_info anchor="bottom" id="Debug" order="3" sideWeight="0.49893504" weight="0.32845894" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" show_stripe_button="false" weight="0.32746196" />
       <window_info anchor="bottom" id="Version Control" order="7" weight="0.32722145" />
       <window_info anchor="bottom" id="Terminal" order="8" weight="0.32620922" />
       <window_info anchor="bottom" id="Event Log" order="9" sideWeight="0.50319487" side_tool="true" weight="0.37795275" />
-      <window_info active="true" anchor="bottom" id="Python Console" order="10" sideWeight="0.4968051" visible="true" weight="0.30465445" />
-      <window_info anchor="bottom" id="Inspection Results" order="11" weight="0.32863188" />
+      <window_info anchor="bottom" id="Inspection Results" order="10" weight="0.32863188" />
+      <window_info anchor="bottom" id="Python Console" order="11" sideWeight="0.4968051" visible="true" weight="0.30183357" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
@@ -420,52 +435,47 @@
     </expressions>
     <expressions id="evaluateExpression">
       <expression>
+        <expression-string>padded_sequence.squeeze()).chunk(chunks=padded_sequence.shape[0], dim=0)</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>(padded_sequence.squeeze()).chunk(chunks=padded_sequence.shape[0], dim=0)</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>(padded_sequence.squeeze())</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>padded_sequence.squeeze().chunk(chunks=padded_sequence.shape[0], dim=0)</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>(batchinput_tensor.chunk(batchinput_tensor.shape[0], dim=0)).chunk((batchinput_tensor.chunk(batchinput_tensor.shape[0], dim=0)).shape[0], dim=0)</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>batchinput_tensor.chunk(batchinput_tensor.shape[0], dim=0)</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>batchinput_tensor.shape</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
         <expression-string>list(map(lambda idx: idx + grapharea_size, (in_array[grapharea_size:grapharea_size + max_edges] != -1).nonzero()))</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
       <expression>
         <expression-string>(in_array[grapharea_size:grapharea_size + max_edges] != -1).nonzero()</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>[(in_array[grapharea_size:grapharea_size + max_edges] != -1).nonzero()].flat()</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>[(in_array[grapharea_size:grapharea_size + max_edges] != -1).nonzero()]</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>[(in_array[grapharea_size:grapharea_size + max_edges] != -1).nonzero() + grapharea_size]</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>list(map( lambda idx: idx + grapharea_size ,[(in_array[grapharea_size:grapharea_size + max_edges] != -1).nonzero()])</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>grapharea_size + [(in_array[grapharea_size:grapharea_size + max_edges] != -1).nonzero()]</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>list(map(lambda idx: idx + grapharea_size, [(in_array[grapharea_size:grapharea_size + max_edges] != -1).nonzero()]))</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>[(in_array[grapharea_size + max_edges:grapharea_size + 2 * max_edges] != -1).nonzero()]</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>in_array[grapharea_size:grapharea_size + max_edges] != -1</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
@@ -560,13 +570,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$USER_HOME$/opt/anaconda3/lib/python3.7/site-packages/torch/nn/functional.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="224">
-          <caret line="1049" column="22" selection-start-line="1049" selection-start-column="22" selection-end-line="1049" selection-end-column="41" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$USER_HOME$/opt/anaconda3/lib/python3.7/site-packages/torch/autograd/__init__.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="254">
@@ -630,13 +633,6 @@
           <folding>
             <element signature="e#0#9#0" expanded="true" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/opt/anaconda3/lib/python3.7/site-packages/torch/nn/modules/module.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="8010">
-          <caret line="540" selection-start-line="540" selection-end-line="540" />
         </state>
       </provider>
     </entry>
@@ -745,16 +741,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Utils.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="473">
-          <caret line="50" selection-start-line="50" selection-end-line="50" />
-          <folding>
-            <element signature="e#0#14#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$USER_HOME$/opt/anaconda3/lib/python3.7/site-packages/torch/__init__.pyi">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="239">
@@ -783,10 +769,31 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$USER_HOME$/opt/anaconda3/lib/python3.7/site-packages/IPython/core/interactiveshell.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="189">
+          <caret line="3325" selection-start-line="3325" selection-end-line="3325" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/opt/anaconda3/lib/python3.7/site-packages/torch/nn/modules/module.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="197">
+          <caret line="85" column="8" selection-start-line="85" selection-start-column="8" selection-end-line="85" selection-end-column="8" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/opt/anaconda3/lib/python3.7/site-packages/torch/nn/functional.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="197">
+          <caret line="1049" column="4" selection-start-line="1049" selection-start-column="4" selection-end-line="1049" selection-end-column="4" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/GNN/DataLoading.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="60">
-          <caret line="15" column="84" selection-start-line="15" selection-start-column="84" selection-end-line="15" selection-end-column="84" />
+        <state relative-caret-position="975">
+          <caret line="76" column="86" selection-start-line="76" selection-start-column="86" selection-end-line="76" selection-end-column="86" />
           <folding>
             <element signature="e#0#12#0" expanded="true" />
           </folding>
@@ -795,8 +802,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/GNN/NumericalIndices.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="795">
-          <caret line="59" selection-start-line="59" selection-end-line="59" />
+        <state relative-caret-position="660">
+          <caret line="50" column="47" selection-start-line="50" selection-start-column="47" selection-end-line="50" selection-end-column="47" />
           <folding>
             <element signature="e#0#14#0" expanded="true" />
           </folding>
@@ -815,8 +822,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Vocabulary/Vocabulary_Utilities.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1590">
-          <caret line="112" column="14" selection-start-line="112" selection-start-column="14" selection-end-line="112" selection-end-column="14" />
+        <state relative-caret-position="1275">
+          <caret line="91" column="12" selection-start-line="91" selection-start-column="12" selection-end-line="91" selection-end-column="12" />
           <folding>
             <element signature="e#0#11#0" expanded="true" />
           </folding>
@@ -833,27 +840,30 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$USER_HOME$/opt/anaconda3/lib/python3.7/site-packages/IPython/core/interactiveshell.py">
+    <entry file="file://$PROJECT_DIR$/GNN/Training.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="189">
-          <caret line="3325" selection-start-line="3325" selection-end-line="3325" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/GNN/MyRGCN.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="106">
-          <caret line="16" column="6" selection-start-line="16" selection-start-column="6" selection-end-line="16" selection-end-column="6" />
+        <state relative-caret-position="356">
+          <caret line="186" column="75" selection-start-line="186" selection-start-column="75" selection-end-line="186" selection-end-column="75" />
           <folding>
             <element signature="e#0#12#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/GNN/Training.py">
+    <entry file="file://$PROJECT_DIR$/Utils.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="134">
-          <caret line="119" column="23" selection-start-line="119" selection-start-column="23" selection-end-line="119" selection-end-column="23" />
+        <state relative-caret-position="196">
+          <caret line="107" column="74" selection-start-line="107" selection-start-column="74" selection-end-line="107" selection-end-column="74" />
+          <folding>
+            <element signature="e#0#14#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/GNN/MyRGCN.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="401">
+          <caret line="193" column="12" selection-start-line="193" selection-start-column="12" selection-end-line="193" selection-end-column="12" />
           <folding>
             <element signature="e#0#12#0" expanded="true" />
           </folding>
