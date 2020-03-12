@@ -18,6 +18,7 @@ from Utils import DEVICE
 import GNN.DataLoading as DL
 import GNN.ExplorePredictions as EP
 import GNN.MyRGCN as MyRGCN
+import GNN.MyRNN as MyRNN
 from itertools import cycle
 
 
@@ -64,9 +65,9 @@ def compute_model_loss(model,batch_input, batch_labels, verbose=False):
 
 ################
 
-def training_setup(slc_or_text_corpus, include_senses, method, grapharea_size, batch_size, sequence_length):
+def training_setup(slc_or_text_corpus, include_senses, method, grapharea_size, hidden_state_dim, batch_size, sequence_length):
     graph_dataobj = DG.get_graph_dataobject(new=False, method=method).to(DEVICE)
-    model = MyRGCN.GRU_RGCN(graph_dataobj, grapharea_size, include_senses)
+    model = MyRNN.RNN(graph_dataobj, grapharea_size,hidden_state_dim, include_senses)
     grapharea_matrix = AD.get_grapharea_matrix(graph_dataobj, grapharea_size)
     logging.info("Graph-data object loaded, model initialized. Moving them to GPU device(s) if present.")
     graph_dataobj.to(DEVICE)
@@ -117,7 +118,7 @@ def training_loop(model, learning_rate, train_dataloader, valid_dataloader, num_
 
     model_forParameters = model.module if torch.cuda.device_count() > 1 else model
 
-    steps_logging = 500
+    steps_logging = 10
     hyperparams_str = 'model' + str(type(model).__name__) \
                       + '_batchPerSeqlen' + str(train_dataloader.batch_size) \
                       + '_area' + str(model_forParameters.N)\
@@ -184,9 +185,6 @@ def training_loop(model, learning_rate, train_dataloader, valid_dataloader, num_
 
                 if overall_step % steps_logging == 0:
                     logging.info("Global step=" + str(overall_step) + "\t ; Iteration time=" + str(round(time()-t0,5)))
-                    logging.info("Running in-epoch loss, on training data: ")
-                    Utils.record_statistics(sum_epoch_loss_global, sum_epoch_loss_sense,
-                                            epoch_step, max(1,epoch_senselabeled_tokens), training_losses_lts)
 
                 #Utils.log_chronometer([t0, time()])
 
@@ -242,7 +240,7 @@ def evaluation(evaluation_dataloader, evaluation_dataiter, model):
 
     evaluation_step = 0
     evaluation_senselabeled_tokens = 0
-    logging_step = 1000
+    logging_step = 10
 
     with torch.no_grad(): # Deactivates the autograd engine entirely to save some memory
         for b_idx in range(len(evaluation_dataloader)):
