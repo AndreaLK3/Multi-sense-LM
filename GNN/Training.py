@@ -118,7 +118,7 @@ def training_loop(model, learning_rate, train_dataloader, valid_dataloader, num_
 
     model_forParameters = model.module if torch.cuda.device_count() > 1 else model
 
-    steps_logging = 10
+    steps_logging = 100
     hyperparams_str = 'model' + str(type(model).__name__) \
                       + '_batchPerSeqlen' + str(train_dataloader.batch_size) \
                       + '_area' + str(model_forParameters.N)\
@@ -203,10 +203,12 @@ def training_loop(model, learning_rate, train_dataloader, valid_dataloader, num_
             Utils.record_statistics(valid_loss_globals, valid_loss_senses, 1,1, losses_lts=validation_losses_lts)
             epoch_valid_loss = valid_loss_globals + valid_loss_senses
 
-            #if epoch_valid_loss < previous_valid_loss:
+            if epoch_valid_loss < previous_valid_loss:
                 # save model
+                torch.save(model, os.path.join(F.FOLDER_GNN, hyperparams_str +
+                                           'step_' + str(overall_step) + '.rgcnmodel'))
 
-            if epoch_valid_loss > previous_valid_loss + 0.01 :
+            if epoch_valid_loss > previous_valid_loss + 0.01:
                 if not flag_firstvalidationhigher:
                     flag_firstvalidationhigher = True
                 else: # already did first offence. Must early-stop
@@ -220,11 +222,10 @@ def training_loop(model, learning_rate, train_dataloader, valid_dataloader, num_
     except KeyboardInterrupt:
         logging.info("Training loop interrupted manually by keyboard")
 
-    logging.info("Saving losses and RGCN model.")
+    logging.info("Saving losses.")
     np.save(hyperparams_str + '_' + Utils.TRAINING + '_' + F.LOSSES_FILEEND, np.array(training_losses_lts))
     np.save(hyperparams_str + '_' + Utils.VALIDATION + '_' + F.LOSSES_FILEEND, np.array(validation_losses_lts))
-    torch.save(model, os.path.join(F.FOLDER_GNN, hyperparams_str +
-                                   'step_' + str(overall_step) + '.rgcnmodel'))
+
 
 
 
@@ -240,7 +241,7 @@ def evaluation(evaluation_dataloader, evaluation_dataiter, model):
 
     evaluation_step = 0
     evaluation_senselabeled_tokens = 0
-    logging_step = 10
+    logging_step = 100
 
     with torch.no_grad(): # Deactivates the autograd engine entirely to save some memory
         for b_idx in range(len(evaluation_dataloader)):

@@ -79,6 +79,105 @@ def unpack_bptt_elem(sequence_lts, elem_idx):
     return (x_indices, edge_index, edge_type)
 
 
+#######
+
+class GRU_RNN(torch.nn.Module):
+    def __init__(self, data, grapharea_size, hidden_state_dim, include_senses):
+        super(GRU_RNN, self).__init__()
+        self.include_senses = include_senses
+        self.last_idx_senses = data.node_types.tolist().index(1)
+        self.last_idx_globals = data.node_types.tolist().index(2)
+        self.N = grapharea_size
+        self.hidden_state_dim =hidden_state_dim
+        self.d = data.x.shape[1]
+
+        # The embeddings matrix for: senses, globals, definitions, examples (the latter 2 will have gradient set to 0)
+        self.X = Parameter(data.x.clone().detach(), requires_grad=True)
+        self.select_first_node = Parameter(torch.tensor([0]), requires_grad=False)
+
+        # Input vector x(t) is formed by concatenating the vector w representing current word,
+        # and the output from neurons in the context layer s at time t-1.
+
+        # We update this memory buffer manually, there is no gradient. We set it as a Parameter to DataParallel-ize it
+        self.memory_h1 = Parameter(torch.zeros(size=(1, self.hidden_state_dim)), requires_grad=False)
+        self.memory_h2 = Parameter(torch.zeros(size=(1, self.hidden_state_dim//2)), requires_grad=False)
+
+        self.U_1 = torch.nn.Linear(in_features=self.d, out_features=self.hidden_state_dim, bias=True)
+        self.W1 = torch.nn.Linear(in_features=self.d, out_features=self.hidden_state_dim,
+                                  bias=True)
+        self.dropout_1 = torch.nn.Dropout(p=0.1)
+
+        self.U_2 = torch.nn.Linear(in_features=self.hidden_state_dim, out_features=self.hidden_state_dim//2, bias=True)
+        self.W2 = torch.nn.Linear(in_features=3*self.hidden_state_dim//2, out_features=self.hidden_state_dim//2,
+                                  bias=True)
+        self.dropout_2 = torch.nn.Dropout(p=0.1)
+
+
+        # 2nd part of the network as before: 2 linear layers from the RGCN representation to the logits
+        self.linear2global = torch.nn.Linear(in_features=self.hidden_state_dim//2,
+                                             out_features=self.last_idx_globals - self.last_idx_senses, bias=True)
+
+        if self.include_senses:
+            self.linear2sense = torch.nn.Linear(in_features=self.hidden_state_dim//2,
+                                                out_features=self.last_idx_senses, bias=True)
+
+
+
+    def forward(self, batchinput_tensor):  # given the batches, the current node is at index 0
+
+        predictions_globals_ls = []
+        predictions_senses_ls = []
+        # T-BPTT: at the start of each batch, we detach_() the hidden state from the graph&history that created it
+        self.memory_h1.detach_()
+        self.memory_h2.detach_()
+
+        if batchinput_tensor.shape[0] > 1:
+            sequences_in_the_batch_ls = torch.chunk(batchinput_tensor, chunks=batchinput_tensor.shape[0], dim=0)
+        else:
+            sequences_in_the_batch_ls = [batchinput_tensor]
+
+        for padded_sequence in sequences_in_the_batch_ls:
+            padded_sequence = padded_sequence.squeeze()
+            padded_sequence = padded_sequence.chunk(chunks=padded_sequence.shape[0], dim=0)
+            sequence_lts = [unpack_input_tensor(sample_tensor, self.N) for sample_tensor in padded_sequence]
+
+            for x_indices in sequence_lts:
+                currentword_embedding = self.X.index_select(dim=0, index=x_indices[0])
+
+                currentword_contribution_updategate = self.U_1(currentword_embedding)
+                update_gate_1 = torch.sigmoid(currentword_contribution_updategate)
+
+                proposed_h1 = tfunc.leaky_relu(self.dropout_1(self.W1(currentword_embedding)), negative_slope=0.01)
+                # GRU update: h^{t+1}=u∙(̃h^{t+1}) + (1-u)∙h^t
+                h1 = update_gate_1 * proposed_h1 + \
+                    (torch.tensor(1) - update_gate_1) * self.memory_h1
+                self.memory_h1.data.copy_(h1.clone()) # store h in memory
+
+                prevstate_contribution_updategate = self.U_2(h1)
+                update_gate_2 = torch.sigmoid(prevstate_contribution_updategate)
+                proposed_h2 = tfunc.leaky_relu(self.dropout_2(self.W2(h1)), negative_slope=0.01)
+                h2 = update_gate_2 * proposed_h2 + \
+                    (torch.tensor(1) - update_gate_1) * self.memory_h2
+                self.memory_h2.data.copy_(h2.clone())  # store h in memory
+
+                logits_global = self.linear2global(h2)  # shape=torch.Size([5])
+                sample_predictions_globals = tfunc.log_softmax(logits_global, dim=1)
+                predictions_globals_ls.append(sample_predictions_globals)
+                if self.include_senses:
+                    logits_sense = self.linear2sense(h2)
+                    sample_predictions_senses = tfunc.log_softmax(logits_sense, dim=1)
+                    predictions_senses_ls.append(sample_predictions_senses)
+                else:
+                    predictions_senses_ls.append(torch.tensor(0).to(DEVICE)) # so I don't have to change the interface elsewhere
+
+            #Utils.log_chronometer([t0,t1,t2,t3,t4,t5, t6, t7, t8])
+        return torch.stack(predictions_globals_ls, dim=0).squeeze(), \
+               torch.stack(predictions_senses_ls, dim=0).squeeze()
+
+
+#######
+
+
 class RNN(torch.nn.Module):
     def __init__(self, data, grapharea_size, hidden_state_dim, include_senses):
         super(RNN, self).__init__()
@@ -90,28 +189,32 @@ class RNN(torch.nn.Module):
         self.d = data.x.shape[1]
 
         # The embeddings matrix for: senses, globals, definitions, examples (the latter 2 will have gradient set to 0)
-        self.X = Parameter(data.x.clone().detach().to(DEVICE), requires_grad=True)
-        self.select_first_node = Parameter(torch.tensor([0]).to(DEVICE), requires_grad=False)
+        self.X = Parameter(data.x.clone().detach(), requires_grad=True)
+        self.select_first_node = Parameter(torch.tensor([0]), requires_grad=False)
 
         # Input vector x(t) is formed by concatenating the vector w representing current word,
         # and the output from neurons in the context layer s at time t-1.
 
         # We update this memory buffer manually, there is no gradient. We set it as a Parameter to DataParallel-ize it
-        self.memory_context = Parameter(torch.zeros(size=(1, self.hidden_state_dim)).to(DEVICE), requires_grad=False)
+        self.memory_h1 = Parameter(torch.zeros(size=(1, self.hidden_state_dim)), requires_grad=False)
+        self.memory_h2 = Parameter(torch.zeros(size=(1, self.hidden_state_dim//2)), requires_grad=False)
 
-        self.W = Parameter(torch.empty(size=(self.d + self.hidden_state_dim,self.hidden_state_dim)).to(DEVICE),
-                           requires_grad=True)
+        self.W1 = torch.nn.Linear(in_features=self.d + self.hidden_state_dim, out_features=self.hidden_state_dim,
+                                  bias=True)
+        self.dropout_1 = torch.nn.Dropout(p=0.1)
+        self.W2 = torch.nn.Linear(in_features=3*self.hidden_state_dim//2, out_features=self.hidden_state_dim//2,
+                                  bias=True)
+        self.dropout_2 = torch.nn.Dropout(p=0.1)
+
 
         # 2nd part of the network as before: 2 linear layers from the RGCN representation to the logits
-        self.linear2global = torch.nn.Linear(in_features=self.hidden_state_dim,
+        self.linear2global = torch.nn.Linear(in_features=self.hidden_state_dim//2,
                                              out_features=self.last_idx_globals - self.last_idx_senses, bias=True)
 
         if self.include_senses:
-            self.linear2sense = torch.nn.Linear(in_features=self.hidden_state_dim,
+            self.linear2sense = torch.nn.Linear(in_features=self.hidden_state_dim//2,
                                                 out_features=self.last_idx_senses, bias=True)
 
-        # Once the structure has been specified, we initialize the Parameters we defined
-        [torch.nn.init.xavier_normal_(my_param) for my_param in [self.W]]
 
 
     def forward(self, batchinput_tensor):  # given the batches, the current node is at index 0
@@ -119,7 +222,8 @@ class RNN(torch.nn.Module):
         predictions_globals_ls = []
         predictions_senses_ls = []
         # T-BPTT: at the start of each batch, we detach_() the hidden state from the graph&history that created it
-        self.memory_context.detach_()
+        self.memory_h1.detach_()
+        self.memory_h2.detach_()
 
         if batchinput_tensor.shape[0] > 1:
             sequences_in_the_batch_ls = torch.chunk(batchinput_tensor, chunks=batchinput_tensor.shape[0], dim=0)
@@ -134,18 +238,24 @@ class RNN(torch.nn.Module):
             sequence_lts = [unpack_input_tensor(sample_tensor, self.N) for sample_tensor in padded_sequence]
 
             for x_indices in sequence_lts:
-                currentword_embedding = self.X.index_select(dim=0, index=self.select_first_node)
-                input_x = torch.cat([currentword_embedding, self.memory_context], dim=1)
+                currentword_embedding = self.X.index_select(dim=0, index=x_indices[0])
+                input_x_h1 = torch.cat([currentword_embedding, self.memory_h1], dim=1)
+                h1 = tfunc.leaky_relu(
+                    self.dropout_1(self.W1(input_x_h1)),
+                    negative_slope=0.01)
+                self.memory_h1.data.copy_(h1.clone()) # store h in memory
 
-                rnn_state_from_input = torch.mm(input_x, self.W)
+                input_h1_h2 = torch.cat([h1, self.memory_h2], dim=1)
+                h2 = tfunc.leaky_relu(
+                    self.dropout_2(self.W2(input_h1_h2)),
+                    negative_slope=0.01)
+                self.memory_h2.data.copy_(h2.clone())  # store h in memory
 
-                self.memory_context.data.copy_(rnn_state_from_input.clone()) # store h in memory
-
-                logits_global = self.linear2global(rnn_state_from_input)  # shape=torch.Size([5])
+                logits_global = self.linear2global(h2)  # shape=torch.Size([5])
                 sample_predictions_globals = tfunc.log_softmax(logits_global, dim=1)
                 predictions_globals_ls.append(sample_predictions_globals)
                 if self.include_senses:
-                    logits_sense = self.linear2sense(rnn_state_from_input)
+                    logits_sense = self.linear2sense(h2)
                     sample_predictions_senses = tfunc.log_softmax(logits_sense, dim=1)
                     predictions_senses_ls.append(sample_predictions_senses)
                 else:

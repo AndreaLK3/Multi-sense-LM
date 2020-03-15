@@ -90,11 +90,11 @@ def record_statistics(sum_epoch_loss_global, sum_epoch_loss_sense, epoch_step, n
     epoch_loss_globals = sum_epoch_loss_global / epoch_step
     epoch_loss_senses = sum_epoch_loss_sense / num_steps_withsense
     epoch_loss = epoch_loss_globals + epoch_loss_senses
-    logging.info("Losses: " + " Globals loss=" + str(round(epoch_loss_globals,3)) +
-                               " \tSense loss=" + str(round(epoch_loss_senses,3)) +
+    logging.info("Losses: " + " Globals loss=" + str(round(epoch_loss_globals,2)) +
+                               " \tSense loss=" + str(round(epoch_loss_senses,2)) +
                                " \tTotal loss=" + str(round(epoch_loss,3)) )
-    logging.info("Perplexity: " + " Globals perplexity=" + str(round(exp(epoch_loss_globals),3)) +
-                 " \tSense perplexity=" + str(round(exp(epoch_loss_senses),3)) + "\n-------")
+    logging.info("Perplexity: " + " Globals perplexity=" + str(round(exp(epoch_loss_globals),2)) +
+                 " \tSense perplexity=" + str(round(exp(epoch_loss_senses),2)) + "\n-------")
     losses_lts.append((epoch_loss_globals, epoch_loss_senses))
 
 ##########
