@@ -70,7 +70,7 @@ def standardtextcorpus_generator(split_name):
     in_folder_path = os.path.join(F.FOLDER_TEXT_CORPUSES, F.FOLDER_MYTEXTCORPUS, folder)
     logging.info("setting up standardtextcorpus_generator on path: " + str(in_folder_path))
     textfiles_fnames = os.listdir(in_folder_path)
-    with [open(os.path.join(in_folder_path, fname),'r',encoding="utf-8") for fname in textfiles_fnames][0] as text_file:
+    with [open(os.path.join(in_folder_path, fname),'r') for fname in textfiles_fnames][0] as text_file:
         for i, line in enumerate(text_file):
             if line == '':
                 break

@@ -1,0 +1,14 @@
+*.bin
+*.h5
+*.vec
+*.db
+*.dataobject
+*.npy
+*.torchobj
+WikiText-103/
+runs/
+GraphNN/pyGAT
+TextCorpuses/
+Saved_Results
+Media/IntermediateResults
+InputData/*.npy

@@ -88,37 +88,43 @@ class GRU_RNN(torch.nn.Module):
         self.last_idx_senses = data.node_types.tolist().index(1)
         self.last_idx_globals = data.node_types.tolist().index(2)
         self.N = grapharea_size
-        self.hidden_state_dim =hidden_state_dim
         self.d = data.x.shape[1]
+        self.hidden_state_dim = hidden_state_dim
 
-        # The embeddings matrix for: senses, globals, definitions, examples (the latter 2 will have gradient set to 0)
+        # The embeddings matrix for: senses, globals, definitions, examples (the latter 2 may have gradient set to 0)
         self.X = Parameter(data.x.clone().detach(), requires_grad=True)
         self.select_first_node = Parameter(torch.tensor([0]), requires_grad=False)
 
-        # Input vector x(t) is formed by concatenating the vector w representing current word,
-        # and the output from neurons in the context layer s at time t-1.
 
         # We update this memory buffer manually, there is no gradient. We set it as a Parameter to DataParallel-ize it
         self.memory_h1 = Parameter(torch.zeros(size=(1, self.hidden_state_dim)), requires_grad=False)
-        self.memory_h2 = Parameter(torch.zeros(size=(1, self.hidden_state_dim//2)), requires_grad=False)
+        self.memory_h2 = Parameter(torch.zeros(size=(1, self.hidden_state_dim)), requires_grad=False)
 
-        self.U_1 = torch.nn.Linear(in_features=self.d, out_features=self.hidden_state_dim, bias=True)
-        self.W1 = torch.nn.Linear(in_features=self.d, out_features=self.hidden_state_dim,
-                                  bias=True)
-        self.dropout_1 = torch.nn.Dropout(p=0.1)
+        # 1st layer with GRU
+        self.U_z_1 = torch.nn.Linear(in_features=self.hidden_state_dim, out_features=self.hidden_state_dim, bias=False)
+        self.W_z_1 = torch.nn.Linear(in_features=self.d, out_features=self.hidden_state_dim, bias=False)
+        self.U_r_1 = torch.nn.Linear(in_features=self.hidden_state_dim, out_features=self.hidden_state_dim, bias=False)
+        self.W_r_1 = torch.nn.Linear(in_features=self.d, out_features=self.hidden_state_dim, bias=False)
 
-        self.U_2 = torch.nn.Linear(in_features=self.hidden_state_dim, out_features=self.hidden_state_dim//2, bias=True)
-        self.W2 = torch.nn.Linear(in_features=3*self.hidden_state_dim//2, out_features=self.hidden_state_dim//2,
-                                  bias=True)
-        self.dropout_2 = torch.nn.Dropout(p=0.1)
+        self.U_1 = torch.nn.Linear(in_features=self.hidden_state_dim, out_features=self.hidden_state_dim, bias=False)
+        self.W_1 = torch.nn.Linear(in_features=self.d, out_features=self.hidden_state_dim, bias=False)
+        self.dropout = torch.nn.Dropout(p=0.1)
 
+        # 2nd layer with GRU
+        self.U_z_2 = torch.nn.Linear(in_features=self.hidden_state_dim, out_features=self.hidden_state_dim, bias=False)
+        self.W_z_2 = torch.nn.Linear(in_features=self.hidden_state_dim, out_features=self.hidden_state_dim, bias=False)
+        self.U_r_2 = torch.nn.Linear(in_features=self.hidden_state_dim, out_features=self.hidden_state_dim, bias=False)
+        self.W_r_2 = torch.nn.Linear(in_features=self.hidden_state_dim, out_features=self.hidden_state_dim, bias=False)
+
+        self.U_2 = torch.nn.Linear(in_features=self.hidden_state_dim, out_features=self.hidden_state_dim, bias=False)
+        self.W_2 = torch.nn.Linear(in_features=self.hidden_state_dim, out_features=self.hidden_state_dim, bias=False)
 
         # 2nd part of the network as before: 2 linear layers from the RGCN representation to the logits
-        self.linear2global = torch.nn.Linear(in_features=self.hidden_state_dim//2,
+        self.linear2global = torch.nn.Linear(in_features=self.hidden_state_dim,
                                              out_features=self.last_idx_globals - self.last_idx_senses, bias=True)
 
         if self.include_senses:
-            self.linear2sense = torch.nn.Linear(in_features=self.hidden_state_dim//2,
+            self.linear2sense = torch.nn.Linear(in_features=self.hidden_state_dim,
                                                 out_features=self.last_idx_senses, bias=True)
 
 
@@ -144,20 +150,18 @@ class GRU_RNN(torch.nn.Module):
             for x_indices in sequence_lts:
                 currentword_embedding = self.X.index_select(dim=0, index=x_indices[0])
 
-                currentword_contribution_updategate = self.U_1(currentword_embedding)
-                update_gate_1 = torch.sigmoid(currentword_contribution_updategate)
+                z_1 = torch.sigmoid(self.W_z_1(currentword_embedding) + self.U_z_1(self.memory_h1))
+                r_1 = torch.sigmoid(self.W_r_1(currentword_embedding) + self.U_r_1(self.memory_h1))
+                h_tilde_1 = torch.tanh(self.W_1(currentword_embedding) + self.U_1(r_1 * self.memory_h1))
+                h1 = z_1 * h_tilde_1 + (torch.tensor(1)-z_1) * self.memory_h1
 
-                proposed_h1 = tfunc.leaky_relu(self.dropout_1(self.W1(currentword_embedding)), negative_slope=0.01)
-                # GRU update: h^{t+1}=u∙(̃h^{t+1}) + (1-u)∙h^t
-                h1 = update_gate_1 * proposed_h1 + \
-                    (torch.tensor(1) - update_gate_1) * self.memory_h1
                 self.memory_h1.data.copy_(h1.clone()) # store h in memory
 
-                prevstate_contribution_updategate = self.U_2(h1)
-                update_gate_2 = torch.sigmoid(prevstate_contribution_updategate)
-                proposed_h2 = tfunc.leaky_relu(self.dropout_2(self.W2(h1)), negative_slope=0.01)
-                h2 = update_gate_2 * proposed_h2 + \
-                    (torch.tensor(1) - update_gate_1) * self.memory_h2
+                z_2 = torch.sigmoid(self.W_z_2(h1) + self.U_z_2(self.memory_h2))
+                r_2 = torch.sigmoid(self.W_r_2(h1) + self.U_r_2(self.memory_h2))
+                h_tilde_2 = torch.tanh(self.W_2(h1) + self.U_2(r_2 * self.memory_h2))
+                h2 = z_2 * h_tilde_2 + (torch.tensor(1) - z_2) * self.memory_h2
+
                 self.memory_h2.data.copy_(h2.clone())  # store h in memory
 
                 logits_global = self.linear2global(h2)  # shape=torch.Size([5])
