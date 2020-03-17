@@ -152,14 +152,14 @@ class GRU_RNN(torch.nn.Module):
 
                 z_1 = torch.sigmoid(self.W_z_1(currentword_embedding) + self.U_z_1(self.memory_h1))
                 r_1 = torch.sigmoid(self.W_r_1(currentword_embedding) + self.U_r_1(self.memory_h1))
-                h_tilde_1 = torch.tanh(self.W_1(currentword_embedding) + self.U_1(r_1 * self.memory_h1))
+                h_tilde_1 = torch.tanh(self.dropout(self.W_1(currentword_embedding)) + self.U_1(r_1 * self.memory_h1))
                 h1 = z_1 * h_tilde_1 + (torch.tensor(1)-z_1) * self.memory_h1
 
                 self.memory_h1.data.copy_(h1.clone()) # store h in memory
 
                 z_2 = torch.sigmoid(self.W_z_2(h1) + self.U_z_2(self.memory_h2))
                 r_2 = torch.sigmoid(self.W_r_2(h1) + self.U_r_2(self.memory_h2))
-                h_tilde_2 = torch.tanh(self.W_2(h1) + self.U_2(r_2 * self.memory_h2))
+                h_tilde_2 = torch.tanh(self.dropout(self.W_2(h1)) + self.U_2(r_2 * self.memory_h2))
                 h2 = z_2 * h_tilde_2 + (torch.tensor(1) - z_2) * self.memory_h2
 
                 self.memory_h2.data.copy_(h2.clone())  # store h in memory
