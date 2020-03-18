@@ -124,7 +124,7 @@ class TextDataset(torch.utils.data.Dataset):
 
 ### Auxiliary function:
 ### Getting the graph-input (x, edge_index, edge_type)
-### Here I decide what is the starting token for a prediction. For now, it is "sense if present, else global"
+### Here I decide what is the input for a prediction. It is going to be (global, sense[-1s if not present])
 def get_forwardinput_forelement(global_idx, sense_idx, grapharea_matrix, area_size, graph_dataobj):
 
     logging.debug("get_forwardinput_forelement: " + str(global_idx) + ' ; ' + str(sense_idx))

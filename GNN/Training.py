@@ -18,6 +18,7 @@ from Utils import DEVICE
 import GNN.DataLoading as DL
 import GNN.ExplorePredictions as EP
 import GNN.MyRGCN as MyRGCN
+import GNN.MyGAT as MyGAT
 import GNN.MyRNN as MyRNN
 from itertools import cycle
 
@@ -67,8 +68,8 @@ def compute_model_loss(model,batch_input, batch_labels, verbose=False):
 
 def training_setup(slc_or_text_corpus, include_senses, method, grapharea_size, hidden_state_dim, batch_size, sequence_length):
     graph_dataobj = DG.get_graph_dataobject(new=False, method=method).to(DEVICE)
-    model = MyRNN.GRU_RNN(graph_dataobj, grapharea_size,hidden_state_dim, include_senses)
-    grapharea_matrix = AD.get_grapharea_matrix(graph_dataobj, grapharea_size)
+    model = MyGAT.GRU_GAT(graph_dataobj, grapharea_size,hidden_state_dim, include_senses)
+    grapharea_matrix = AD.get_grapharea_matrix(graph_dataobj, grapharea_size, fullarea_or_neighbours=False)
     logging.info("Graph-data object loaded, model initialized. Moving them to GPU device(s) if present.")
     graph_dataobj.to(DEVICE)
 

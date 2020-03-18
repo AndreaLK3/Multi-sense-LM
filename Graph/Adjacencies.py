@@ -28,7 +28,7 @@ def get_node_data(grapharea_matrix, i, grapharea_size, edges_added_per_node=64):
 
 
 ### Creation function - numpy version
-def create_adjacencies_matrix_numpy(graph_dataobj, area_size, edges_added_per_node=64):
+def create_adjacencies_matrix_numpy(graph_dataobj, area_size, edges_added_per_node, fullarea_or_neighbours):
     #Utils.init_logging('create_adjacencies_matrix_numpy.log')
     out_fpath = os.path.join(F.FOLDER_GRAPH, 'nodes_' + str(area_size) + '_' + F.GRAPHAREA_FILE)
     out_file = open(out_fpath, 'wb') # -- used with numpy
@@ -37,7 +37,10 @@ def create_adjacencies_matrix_numpy(graph_dataobj, area_size, edges_added_per_no
     tot_nodes = graph_dataobj.x.shape[0]
 
     k = area_size
-    m = k * edges_added_per_node
+    if fullarea_or_neighbours:
+        m = k * edges_added_per_node
+    else:
+        m = k
     tot_dim_row = area_size + 3 * m
     nodes_arraytable = np.ones(shape=(tot_nodes, tot_dim_row)) * -1
 
@@ -48,7 +51,7 @@ def create_adjacencies_matrix_numpy(graph_dataobj, area_size, edges_added_per_no
     # [k+2m : k+3m) for the edge_type.
     for i in range(tot_nodes):
         node_index = i
-        (adj_nodes_ls, adj_edge_index, adj_edge_type) = GA.get_grapharea_elements(node_index, area_size, graph_dataobj)
+        (adj_nodes_ls, adj_edge_index, adj_edge_type) = GA.get_grapharea_elements(node_index, area_size, graph_dataobj, fullarea_or_neighbours)
         if i % 1000 == 0:
             logging.info("node_index=" + str(node_index))
         # extract sources and targets from the edge_index related to the node
@@ -62,21 +65,21 @@ def create_adjacencies_matrix_numpy(graph_dataobj, area_size, edges_added_per_no
 
         # assign at the appropriate locations
         nodes_arraytable[i][0:len(adj_nodes_ls)] = np.array(adj_nodes_ls)
-        nodes_arraytable[i][k:k+len(arr_adj_edge_sources)] = arr_adj_edge_sources
-        nodes_arraytable[i][k+m:k+m+len(arr_adj_edge_targets)] = arr_adj_edge_targets
-        nodes_arraytable[i][k+2*m: k+2*m+len(arr_adj_edge_type)] = arr_adj_edge_type
+        nodes_arraytable[i][k: k+ min(len(arr_adj_edge_sources),m)] = arr_adj_edge_sources[0:m]
+        nodes_arraytable[i][k+m: k+m+ min(len(arr_adj_edge_targets),m)] = arr_adj_edge_targets[0:m]
+        nodes_arraytable[i][k+2*m: k+2*m+ min(len(arr_adj_edge_type),m)] = arr_adj_edge_type[0:m]
 
     np.save(out_fpath, nodes_arraytable)
     out_file.close() # -- used with numpy
     return nodes_arraytable
 
 ### Entry point function. Temporarily modified. Numpy version.
-def get_grapharea_matrix(graphdata_obj, area_size):
+def get_grapharea_matrix(graphdata_obj, area_size, fullarea_or_neighbours):
     candidate_fnames = [fname for fname in os.listdir(F.FOLDER_GRAPH)
                         if ((F.GRAPHAREA_FILE in fname) and ('nodes_' + str(area_size) + '_' in fname))]
     if len(candidate_fnames) == 0:
         logging.info("Pre-computing and saving graphArea matrix, with area_size=" + str(area_size))
-        grapharea_matrix = create_adjacencies_matrix_numpy(graphdata_obj, area_size)
+        grapharea_matrix = create_adjacencies_matrix_numpy(graphdata_obj, area_size, 64, fullarea_or_neighbours)
     else:
         fpath = os.path.join(F.FOLDER_GRAPH, candidate_fnames[0]) # we expect to find only one
         logging.info("Loading graphArea matrix, with area_size=" + str(area_size) + " from: " + str(fpath))
