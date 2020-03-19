@@ -66,13 +66,10 @@ def get_node_edges(edge_index, edge_type, node_index):
 
 
 ### Entry point function to get input - either the whole graph area, or the immediate neighbours
-def get_grapharea_elements(starting_node_index, area_size, graph, fullarea_or_neighbours):
+def get_grapharea_elements(starting_node_index, area_size, graph):
     logging.debug("starting_node_index=" + str(starting_node_index))
 
-    if fullarea_or_neighbours:
-        node_indices_ls, all_edges_retrieved_ls = get_indices_area_toinclude(graph.edge_index, graph.edge_type, starting_node_index, area_size)
-    else:
-        node_indices_ls, all_edges_retrieved_ls = get_indices_neighbours_toinclude(starting_node_index, area_size, graph)
+    node_indices_ls, all_edges_retrieved_ls = get_indices_neighbours_toinclude(starting_node_index, area_size, graph)
 
     # original time: t5 - t4 = 1.54 s; version 3 time: 0.05 s
     edges_retrieved_ls = list(filter(lambda edge_idx: graph.edge_index[0][edge_idx].item() in set(node_indices_ls)

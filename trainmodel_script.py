@@ -18,7 +18,7 @@ CGI.exe_from_input_to_vectors(do_reset=True, compute_single_prototype=True, sp_m
 DG.get_graph_dataobject(new=True, method=CE.Method.FASTTEXT)
 
 model, train_dataloader, valid_dataloader = T.training_setup(slc_or_text_corpus=False, include_senses = False,
-                                                             method=CE.Method.FASTTEXT, grapharea_size=32,
+                                                             method=CE.Method.FASTTEXT, grapharea_size=64,
                                                              hidden_state_dim=300, batch_size=None, sequence_length=35)
 
 T.training_loop(model, 0.0001, train_dataloader, valid_dataloader, 100)

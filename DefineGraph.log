@@ -17,4 +17,3 @@ INFO : Inserted 20000 synonyms edges
 INFO : syn_edges.__len__()=40016
 INFO : ant_edges.__len__()=3938
 INFO : Pre-computing and saving graphArea matrix, with area_size=32
-INFO : Data(edge_index=[2, 147844], edge_type=[147844], node_types=[114324], num_relations=[1], x=[114324, 300])

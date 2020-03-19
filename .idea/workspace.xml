@@ -3,6 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="d35dca92-959c-489d-8a61-f337e4cce7fa" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DefineGraph.log" beforeDir="false" afterPath="$PROJECT_DIR$/DefineGraph.log" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/GNN/DataLoading.py" beforeDir="false" afterPath="$PROJECT_DIR$/GNN/DataLoading.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/GNN/MyGAT.py" beforeDir="false" afterPath="$PROJECT_DIR$/GNN/MyGAT.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/GNN/Training.py" beforeDir="false" afterPath="$PROJECT_DIR$/GNN/Training.py" afterDir="false" />
@@ -22,11 +23,23 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/trainmodel_script.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="165">
+              <caret line="11" selection-start-line="11" selection-end-line="11" />
+              <folding>
+                <element signature="e#0#30#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/GNN/MyGAT.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="356">
-              <caret line="141" column="16" selection-start-line="141" selection-start-column="16" selection-end-line="141" selection-end-column="16" />
+            <state relative-caret-position="249">
+              <caret line="156" column="47" lean-forward="true" selection-start-line="156" selection-start-column="47" selection-end-line="156" selection-end-column="47" />
             </state>
           </provider>
         </entry>
@@ -34,70 +47,10 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/GNN/Training.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="227">
-              <caret line="76" column="17" selection-start-line="76" selection-start-column="17" selection-end-line="76" selection-end-column="17" />
+            <state relative-caret-position="372">
+              <caret line="244" column="20" selection-start-line="244" selection-start-column="20" selection-end-line="244" selection-end-column="20" />
               <folding>
                 <element signature="e#0#12#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/GNN/DataLoading.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1845">
-              <caret line="134" column="44" selection-start-line="134" selection-start-column="44" selection-end-line="134" selection-end-column="44" />
-              <folding>
-                <element signature="e#0#12#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Graph/Adjacencies.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="298">
-              <caret line="69" column="41" selection-start-line="69" selection-start-column="41" selection-end-line="69" selection-end-column="41" />
-              <folding>
-                <element signature="e#0#12#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Graph/GraphArea.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="270">
-              <caret line="73" column="9" selection-start-line="73" selection-start-column="9" selection-end-line="73" selection-end-column="9" />
-              <folding>
-                <element signature="e#0#14#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Graph/DefineGraph.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="3090">
-              <caret line="216" column="37" selection-start-line="216" selection-start-column="37" selection-end-line="216" selection-end-column="37" />
-              <folding>
-                <element signature="e#0#19#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/trainmodel_script.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="135">
-              <caret line="19" selection-start-line="19" selection-end-line="21" selection-end-column="119" />
-              <folding>
-                <element signature="e#0#30#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -114,7 +67,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>c.</find>
       <find>min_count=10</find>
       <find>Duplica</find>
       <find>Lemma</find>
@@ -144,6 +96,7 @@
       <find>split_with_sizes</find>
       <find>tanh</find>
       <find>1</find>
+      <find>fulla</find>
     </findStrings>
     <replaceStrings>
       <replace>F</replace>
@@ -212,12 +165,12 @@
         <option value="$PROJECT_DIR$/GNN/MyRGCN.py" />
         <option value="$PROJECT_DIR$/Utils.py" />
         <option value="$PROJECT_DIR$/GNN/MyRNN.py" />
-        <option value="$PROJECT_DIR$/GNN/DataLoading.py" />
-        <option value="$PROJECT_DIR$/GNN/Training.py" />
         <option value="$PROJECT_DIR$/trainmodel_script.py" />
-        <option value="$PROJECT_DIR$/Graph/GraphArea.py" />
         <option value="$PROJECT_DIR$/Graph/Adjacencies.py" />
+        <option value="$PROJECT_DIR$/Graph/GraphArea.py" />
+        <option value="$PROJECT_DIR$/GNN/DataLoading.py" />
         <option value="$PROJECT_DIR$/GNN/MyGAT.py" />
+        <option value="$PROJECT_DIR$/GNN/Training.py" />
       </list>
     </option>
   </component>
@@ -232,6 +185,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -289,7 +243,6 @@
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -357,7 +310,7 @@
     <frame x="0" y="23" width="1440" height="801" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.49499" visible="true" weight="0.18669528" />
+      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.49499" visible="true" weight="0.18884121" />
       <window_info id="Structure" order="1" sideWeight="0.50501" side_tool="true" weight="0.17596567" />
       <window_info id="Favorites" order="2" sideWeight="0.50220263" side_tool="true" weight="0.18597998" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -411,7 +364,7 @@
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/GNN/MyGAT.py</url>
-          <line>123</line>
+          <line>124</line>
           <option name="timeStamp" value="7" />
         </line-breakpoint>
       </breakpoints>
@@ -794,36 +747,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/GNN/DataLoading.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1845">
-          <caret line="134" column="44" selection-start-line="134" selection-start-column="44" selection-end-line="134" selection-end-column="44" />
-          <folding>
-            <element signature="e#0#12#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Graph/DefineGraph.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3090">
-          <caret line="216" column="37" selection-start-line="216" selection-start-column="37" selection-end-line="216" selection-end-column="37" />
-          <folding>
-            <element signature="e#0#19#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/trainmodel_script.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="135">
-          <caret line="19" selection-start-line="19" selection-end-line="21" selection-end-column="119" />
-          <folding>
-            <element signature="e#0#30#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$USER_HOME$/opt/anaconda3/lib/python3.7/site-packages/IPython/core/interactiveshell.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="189">
@@ -831,30 +754,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/GNN/Training.py">
+    <entry file="file://$PROJECT_DIR$/GNN/DataLoading.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="227">
-          <caret line="76" column="17" selection-start-line="76" selection-start-column="17" selection-end-line="76" selection-end-column="17" />
-          <folding>
-            <element signature="e#0#12#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Graph/GraphArea.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="270">
-          <caret line="73" column="9" selection-start-line="73" selection-start-column="9" selection-end-line="73" selection-end-column="9" />
-          <folding>
-            <element signature="e#0#14#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/GNN/MyRGCN.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="113">
-          <caret line="146" column="98" selection-start-line="146" selection-start-column="16" selection-end-line="146" selection-end-column="98" />
+        <state relative-caret-position="170">
+          <caret line="13" column="71" lean-forward="true" selection-start-line="13" selection-start-column="71" selection-end-line="13" selection-end-column="71" />
           <folding>
             <element signature="e#0#12#0" expanded="true" />
           </folding>
@@ -863,18 +766,68 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Graph/Adjacencies.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="298">
-          <caret line="69" column="41" selection-start-line="69" selection-start-column="41" selection-end-line="69" selection-end-column="41" />
+        <state relative-caret-position="179">
+          <caret line="14" column="9" lean-forward="true" selection-start-line="14" selection-start-column="9" selection-end-line="14" selection-end-column="9" />
           <folding>
             <element signature="e#0#12#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/Graph/GraphArea.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="55">
+          <caret line="71" column="4" selection-start-line="71" selection-start-column="4" selection-end-line="71" selection-end-column="4" />
+          <folding>
+            <element signature="e#0#14#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/GNN/MyRGCN.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="214">
+          <caret line="94" column="48" selection-start-line="94" selection-start-column="48" selection-end-line="94" selection-end-column="48" />
+          <folding>
+            <element signature="e#0#12#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/GNN/Training.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="372">
+          <caret line="244" column="20" selection-start-line="244" selection-start-column="20" selection-end-line="244" selection-end-column="20" />
+          <folding>
+            <element signature="e#0#12#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Graph/DefineGraph.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="173">
+          <caret line="208" column="26" selection-start-line="208" selection-start-column="26" selection-end-line="208" selection-end-column="26" />
+          <folding>
+            <element signature="e#0#19#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/trainmodel_script.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="165">
+          <caret line="11" selection-start-line="11" selection-end-line="11" />
+          <folding>
+            <element signature="e#0#30#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/GNN/MyGAT.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="356">
-          <caret line="141" column="16" selection-start-line="141" selection-start-column="16" selection-end-line="141" selection-end-column="16" />
+        <state relative-caret-position="249">
+          <caret line="156" column="47" lean-forward="true" selection-start-line="156" selection-start-column="47" selection-end-line="156" selection-end-column="47" />
         </state>
       </provider>
     </entry>

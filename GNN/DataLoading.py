@@ -9,23 +9,22 @@ import Vocabulary.Vocabulary_Utilities as VU
 import os
 import Filesystem as F
 import Utils
-from Utils import MAX_EDGES_PACKED
 
 # Auxiliary function to pack an input tuple (x_indices, edge_index, edge_type)
 # into a tensor [x_indices; edge_sources; edge_destinations; edge_type]
-def pack_input_tuple_into_tensor(input_tuple, graph_area, max_edges=MAX_EDGES_PACKED):
+def pack_input_tuple_into_tensor(input_tuple, graph_area):
 
-    in_tensor = - 1 * torch.ones(size=(graph_area + max_edges*3,)).to(torch.long)
+    in_tensor = - 1 * torch.ones(size=(graph_area *4,)).to(torch.long)
     x_indices = input_tuple[0]
     edge_sources = input_tuple[1][0]
     edge_destinations = input_tuple[1][1]
     edge_type = input_tuple[2]
-    if len(edge_sources) > max_edges:
-        logging.warning("Num edges=" + str(len(edge_sources)) + " , while max_edges packed=" + str(max_edges))
+    if len(edge_sources) > graph_area:
+        logging.warning("Num edges=" + str(len(edge_sources)) + " , while max_edges packed=" + str(graph_area))
     in_tensor[0:len(x_indices)] = x_indices
-    in_tensor[graph_area: graph_area+min(len(edge_sources), max_edges)] = edge_sources[0:max_edges]
-    in_tensor[graph_area+max_edges:graph_area+max_edges+min(len(edge_destinations), max_edges)] = edge_destinations[0:max_edges]
-    in_tensor[graph_area+2*max_edges:graph_area+2*max_edges+min(len(edge_type), max_edges)] = edge_type[0:max_edges]
+    in_tensor[graph_area: graph_area+min(len(edge_sources), graph_area)] = edge_sources[0:graph_area]
+    in_tensor[2*graph_area: 2*graph_area+min(len(edge_destinations), graph_area)] = edge_destinations[0:graph_area]
+    in_tensor[3*graph_area: 3*graph_area+min(len(edge_type), graph_area)] = edge_type[0:graph_area]
     return in_tensor
 
 # When automatic batching is enabled, collate_fn is called with a list of data samples at each time.
@@ -103,7 +102,7 @@ class TextDataset(torch.utils.data.Dataset):
         global_idx, sense_idx = self.current_token_tpl
         logging.debug("current_token_tpl=" + str(self.current_token_tpl))
         (self.area_x_indices, self.edge_index, self.edge_type) = \
-            get_forwardinput_forelement(global_idx, sense_idx, self.grapharea_matrix, self.area_size, self.graph_dataobj)
+            get_forwardinput_forelement(global_idx, sense_idx, self.grapharea_matrix, self.area_size)
 
         return ((self.area_x_indices, self.edge_index, self.edge_type), self.next_token_tpl)
 
@@ -125,7 +124,7 @@ class TextDataset(torch.utils.data.Dataset):
 ### Auxiliary function:
 ### Getting the graph-input (x, edge_index, edge_type)
 ### Here I decide what is the input for a prediction. It is going to be (global, sense[-1s if not present])
-def get_forwardinput_forelement(global_idx, sense_idx, grapharea_matrix, area_size, graph_dataobj):
+def get_forwardinput_forelement(global_idx, sense_idx, grapharea_matrix, area_size):
 
     logging.debug("get_forwardinput_forelement: " + str(global_idx) + ' ; ' + str(sense_idx))
     if (sense_idx == -1):

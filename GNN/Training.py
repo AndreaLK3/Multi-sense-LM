@@ -69,7 +69,7 @@ def compute_model_loss(model,batch_input, batch_labels, verbose=False):
 def training_setup(slc_or_text_corpus, include_senses, method, grapharea_size, hidden_state_dim, batch_size, sequence_length):
     graph_dataobj = DG.get_graph_dataobject(new=False, method=method).to(DEVICE)
     model = MyGAT.GRU_GAT(graph_dataobj, grapharea_size,hidden_state_dim, include_senses)
-    grapharea_matrix = AD.get_grapharea_matrix(graph_dataobj, grapharea_size, fullarea_or_neighbours=False)
+    grapharea_matrix = AD.get_grapharea_matrix(graph_dataobj, grapharea_size)
     logging.info("Graph-data object loaded, model initialized. Moving them to GPU device(s) if present.")
     graph_dataobj.to(DEVICE)
 
@@ -119,7 +119,7 @@ def training_loop(model, learning_rate, train_dataloader, valid_dataloader, num_
 
     model_forParameters = model.module if torch.cuda.device_count() > 1 else model
 
-    steps_logging = 100
+    steps_logging = 10
     hyperparams_str = 'model' + str(type(model).__name__) \
                       + '_batchPerSeqlen' + str(train_dataloader.batch_size) \
                       + '_area' + str(model_forParameters.N)\
@@ -242,7 +242,7 @@ def evaluation(evaluation_dataloader, evaluation_dataiter, model):
 
     evaluation_step = 0
     evaluation_senselabeled_tokens = 0
-    logging_step = 100
+    logging_step = 200
 
     with torch.no_grad(): # Deactivates the autograd engine entirely to save some memory
         for b_idx in range(len(evaluation_dataloader)):
