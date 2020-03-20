@@ -1,5 +1,5 @@
 import torch
-from torch_geometric.nn import RGCNConv, GCNConv, GatedGraphConv
+from torch_geometric.nn import RGCNConv, GCNConv, GatedGraphConv, GATConv
 import Utils
 import Filesystem as F
 import numpy as np
@@ -31,7 +31,7 @@ def get_antonym_nodes(edge_index, edge_type, antonym_edge_number):
 
 ######
 
-# NEIGHBOURS VERSION
+# version made to operate on neighbours alone
 def unpack_input_tensor(in_tensor, grapharea_size):
     in_tensor = in_tensor.squeeze()
     x_indices = in_tensor[(in_tensor[0:grapharea_size] != -1).nonzero().flatten()]
@@ -49,10 +49,12 @@ def unpack_input_tensor(in_tensor, grapharea_size):
 
 
 
-
-class GRU_GAT(torch.nn.Module):
+##########################################################################
+### 1 : GRU + manually built GAT that operates on different node types ###
+##########################################################################
+class GRU_GATN(torch.nn.Module):
     def __init__(self, data, grapharea_size, hidden_state_dim, include_senses):
-        super(GRU_GAT, self).__init__()
+        super(GRU_GATN, self).__init__()
         self.include_senses = include_senses
         self.last_idx_senses = data.node_types.tolist().index(1)
         self.last_idx_globals = data.node_types.tolist().index(2)
@@ -167,6 +169,119 @@ class GRU_GAT(torch.nn.Module):
                 z_1 = torch.sigmoid(self.W_z_1(node_attention_state) + self.U_z_1(self.memory_h1))
                 r_1 = torch.sigmoid(self.W_r_1(node_attention_state) + self.U_r_1(self.memory_h1))
                 h_tilde_1 = torch.tanh(self.dropout(self.W_1(node_attention_state)) + self.U_1(r_1 * self.memory_h1))
+                h1 = z_1 * h_tilde_1 + (torch.tensor(1)-z_1) * self.memory_h1
+
+                self.memory_h1.data.copy_(h1.clone()) # store h in memory
+
+                # GRU: Layer 2
+                z_2 = torch.sigmoid(self.W_z_2(h1) + self.U_z_2(self.memory_h2))
+                r_2 = torch.sigmoid(self.W_r_2(h1) + self.U_r_2(self.memory_h2))
+                h_tilde_2 = torch.tanh(self.dropout(self.W_2(h1)) + self.U_2(r_2 * self.memory_h2))
+                h2 = z_2 * h_tilde_2 + (torch.tensor(1) - z_2) * self.memory_h2
+
+                self.memory_h2.data.copy_(h2.clone())  # store h in memory
+
+                # 2nd part of the architecture: predictions
+                logits_global = self.linear2global(h2)  # shape=torch.Size([5])
+                sample_predictions_globals = tfunc.log_softmax(logits_global, dim=1)
+                predictions_globals_ls.append(sample_predictions_globals)
+                if self.include_senses:
+                    logits_sense = self.linear2sense(h2)
+                    sample_predictions_senses = tfunc.log_softmax(logits_sense, dim=1)
+                    predictions_senses_ls.append(sample_predictions_senses)
+                else:
+                    predictions_senses_ls.append(torch.tensor(0).to(DEVICE)) # so I don't have to change the interface elsewhere
+
+            #Utils.log_chronometer([t0,t1,t2,t3,t4,t5, t6, t7, t8])
+        return torch.stack(predictions_globals_ls, dim=0).squeeze(), \
+               torch.stack(predictions_senses_ls, dim=0).squeeze()
+
+
+
+
+####################
+### 2: GRU + GAT ###
+####################
+class GRU_GAT(torch.nn.Module):
+    def __init__(self, data, grapharea_size, hidden_state_dim, include_senses):
+        super(GRU_GAT, self).__init__()
+        self.include_senses = include_senses
+        self.last_idx_senses = data.node_types.tolist().index(1)
+        self.last_idx_globals = data.node_types.tolist().index(2)
+        self.N = grapharea_size
+        self.d = data.x.shape[1]
+        self.hidden_state_dim = hidden_state_dim
+
+
+        # The embeddings matrix for: senses, globals, definitions, examples (the latter 2 may have gradient set to 0)
+        self.X = Parameter(data.x.clone().detach(), requires_grad=True)
+        self.select_first_node = Parameter(torch.tensor([0]), requires_grad=False)
+
+        # GAT
+        self.gat = GATConv(in_channels=self.d,
+                           out_channels=self.d, heads=1, concat=True, negative_slope=0.2, dropout=0, bias=True)
+
+        # GRU: we update these memory buffers manually, there is no gradient. Set as a Parameter to DataParallel-ize it
+        self.memory_h1 = Parameter(torch.zeros(size=(1, self.hidden_state_dim)), requires_grad=False)
+        self.memory_h2 = Parameter(torch.zeros(size=(1, self.hidden_state_dim)), requires_grad=False)
+
+        # GRU: 1st layer
+        self.U_z_1 = torch.nn.Linear(in_features=self.hidden_state_dim, out_features=self.hidden_state_dim, bias=False)
+        self.W_z_1 = torch.nn.Linear(in_features=self.d, out_features=self.hidden_state_dim, bias=False)
+        self.U_r_1 = torch.nn.Linear(in_features=self.hidden_state_dim, out_features=self.hidden_state_dim, bias=False)
+        self.W_r_1 = torch.nn.Linear(in_features=self.d, out_features=self.hidden_state_dim, bias=False)
+
+        self.U_1 = torch.nn.Linear(in_features=self.hidden_state_dim, out_features=self.hidden_state_dim, bias=True)
+        self.W_1 = torch.nn.Linear(in_features=self.d, out_features=self.hidden_state_dim, bias=True)
+        self.dropout = torch.nn.Dropout(p=0.1)
+
+        # GRU: 2nd layer
+        self.U_z_2 = torch.nn.Linear(in_features=self.hidden_state_dim, out_features=self.hidden_state_dim, bias=False)
+        self.W_z_2 = torch.nn.Linear(in_features=self.hidden_state_dim, out_features=self.hidden_state_dim, bias=False)
+        self.U_r_2 = torch.nn.Linear(in_features=self.hidden_state_dim, out_features=self.hidden_state_dim, bias=False)
+        self.W_r_2 = torch.nn.Linear(in_features=self.hidden_state_dim, out_features=self.hidden_state_dim, bias=False)
+
+        self.U_2 = torch.nn.Linear(in_features=self.hidden_state_dim, out_features=self.hidden_state_dim, bias=True)
+        self.W_2 = torch.nn.Linear(in_features=self.hidden_state_dim, out_features=self.hidden_state_dim, bias=True)
+
+        # 2nd part of the network as before: 2 linear layers to the logits
+        self.linear2global = torch.nn.Linear(in_features=self.hidden_state_dim,
+                                             out_features=self.last_idx_globals - self.last_idx_senses, bias=True)
+
+        if self.include_senses:
+            self.linear2sense = torch.nn.Linear(in_features=self.hidden_state_dim,
+                                                out_features=self.last_idx_senses, bias=True)
+
+
+
+    def forward(self, batchinput_tensor):  # given the batches, the current node is at index 0
+
+        predictions_globals_ls = []
+        predictions_senses_ls = []
+        # T-BPTT: at the start of each batch, we detach_() the hidden state from the graph&history that created it
+        self.memory_h1.detach_()
+        self.memory_h2.detach_()
+
+        if batchinput_tensor.shape[0] > 1:
+            sequences_in_the_batch_ls = torch.chunk(batchinput_tensor, chunks=batchinput_tensor.shape[0], dim=0)
+        else:
+            sequences_in_the_batch_ls = [batchinput_tensor]
+
+        for padded_sequence in sequences_in_the_batch_ls:
+            padded_sequence = padded_sequence.squeeze() #thus we have torch.Size([35,544])
+            padded_sequence = padded_sequence.chunk(chunks=padded_sequence.shape[0], dim=0)
+            sequence_lts = [unpack_input_tensor(sample_tensor, self.N) for sample_tensor in padded_sequence]
+
+            for (x_indices, edge_index, edge_type) in sequence_lts:
+                x = self.X.index_select(dim=0, index=x_indices.squeeze())
+
+                x_attention_state = self.gat(x, edge_index)
+                currentword_node_attention_state = x_attention_state.index_select(dim=0, index=self.select_first_node)
+
+                # GRU: Layer 1
+                z_1 = torch.sigmoid(self.W_z_1(currentword_node_attention_state) + self.U_z_1(self.memory_h1))
+                r_1 = torch.sigmoid(self.W_r_1(currentword_node_attention_state) + self.U_r_1(self.memory_h1))
+                h_tilde_1 = torch.tanh(self.dropout(self.W_1(currentword_node_attention_state)) + self.U_1(r_1 * self.memory_h1))
                 h1 = z_1 * h_tilde_1 + (torch.tensor(1)-z_1) * self.memory_h1
 
                 self.memory_h1.data.copy_(h1.clone()) # store h in memory
