@@ -13,29 +13,37 @@ DEVICE = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 # Stop when the maximum number of nodes is reached (as defined by the input dimensions of the RGCN)
 # n: Retrieving N nodes also includes the starting node
 def get_indices_area_toinclude(edge_index, edge_type, node_index, area_size, max_hops):
-    nodes_retrieved = [node_index]
-    start_idx = 0
-    stop_flag = False
-    edges_retrieved_set = set()
+    Utils.init_logging('temp.log')
+    nodes_retrieved_lls = [[node_index], []]
     current_hops = 1
     num_to_retrieve = area_size
-    while(start_idx < len(nodes_retrieved) and stop_flag==False):
-        start_node = nodes_retrieved[start_idx]
-        start_idx = start_idx + 1
+    stop_flag = False
 
-        node_edges, indices_of_edges_with_node = get_node_edges(edge_index, edge_type, start_node)
+    while current_hops <= max_hops and stop_flag==False:
+        start_idx = 0
+        edges_retrieved_set = set()
+        nodes_queue_at_current_level = nodes_retrieved_lls[current_hops-1]
+        nodes_queue_at_next_hop = nodes_retrieved_lls[current_hops]
+        while(start_idx < len(nodes_queue_at_current_level)):
+            start_node = nodes_queue_at_current_level[start_idx]
+            start_idx = start_idx + 1
+            node_edges, indices_of_edges_with_node = get_node_edges(edge_index, edge_type, start_node)
 
-        edges_retrieved_set = edges_retrieved_set.union(set(indices_of_edges_with_node))
-        new_nodes = list(map(lambda edge_tpl: edge_tpl[1], node_edges)) + list(map(lambda edge_tpl: edge_tpl[0], node_edges))
-        for n in new_nodes:
-            if len(nodes_retrieved) >= num_to_retrieve:
-                stop_flag = True
-                break
-            if n not in nodes_retrieved:
-                nodes_retrieved.append(n)
-                logging.debug("start_node=" + str(start_node) + " , nodes_retrieved= " + str(nodes_retrieved))
+            edges_retrieved_set = edges_retrieved_set.union(set(indices_of_edges_with_node))
+            new_nodes = list(map(lambda edge_tpl: edge_tpl[1], node_edges)) + list(
+                map(lambda edge_tpl: edge_tpl[0], node_edges))
+            for n in new_nodes:
+                if sum([len(hop_ls) for hop_ls in nodes_retrieved_lls]) >= num_to_retrieve:
+                    stop_flag = True
+                    break
+                if n not in nodes_queue_at_next_hop and not n in [n for hop_nodes_ls in nodes_retrieved_lls for n in hop_nodes_ls]:
+                    nodes_queue_at_next_hop.append(n)
+            logging.debug("start_node=" + str(start_node) + " , nodes_retrieved= " + str(nodes_retrieved_lls))
+        nodes_retrieved_lls.append([])
+        current_hops = current_hops + 1
 
-    return nodes_retrieved, list(edges_retrieved_set)
+
+    return [n for hop_nodes_ls in nodes_retrieved_lls for n in hop_nodes_ls], list(edges_retrieved_set)
 
 # Auxiliary function: find the immediate neighbours of a node, in the given order. Both directions of edges are included
 # edge_type = def:0, exs:1, sc:2, syn:3, ant:4
@@ -54,7 +62,6 @@ def get_node_edges(edge_index, edge_type, node_index):
 ### Entry point function to get input - either the whole graph area, or the immediate neighbours
 def get_grapharea_elements(starting_node_index, area_size, graph, hops_in_area):
     logging.debug("starting_node_index=" + str(starting_node_index))
-
     node_indices_ls, all_edges_retrieved_ls = get_indices_area_toinclude(graph.edge_index, graph.edge_type, starting_node_index, area_size, hops_in_area)
 
     # original time: t5 - t4 = 1.54 s; version 3 time: 0.05 s

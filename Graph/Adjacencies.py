@@ -12,8 +12,8 @@ from Utils import DEVICE
 ### Auxiliary getter function, to extract node area data from a row in the matrix
 def get_node_data(grapharea_matrix, i, grapharea_size):
     k = grapharea_size
-    edges_added_per_node = k
-    m = k * edges_added_per_node
+    edges_added_per_area = int(grapharea_size ** 1.5)
+    m = edges_added_per_area
     nodes_ls = list(filter(lambda num: num != -1, grapharea_matrix[i][0:k]))
     edgeindex_sources_ls = list(filter(lambda num: num != -1, grapharea_matrix[i][k:k + m]))
     edgeindex_targets_ls = list(filter(lambda num: num != -1, grapharea_matrix[i][k + m:k + 2 * m]))
@@ -27,15 +27,15 @@ def get_node_data(grapharea_matrix, i, grapharea_size):
 ### Creation function - numpy version
 def create_adjacencies_matrix_numpy(graph_dataobj, area_size, hops_in_area):
     #Utils.init_logging('create_adjacencies_matrix_numpy.log')
-    out_fpath = os.path.join(F.FOLDER_GRAPH, 'nodes_' + str(area_size) + '_areahops_' + str(hops_in_area) + F.GRAPHAREA_FILE)
+    out_fpath = os.path.join(F.FOLDER_GRAPH, 'nodes_' + str(area_size) + '_areahops_' + str(hops_in_area) + '_' + F.GRAPHAREA_FILE)
     out_file = open(out_fpath, 'wb') # -- used with numpy
 
     logging.info(graph_dataobj)
     tot_nodes = graph_dataobj.x.shape[0]
 
-    edges_added_per_node = area_size
+    edges_added_per_area = int(area_size ** 1.5)
+    m = edges_added_per_area
     k = area_size
-    m = (hops_in_area+1) * edges_added_per_node
     tot_dim_row = area_size + 3 * m
     nodes_arraytable = np.ones(shape=(tot_nodes, tot_dim_row)) * -1
 
