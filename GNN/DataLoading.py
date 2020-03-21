@@ -14,17 +14,18 @@ import Utils
 # into a tensor [x_indices; edge_sources; edge_destinations; edge_type]
 def pack_input_tuple_into_tensor(input_tuple, graph_area):
 
-    in_tensor = - 1 * torch.ones(size=(graph_area *4,)).to(torch.long)
+    max_edges = graph_area
+    in_tensor = - 1 * torch.ones(size=(graph_area + max_edges*3,)).to(torch.long)
     x_indices = input_tuple[0]
     edge_sources = input_tuple[1][0]
     edge_destinations = input_tuple[1][1]
     edge_type = input_tuple[2]
-    if len(edge_sources) > graph_area:
-        logging.warning("Num edges=" + str(len(edge_sources)) + " , while max_edges packed=" + str(graph_area))
+    if len(edge_sources) > max_edges:
+        logging.warning("Num edges=" + str(len(edge_sources)) + " , while max_edges packed=" + str(max_edges))
     in_tensor[0:len(x_indices)] = x_indices
-    in_tensor[graph_area: graph_area+min(len(edge_sources), graph_area)] = edge_sources[0:graph_area]
-    in_tensor[2*graph_area: 2*graph_area+min(len(edge_destinations), graph_area)] = edge_destinations[0:graph_area]
-    in_tensor[3*graph_area: 3*graph_area+min(len(edge_type), graph_area)] = edge_type[0:graph_area]
+    in_tensor[graph_area: graph_area+min(len(edge_sources), max_edges)] = edge_sources[0:max_edges]
+    in_tensor[graph_area+max_edges:graph_area+max_edges+min(len(edge_destinations), max_edges)] = edge_destinations[0:max_edges]
+    in_tensor[graph_area+2*max_edges:graph_area+2*max_edges+min(len(edge_type), max_edges)] = edge_type[0:max_edges]
     return in_tensor
 
 # When automatic batching is enabled, collate_fn is called with a list of data samples at each time.

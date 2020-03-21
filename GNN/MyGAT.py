@@ -10,8 +10,12 @@ from Utils import DEVICE, MAX_EDGES_PACKED
 from torch.nn.parameter import Parameter
 
 
-######## Tools to split the input of the forward call, (x, edge_index, edge_type),
-######## into subgraphs (that can use different adjacency matrices).
+#############################
+### 0 : Utility functions ###
+#############################
+
+# Tools to split the input of the forward call, (x, edge_index, edge_type),
+# into subgraphs (that can use different adjacency matrices).
 
 def split_edge_index(edge_index, edge_type):
     sections_cutoffs = [i for i in range(edge_type.shape[0]) if edge_type[i] != edge_type[i-1]] + [edge_type.shape[0]]
@@ -31,22 +35,21 @@ def get_antonym_nodes(edge_index, edge_type, antonym_edge_number):
 
 ######
 
-# version made to operate on neighbours alone
 def unpack_input_tensor(in_tensor, grapharea_size):
+    max_edges = grapharea_size
     in_tensor = in_tensor.squeeze()
     x_indices = in_tensor[(in_tensor[0:grapharea_size] != -1).nonzero().flatten()]
-    edge_sources_indices = list(map(lambda idx: idx + grapharea_size, [(in_tensor[grapharea_size:grapharea_size + grapharea_size] != -1).nonzero().flatten()]))
+    edge_sources_indices = list(map(lambda idx: idx + grapharea_size, [(in_tensor[grapharea_size:grapharea_size+max_edges] != -1).nonzero().flatten()]))
     edge_sources = in_tensor[edge_sources_indices]
-    edge_destinations_indices = list(map(lambda idx: idx + grapharea_size + grapharea_size,
-                                         [(in_tensor[grapharea_size + grapharea_size:grapharea_size + 2 * grapharea_size] != -1).nonzero().flatten()]))
+    edge_destinations_indices = list(map(lambda idx: idx + grapharea_size + max_edges,
+             [(in_tensor[grapharea_size+max_edges:grapharea_size+2*max_edges] != -1).nonzero().flatten()]))
     edge_destinations = in_tensor[edge_destinations_indices]
-    edge_type_indices = list(map(lambda idx: idx + grapharea_size + 2 * grapharea_size,
-                                 [(in_tensor[grapharea_size + 2 * grapharea_size:] != -1).nonzero().flatten()]))
+    edge_type_indices = list(map(lambda idx: idx + grapharea_size + 2*max_edges,
+             [(in_tensor[grapharea_size+2*max_edges:] != -1).nonzero().flatten()]))
     edge_type = in_tensor[edge_type_indices]
 
     edge_index = torch.stack([edge_sources, edge_destinations], dim=0)
     return (x_indices, edge_index, edge_type)
-
 
 
 ##########################################################################
@@ -218,8 +221,8 @@ class GRU_GAT(torch.nn.Module):
         self.select_first_node = Parameter(torch.tensor([0]), requires_grad=False)
 
         # GAT
-        self.gat = GATConv(in_channels=self.d,
-                           out_channels=self.d, heads=1, concat=True, negative_slope=0.2, dropout=0, bias=True)
+        self.gat = GATConv(in_channels=self.d//4,
+                           out_channels=self.d//4, heads=4, concat=True, negative_slope=0.2, dropout=0, bias=True)
 
         # GRU: we update these memory buffers manually, there is no gradient. Set as a Parameter to DataParallel-ize it
         self.memory_h1 = Parameter(torch.zeros(size=(1, self.hidden_state_dim)), requires_grad=False)
