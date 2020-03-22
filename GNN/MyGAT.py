@@ -36,7 +36,7 @@ def get_antonym_nodes(edge_index, edge_type, antonym_edge_number):
 ######
 
 def unpack_input_tensor(in_tensor, grapharea_size):
-    max_edges = grapharea_size
+    max_edges = int(grapharea_size**1.5)
     in_tensor = in_tensor.squeeze()
     x_indices = in_tensor[(in_tensor[0:grapharea_size] != -1).nonzero().flatten()]
     edge_sources_indices = list(map(lambda idx: idx + grapharea_size, [(in_tensor[grapharea_size:grapharea_size+max_edges] != -1).nonzero().flatten()]))
@@ -206,7 +206,7 @@ class GRU_GATN(torch.nn.Module):
 ### 2: GRU + GAT ###
 ####################
 class GRU_GAT(torch.nn.Module):
-    def __init__(self, data, grapharea_size, hidden_state_dim, include_senses):
+    def __init__(self, data, grapharea_size, hidden_state_dim, num_attention_heads, include_senses):
         super(GRU_GAT, self).__init__()
         self.include_senses = include_senses
         self.last_idx_senses = data.node_types.tolist().index(1)
@@ -214,16 +214,16 @@ class GRU_GAT(torch.nn.Module):
         self.N = grapharea_size
         self.d = data.x.shape[1]
         self.hidden_state_dim = hidden_state_dim
-
+        # self.att_hidden_state_dim = hidden_state_dim * num_attention_heads
 
         # The embeddings matrix for: senses, globals, definitions, examples (the latter 2 may have gradient set to 0)
         self.X = Parameter(data.x.clone().detach(), requires_grad=True)
         self.select_first_node = Parameter(torch.tensor([0]), requires_grad=False)
 
         # GAT
-        self.gat = GATConv(in_channels=self.d//4,
-                           out_channels=self.d//4, heads=4, concat=True, negative_slope=0.2, dropout=0, bias=True)
-
+        self.gat = GATConv(in_channels=self.d,
+                           out_channels=self.d // num_attention_heads, heads=num_attention_heads, concat=True, negative_slope=0.2, dropout=0, bias=True)
+        #self.gat_out_channels = self.d // (num_attention_heads // 2)
         # GRU: we update these memory buffers manually, there is no gradient. Set as a Parameter to DataParallel-ize it
         self.memory_h1 = Parameter(torch.zeros(size=(1, self.hidden_state_dim)), requires_grad=False)
         self.memory_h2 = Parameter(torch.zeros(size=(1, self.hidden_state_dim)), requires_grad=False)

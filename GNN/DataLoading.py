@@ -14,7 +14,7 @@ import Utils
 # into a tensor [x_indices; edge_sources; edge_destinations; edge_type]
 def pack_input_tuple_into_tensor(input_tuple, graph_area):
 
-    max_edges = graph_area
+    max_edges = int(graph_area**1.5)
     in_tensor = - 1 * torch.ones(size=(graph_area + max_edges*3,)).to(torch.long)
     x_indices = input_tuple[0]
     edge_sources = input_tuple[1][0]
