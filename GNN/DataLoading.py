@@ -42,18 +42,25 @@ class BPTTBatchCollator():
         labels_ls = []
 
         i = 0
-        input_ls = []
-        for ((x, edge_index, edge_type), label_next_token_tpl) in data:
+        globals_input_ls = []
+        senses_input_ls = []
+        for ((global_input_tpl, sense_input_tpl), label_next_token_tpl) in data:
             if i >= self.sequence_length:
-                input_lls.append(torch.stack(input_ls, dim=0))
+                globals_reunited = torch.stack(globals_input_ls, dim=0)
+                senses_reunited = torch.stack(senses_input_ls, dim=0)
+                input_lls.append(torch.cat([globals_reunited, senses_reunited], dim=1))
                 i=0
-                input_ls = []
+                globals_input_ls = []
+                senses_input_ls = []
 
-            input_ls.append(pack_input_tuple_into_tensor((x, edge_index, edge_type), self.grapharea_size))
+            globals_input_ls.append(pack_input_tuple_into_tensor(global_input_tpl, self.grapharea_size))
+            senses_input_ls.append(pack_input_tuple_into_tensor(sense_input_tpl, self.grapharea_size))
             i = i + 1
             labels_ls.append(torch.tensor(label_next_token_tpl).to(torch.int64).to(DEVICE))
         # add the last one
-        input_lls.append(torch.stack(input_ls, dim=0))
+        globals_reunited = torch.stack(globals_input_ls, dim=0)
+        senses_reunited = torch.stack(senses_input_ls, dim=0)
+        input_lls.append(torch.cat([globals_reunited, senses_reunited], dim=1))
         return torch.stack(input_lls, dim=0), torch.stack(labels_ls, dim=0)
 
 
@@ -102,10 +109,10 @@ class TextDataset(torch.utils.data.Dataset):
 
         global_idx, sense_idx = self.current_token_tpl
         logging.debug("current_token_tpl=" + str(self.current_token_tpl))
-        (self.area_x_indices, self.edge_index, self.edge_type) = \
+        (global_forwardinput_triple, sense_forwardinput_triple)= \
             get_forwardinput_forelement(global_idx, sense_idx, self.grapharea_matrix, self.area_size)
 
-        return ((self.area_x_indices, self.edge_index, self.edge_type), self.next_token_tpl)
+        return ((global_forwardinput_triple, sense_forwardinput_triple), self.next_token_tpl)
 
     def __len__(self):
         if self.counter == 0:
@@ -128,11 +135,14 @@ class TextDataset(torch.utils.data.Dataset):
 def get_forwardinput_forelement(global_idx, sense_idx, grapharea_matrix, area_size):
 
     logging.debug("get_forwardinput_forelement: " + str(global_idx) + ' ; ' + str(sense_idx))
+    area_x_indices_global, edge_index_global, edge_type_global = AD.get_node_data(grapharea_matrix, global_idx, area_size)
     if (sense_idx == -1):
-        sourcenode_idx = global_idx
+        area_x_indices_sense = torch.zeros(size=(area_x_indices_global.shape)).to(DEVICE)
+        edge_index_sense = torch.zeros(size=(edge_index_global.shape)).to(DEVICE)
+        edge_type_sense = torch.zeros(size=(edge_type_global.shape)).to(DEVICE)
     else:
-        sourcenode_idx = sense_idx
-    nodes, edge_index, edge_type = AD.get_node_data(grapharea_matrix, sourcenode_idx, area_size)
-    area_x_indices = nodes.to(torch.long).to(DEVICE)
+        area_x_indices_sense, edge_index_sense, edge_type_sense = AD.get_node_data(grapharea_matrix, sense_idx,
+                                                                                      area_size)
 
-    return (area_x_indices, edge_index, edge_type)
+    return ( (area_x_indices_global, edge_index_global, edge_type_global),
+             (area_x_indices_sense, edge_index_sense, edge_type_sense))

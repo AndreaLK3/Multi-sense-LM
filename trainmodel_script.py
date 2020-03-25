@@ -19,7 +19,7 @@ DG.get_graph_dataobject(new=True, method=CE.Method.FASTTEXT)
 
 model, train_dataloader, valid_dataloader = T.training_setup(slc_or_text_corpus=False, include_senses = False,
                                                              method=CE.Method.FASTTEXT, grapharea_size=64,
-                                                             hidden_state_dim=300, batch_size=None, sequence_length=35)
+                                                             batch_size=None, sequence_length=35)
 
 T.training_loop(model, 0.0001, train_dataloader, valid_dataloader, 100)
 

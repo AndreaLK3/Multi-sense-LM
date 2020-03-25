@@ -21,6 +21,8 @@ import GNN.MyRGCN as MyRGCN
 import GNN.MyGAT as MyGAT
 import GNN.MyRNN as MyRNN
 from itertools import cycle
+import gc
+from guppy import hpy
 
 
 # Auxiliary function for compute_model_loss
@@ -66,11 +68,11 @@ def compute_model_loss(model,batch_input, batch_labels, verbose=False):
 
 ################
 
-def training_setup(slc_or_text_corpus, include_senses, method, grapharea_size, hidden_state_dim, batch_size, sequence_length):
+def training_setup(slc_or_text_corpus, include_senses, method, grapharea_size, batch_size, sequence_length):
     graph_dataobj = DG.get_graph_dataobject(new=False, method=method).to(DEVICE)
-    model = MyGAT.GRU_GAT(graph_dataobj, grapharea_size, hidden_state_dim,
+    model = MyGAT.GRU_GAT(graph_dataobj, grapharea_size,
                           num_attention_heads=4, include_senses=include_senses)
-    grapharea_matrix = AD.get_grapharea_matrix(graph_dataobj, grapharea_size, hops_in_area=2)
+    grapharea_df = AD.get_grapharea_matrix(graph_dataobj, grapharea_size, hops_in_area=2)
     logging.info("Graph-data object loaded, model initialized. Moving them to GPU device(s) if present.")
     graph_dataobj.to(DEVICE)
 
@@ -95,12 +97,12 @@ def training_setup(slc_or_text_corpus, include_senses, method, grapharea_size, h
     bptt_collator = DL.BPTTBatchCollator(grapharea_size, sequence_length)
 
     train_dataset = DL.TextDataset(slc_or_text_corpus, 'training', senseindices_db_c, vocab_h5, model_forDataLoading,
-                                   grapharea_matrix, grapharea_size, graph_dataobj)
+                                   grapharea_df, grapharea_size, graph_dataobj)
     train_dataloader = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size * sequence_length,
                                                    num_workers=0, collate_fn=bptt_collator)
 
     valid_dataset = DL.TextDataset(slc_or_text_corpus, 'validation', senseindices_db_c, vocab_h5, model_forDataLoading,
-                                   grapharea_matrix, grapharea_size, graph_dataobj)
+                                   grapharea_df, grapharea_size, graph_dataobj)
     valid_dataloader = torch.utils.data.DataLoader(valid_dataset, batch_size=sequence_length, num_workers=0,
                                                    collate_fn=bptt_collator)
 
@@ -187,8 +189,11 @@ def training_loop(model, learning_rate, train_dataloader, valid_dataloader, num_
 
                 if overall_step % steps_logging == 0:
                     logging.info("Global step=" + str(overall_step) + "\t ; Iteration time=" + str(round(time()-t0,5)))
+                    h = hpy()
+                    logging.info(h.heap())
+                    gc.collect()
 
-                #Utils.log_chronometer([t0, time()])
+                Utils.log_chronometer([t0, time()])
 
             # except StopIteration: the DataLoader naturally catches StopIteration
                 # end of an epoch.
@@ -243,7 +248,7 @@ def evaluation(evaluation_dataloader, evaluation_dataiter, model):
 
     evaluation_step = 0
     evaluation_senselabeled_tokens = 0
-    logging_step = 500
+    logging_step = 1000
 
     with torch.no_grad(): # Deactivates the autograd engine entirely to save some memory
         for b_idx in range(len(evaluation_dataloader)):
@@ -260,6 +265,9 @@ def evaluation(evaluation_dataloader, evaluation_dataiter, model):
             evaluation_step = evaluation_step + 1
             if evaluation_step % logging_step == 0:
                 logging.info("Evaluation step n. " + str(evaluation_step))
+                h = hpy()
+                logging.info(h.heap())
+                gc.collect()
 
     globals_evaluation_loss = sum_eval_loss_globals / evaluation_step
     if including_senses:

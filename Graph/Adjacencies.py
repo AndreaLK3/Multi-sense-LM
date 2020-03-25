@@ -6,7 +6,7 @@ import numpy as np
 import logging
 import Utils
 import os
-from time import time
+import pandas as pd
 from Utils import DEVICE
 
 ### Auxiliary getter function, to extract node area data from a row in the matrix
@@ -14,11 +14,12 @@ def get_node_data(grapharea_matrix, i, grapharea_size):
     k = grapharea_size
     edges_added_per_area = int(grapharea_size ** 1.5)
     m = edges_added_per_area
-    nodes_ls = list(filter(lambda num: num != -1, grapharea_matrix[i][0:k]))
-    edgeindex_sources_ls = list(filter(lambda num: num != -1, grapharea_matrix[i][k:k + m]))
-    edgeindex_targets_ls = list(filter(lambda num: num != -1, grapharea_matrix[i][k + m:k + 2 * m]))
-    edgetype_ls = list(filter(lambda num: num != -1, grapharea_matrix[i][k + 2 * m: k + 3 * m]))
-    nodes = torch.tensor(nodes_ls).to(DEVICE)
+    # Accessing COO matrix
+    nodes_ls = list(filter(lambda num: num != -1, grapharea_matrix.values[i][0:k]))
+    edgeindex_sources_ls = list(filter(lambda num: num != -1, grapharea_matrix.values[i][k:k + m]))
+    edgeindex_targets_ls = list(filter(lambda num: num != -1, grapharea_matrix.values[i][k + m:k + 2 * m]))
+    edgetype_ls = list(filter(lambda num: num != -1, grapharea_matrix.values[i][k + 2 * m: k + 3 * m]))
+    nodes = torch.tensor(nodes_ls).to(torch.long).to(DEVICE)
     edgeindex = torch.tensor([edgeindex_sources_ls, edgeindex_targets_ls]).to(torch.int64).to(DEVICE)
     edgetype = torch.tensor(edgetype_ls).to(torch.int64).to(DEVICE)
     return nodes, edgeindex, edgetype
@@ -27,8 +28,6 @@ def get_node_data(grapharea_matrix, i, grapharea_size):
 ### Creation function - numpy version
 def create_adjacencies_matrix_numpy(graph_dataobj, area_size, hops_in_area):
     #Utils.init_logging('create_adjacencies_matrix_numpy.log')
-    out_fpath = os.path.join(F.FOLDER_GRAPH, 'nodes_' + str(area_size) + '_areahops_' + str(hops_in_area) + '_' + F.GRAPHAREA_FILE)
-    out_file = open(out_fpath, 'wb') # -- used with numpy
 
     logging.info(graph_dataobj)
     tot_nodes = graph_dataobj.x.shape[0]
@@ -59,22 +58,26 @@ def create_adjacencies_matrix_numpy(graph_dataobj, area_size, hops_in_area):
         nodes_arraytable[i][k + m: k + m + min(len(arr_adj_edge_targets), m)] = arr_adj_edge_targets[0:m]
         nodes_arraytable[i][k + 2 * m: k + 2 * m + min(len(arr_adj_edge_type), m)] = arr_adj_edge_type[0:m]
 
-    np.save(out_fpath, nodes_arraytable)
-    out_file.close() # -- used with numpy
     return nodes_arraytable
 
 ### Entry point function. Temporarily modified. Numpy version.
 def get_grapharea_matrix(graphdata_obj, area_size, hops_in_area):
+
     candidate_fnames = [fname for fname in os.listdir(F.FOLDER_GRAPH)
                         if ((F.GRAPHAREA_FILE in fname) and ('nodes_' + str(area_size) + '_areahops_' + str(hops_in_area) + '_' in fname))]
     if len(candidate_fnames) == 0:
         logging.info("Pre-computing and saving graphArea matrix, with area_size=" + str(area_size))
         grapharea_matrix = create_adjacencies_matrix_numpy(graphdata_obj, area_size, hops_in_area)
+        out_fpath = os.path.join(F.FOLDER_GRAPH,
+                                 'nodes_' + str(area_size) + '_areahops_' + str(hops_in_area) + '_' + F.GRAPHAREA_FILE)
+        grapharea_df = pd.DataFrame(grapharea_matrix, dtype=pd.SparseDtype('float', fill_value=-1))
+        grapharea_df.to_pickle(out_fpath)
     else:
         fpath = os.path.join(F.FOLDER_GRAPH, candidate_fnames[0]) # we expect to find only one
         logging.info("Loading graphArea matrix, with area_size=" + str(area_size) + " from: " + str(fpath))
-        grapharea_matrix = np.load(fpath, allow_pickle=True)
-    return grapharea_matrix
+        grapharea_df = pd.read_pickle(fpath)
+
+    return grapharea_df
 
 
 
