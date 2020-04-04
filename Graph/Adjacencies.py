@@ -6,19 +6,22 @@ import numpy as np
 import logging
 import Utils
 import os
+from scipy import sparse
 import pandas as pd
 from Utils import DEVICE
 
 ### Auxiliary getter function, to extract node area data from a row in the matrix
 def get_node_data(grapharea_matrix, i, grapharea_size):
     k = grapharea_size
-    edges_added_per_area = int(grapharea_size ** 1.5)
-    m = edges_added_per_area
-    # Accessing COO matrix
-    nodes_ls = list(filter(lambda num: num != -1, grapharea_matrix.values[i][0:k]))
-    edgeindex_sources_ls = list(filter(lambda num: num != -1, grapharea_matrix.values[i][k:k + m]))
-    edgeindex_targets_ls = list(filter(lambda num: num != -1, grapharea_matrix.values[i][k + m:k + 2 * m]))
-    edgetype_ls = list(filter(lambda num: num != -1, grapharea_matrix.values[i][k + 2 * m: k + 3 * m]))
+    m = _edges_added_per_area = int(grapharea_size ** 1.5)
+    # Accessing sparse matrix. Everything was shifted +1, so now: we ignore 0 ; we shift -1; we get the data
+    nodes_ls = list(map( lambda value: value-1, filter(lambda num: num != 0, grapharea_matrix[i,0:k].todense().tolist()[0])))
+    edgeindex_sources_ls = list(map( lambda value: value-1, filter(lambda num: num != 0,
+                                                                   grapharea_matrix[i, k:k + m].todense().tolist()[0])))
+    edgeindex_targets_ls = list(map( lambda value: value-1, filter(lambda num: num != 0,
+                                                                   grapharea_matrix[i, k + m:k + 2 * m].todense().tolist()[0])))
+    edgetype_ls = list(map( lambda value: value-1, filter(lambda num: num != 0,
+                                                          grapharea_matrix[i, k + 2 * m: k + 3 * m].todense().tolist()[0])))
     nodes = torch.tensor(nodes_ls).to(torch.long).to(DEVICE)
     edgeindex = torch.tensor([edgeindex_sources_ls, edgeindex_targets_ls]).to(torch.int64).to(DEVICE)
     edgetype = torch.tensor(edgetype_ls).to(torch.int64).to(DEVICE)
@@ -70,14 +73,16 @@ def get_grapharea_matrix(graphdata_obj, area_size, hops_in_area):
         grapharea_matrix = create_adjacencies_matrix_numpy(graphdata_obj, area_size, hops_in_area)
         out_fpath = os.path.join(F.FOLDER_GRAPH,
                                  'nodes_' + str(area_size) + '_areahops_' + str(hops_in_area) + '_' + F.GRAPHAREA_FILE)
-        grapharea_df = pd.DataFrame(grapharea_matrix, dtype=pd.SparseDtype('float', fill_value=-1))
-        grapharea_df.to_pickle(out_fpath)
+        grapharea_matrix = grapharea_matrix + 1 # shift the matrix of +1, storage default element will be 0 and not -1
+        coo_mat = sparse.coo_matrix(grapharea_matrix)
+        csr_mat = coo_mat.tocsr()
+        sparse.save_npz(out_fpath, csr_mat)
     else:
         fpath = os.path.join(F.FOLDER_GRAPH, candidate_fnames[0]) # we expect to find only one
         logging.info("Loading graphArea matrix, with area_size=" + str(area_size) + " from: " + str(fpath))
-        grapharea_df = pd.read_pickle(fpath)
+        csr_mat = sparse.load_npz(fpath)
 
-    return grapharea_df
+    return csr_mat
 
 
 

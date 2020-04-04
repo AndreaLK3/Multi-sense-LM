@@ -9,6 +9,7 @@ import Vocabulary.Phrases as PHR
 import WordEmbeddings.ComputeEmbeddings as CE
 import tables
 import logging
+import GNN.SenseLabeledCorpus as SLC
 
 # Before starting: clean all storage files; reset vocabulary index to 0
 def reset():
@@ -28,7 +29,7 @@ def reset():
 
     # reset the graph object file, and the area_matrices
     graph_filepaths = [os.path.join(F.FOLDER_GNN, F.KBGRAPH_FILE)] + \
-                      [os.path.join(F.FOLDER_GRAPH, fname) for fname in os.listdir(F.FOLDER_GRAPH) if '.npy' in fname]
+                      [os.path.join(F.FOLDER_GRAPH, fname) for fname in os.listdir(F.FOLDER_GRAPH) if '.npz' in fname]
 
     for fpath in archives_filepaths:
         f = pd.HDFStore(fpath, mode='w')
@@ -62,6 +63,7 @@ def exe_from_input_to_vectors(do_reset, compute_single_prototype, sp_method, voc
     vocab_text_fname = os.listdir(os.path.join(F.FOLDER_TEXT_CORPUSES, F.FOLDER_MYTEXTCORPUS, F.FOLDER_TRAIN))[0]
     vocab_text_fpath = os.path.join(F.FOLDER_TEXT_CORPUSES, F.FOLDER_MYTEXTCORPUS, F.FOLDER_TRAIN, vocab_text_fname)
     outvocab_filepath = os.path.join(F.FOLDER_VOCABULARY, F.VOCABULARY_OF_GLOBALS_FILE)
+    if vocabulary_from_senselabeled: SLC.organize_splits()
     vocabulary = V.get_vocabulary_df(senselabeled_or_text=vocabulary_from_senselabeled, slc_split_name='training',
                                      corpus_txt_fpaths=[vocab_text_fpath],
                                      out_vocabulary_h5_filepath=outvocab_filepath, min_count=min_count)

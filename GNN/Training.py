@@ -70,8 +70,7 @@ def compute_model_loss(model,batch_input, batch_labels, verbose=False):
 
 def training_setup(slc_or_text_corpus, include_senses, method, grapharea_size, batch_size, sequence_length):
     graph_dataobj = DG.get_graph_dataobject(new=False, method=method).to(DEVICE)
-    model = MyGAT.GRU_GAT(graph_dataobj, grapharea_size,
-                          num_attention_heads=4, include_senses=include_senses)
+    model = MyGAT.GRU_GAT(graph_dataobj, grapharea_size, num_attention_heads=4, include_senses=include_senses)
     grapharea_df = AD.get_grapharea_matrix(graph_dataobj, grapharea_size, hops_in_area=2)
     logging.info("Graph-data object loaded, model initialized. Moving them to GPU device(s) if present.")
     graph_dataobj.to(DEVICE)
@@ -122,7 +121,7 @@ def training_loop(model, learning_rate, train_dataloader, valid_dataloader, num_
 
     model_forParameters = model.module if torch.cuda.device_count() > 1 else model
 
-    steps_logging = 100
+    steps_logging = 50
     hyperparams_str = 'model' + str(type(model).__name__) \
                       + '_batchPerSeqlen' + str(train_dataloader.batch_size) \
                       + '_area' + str(model_forParameters.N)\
@@ -189,11 +188,9 @@ def training_loop(model, learning_rate, train_dataloader, valid_dataloader, num_
 
                 if overall_step % steps_logging == 0:
                     logging.info("Global step=" + str(overall_step) + "\t ; Iteration time=" + str(round(time()-t0,5)))
-                    h = hpy()
-                    logging.info(h.heap())
                     gc.collect()
 
-                Utils.log_chronometer([t0, time()])
+                #Utils.log_chronometer([t0, time()])
 
             # except StopIteration: the DataLoader naturally catches StopIteration
                 # end of an epoch.
@@ -205,7 +202,7 @@ def training_loop(model, learning_rate, train_dataloader, valid_dataloader, num_
 
             # Time to check the validation loss
             valid_loss_globals, valid_loss_senses = evaluation(valid_dataloader, valid_dataiter, model)
-            validation_losses_lts.append((valid_loss_globals, valid_loss_senses))
+            #validation_losses_lts.append((valid_loss_globals, valid_loss_senses))
             logging.info("-----\n After training " + str(epoch)+  " epochs, the validation losses are:")
             Utils.record_statistics(valid_loss_globals, valid_loss_senses, 1,1, losses_lts=validation_losses_lts)
             epoch_valid_loss = valid_loss_globals + valid_loss_senses
@@ -215,9 +212,11 @@ def training_loop(model, learning_rate, train_dataloader, valid_dataloader, num_
                 torch.save(model, os.path.join(F.FOLDER_GNN, hyperparams_str +
                                            'step_' + str(overall_step) + '.rgcnmodel'))
 
+            logging.info("epoch_valid_loss=" + str(epoch_valid_loss) + " ; previous_valid_loss=" + str(previous_valid_loss))
             if epoch_valid_loss > previous_valid_loss + 0.01:
                 if not flag_firstvalidationhigher:
                     flag_firstvalidationhigher = True
+                    logging.info("Validation loss worse thatn previous one. First occurrence.")
                 else: # already did first offence. Must early-stop
                     logging.info("Early stopping")
                     flag_earlystop = True
@@ -248,7 +247,7 @@ def evaluation(evaluation_dataloader, evaluation_dataiter, model):
 
     evaluation_step = 0
     evaluation_senselabeled_tokens = 0
-    logging_step = 1000
+    logging_step = 500
 
     with torch.no_grad(): # Deactivates the autograd engine entirely to save some memory
         for b_idx in range(len(evaluation_dataloader)):
@@ -265,8 +264,6 @@ def evaluation(evaluation_dataloader, evaluation_dataiter, model):
             evaluation_step = evaluation_step + 1
             if evaluation_step % logging_step == 0:
                 logging.info("Evaluation step n. " + str(evaluation_step))
-                h = hpy()
-                logging.info(h.heap())
                 gc.collect()
 
     globals_evaluation_loss = sum_eval_loss_globals / evaluation_step
