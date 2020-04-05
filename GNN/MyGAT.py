@@ -232,23 +232,29 @@ class GRU_GAT(torch.nn.Module):
         self.h1_state_dim = 2 * self.d
         self.h2_state_dim = self.d
 
-        # The embeddings matrix for: senses, globals, definitions, examples (the latter 2 may have gradient set to 0)
+        # The embeddings matrix for: senses, globals, definitions, examples
         self.X = Parameter(data.x.clone().detach(), requires_grad=True)
         self.select_first_node = Parameter(torch.tensor([0]), requires_grad=False)
         self.nodestate_zeros = Parameter(torch.zeros(size=(1,self.d)), requires_grad=False)
 
         # Input signals: current global’s word embedding || global’s node-state (|| sense’s node state)
         self.concatenated_input_dim = 2 * self.d if not (self.include_senses) else 3 * self.d
-        # self.IH = torch.nn.Linear(in_features=self.concatenated_input_dim, out_features=self.h1_state_dim, bias=True)
 
         # GAT
-        self.gat = GATConv(in_channels=self.d,
-                           out_channels=self.d // num_attention_heads, heads=num_attention_heads, concat=True, negative_slope=0.2, dropout=0, bias=True)
-        #self.gat_out_channels = self.d // (num_attention_heads // 2)
+        self.gat_globals = GATConv(in_channels=self.d,
+                                   out_channels=self.d // num_attention_heads, heads=num_attention_heads, concat=True,
+                                   negative_slope=0.2, dropout=0, bias=True)
+        if self.include_senses:
+            self.gat_senses = GATConv(in_channels=self.d,
+                                   out_channels=self.d // num_attention_heads, heads=num_attention_heads, concat=True,
+                                   negative_slope=0.2, dropout=0, bias=True)
+        # self.gat_out_channels = self.d // (num_attention_heads // 2)
+
 
         # GRU: we update these memory buffers manually, there is no gradient. Set as a Parameter to DataParallel-ize it
         self.memory_h1 = Parameter(torch.zeros(size=(1, self.h1_state_dim)), requires_grad=False)
         self.memory_h2 = Parameter(torch.zeros(size=(1, self.h2_state_dim)), requires_grad=False)
+        self.memory_h2b = Parameter(torch.zeros(size=(1, self.h2_state_dim)), requires_grad=False)
 
         # GRU: 1st layer
         self.U_z_1 = torch.nn.Linear(in_features=self.h1_state_dim, out_features=self.h1_state_dim, bias=False)
@@ -268,6 +274,15 @@ class GRU_GAT(torch.nn.Module):
 
         self.U_2 = torch.nn.Linear(in_features=self.h2_state_dim, out_features=self.h2_state_dim, bias=True)
         self.W_2 = torch.nn.Linear(in_features=self.h1_state_dim, out_features=self.h2_state_dim, bias=True)
+
+        # GRU: 2nd layer b - senses
+        self.U_z_2b = torch.nn.Linear(in_features=self.h2_state_dim, out_features=self.h2_state_dim, bias=False)
+        self.W_z_2b = torch.nn.Linear(in_features=self.h1_state_dim, out_features=self.h2_state_dim, bias=False)
+        self.U_r_2b = torch.nn.Linear(in_features=self.h2_state_dim, out_features=self.h2_state_dim, bias=False)
+        self.W_r_2b = torch.nn.Linear(in_features=self.h1_state_dim, out_features=self.h2_state_dim, bias=False)
+
+        self.U_2b = torch.nn.Linear(in_features=self.h2_state_dim, out_features=self.h2_state_dim, bias=True)
+        self.W_2b = torch.nn.Linear(in_features=self.h1_state_dim, out_features=self.h2_state_dim, bias=True)
 
         # 2nd part of the network as before: 2 linear layers to the logits
         self.linear2global = torch.nn.Linear(in_features=self.h2_state_dim,
@@ -304,7 +319,7 @@ class GRU_GAT(torch.nn.Module):
 
                 # Input signal n.2: the node-state of the word in the KB-graph, obtained applying the GNN
                 x = self.X.index_select(dim=0, index=x_indices.squeeze())
-                x_attention_state = self.gat(x, edge_index)
+                x_attention_state = self.gat_globals(x, edge_index)
                 currentword_node_state = x_attention_state.index_select(dim=0, index=self.select_first_node)
 
                 # Input signal n.3: the node-state of the current sense; + concatenating the input signals
@@ -313,7 +328,7 @@ class GRU_GAT(torch.nn.Module):
                         currentsense_node_state = self.nodestate_zeros
                     else: # sense was specified
                         x_s = self.X.index_select(dim=0, index=x_indices_s.squeeze())
-                        x_attention_state_s = self.gat(x_s, edge_index)
+                        x_attention_state_s = self.gat_senses(x_s, edge_index_s)
                         currentsense_node_state = x_attention_state_s.index_select(dim=0,index=self.select_first_node)
                     input_signals = torch.cat([currentword_embedding, currentword_node_state, currentsense_node_state], dim=1)
                 else:
@@ -325,22 +340,34 @@ class GRU_GAT(torch.nn.Module):
                 h_tilde_1 = torch.tanh(self.dropout(self.W_1(input_signals)) + self.U_1(r_1 * self.memory_h1))
                 h1 = z_1 * h_tilde_1 + (torch.tensor(1)-z_1) * self.memory_h1
 
-                self.memory_h1.data.copy_(h1.clone()) # store h in memory
+                self.memory_h1.data.copy_(h1.clone().detach()) # store h in memory
 
-                # GRU: Layer 2
+                # GRU: Layer 2a  - globals task
                 z_2 = torch.sigmoid(self.W_z_2(h1) + self.U_z_2(self.memory_h2))
                 r_2 = torch.sigmoid(self.W_r_2(h1) + self.U_r_2(self.memory_h2))
                 h_tilde_2 = torch.tanh(self.dropout(self.W_2(h1)) + self.U_2(r_2 * self.memory_h2))
                 h2 = z_2 * h_tilde_2 + (torch.tensor(1) - z_2) * self.memory_h2
 
-                self.memory_h2.data.copy_(h2.clone())  # store h in memory
+                self.memory_h2.data.copy_(h2.clone().detach())  # store h in memory
+
+                # GRU: Layer 2b  - senses task
+                z_2b = torch.sigmoid(self.W_z_2b(h1) + self.U_z_2b(self.memory_h2b))
+                r_2b = torch.sigmoid(self.W_r_2b(h1) + self.U_r_2b(self.memory_h2b))
+                h_tilde_2b = torch.tanh(self.dropout(self.W_2b(h1)) + self.U_2b(r_2b * self.memory_h2b))
+                h2b = z_2b * h_tilde_2b + (torch.tensor(1) - z_2b) * self.memory_h2b
+
+                self.memory_h2b.data.copy_(h2b.clone().detach())  # store h in memory
+
 
                 # 2nd part of the architecture: predictions
-                logits_global = self.linear2global(h2)  # shape=torch.Size([5])
+                # Globals
+                logits_global = self.linear2global(h2)
                 sample_predictions_globals = tfunc.log_softmax(logits_global, dim=1)
                 predictions_globals_ls.append(sample_predictions_globals)
+                # Senses: we need context information (a photocopy of h2) + current word info (the concatenated input)
                 if self.include_senses:
-                    logits_sense = self.linear2sense(h2)
+                    input_for_senses = torch.cat([h2.clone().detach(), input_signals], dim=1)
+                    logits_sense = self.linear2sense(input_for_senses)
                     sample_predictions_senses = tfunc.log_softmax(logits_sense, dim=1)
                     predictions_senses_ls.append(sample_predictions_senses)
                 else:

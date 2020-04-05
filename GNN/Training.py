@@ -211,9 +211,7 @@ def training_loop(model, learning_rate, train_dataloader, valid_dataloader, num_
                 # save model
                 torch.save(model, os.path.join(F.FOLDER_GNN, hyperparams_str +
                                            'step_' + str(overall_step) + '.rgcnmodel'))
-
-            logging.info("epoch_valid_loss=" + str(epoch_valid_loss) + " ; previous_valid_loss=" + str(previous_valid_loss))
-            if epoch_valid_loss > previous_valid_loss + 0.01:
+            if epoch_valid_loss > previous_valid_loss:
                 if not flag_firstvalidationhigher:
                     flag_firstvalidationhigher = True
                     logging.info("Validation loss worse thatn previous one. First occurrence.")

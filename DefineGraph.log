@@ -1,19 +1,16 @@
 INFO : Constructing X, matrix of node features
-INFO : X_definitions.shape=torch.Size([28070, 300])
-INFO : X_examples.shape=torch.Size([26544, 300])
-INFO : X_senses.shape=torch.Size([28070, 300])
-INFO : X_globals.shape=torch.Size([31640, 300])
+INFO : X_definitions.shape=torch.Size([25986, 300])
+INFO : X_examples.shape=torch.Size([26003, 300])
+INFO : X_senses.shape=torch.Size([25986, 300])
+INFO : X_globals.shape=torch.Size([21988, 300])
 INFO : Defining the edges: def, exs
-INFO : def_edges_se.__len__()=28070
-INFO : exs_edges_se.__len__()=26544
+INFO : def_edges_se.__len__()=25986
+INFO : exs_edges_se.__len__()=26003
 INFO : Defining the edges: sc
-INFO : sc_edges.__len__()=28070
-INFO : sc_edges_with_selfloops.__len__()=49276
+INFO : sc_edges.__len__()=25986
+INFO : sc_edges_with_selfloops.__len__()=38611
 INFO : Defining the edges: syn, ant
 INFO : Inserted 5000 synonyms edges
 INFO : Inserted 10000 synonyms edges
-INFO : Inserted 15000 synonyms edges
-INFO : Inserted 20000 synonyms edges
-INFO : syn_edges.__len__()=40016
-INFO : ant_edges.__len__()=3938
-INFO : Pre-computing and saving graphArea matrix, with area_size=32
+INFO : syn_edges.__len__()=26222
+INFO : ant_edges.__len__()=3780
