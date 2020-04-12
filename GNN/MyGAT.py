@@ -364,10 +364,9 @@ class GRU_GAT(torch.nn.Module):
                 logits_global = self.linear2global(h2)
                 sample_predictions_globals = tfunc.log_softmax(logits_global, dim=1)
                 predictions_globals_ls.append(sample_predictions_globals)
-                # Senses: we need context information (a photocopy of h2) + current word info (the concatenated input)
+                # Senses
                 if self.include_senses:
-                    input_for_senses = torch.cat([h2.clone().detach(), input_signals], dim=1)
-                    logits_sense = self.linear2sense(input_for_senses)
+                    logits_sense = self.linear2sense(h2b)
                     sample_predictions_senses = tfunc.log_softmax(logits_sense, dim=1)
                     predictions_senses_ls.append(sample_predictions_senses)
                 else:
