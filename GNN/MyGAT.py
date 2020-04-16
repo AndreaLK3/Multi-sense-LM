@@ -8,7 +8,8 @@ import torch.nn.functional as tfunc
 from time import time
 from Utils import DEVICE, MAX_EDGES_PACKED
 from torch.nn.parameter import Parameter
-
+import Graph.GraphArea as GA
+from math import sqrt
 
 #############################
 ### 0 : Utility functions ###
@@ -34,6 +35,8 @@ def get_antonym_nodes(edge_index, edge_type, antonym_edge_number):
     return destinations
 
 ######
+
+# Extracting the input elements (x_indices, edge_index, edge_type) from the padded tensor in the batch
 def unpack_to_input_tpl(in_tensor, grapharea_size, max_edges):
     x_indices = in_tensor[(in_tensor[0:grapharea_size] != -1).nonzero().flatten()]
         # shortcut for the case when there is no sense
@@ -67,155 +70,6 @@ def unpack_input_tensor(in_tensor, grapharea_size):
     return ((x_indices_g, edge_index_g, edge_type_g), (x_indices_s, edge_index_s, edge_type_s))
 
 
-# ##########################################################################
-# ### 1 : GRU + manually built GAT that operates on different node types ###
-# ##########################################################################
-# class GRU_GATN(torch.nn.Module):
-#     def __init__(self, data, grapharea_size, hidden_state_dim, include_senses):
-#         super(GRU_GATN, self).__init__()
-#         self.include_senses = include_senses
-#         self.last_idx_senses = data.node_types.tolist().index(1)
-#         self.last_idx_globals = data.node_types.tolist().index(2)
-#         self.N = grapharea_size
-#         self.d = data.x.shape[1]
-#         self.hidden_state_dim = hidden_state_dim
-#         self.num_edge_types = len(torch.unique(data.edge_type))
-#
-#         # The embeddings matrix for: senses, globals, definitions, examples (the latter 2 may have gradient set to 0)
-#         self.X = Parameter(data.x.clone().detach(), requires_grad=True)
-#         self.select_first_node = Parameter(torch.tensor([0]), requires_grad=False)
-#         self.node_types =Parameter(data.node_types.clone(), requires_grad=False) # Node types
-#
-#         # GAT: The matrices to project the different kinds of nodes
-#         node_projections_matrices_ls = []
-#         for node_type in range(self.num_edge_types):
-#             node_projections_matrices_ls.append(torch.empty(size=(self.d, self.d)))
-#         self.node_projections_matrices = Parameter(torch.stack(node_projections_matrices_ls),requires_grad=True)
-#         # GAT: e_ij = A*[Wp(i)*h_i, Wp(i)*h_j]. Then, LeakyReLu to get the attention logit
-#         self.A = torch.nn.Linear(in_features=2*self.d, out_features=1, bias=False)
-#
-#         # GRU: we update these memory buffers manually, there is no gradient. Set as a Parameter to DataParallel-ize it
-#         self.memory_h1 = Parameter(torch.zeros(size=(1, self.hidden_state_dim)), requires_grad=False)
-#         self.memory_h2 = Parameter(torch.zeros(size=(1, self.hidden_state_dim)), requires_grad=False)
-#
-#         # GRU: 1st layer
-#         self.U_z_1 = torch.nn.Linear(in_features=self.hidden_state_dim, out_features=self.hidden_state_dim, bias=False)
-#         self.W_z_1 = torch.nn.Linear(in_features=self.d, out_features=self.hidden_state_dim, bias=False)
-#         self.U_r_1 = torch.nn.Linear(in_features=self.hidden_state_dim, out_features=self.hidden_state_dim, bias=False)
-#         self.W_r_1 = torch.nn.Linear(in_features=self.d, out_features=self.hidden_state_dim, bias=False)
-#
-#         self.U_1 = torch.nn.Linear(in_features=self.hidden_state_dim, out_features=self.hidden_state_dim, bias=True)
-#         self.W_1 = torch.nn.Linear(in_features=self.d, out_features=self.hidden_state_dim, bias=True)
-#         self.dropout = torch.nn.Dropout(p=0.1)
-#
-#         # GRU: 2nd layer
-#         self.U_z_2 = torch.nn.Linear(in_features=self.hidden_state_dim, out_features=self.hidden_state_dim, bias=False)
-#         self.W_z_2 = torch.nn.Linear(in_features=self.hidden_state_dim, out_features=self.hidden_state_dim, bias=False)
-#         self.U_r_2 = torch.nn.Linear(in_features=self.hidden_state_dim, out_features=self.hidden_state_dim, bias=False)
-#         self.W_r_2 = torch.nn.Linear(in_features=self.hidden_state_dim, out_features=self.hidden_state_dim, bias=False)
-#
-#         self.U_2 = torch.nn.Linear(in_features=self.hidden_state_dim, out_features=self.hidden_state_dim, bias=True)
-#         self.W_2 = torch.nn.Linear(in_features=self.hidden_state_dim, out_features=self.hidden_state_dim, bias=True)
-#
-#         # 2nd part of the network as before: 2 linear layers to the logits
-#         self.linear2global = torch.nn.Linear(in_features=self.hidden_state_dim,
-#                                              out_features=self.last_idx_globals - self.last_idx_senses, bias=True)
-#
-#         if self.include_senses:
-#             self.linear2sense = torch.nn.Linear(in_features=self.hidden_state_dim,
-#                                                 out_features=self.last_idx_senses, bias=True)
-#
-#
-#
-#     def forward(self, batchinput_tensor):  # given the batches, the current node is at index 0
-#
-#         predictions_globals_ls = []
-#         predictions_senses_ls = []
-#         # T-BPTT: at the start of each batch, we detach_() the hidden state from the graph&history that created it
-#         self.memory_h1.detach_()
-#         self.memory_h2.detach_()
-#
-#         if batchinput_tensor.shape[0] > 1:
-#             sequences_in_the_batch_ls = torch.chunk(batchinput_tensor, chunks=batchinput_tensor.shape[0], dim=0)
-#         else:
-#             sequences_in_the_batch_ls = [batchinput_tensor]
-#
-#         for padded_sequence in sequences_in_the_batch_ls:
-#             padded_sequence = padded_sequence.squeeze() #thus we have torch.Size([35,544])
-#             padded_sequence = padded_sequence.chunk(chunks=padded_sequence.shape[0], dim=0)
-#             sequence_lts = [unpack_input_tensor(sample_tensor, self.N) for sample_tensor in padded_sequence]
-#
-#             for (x_indices, edge_index, edge_type) in sequence_lts:
-#                 currentword_embedding = self.X.index_select(dim=0, index=x_indices[0])
-#
-#                 neighbours_x = self.X.index_select(dim=0, index=x_indices.squeeze())
-#                 neighbours_nodetypes = self.node_types.index_select(dim=0, index=x_indices.squeeze())
-#                 antonyms_indices = get_antonym_nodes(edge_index, edge_type, self.num_edge_types - 1)
-#                 definitions = neighbours_x[torch.eq(neighbours_nodetypes,0)]
-#                 examples = neighbours_x[torch.eq(neighbours_nodetypes,1)]
-#                 senses = neighbours_x[torch.eq(neighbours_nodetypes,2)]
-#                 globals = neighbours_x[torch.eq(neighbours_nodetypes,3)]
-#
-#                 #logging.info("\ncurrent_node_index = " + str(x_indices[0]))
-#                 #logging.info("neighbours_indices=" + str(x_indices))
-#
-#                 number_of_antonyms = len(antonyms_indices)
-#                 synonyms = globals[:globals.shape[0]-number_of_antonyms]
-#                 if number_of_antonyms>0:
-#                     antonyms = globals[-number_of_antonyms:]
-#                 else:
-#                     antonyms = globals[0:0]
-#
-#                 # GAT: Projecting different kinds of nodes
-#                 projected_neighbours_ls = []
-#                 neighbouring_elements = [definitions, examples, senses, synonyms, antonyms]
-#
-#                 for i in range(self.num_edge_types):
-#                     if neighbouring_elements[i].shape[0] > 0:
-#                         projected_neighbours_ls.append(torch.mm(self.node_projections_matrices[i], neighbouring_elements[i].t()))
-#                 projected_neighbours = torch.cat(projected_neighbours_ls, dim=1)
-#                 #logging.info("projected_neighbours.shape=" + str(projected_neighbours.shape))
-#                 node_pairs = torch.cat([currentword_embedding.repeat((projected_neighbours.shape[1],1)), projected_neighbours.t()],1)
-#                 # GAT: e_ij = A*[Wp(i)*h_i, Wp(i)*h_j]. Then, LeakyReLu to get the attention logit
-#                 attention_logits_e = tfunc.leaky_relu(self.A(node_pairs))
-#                 # GAT: softmax and weighted sum
-#                 attention_coefficients_alpha = tfunc.softmax(attention_logits_e.squeeze(dim=1), dim=0)
-#                 #logging.info("attention_coefficients_alpha=" + str(attention_coefficients_alpha))
-#                 node_attention_state = (sum([attention_coefficients_alpha[i]*projected_neighbours[:,i] for i in range(projected_neighbours.shape[1])])).unsqueeze(0)
-#
-#                 # GRU: Layer 1
-#                 z_1 = torch.sigmoid(self.W_z_1(node_attention_state) + self.U_z_1(self.memory_h1))
-#                 r_1 = torch.sigmoid(self.W_r_1(node_attention_state) + self.U_r_1(self.memory_h1))
-#                 h_tilde_1 = torch.tanh(self.dropout(self.W_1(node_attention_state)) + self.U_1(r_1 * self.memory_h1))
-#                 h1 = z_1 * h_tilde_1 + (torch.tensor(1)-z_1) * self.memory_h1
-#
-#                 self.memory_h1.data.copy_(h1.clone()) # store h in memory
-#
-#                 # GRU: Layer 2
-#                 z_2 = torch.sigmoid(self.W_z_2(h1) + self.U_z_2(self.memory_h2))
-#                 r_2 = torch.sigmoid(self.W_r_2(h1) + self.U_r_2(self.memory_h2))
-#                 h_tilde_2 = torch.tanh(self.dropout(self.W_2(h1)) + self.U_2(r_2 * self.memory_h2))
-#                 h2 = z_2 * h_tilde_2 + (torch.tensor(1) - z_2) * self.memory_h2
-#
-#                 self.memory_h2.data.copy_(h2.clone())  # store h in memory
-#
-#                 # 2nd part of the architecture: predictions
-#                 logits_global = self.linear2global(h2)  # shape=torch.Size([5])
-#                 sample_predictions_globals = tfunc.log_softmax(logits_global, dim=1)
-#                 predictions_globals_ls.append(sample_predictions_globals)
-#                 if self.include_senses:
-#                     logits_sense = self.linear2sense(h2)
-#                     sample_predictions_senses = tfunc.log_softmax(logits_sense, dim=1)
-#                     predictions_senses_ls.append(sample_predictions_senses)
-#                 else:
-#                     predictions_senses_ls.append(torch.tensor(0).to(DEVICE)) # so I don't have to change the interface elsewhere
-#
-#             #Utils.log_chronometer([t0,t1,t2,t3,t4,t5, t6, t7, t8])
-#         return torch.stack(predictions_globals_ls, dim=0).squeeze(), \
-#                torch.stack(predictions_senses_ls, dim=0).squeeze()
-
-
-
 
 ####################
 ### 2: GRU + GAT ###
@@ -223,6 +77,7 @@ def unpack_input_tensor(in_tensor, grapharea_size):
 class GRU_GAT(torch.nn.Module):
     def __init__(self, data, grapharea_size, num_attention_heads, include_senses):
         super(GRU_GAT, self).__init__()
+        self.data = data
         self.include_senses = include_senses
         self.last_idx_senses = data.node_types.tolist().index(1)
         self.last_idx_globals = data.node_types.tolist().index(2)
@@ -254,7 +109,6 @@ class GRU_GAT(torch.nn.Module):
         # GRU: we update these memory buffers manually, there is no gradient. Set as a Parameter to DataParallel-ize it
         self.memory_h1 = Parameter(torch.zeros(size=(1, self.h1_state_dim)), requires_grad=False)
         self.memory_h2 = Parameter(torch.zeros(size=(1, self.h2_state_dim)), requires_grad=False)
-        self.memory_h2b = Parameter(torch.zeros(size=(1, self.h2_state_dim)), requires_grad=False)
 
         # GRU: 1st layer
         self.U_z_1 = torch.nn.Linear(in_features=self.h1_state_dim, out_features=self.h1_state_dim, bias=False)
@@ -275,22 +129,20 @@ class GRU_GAT(torch.nn.Module):
         self.U_2 = torch.nn.Linear(in_features=self.h2_state_dim, out_features=self.h2_state_dim, bias=True)
         self.W_2 = torch.nn.Linear(in_features=self.h1_state_dim, out_features=self.h2_state_dim, bias=True)
 
-        # GRU: 2nd layer b - senses
-        self.U_z_2b = torch.nn.Linear(in_features=self.h2_state_dim, out_features=self.h2_state_dim, bias=False)
-        self.W_z_2b = torch.nn.Linear(in_features=self.h1_state_dim, out_features=self.h2_state_dim, bias=False)
-        self.U_r_2b = torch.nn.Linear(in_features=self.h2_state_dim, out_features=self.h2_state_dim, bias=False)
-        self.W_r_2b = torch.nn.Linear(in_features=self.h1_state_dim, out_features=self.h2_state_dim, bias=False)
 
-        self.U_2b = torch.nn.Linear(in_features=self.h2_state_dim, out_features=self.h2_state_dim, bias=True)
-        self.W_2b = torch.nn.Linear(in_features=self.h1_state_dim, out_features=self.h2_state_dim, bias=True)
-
-        # 2nd part of the network as before: 2 linear layers to the logits
+        # 2nd part of the network: globals' logits and senses' self-attention prediction
         self.linear2global = torch.nn.Linear(in_features=self.h2_state_dim,
                                              out_features=self.last_idx_globals - self.last_idx_senses, bias=True)
 
         if self.include_senses:
-            self.linear2sense = torch.nn.Linear(in_features=self.h2_state_dim,
-                                                out_features=self.last_idx_senses, bias=True)
+            self.k = 100 # the number of "likely globals". We choose among <=k senses
+            #self.likely_senses_indices = Parameter(torch.zeros(size=(self.k,)), requires_grad=False)
+            self.likely_senses_embs = Parameter(-1*torch.ones(size=(self.k, self.d)), requires_grad=False)
+            self.d_qkv = 150 # the dimensionality of queries, keys and values - down from self.d(embeddings)
+            self.Wq = Parameter(torch.empty(size=(self.d, self.d_qkv)), requires_grad=True)
+            torch.nn.init.xavier_normal_(self.Wq)
+            self.Wk = Parameter(torch.empty(size=(self.d, self.d_qkv)), requires_grad=True)
+            torch.nn.init.xavier_normal_(self.Wk)
 
 
 
@@ -342,7 +194,7 @@ class GRU_GAT(torch.nn.Module):
 
                 self.memory_h1.data.copy_(h1.clone().detach()) # store h in memory
 
-                # GRU: Layer 2a  - globals task
+                # GRU: Layer 2  - globals task
                 z_2 = torch.sigmoid(self.W_z_2(h1) + self.U_z_2(self.memory_h2))
                 r_2 = torch.sigmoid(self.W_r_2(h1) + self.U_r_2(self.memory_h2))
                 h_tilde_2 = torch.tanh(self.dropout(self.W_2(h1)) + self.U_2(r_2 * self.memory_h2))
@@ -350,25 +202,49 @@ class GRU_GAT(torch.nn.Module):
 
                 self.memory_h2.data.copy_(h2.clone().detach())  # store h in memory
 
-                # GRU: Layer 2b  - senses task
-                z_2b = torch.sigmoid(self.W_z_2b(h1) + self.U_z_2b(self.memory_h2b))
-                r_2b = torch.sigmoid(self.W_r_2b(h1) + self.U_r_2b(self.memory_h2b))
-                h_tilde_2b = torch.tanh(self.dropout(self.W_2b(h1)) + self.U_2b(r_2b * self.memory_h2b))
-                h2b = z_2b * h_tilde_2b + (torch.tensor(1) - z_2b) * self.memory_h2b
-
-                self.memory_h2b.data.copy_(h2b.clone().detach())  # store h in memory
-
 
                 # 2nd part of the architecture: predictions
+
                 # Globals
                 logits_global = self.linear2global(h2)
                 sample_predictions_globals = tfunc.log_softmax(logits_global, dim=1)
                 predictions_globals_ls.append(sample_predictions_globals)
+
                 # Senses
                 if self.include_senses:
-                    logits_sense = self.linear2sense(h2b)
-                    sample_predictions_senses = tfunc.log_softmax(logits_sense, dim=1)
-                    predictions_senses_ls.append(sample_predictions_senses)
+                    most_likely_globals = torch.sort(logits_global, descending=True)[1] \
+                                                    [0][0:self.k] + self.last_idx_senses
+                    # for every one of the most likely globals, retrieve the neighbours,
+                    neighbours_indices_ls = [node_idx for neighbours_subls in list(map(
+                        lambda global_node_idx:
+                            GA.get_indices_area_toinclude(self.data.edge_index, self.data.edge_type,
+                                                          global_node_idx.cpu().item(), area_size=32, max_hops=1)[0],
+                        most_likely_globals))
+                    for node_idx in neighbours_subls]
+                    # and keep only their neighbours that are (in the range of) sense nodes
+                    likely_senses_indices = torch.tensor(list(filter(
+                        lambda node_idx : node_idx in range(0, self.last_idx_senses),
+                        neighbours_indices_ls)))[0:self.k]
+                    if torch.cuda.is_available():
+                        likely_senses_indices = likely_senses_indices.to(torch.cuda.device(torch.cuda.current_device()))
+                    self.likely_senses_embs.data = self.X.index_select(dim=0, index=likely_senses_indices)
+                    # Self-attention:
+                    # One query: the context, taken from a no-gradient copy of h1:
+                    query = torch.matmul(self.memory_h2, self.Wq)
+                    # <= k keys, obtained projecting the embeddings of the selected senses
+                    keys = torch.matmul(self.likely_senses_embs, self.Wk)
+                    keys = torch.nn.functional.pad(keys, [0, 0, 0, self.k - keys.shape[0]])
+                    # Formula for self-attention scores: softmax{(query*key)/sqrt(d_k)}
+                    selfatt_logits_0 = torch.matmul(query, keys.t())
+                    selfatt_logits_1 = selfatt_logits_0 / sqrt(self.k)
+                    selfatt_scores = tfunc.log_softmax(selfatt_logits_1, dim=1)
+                    # We have a probability distribution. Assign probabilities to the selected senses, the rest are ==0.
+                    sample_predictions_senses = torch.zeros(size=(self.last_idx_senses,))
+                    if torch.cuda.is_available():
+                        sample_predictions_senses = sample_predictions_senses.to(torch.cuda.device(torch.cuda.current_device()))
+                    sample_predictions_senses[likely_senses_indices] = selfatt_scores[selfatt_scores.nonzero()].squeeze()
+                    predictions_globals_ls.append(sample_predictions_senses)
+
                 else:
                     predictions_senses_ls.append(torch.tensor(0).to(DEVICE)) # so I don't have to change the interface elsewhere
 
