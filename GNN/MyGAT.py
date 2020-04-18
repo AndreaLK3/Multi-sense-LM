@@ -9,7 +9,7 @@ from time import time
 from Utils import DEVICE, MAX_EDGES_PACKED
 from torch.nn.parameter import Parameter
 import Graph.GraphArea as GA
-from math import sqrt
+from math import sqrt, inf
 
 #############################
 ### 0 : Utility functions ###
@@ -68,6 +68,46 @@ def unpack_input_tensor(in_tensor, grapharea_size):
     (x_indices_g, edge_index_g, edge_type_g) = unpack_to_input_tpl(in_tensor_globals, grapharea_size, max_edges)
     (x_indices_s, edge_index_s, edge_type_s) = unpack_to_input_tpl(in_tensor_senses, grapharea_size, max_edges)
     return ((x_indices_g, edge_index_g, edge_type_g), (x_indices_s, edge_index_s, edge_type_s))
+
+
+###################################
+### 1: Self-attention mechanism ###
+###################################
+class SelfAttention(torch.nn.Module):
+    # if operating with multiple heads, I use concatenation
+    def __init__(self, dim_input_context, dim_input_elems, dim_qkv, num_multiheads):
+        super(SelfAttention, self).__init__()
+        self.d_input_context = dim_input_context
+        self.d_input_elems = dim_input_elems
+        self.d_qkv = dim_qkv  # the dimensionality of queries, keys and values - down from self.d_input
+        self.num_multiheads = num_multiheads
+
+        self.Wq = torch.nn.Linear(in_features=self.d_input_context*num_multiheads, out_features=self.d_qkv, bias=False)
+        self.Wk = torch.nn.Linear(in_features=self.d_input_elems*num_multiheads, out_features=self.d_qkv, bias=False)
+        self.Wv = torch.nn.Linear(in_features=self.d_input_elems*num_multiheads, out_features=self.d_qkv, bias=False)
+
+
+    def forward(self, input_q, input_kv):
+        # Self-attention:
+        input_query = input_q.repeat(self.num_multiheads, 1)
+        query = self.Wq(input_query)
+        # <= k keys, obtained projecting the embeddings of the selected senses
+        input_kv = torch.nn.functional.pad(input_kv, [0, 0, 0, self.k - input_kv.shape[0]])
+        input_keysandvalues = input_kv.repeat(self.num_multiheads, 1)
+        keys = self.Wk(input_keysandvalues)
+        # Formula for self-attention scores: softmax{(query*key)/sqrt(d_k)}
+        selfatt_logits_0 = torch.matmul(query, keys.t()).squeeze()[0:keys.shape[0]]
+        selfatt_logits_1 = selfatt_logits_0 / sqrt(self.d_qkv)
+        # n: we want to operate in chunks if we are in a multi-head setting
+        selfatt_scores = tfunc.softmax(selfatt_logits_1, dim=0)
+        # Weighted sum: Σ(score*value)
+        values = self.Wv(input_keysandvalues)
+        result_elems = selfatt_scores*values
+        result_sum = torch.sum(result_elems, dim=0)
+
+        return result_sum
+
+
 
 
 
@@ -135,14 +175,11 @@ class GRU_GAT(torch.nn.Module):
                                              out_features=self.last_idx_globals - self.last_idx_senses, bias=True)
 
         if self.include_senses:
-            self.k = 100 # the number of "likely globals". We choose among <=k senses
-            #self.likely_senses_indices = Parameter(torch.zeros(size=(self.k,)), requires_grad=False)
+            self.k = 500 # the number of "likely globals". We choose among <=k senses
             self.likely_senses_embs = Parameter(-1*torch.ones(size=(self.k, self.d)), requires_grad=False)
             self.d_qkv = 150 # the dimensionality of queries, keys and values - down from self.d(embeddings)
-            self.Wq = Parameter(torch.empty(size=(self.d, self.d_qkv)), requires_grad=True)
-            torch.nn.init.xavier_normal_(self.Wq)
-            self.Wk = Parameter(torch.empty(size=(self.d, self.d_qkv)), requires_grad=True)
-            torch.nn.init.xavier_normal_(self.Wk)
+            self.mySelfAttention = SelfAttention(dim_input_context=self.concatenated_input_dim, dim_input_elems=self.d,
+                                                 dim_qkv=self.d_qkv, num_multiheads=1)
 
 
 
@@ -226,28 +263,27 @@ class GRU_GAT(torch.nn.Module):
                         lambda node_idx : node_idx in range(0, self.last_idx_senses),
                         neighbours_indices_ls)))[0:self.k]
                     if torch.cuda.is_available():
-                        likely_senses_indices = likely_senses_indices.to(torch.cuda.device(torch.cuda.current_device()))
+                        likely_senses_indices = likely_senses_indices.to("cuda:"+str(torch.cuda.current_device()))
                     self.likely_senses_embs.data = self.X.index_select(dim=0, index=likely_senses_indices)
                     # Self-attention:
                     # One query: the context, taken from a no-gradient copy of h1:
                     query = torch.matmul(self.memory_h2, self.Wq)
                     # <= k keys, obtained projecting the embeddings of the selected senses
                     keys = torch.matmul(self.likely_senses_embs, self.Wk)
-                    keys = torch.nn.functional.pad(keys, [0, 0, 0, self.k - keys.shape[0]])
+                    keys_padded = torch.nn.functional.pad(keys, [0, 0, 0, self.k - keys.shape[0]])
                     # Formula for self-attention scores: softmax{(query*key)/sqrt(d_k)}
-                    selfatt_logits_0 = torch.matmul(query, keys.t())
-                    selfatt_logits_1 = selfatt_logits_0 / sqrt(self.k)
-                    selfatt_scores = tfunc.log_softmax(selfatt_logits_1, dim=1)
+                    selfatt_logits_0 = torch.matmul(query, keys_padded.t()).squeeze()[0:keys.shape[0]]
+                    selfatt_logits_1 = selfatt_logits_0 / sqrt(self.d_qkv)
+                    selfatt_scores = tfunc.log_softmax(selfatt_logits_1, dim=0)
                     # We have a probability distribution. Assign probabilities to the selected senses, the rest are ==0.
-                    sample_predictions_senses = torch.zeros(size=(self.last_idx_senses,))
+                    sample_predictions_senses = torch.ones(size=(self.last_idx_senses,))*(-100)
                     if torch.cuda.is_available():
-                        sample_predictions_senses = sample_predictions_senses.to(torch.cuda.device(torch.cuda.current_device()))
-                    sample_predictions_senses[likely_senses_indices] = selfatt_scores[selfatt_scores.nonzero()].squeeze()
-                    predictions_globals_ls.append(sample_predictions_senses)
+                        sample_predictions_senses = sample_predictions_senses.to("cuda:"+str(torch.cuda.current_device()))
+                    sample_predictions_senses[likely_senses_indices]=selfatt_scores.squeeze()
+                    predictions_senses_ls.append(sample_predictions_senses)
 
                 else:
                     predictions_senses_ls.append(torch.tensor(0).to(DEVICE)) # so I don't have to change the interface elsewhere
 
-            #Utils.log_chronometer([t0,t1,t2,t3,t4,t5, t6, t7, t8])
         return torch.stack(predictions_globals_ls, dim=0).squeeze(), \
                torch.stack(predictions_senses_ls, dim=0).squeeze()

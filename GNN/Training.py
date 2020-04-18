@@ -190,7 +190,7 @@ def training_loop(model, learning_rate, train_dataloader, valid_dataloader, num_
                     logging.info("Global step=" + str(overall_step) + "\t ; Iteration time=" + str(round(time()-t0,5)))
                     gc.collect()
 
-                #Utils.log_chronometer([t0, time()])
+                Utils.log_chronometer([t0, time()])
 
             # except StopIteration: the DataLoader naturally catches StopIteration
                 # end of an epoch.
@@ -200,6 +200,7 @@ def training_loop(model, learning_rate, train_dataloader, valid_dataloader, num_
             Utils.record_statistics(sum_epoch_loss_global, sum_epoch_loss_sense, epoch_step,
                                     max(1,epoch_senselabeled_tokens), training_losses_lts)
 
+            continue # Testing
             # Time to check the validation loss
             valid_loss_globals, valid_loss_senses = evaluation(valid_dataloader, valid_dataiter, model)
             #validation_losses_lts.append((valid_loss_globals, valid_loss_senses))
