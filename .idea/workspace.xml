@@ -4,9 +4,9 @@
     <list default="true" id="d35dca92-959c-489d-8a61-f337e4cce7fa" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/GNN/MyGAT.py" beforeDir="false" afterPath="$PROJECT_DIR$/GNN/MyGAT.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/GNN/Training.py" beforeDir="false" afterPath="$PROJECT_DIR$/GNN/Training.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Media/SenseArchitecture.pptx" beforeDir="false" afterPath="$PROJECT_DIR$/Media/SenseArchitecture.pptx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Media/Task1_DeveloperDiary_2.docx" beforeDir="false" afterPath="$PROJECT_DIR$/Media/Task1_DeveloperDiary_2.docx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Media/~$SenseArchitecture.pptx" beforeDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -22,8 +22,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/GNN/MyGAT.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="164">
-              <caret line="77" column="50" selection-start-line="77" selection-start-column="50" selection-end-line="77" selection-end-column="50" />
+            <state relative-caret-position="708">
+              <caret line="268" column="27" selection-start-line="268" selection-start-column="27" selection-end-line="268" selection-end-column="27" />
               <folding>
                 <element signature="e#0#12#0" expanded="true" />
               </folding>
@@ -46,7 +46,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/GNN/Training.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2850">
+            <state relative-caret-position="2490">
               <caret line="190" column="32" selection-start-line="190" selection-start-column="32" selection-end-line="190" selection-end-column="32" />
               <folding>
                 <element signature="e#0#12#0" expanded="true" />
@@ -384,10 +384,10 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="23" width="1440" height="801" extended-state="6" />
+    <frame x="0" y="23" width="1440" height="801" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.49402392" visible="true" weight="0.18669528" />
+      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.49402392" visible="true" weight="0.18884121" />
       <window_info id="Structure" order="1" sideWeight="0.50501" side_tool="true" weight="0.17596567" />
       <window_info id="Favorites" order="2" sideWeight="0.5059761" side_tool="true" weight="0.18025751" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -401,7 +401,7 @@
       <window_info anchor="bottom" id="Terminal" order="8" weight="0.32620922" />
       <window_info anchor="bottom" id="Event Log" order="9" sideWeight="0.50500715" side_tool="true" weight="0.2949438" />
       <window_info anchor="bottom" id="Inspection Results" order="10" weight="0.32863188" />
-      <window_info active="true" anchor="bottom" id="Python Console" order="11" sideWeight="0.49499285" visible="true" weight="0.29337093" />
+      <window_info active="true" anchor="bottom" id="Python Console" order="11" sideWeight="0.49499285" visible="true" weight="0.2919605" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
@@ -821,12 +821,32 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/GNN/MyGAT.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="708">
+          <caret line="268" column="27" selection-start-line="268" selection-start-column="27" selection-end-line="268" selection-end-column="27" />
+          <folding>
+            <element signature="e#0#12#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/Utils.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1245">
           <caret line="96" column="93" selection-start-line="96" selection-start-column="93" selection-end-line="96" selection-end-column="93" />
           <folding>
             <element signature="e#0#14#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/GNN/Training.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2490">
+          <caret line="190" column="32" selection-start-line="190" selection-start-column="32" selection-end-line="190" selection-end-column="32" />
+          <folding>
+            <element signature="e#0#12#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -887,26 +907,6 @@
           <caret line="29" column="56" selection-start-line="29" selection-start-column="56" selection-end-line="29" selection-end-column="56" />
           <folding>
             <element signature="e#0#22#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/GNN/Training.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2850">
-          <caret line="190" column="32" selection-start-line="190" selection-start-column="32" selection-end-line="190" selection-end-column="32" />
-          <folding>
-            <element signature="e#0#12#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/GNN/MyGAT.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="164">
-          <caret line="77" column="50" selection-start-line="77" selection-start-column="50" selection-end-line="77" selection-end-column="50" />
-          <folding>
-            <element signature="e#0#12#0" expanded="true" />
           </folding>
         </state>
       </provider>
