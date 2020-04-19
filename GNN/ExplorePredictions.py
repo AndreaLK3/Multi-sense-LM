@@ -71,7 +71,7 @@ def log_solution_and_predictions(label_tpl, predictions_globals, predictions_sen
     logging.info("Label: the next sense is: " + str(nextsense)  + "(from " + str(solution_sense_idx) + ")")
 
     log_predicted_globals(predictions_globals, k)
-    if nextsense is not None:
+    if nextsense is not None and len(predictions_senses.shape)!=0:
         log_predicted_senses(predictions_senses, k)
 
 

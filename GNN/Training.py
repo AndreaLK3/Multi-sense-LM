@@ -127,6 +127,7 @@ def training_loop(model, learning_rate, train_dataloader, valid_dataloader, num_
                       + '_area' + str(model_forParameters.N)\
                       + '_lr' + str(learning_rate) \
                       + '_epochs' + str(num_epochs)
+    logging.info("Hyperparameters: " + hyperparams_str)
     logging.info("Parameters:")
     parameters_list = [(name, param.shape, param.requires_grad) for (name, param) in model.named_parameters()]
     logging.info(parameters_list)

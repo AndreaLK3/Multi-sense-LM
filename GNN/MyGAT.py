@@ -88,22 +88,31 @@ class SelfAttention(torch.nn.Module):
 
 
     def forward(self, input_q, input_kv, k):
+        #t0=time()
         # Self-attention:
         input_query = input_q.repeat(self.num_multiheads, 1)
         query = self.Wq(input_query)
+        #t1=time()
         # <= k keys, obtained projecting the embeddings of the selected senses
         input_kv = torch.nn.functional.pad(input_kv, [0, 0, 0, k - input_kv.shape[0]])
         input_keysandvalues = input_kv.repeat(self.num_multiheads, 1)
         keys = self.Wk(input_keysandvalues)
+        #t2=time()
         # Formula for self-attention scores: softmax{(query*key)/sqrt(d_k)}
         selfatt_logits_0 = torch.matmul(query, keys.t()).squeeze()[0:keys.shape[0]]
         selfatt_logits_1 = selfatt_logits_0 / sqrt(self.d_qkv)
+        #t3=time()
         # n: we want to operate in chunks if we are in a multi-head setting
         selfatt_scores = tfunc.softmax(selfatt_logits_1, dim=0)
+        #t4=time()
         # Weighted sum: Σ(score*value)
         values = self.Wv(input_keysandvalues)
         result_elems = values*selfatt_scores.unsqueeze(dim=1)
+        #t5=time()
         result_sum = torch.sum(result_elems, dim=0)
+        #t6=time()
+        #logging.info("Time analysis of the SelfAttention submodule's forward()")
+        #Utils.log_chronometer([t0,t1,t2,t3,t4,t5,t6])
 
         return result_sum
 
@@ -133,7 +142,7 @@ class GRU_GAT(torch.nn.Module):
         self.nodestate_zeros = Parameter(torch.zeros(size=(1,self.d)), requires_grad=False)
 
         # Input signals: current global’s word embedding || global’s node-state (|| sense’s node state)
-        self.concatenated_input_dim = 2 * self.d if not (self.include_senses) else 3 * self.d
+        self.concatenated_input_dim = self.d #2 * self.d if not (self.include_senses) else 3 * self.d
 
         # GAT
         self.gat_globals = GATConv(in_channels=self.d,
@@ -176,7 +185,7 @@ class GRU_GAT(torch.nn.Module):
 
         if self.include_senses:
             self.k = 500 # the number of "likely globals". We choose among <=k senses
-            self.likely_senses_embs = Parameter(-1*torch.ones(size=(self.k, self.d)), requires_grad=False)
+            self.likely_globals_embs = Parameter(-1 * torch.ones(size=(self.k, self.d)), requires_grad=False)
             self.d_qkv = 150 # the dimensionality of queries, keys and values - down from self.d(embeddings)
             self.mySelfAttention = SelfAttention(dim_input_context=self.concatenated_input_dim, dim_input_elems=self.d,
                                                  dim_qkv=self.d_qkv, num_multiheads=1) # current number of attention heads=1
@@ -204,7 +213,7 @@ class GRU_GAT(torch.nn.Module):
             sequence_lts = [unpack_input_tensor(sample_tensor, self.N) for sample_tensor in padded_sequence]
 
             for (x_indices, edge_index, edge_type), (x_indices_s, edge_index_s, edge_type_s) in sequence_lts:
-
+                #t0= time()
                 # Input signal n.1: the current (global) word
                 currentword_embedding = self.X.index_select(dim=0, index=x_indices[0])
 
@@ -224,7 +233,7 @@ class GRU_GAT(torch.nn.Module):
                     input_signals = torch.cat([currentword_embedding, currentword_node_state, currentsense_node_state], dim=1)
                 else:
                     input_signals = torch.cat([currentword_embedding, currentword_node_state], dim=1)
-
+                #t1=time()
                 # GRU: Layer 1
                 z_1 = torch.sigmoid(self.W_z_1(input_signals) + self.U_z_1(self.memory_h1))
                 r_1 = torch.sigmoid(self.W_r_1(input_signals) + self.U_r_1(self.memory_h1))
@@ -240,7 +249,7 @@ class GRU_GAT(torch.nn.Module):
                 h2 = z_2 * h_tilde_2 + (torch.tensor(1) - z_2) * self.memory_h2
 
                 self.memory_h2.data.copy_(h2.clone().detach())  # store h in memory
-
+                #t2=time()
 
                 # 2nd part of the architecture: predictions
 
@@ -248,32 +257,39 @@ class GRU_GAT(torch.nn.Module):
                 logits_global = self.linear2global(h2)
                 sample_predictions_globals = tfunc.log_softmax(logits_global, dim=1)
                 predictions_globals_ls.append(sample_predictions_globals)
-
+                #t3=time()
                 # Senses
                 if self.include_senses:
                     most_likely_globals = torch.sort(logits_global, descending=True)[1] \
                                                     [0][0:self.k] + self.last_idx_senses
-                    # for every one of the most likely globals, retrieve the neighbours,
-                    neighbours_indices_ls = [node_idx for neighbours_subls in list(map(
-                        lambda global_node_idx:
-                            GA.get_indices_area_toinclude(self.data.edge_index, self.data.edge_type,
-                                                          global_node_idx.cpu().item(), area_size=32, max_hops=1)[0],
-                        most_likely_globals))
-                    for node_idx in neighbours_subls]
-                    # and keep only their neighbours that are (in the range of) sense nodes
-                    likely_senses_indices = torch.tensor(list(filter(
-                        lambda node_idx : node_idx in range(0, self.last_idx_senses),
-                        neighbours_indices_ls)))[0:self.k]
-                    if torch.cuda.is_available():
-                        likely_senses_indices = likely_senses_indices.to("cuda:"+str(torch.cuda.current_device()))
-                    self.likely_senses_embs.data = self.X.index_select(dim=0, index=likely_senses_indices)
+                    #t4=time()
+                    # # for every one of the most likely globals, retrieve the neighbours,
+                    # neighbours_indices_ls = [node_idx for neighbours_subls in list(map(
+                    #     lambda global_node_idx:
+                    #         GA.get_indices_area_toinclude(self.data.edge_index, self.data.edge_type,
+                    #                                       global_node_idx.cpu().item(), area_size=32, max_hops=1)[0],
+                    #     most_likely_globals))
+                    # for node_idx in neighbours_subls]
+                    #t5=time()
+                    # # and keep only their neighbours that are (in the range of) sense nodes
+                    # likely_senses_indices = torch.tensor(list(filter(
+                    #     lambda node_idx : node_idx in range(0, self.last_idx_senses),
+                    #     neighbours_indices_ls)))[0:self.k]
+                    #t6=time()
+                    # if torch.cuda.is_available():
+                    #     likely_senses_indices = likely_senses_indices.to("cuda:"+str(torch.cuda.current_device()))
+                    self.likely_globals_embs.data = self.X.index_select(dim=0, index=most_likely_globals)
+                    #t7=time()
                     # Self-attention:
-                    selfattention_result = self.mySelfAttention(input_q=input_signals, input_kv=self.likely_senses_embs, k=self.k)
+                    selfattention_result = self.mySelfAttention(input_q=input_signals, input_kv=self.likely_globals_embs, k=self.k)
+                    #t8=time()
                     # followed by linear layer to the senses' logits
                     logits_senses = self.linear2senses(selfattention_result)
                     sample_predictions_senses = tfunc.log_softmax(logits_senses, dim=0)
                     predictions_senses_ls.append(sample_predictions_senses)
-
+                    #t9=time()
+                    #logging.info("Time analysis of the GRU_GAT's forward()")
+                    #Utils.log_chronometer([t0,t1,t2,t3,t4,t5,t6,t7,t8,t9])
                 else:
                     predictions_senses_ls.append(torch.tensor(0).to(DEVICE)) # so I don't have to change the interface elsewhere
 
