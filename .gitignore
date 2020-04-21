@@ -3,7 +3,7 @@
 *.h5
 *.vec
 *.db
-*.dataobject
+*dataobject*
 *.npy
 *rgcn_model
 *.rgcnmodel

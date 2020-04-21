@@ -70,8 +70,8 @@ def compute_model_loss(model,batch_input, batch_labels, verbose=False):
 
 def training_setup(slc_or_text_corpus, include_senses, method, grapharea_size, batch_size, sequence_length):
     graph_dataobj = DG.get_graph_dataobject(new=False, method=method).to(DEVICE)
-    model = MyRNN.GRU_RNN(graph_dataobj, grapharea_size, include_senses)
-    #       MyGAT.GRU_GAT(graph_dataobj, grapharea_size, senses_attention_heads=1, include_senses=include_senses)
+    model = MyGAT.GRU_GAT(graph_dataobj, grapharea_size, num_gat_heads=1, include_senses=include_senses)
+            #MyRNN.GRU_RNN(graph_dataobj, grapharea_size, include_senses)
     grapharea_df = AD.get_grapharea_matrix(graph_dataobj, grapharea_size, hops_in_area=2)
     logging.info("Graph-data object loaded, model initialized. Moving them to GPU device(s) if present.")
     graph_dataobj.to(DEVICE)
