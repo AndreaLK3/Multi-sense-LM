@@ -163,7 +163,7 @@ class MustSkipUNK_Exception(Exception):
 
 
 # Utility for processing entities, word embeddings & co
-def count_tokens_in_corpus(corpus_txt_filepath):
+def count_tokens_in_corpus(corpus_txt_filepath, include_punctuation):
 
     file = open(corpus_txt_filepath, "r") # encoding="utf-8"
     tot_tokens = 0
@@ -173,7 +173,11 @@ def count_tokens_in_corpus(corpus_txt_filepath):
             break
         # tokens_in_line = nltk.tokenize.word_tokenize(line)
         line_noPuncts = re.sub('['+string.punctuation.replace('-', '')+']', ' ', line)
-        tokens_in_line = nltk.tokenize.word_tokenize(line_noPuncts)
+        if not (include_punctuation):
+            the_line = line_noPuncts
+        else:
+            the_line = line
+        tokens_in_line = nltk.tokenize.word_tokenize(the_line)
         tot_tokens = tot_tokens + len(tokens_in_line)
 
         if i % 2000 == 0:

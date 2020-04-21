@@ -70,7 +70,8 @@ def compute_model_loss(model,batch_input, batch_labels, verbose=False):
 
 def training_setup(slc_or_text_corpus, include_senses, method, grapharea_size, batch_size, sequence_length):
     graph_dataobj = DG.get_graph_dataobject(new=False, method=method).to(DEVICE)
-    model = MyGAT.GRU_GAT(graph_dataobj, grapharea_size, num_attention_heads=4, include_senses=include_senses)
+    model = MyRNN.GRU_RNN(graph_dataobj, grapharea_size, include_senses)
+    #       MyGAT.GRU_GAT(graph_dataobj, grapharea_size, senses_attention_heads=1, include_senses=include_senses)
     grapharea_df = AD.get_grapharea_matrix(graph_dataobj, grapharea_size, hops_in_area=2)
     logging.info("Graph-data object loaded, model initialized. Moving them to GPU device(s) if present.")
     graph_dataobj.to(DEVICE)
@@ -167,6 +168,7 @@ def training_loop(model, learning_rate, train_dataloader, valid_dataloader, num_
 
                 # compute loss for the batch
                 loss_global, loss_sense = compute_model_loss(model, batch_input, batch_labels, verbose)
+                #logging.info("Batch n.: " + str(b_idx) + " loss_global = " + str(loss_global.item()))
 
                 # running sum of the training loss in the log segment
                 sum_epoch_loss_global = sum_epoch_loss_global + loss_global.item()
@@ -189,9 +191,10 @@ def training_loop(model, learning_rate, train_dataloader, valid_dataloader, num_
 
                 if overall_step % steps_logging == 0:
                     logging.info("Global step=" + str(overall_step) + "\t ; Iteration time=" + str(round(time()-t0,5)))
+                    Utils.log_chronometer([t0, time()])
                     gc.collect()
 
-                Utils.log_chronometer([t0, time()])
+
 
             # except StopIteration: the DataLoader naturally catches StopIteration
                 # end of an epoch.
@@ -201,7 +204,7 @@ def training_loop(model, learning_rate, train_dataloader, valid_dataloader, num_
             Utils.record_statistics(sum_epoch_loss_global, sum_epoch_loss_sense, epoch_step,
                                     max(1,epoch_senselabeled_tokens), training_losses_lts)
 
-            continue # Testing
+            continue
             # Time to check the validation loss
             valid_loss_globals, valid_loss_senses = evaluation(valid_dataloader, valid_dataiter, model)
             #validation_losses_lts.append((valid_loss_globals, valid_loss_senses))
@@ -213,7 +216,7 @@ def training_loop(model, learning_rate, train_dataloader, valid_dataloader, num_
                 # save model
                 torch.save(model, os.path.join(F.FOLDER_GNN, hyperparams_str +
                                            'step_' + str(overall_step) + '.rgcnmodel'))
-            if epoch_valid_loss > previous_valid_loss + 0.001:
+            if epoch_valid_loss > previous_valid_loss + 0.1:
                 if not flag_firstvalidationhigher:
                     flag_firstvalidationhigher = True
                     logging.info("Validation loss worse thatn previous one. First occurrence.")
