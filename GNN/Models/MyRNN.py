@@ -8,66 +8,8 @@ import torch.nn.functional as tfunc
 from time import time
 from Utils import DEVICE, MAX_EDGES_PACKED
 from torch.nn.parameter import Parameter
+import GNN.Models.Common as C
 
-#############################
-### 0 : Utility functions ###
-#############################
-
-# Tools to split the input of the forward call, (x, edge_index, edge_type),
-# into subgraphs (that can use different adjacency matrices).
-
-def split_edge_index(edge_index, edge_type):
-    sections_cutoffs = [i for i in range(edge_type.shape[0]) if edge_type[i] != edge_type[i-1]] + [edge_type.shape[0]]
-    if 0 not in sections_cutoffs:
-        sections_cutoffs = [0] + sections_cutoffs # prepend, to deal with the case of 1 edge
-    sections_lengths = [sections_cutoffs[i+1] - sections_cutoffs[i] for i in range(len(sections_cutoffs)-1)]
-    split_sources = torch.split(edge_index[0], sections_lengths)
-    split_destinations = torch.split(edge_index[1], sections_lengths)
-
-    return (split_sources, split_destinations)
-
-
-def get_antonym_nodes(edge_index, edge_type, antonym_edge_number):
-    _sources = edge_index[0].masked_select(torch.eq(edge_type, antonym_edge_number))
-    destinations = edge_index[1].masked_select(torch.eq(edge_type, antonym_edge_number))
-    return destinations
-
-######
-
-# Extracting the input elements (x_indices, edge_index, edge_type) from the padded tensor in the batch
-def unpack_to_input_tpl(in_tensor, grapharea_size, max_edges):
-    x_indices = in_tensor[(in_tensor[0:grapharea_size] != -1).nonzero().flatten()]
-        # shortcut for the case when there is no sense
-    if x_indices.nonzero().shape[0] == 0:
-        edge_index = torch.zeros(size=(2,max_edges)).to(DEVICE)
-        edge_type = torch.zeros(size=(max_edges,)).to(DEVICE)
-        return (x_indices, edge_index, edge_type)
-    edge_sources_indices = list(map(lambda idx: idx + grapharea_size,
-                                    [(in_tensor[grapharea_size:grapharea_size + max_edges] != -1).nonzero().flatten()]))
-    edge_sources = in_tensor[edge_sources_indices]
-    edge_destinations_indices = list(map(lambda idx: idx + grapharea_size + max_edges,
-                                         [(in_tensor[
-                                           grapharea_size + max_edges:grapharea_size + 2 * max_edges] != -1).nonzero().flatten()]))
-    edge_destinations = in_tensor[edge_destinations_indices]
-    edge_type_indices = list(map(lambda idx: idx + grapharea_size + 2 * max_edges,
-                                 [(in_tensor[grapharea_size + 2 * max_edges:] != -1).nonzero().flatten()]))
-    edge_type = in_tensor[edge_type_indices]
-
-    edge_index = torch.stack([edge_sources, edge_destinations], dim=0)
-
-    return (x_indices, edge_index, edge_type)
-
-
-# splitting into the 2 parts, globals and senses
-def unpack_input_tensor(in_tensor, grapharea_size):
-    max_edges = int(grapharea_size**1.5)
-    in_tensor = in_tensor.squeeze()
-    in_tensor_globals, in_tensor_senses = torch.split(in_tensor, split_size_or_sections=in_tensor.shape[0]//2, dim=0)
-    (x_indices_g, edge_index_g, edge_type_g) = unpack_to_input_tpl(in_tensor_globals, grapharea_size, max_edges)
-    (x_indices_s, edge_index_s, edge_type_s) = unpack_to_input_tpl(in_tensor_senses, grapharea_size, max_edges)
-    return ((x_indices_g, edge_index_g, edge_type_g), (x_indices_s, edge_index_s, edge_type_s))
-
-#######
 
 class GRU_RNN(torch.nn.Module):
     def __init__(self, data, grapharea_size, include_senses):
@@ -139,7 +81,7 @@ class GRU_RNN(torch.nn.Module):
         for padded_sequence in sequences_in_the_batch_ls:
             padded_sequence = padded_sequence.squeeze()
             padded_sequence = padded_sequence.chunk(chunks=padded_sequence.shape[0], dim=0)
-            sequence_lts = [unpack_input_tensor(sample_tensor, self.N) for sample_tensor in padded_sequence]
+            sequence_lts = [C.unpack_input_tensor(sample_tensor, self.N) for sample_tensor in padded_sequence]
 
             for ((x_indices_g, edge_index_g, edge_type_g), (x_indices_s, edge_index_s, edge_type_s)) in sequence_lts:
                 # Input signal n.1: the current (global) word
@@ -196,7 +138,7 @@ class RNN(torch.nn.Module):
         self.last_idx_senses = data.node_types.tolist().index(1)
         self.last_idx_globals = data.node_types.tolist().index(2)
         self.N = grapharea_size
-        self.hidden_state_dim =hidden_state_dim
+        self.hidden_state_dim = hidden_state_dim
         self.d = data.x.shape[1]
 
         # The embeddings matrix for: senses, globals, definitions, examples (the latter 2 will have gradient set to 0)
@@ -243,7 +185,7 @@ class RNN(torch.nn.Module):
         for padded_sequence in sequences_in_the_batch_ls:
             padded_sequence = padded_sequence.squeeze()
             padded_sequence = padded_sequence.chunk(chunks=padded_sequence.shape[0], dim=0)
-            sequence_lts = [unpack_input_tensor(sample_tensor, self.N) for sample_tensor in padded_sequence]
+            sequence_lts = [C.unpack_input_tensor(sample_tensor, self.N) for sample_tensor in padded_sequence]
 
             for (x_indices, edge_index, edge_type), (x_indices_s, edge_index_s, edge_type_s) in sequence_lts:
                 currentword_embedding = self.X.index_select(dim=0, index=x_indices[0])

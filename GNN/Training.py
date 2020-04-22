@@ -1,12 +1,9 @@
 import torch
-from torch_geometric.nn import RGCNConv
 import Utils
 import Filesystem as F
 import logging
 import torch.nn.functional as tfunc
-import torch.nn.modules.batchnorm as batchnorm
 import Graph.DefineGraph as DG
-from math import exp
 import sqlite3
 import os
 import pandas as pd
@@ -17,12 +14,9 @@ from time import time
 from Utils import DEVICE
 import GNN.DataLoading as DL
 import GNN.ExplorePredictions as EP
-import GNN.MyRGCN as MyRGCN
-import GNN.MyGAT as MyGAT
-import GNN.MyRNN as MyRNN
+import GNN.Models.MyGAT as MyGAT
 from itertools import cycle
 import gc
-from guppy import hpy
 
 
 # Auxiliary function for compute_model_loss
@@ -70,8 +64,8 @@ def compute_model_loss(model,batch_input, batch_labels, verbose=False):
 
 def training_setup(slc_or_text_corpus, include_senses, method, grapharea_size, batch_size, sequence_length):
     graph_dataobj = DG.get_graph_dataobject(new=False, method=method).to(DEVICE)
-    model = MyGAT.GRU_GAT(graph_dataobj, grapharea_size, num_gat_heads=1, include_senses=include_senses)
-            #MyRNN.GRU_RNN(graph_dataobj, grapharea_size, include_senses)
+    model = MyGAT.GRU_GAT(graph_dataobj, grapharea_size, num_gat_heads=4, include_senses=include_senses)
+            # MyRNN.GRU_RNN(graph_dataobj, grapharea_size, include_senses)
     grapharea_df = AD.get_grapharea_matrix(graph_dataobj, grapharea_size, hops_in_area=2)
     logging.info("Graph-data object loaded, model initialized. Moving them to GPU device(s) if present.")
     graph_dataobj.to(DEVICE)
@@ -123,7 +117,7 @@ def training_loop(model, learning_rate, train_dataloader, valid_dataloader, num_
     model_forParameters = model.module if torch.cuda.device_count() > 1 else model
 
     steps_logging = 50
-    hyperparams_str = 'model' + str(type(model).__name__) \
+    hyperparams_str = 'model' + str(type(model_forParameters).__name__) \
                       + '_batchPerSeqlen' + str(train_dataloader.batch_size) \
                       + '_area' + str(model_forParameters.N)\
                       + '_lr' + str(learning_rate) \

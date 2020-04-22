@@ -8,24 +8,8 @@ import torch.nn.functional as tfunc
 from time import time
 from Utils import DEVICE, MAX_EDGES_PACKED
 from torch.nn.parameter import Parameter
+import GNN.Models.Common as C
 
-
-######## Tools to split the input of the forward call, (x, edge_index, edge_type),
-######## into subgraphs using different adjacency matrices.
-
-def split_edge_index(edge_index, edge_type):
-    # logging.info("Edge_index.shape=" + str(edge_index.shape) + " ; edge_type.shape=" + str(edge_type.shape))
-    # if edge_type.shape[0] in [1, 16, 47, 85,4, 51, 58, 62, 4, 65, 38, 56]:
-    #     logging.info("edge_index=" + str(edge_index))
-    #     logging.info("edge_type=" + str(edge_type))
-    sections_cutoffs = [i for i in range(edge_type.shape[0]) if edge_type[i] != edge_type[i-1]] + [edge_type.shape[0]]
-    if 0 not in sections_cutoffs:
-        sections_cutoffs = [0] + sections_cutoffs # prepend, to deal with the case of 1 edge
-    sections_lengths = [sections_cutoffs[i+1] - sections_cutoffs[i] for i in range(len(sections_cutoffs)-1)]
-    split_sources = torch.split(edge_index[0], sections_lengths)
-    split_destinations = torch.split(edge_index[1], sections_lengths)
-
-    return (split_sources, split_destinations)
 
 
 def get_adj_matrix(sources, destinations, grapharea_size):
@@ -51,32 +35,6 @@ def create_adj_matrices(x, edge_index, edge_type):
 
     return A_ls
 ######
-
-
-def unpack_input_tensor(in_tensor, grapharea_size, max_edges=MAX_EDGES_PACKED):
-    in_tensor = in_tensor.squeeze()
-    x_indices = in_tensor[(in_tensor[0:grapharea_size] != -1).nonzero().flatten()]
-    edge_sources_indices = list(map(lambda idx: idx + grapharea_size, [(in_tensor[grapharea_size:grapharea_size+max_edges] != -1).nonzero().flatten()]))
-    edge_sources = in_tensor[edge_sources_indices]
-    edge_destinations_indices = list(map(lambda idx: idx + grapharea_size + max_edges,
-             [(in_tensor[grapharea_size+max_edges:grapharea_size+2*max_edges] != -1).nonzero().flatten()]))
-    edge_destinations = in_tensor[edge_destinations_indices]
-    edge_type_indices = list(map(lambda idx: idx + grapharea_size + 2*max_edges,
-             [(in_tensor[grapharea_size+2*max_edges:] != -1).nonzero().flatten()]))
-    edge_type = in_tensor[edge_type_indices]
-
-    edge_index = torch.stack([edge_sources, edge_destinations], dim=0)
-    return (x_indices, edge_index, edge_type)
-
-
-def unpack_bptt_elem(sequence_lts, elem_idx):
-
-    x_indices = sequence_lts[0][elem_idx][sequence_lts[0][elem_idx]!=-1]
-    edge_sources = sequence_lts[1][elem_idx][sequence_lts[1][elem_idx]!=-1]
-    edge_destinations = sequence_lts[2][elem_idx][sequence_lts[2][elem_idx] != -1]
-    edge_index = torch.stack([edge_sources, edge_destinations], dim=0)
-    edge_type = sequence_lts[3][elem_idx][sequence_lts[3][elem_idx] != -1]
-    return (x_indices, edge_index, edge_type)
 
 
 class GRU_RGCN(torch.nn.Module):
@@ -139,7 +97,7 @@ class GRU_RGCN(torch.nn.Module):
         for padded_sequence in sequences_in_the_batch_ls:
             padded_sequence = padded_sequence.squeeze()
             padded_sequence = padded_sequence.chunk(chunks=padded_sequence.shape[0], dim=0)
-            sequence_lts = [unpack_input_tensor(sample_tensor, self.N) for sample_tensor in padded_sequence]
+            sequence_lts = [C.unpack_input_tensor(sample_tensor, self.N) for sample_tensor in padded_sequence]
 
             for (x_indices, edge_index, edge_type) in sequence_lts:
                 t0 = time()
@@ -150,7 +108,7 @@ class GRU_RGCN(torch.nn.Module):
                     zeros = torch.zeros(size=(self.N-grapharea_x.shape[0],grapharea_x.shape[1])).to(torch.float).to(DEVICE)
                     grapharea_x = torch.cat([grapharea_x, zeros])
 
-                (split_sources, split_destinations) = split_edge_index(edge_index, edge_type)
+                (split_sources, split_destinations) = C.split_edge_index(edge_index, edge_type)
 
                 split_edge_index_ls = []
                 for i in range(len(split_sources)):
