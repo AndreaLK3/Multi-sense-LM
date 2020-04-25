@@ -67,7 +67,7 @@ def create_adjacencies_matrix_numpy(graph_dataobj, area_size, hops_in_area):
 def get_grapharea_matrix(graphdata_obj, area_size, hops_in_area):
 
     candidate_fnames = [fname for fname in os.listdir(F.FOLDER_GRAPH)
-                        if ((F.GRAPHAREA_FILE in fname) and ('nodes_' + str(area_size) + '_areahops_' + str(hops_in_area) + '_' in fname))]
+                        if ((fname.endswith(F.GRAPHAREA_FILE)) and ('nodes_' + str(area_size) + '_areahops_' + str(hops_in_area) + '_' in fname))]
     if len(candidate_fnames) == 0:
         logging.info("Pre-computing and saving graphArea matrix, with area_size=" + str(area_size))
         grapharea_matrix = create_adjacencies_matrix_numpy(graphdata_obj, area_size, hops_in_area)

@@ -15,8 +15,31 @@ from Utils import DEVICE
 import GNN.DataLoading as DL
 import GNN.ExplorePredictions as EP
 import GNN.Models.MyGAT as MyGAT
+import GNN.Models.MyRNN as MyRNN
+import GNN.Models.Senses as SensesNets
 from itertools import cycle
 import gc
+
+
+# Preliminary logging, to document the hyperparameters, the model, and its parameters #
+def write_doc_logging(train_dataloader, model, model_forParameters, learning_rate, num_epochs):
+    hyperparams_str = '_batchPerSeqlen' + str(train_dataloader.batch_size) \
+                      + '_area' + str(model_forParameters.N)\
+                      + '_lr' + str(learning_rate) \
+                      + '_epochs' + str(num_epochs)
+    logging.info("Hyperparameters: " + hyperparams_str)
+    logging.info("Model:")
+    logging.info(str(model))
+    logging.info("Parameters:")
+    parameters_list = [(name, param.shape, param.requires_grad) for (name, param) in model.named_parameters()]
+    logging.info(parameters_list)
+
+    model_parameters = filter(lambda p: p.requires_grad, model.parameters())
+    params = sum([np.prod(p.size()) for p in model_parameters])
+    logging.info("Number of trainable parameters=" + str(params))
+    return hyperparams_str
+
+##########
 
 
 # Auxiliary function for compute_model_loss
@@ -63,9 +86,11 @@ def compute_model_loss(model,batch_input, batch_labels, verbose=False):
 ################
 
 def training_setup(slc_or_text_corpus, include_senses, method, grapharea_size, batch_size, sequence_length):
+    Utils.init_logging("training_setup.log")
     graph_dataobj = DG.get_graph_dataobject(new=False, method=method).to(DEVICE)
-    model = MyGAT.GRU_GAT(graph_dataobj, grapharea_size, num_gat_heads=4, include_senses=include_senses)
-            # MyRNN.GRU_RNN(graph_dataobj, grapharea_size, include_senses)
+    model = SensesNets.ProjectK(graph_dataobj, grapharea_size, num_gat_heads=4, include_senses=include_senses)
+    #MyRNN.GRU_RNN(graph_dataobj, grapharea_size, include_senses)
+    # MyGAT.GRU_GAT(graph_dataobj, grapharea_size, num_gat_heads=4, include_senses=include_senses)
     grapharea_df = AD.get_grapharea_matrix(graph_dataobj, grapharea_size, hops_in_area=2)
     logging.info("Graph-data object loaded, model initialized. Moving them to GPU device(s) if present.")
     graph_dataobj.to(DEVICE)
@@ -115,22 +140,9 @@ def training_loop(model, learning_rate, train_dataloader, valid_dataloader, num_
     validation_losses_lts = []
 
     model_forParameters = model.module if torch.cuda.device_count() > 1 else model
+    hyperparams_str = write_doc_logging(train_dataloader, model, model_forParameters, learning_rate, num_epochs)
 
     steps_logging = 50
-    hyperparams_str = 'model' + str(type(model_forParameters).__name__) \
-                      + '_batchPerSeqlen' + str(train_dataloader.batch_size) \
-                      + '_area' + str(model_forParameters.N)\
-                      + '_lr' + str(learning_rate) \
-                      + '_epochs' + str(num_epochs)
-    logging.info("Hyperparameters: " + hyperparams_str)
-    logging.info("Parameters:")
-    parameters_list = [(name, param.shape, param.requires_grad) for (name, param) in model.named_parameters()]
-    logging.info(parameters_list)
-
-    model_parameters = filter(lambda p: p.requires_grad, model.parameters())
-    params = sum([np.prod(p.size()) for p in model_parameters])
-    logging.info("Number of trainable parameters=" + str(params))
-
     overall_step = 0
     starting_time = time()
     previous_valid_loss = inf
@@ -187,8 +199,6 @@ def training_loop(model, learning_rate, train_dataloader, valid_dataloader, num_
                     logging.info("Global step=" + str(overall_step) + "\t ; Iteration time=" + str(round(time()-t0,5)))
                     Utils.log_chronometer([t0, time()])
                     gc.collect()
-
-
 
             # except StopIteration: the DataLoader naturally catches StopIteration
                 # end of an epoch.

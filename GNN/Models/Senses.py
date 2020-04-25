@@ -1,15 +1,15 @@
 import torch
 from torch_geometric.nn import GATConv
 import torch.nn.functional as tfunc
-
+import Graph.GraphArea as GA
 from GNN.Models.Common import unpack_input_tensor
 from Utils import DEVICE
 from torch.nn.parameter import Parameter
 
 
-class GRU_GAT_selection(torch.nn.Module):
+class ProjectK(torch.nn.Module):
     def __init__(self, data, grapharea_size, num_gat_heads, include_senses):
-        super(GRU_GAT_selection, self).__init__()
+        super(ProjectK, self).__init__()
         self.include_senses = include_senses
         self.last_idx_senses = data.node_types.tolist().index(1)
         self.last_idx_globals = data.node_types.tolist().index(2)
@@ -67,8 +67,10 @@ class GRU_GAT_selection(torch.nn.Module):
 
         if self.include_senses:
             self.k = 20  # the number of "most likely globals".
-            self.linear2sense = torch.nn.Linear(in_features=self.h2_state_dim,
-                                                out_features=self.last_idx_senses, bias=True)
+            self.k_globals_embds =  Parameter(torch.zeros(size=(self.k, self.d)), requires_grad=False)
+            self.dp = 150
+            self.P = torch.nn.Linear(in_features=self.d, out_features=self.dp, bias=False)
+            self.projs2senselogits = torch.nn.Linear(in_features=self.k*(self.dp+1), out_features=self.last_idx_senses, bias=True)
 
 
     def forward(self, batchinput_tensor):  # given the batches, the current node is at index 0
@@ -78,6 +80,7 @@ class GRU_GAT_selection(torch.nn.Module):
         # T-BPTT: at the start of each batch, we detach_() the hidden state from the graph&history that created it
         self.memory_h1.detach_()
         self.memory_h2.detach_()
+        self.k_globals_embds.detach_()
 
         if batchinput_tensor.shape[0] > 1:
             sequences_in_the_batch_ls = torch.chunk(batchinput_tensor, chunks=batchinput_tensor.shape[0], dim=0)
@@ -133,8 +136,17 @@ class GRU_GAT_selection(torch.nn.Module):
                 predictions_globals_ls.append(sample_predictions_globals)
                 # Senses
                 if self.include_senses:
-                    logits_sense = self.linear2sense(h2)
-                    sample_predictions_senses = tfunc.log_softmax(logits_sense, dim=1)
+                    logits_global_sorted = torch.sort(logits_global, descending=True)
+                    k_logits = logits_global_sorted[0].squeeze()[0:self.k]
+                    k_globals = logits_global_sorted[1].squeeze()[0:self.k]
+                    k_globals_indicesX = k_globals + self.last_idx_senses
+
+                    self.k_globals_embds.data.copy_(self.X.index_select(dim=0, index=k_globals_indicesX).clone())
+                    projs = self.P(self.k_globals_embds)
+                    p_l = torch.cat([projs, k_logits.unsqueeze(dim=1)], dim=1)
+                    logits_sense = self.projs2senselogits(p_l.flatten())
+
+                    sample_predictions_senses = tfunc.log_softmax(logits_sense, dim=0)
                     predictions_senses_ls.append(sample_predictions_senses)
                 else:
                     predictions_senses_ls.append(torch.tensor(0).to(DEVICE)) # so I don't have to change the interface elsewhere
