@@ -68,7 +68,7 @@ class SelfAttK(torch.nn.Module):
 
         if self.include_senses:
             self.k = 20 # the number of "likely globals".
-            self.d_qkv = 150 # the dimensionality of queries, keys and values - down from self.d(embeddings)
+            self.d_qkv = self.d//2 # the dimensionality of queries, keys and values - down from self.d(embeddings)
             self.mySelfAttention = SelfAttention(dim_input_context=self.concatenated_input_dim, dim_input_elems=self.d,
                                                  dim_qkv=self.d_qkv, num_multiheads=num_senses_attheads)
             self.linear2senses = torch.nn.Linear(in_features=self.d_qkv * num_senses_attheads,

@@ -76,33 +76,42 @@ class SelfAttention(torch.nn.Module):
         self.d_qkv = dim_qkv  # the dimensionality of queries, keys and values - down from self.d_input
         self.num_multiheads = num_multiheads
 
-        self.Wq = torch.nn.Linear(in_features=self.d_input_context*num_multiheads, out_features=self.d_qkv, bias=False)
-        self.Wk = torch.nn.Linear(in_features=self.d_input_elems*num_multiheads, out_features=self.d_qkv, bias=False)
-        self.Wv = torch.nn.Linear(in_features=self.d_input_elems*num_multiheads, out_features=self.d_qkv, bias=False)
+
+        self.Wq_ls = torch.nn.ModuleList([torch.nn.Linear(in_features=self.d_input_context,
+                                                          out_features=self.d_qkv, bias=False)
+                                          for _current_head in range(self.num_multiheads)])
+        self.Wk_ls = torch.nn.ModuleList([torch.nn.Linear(in_features=self.d_input_elems,
+                                                          out_features=self.d_qkv, bias=False)
+                                          for _current_head in range(self.num_multiheads)])
+        self.Wv_ls = torch.nn.ModuleList([torch.nn.Linear(in_features=self.d_input_elems,
+                                                          out_features=self.d_qkv, bias=False)
+                                          for _current_head in range(self.num_multiheads)])
 
 
     def forward(self, input_q, input_kv, k):
+        results_of_heads = []
+        for current_head in range(self.num_multiheads):
+            # Self-attention:
+            input_query = input_q#.repeat(self.num_multiheads, 1)
+            query = self.Wq_ls[current_head](input_query)
 
-        # Self-attention:
-        input_query = input_q.repeat(self.num_multiheads, 1)
-        query = self.Wq(input_query)
+            # <= k keys, obtained projecting the embeddings of the selected senses
+            #input_kv = torch.nn.functional.pad(input_kv, [0, 0, 0, k - input_kv.shape[0]])
+            #input_keysandvalues = input_kv#.repeat(self.num_multiheads, 1)
+            keys = self.Wk_ls[current_head](input_kv)
 
-        # <= k keys, obtained projecting the embeddings of the selected senses
-        input_kv = torch.nn.functional.pad(input_kv, [0, 0, 0, k - input_kv.shape[0]])
-        input_keysandvalues = input_kv.repeat(self.num_multiheads, 1)
-        keys = self.Wk(input_keysandvalues)
+            # Formula for self-attention scores: softmax{(query*key)/sqrt(d_k)}
+            selfatt_logits_0 = torch.matmul(query, keys.t()).squeeze()[0:keys.shape[0]]
+            selfatt_logits_1 = selfatt_logits_0 / sqrt(self.d_qkv)
 
-        # Formula for self-attention scores: softmax{(query*key)/sqrt(d_k)}
-        selfatt_logits_0 = torch.matmul(query, keys.t()).squeeze()[0:keys.shape[0]]
-        selfatt_logits_1 = selfatt_logits_0 / sqrt(self.d_qkv)
+            # n: we want to operate in chunks if we are in a multi-head setting
+            selfatt_scores = tfunc.softmax(selfatt_logits_1, dim=0)
 
-        # n: we want to operate in chunks if we are in a multi-head setting
-        selfatt_scores = tfunc.softmax(selfatt_logits_1, dim=0)
+            # Weighted sum: Σ(score*value)
+            values = self.Wv_ls[current_head](input_kv)
+            result_elems = values*selfatt_scores.unsqueeze(dim=1)
 
-        # Weighted sum: Σ(score*value)
-        values = self.Wv(input_keysandvalues)
-        result_elems = values*selfatt_scores.unsqueeze(dim=1)
+            result_sum = torch.sum(result_elems, dim=0)
+            results_of_heads.append(result_sum)
 
-        result_sum = torch.sum(result_elems, dim=0)
-
-        return result_sum
+        return torch.cat(results_of_heads, dim=0)
