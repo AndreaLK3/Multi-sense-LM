@@ -82,30 +82,27 @@ class SelfAttention(torch.nn.Module):
 
 
     def forward(self, input_q, input_kv, k):
-        #t0=time()
+
         # Self-attention:
         input_query = input_q.repeat(self.num_multiheads, 1)
         query = self.Wq(input_query)
-        #t1=time()
+
         # <= k keys, obtained projecting the embeddings of the selected senses
         input_kv = torch.nn.functional.pad(input_kv, [0, 0, 0, k - input_kv.shape[0]])
         input_keysandvalues = input_kv.repeat(self.num_multiheads, 1)
         keys = self.Wk(input_keysandvalues)
-        #t2=time()
+
         # Formula for self-attention scores: softmax{(query*key)/sqrt(d_k)}
         selfatt_logits_0 = torch.matmul(query, keys.t()).squeeze()[0:keys.shape[0]]
         selfatt_logits_1 = selfatt_logits_0 / sqrt(self.d_qkv)
-        #t3=time()
+
         # n: we want to operate in chunks if we are in a multi-head setting
         selfatt_scores = tfunc.softmax(selfatt_logits_1, dim=0)
-        #t4=time()
+
         # Weighted sum: Σ(score*value)
         values = self.Wv(input_keysandvalues)
         result_elems = values*selfatt_scores.unsqueeze(dim=1)
-        #t5=time()
+
         result_sum = torch.sum(result_elems, dim=0)
-        #t6=time()
-        #logging.info("Time analysis of the SelfAttention submodule's forward()")
-        #Utils.log_chronometer([t0,t1,t2,t3,t4,t5,t6])
 
         return result_sum
