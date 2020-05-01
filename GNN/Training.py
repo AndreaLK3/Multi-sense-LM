@@ -17,6 +17,7 @@ import GNN.ExplorePredictions as EP
 import GNN.Models.MyGAT as MyGAT
 import GNN.Models.MyRNN as MyRNN
 import GNN.Models.Senses as SensesNets
+import GNN.Models.AWD_LSTM as AWD_LSTM
 from itertools import cycle
 import gc
 
@@ -87,7 +88,8 @@ def compute_model_loss(model,batch_input, batch_labels, verbose=False):
 
 def training_setup(slc_or_text_corpus, include_senses, method, grapharea_size, batch_size, sequence_length):
     graph_dataobj = DG.get_graph_dataobject(new=False, method=method).to(DEVICE)
-    model = SensesNets.SelfAttK(graph_dataobj, grapharea_size, num_gat_heads=4, include_senses=include_senses, num_senses_attheads=4)
+    model =  AWD_LSTM.RNNModel(graph_dataobj, grapharea_size, "LSTM", ninp=300, nhid=1150, nlayers=3)
+    # SensesNets.SelfAttK(graph_dataobj, grapharea_size, num_gat_heads=4, include_senses=include_senses, num_senses_attheads=2)
     #MyRNN.GRU_RNN(graph_dataobj, grapharea_size, include_senses)
     # MyGAT.GRU_GAT(graph_dataobj, grapharea_size, num_gat_heads=4, include_senses=include_senses)
     grapharea_df = AD.get_grapharea_matrix(graph_dataobj, grapharea_size, hops_in_area=2)
@@ -206,7 +208,7 @@ def training_loop(model, learning_rate, train_dataloader, valid_dataloader, num_
                          ". Time = " + str(round(time() - starting_time, 2)) + ". The training losses are: ")
             Utils.record_statistics(sum_epoch_loss_global, sum_epoch_loss_sense, epoch_step,
                                     max(1,epoch_senselabeled_tokens), training_losses_lts)
-            continue
+
             # Time to check the validation loss
             valid_loss_globals, valid_loss_senses = evaluation(valid_dataloader, valid_dataiter, model)
             #validation_losses_lts.append((valid_loss_globals, valid_loss_senses))

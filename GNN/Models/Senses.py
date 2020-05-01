@@ -51,7 +51,7 @@ class SelfAttK(torch.nn.Module):
 
         self.U_1 = torch.nn.Linear(in_features=self.h1_state_dim, out_features=self.h1_state_dim, bias=True)
         self.W_1 = torch.nn.Linear(in_features=self.concatenated_input_dim, out_features=self.h1_state_dim, bias=True)
-        self.dropout = torch.nn.Dropout(p=0.1)
+        self.dropout = torch.nn.Dropout(p=0.01)
 
         # GRU: 2nd layer
         self.U_z_2 = torch.nn.Linear(in_features=self.h2_state_dim, out_features=self.h2_state_dim, bias=False)
@@ -67,8 +67,8 @@ class SelfAttK(torch.nn.Module):
                                              out_features=self.last_idx_globals - self.last_idx_senses, bias=True)
 
         if self.include_senses:
-            self.k = 20 # the number of "likely globals".
-            self.d_qkv = self.d//2 # the dimensionality of queries, keys and values - down from self.d(embeddings)
+            self.k = 10 # the number of "likely globals".
+            self.d_qkv = self.d # the dimensionality of queries, keys and values - down from self.d(embeddings)
             self.mySelfAttention = SelfAttention(dim_input_context=self.concatenated_input_dim, dim_input_elems=self.d,
                                                  dim_qkv=self.d_qkv, num_multiheads=num_senses_attheads)
             self.linear2senses = torch.nn.Linear(in_features=self.d_qkv * num_senses_attheads,

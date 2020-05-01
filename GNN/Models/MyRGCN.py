@@ -26,7 +26,7 @@ def get_adj_matrix(sources, destinations, grapharea_size):
 def create_adj_matrices(x, edge_index, edge_type):
     grapharea_size = x.shape[0]
 
-    (split_sources, split_destinations) = split_edge_index(edge_index, edge_type)
+    (split_sources, split_destinations) = C.split_edge_index(edge_index, edge_type)
     A_ls = []
     for seg in range(len(split_sources)):
         sources = split_sources[seg]
