@@ -2,19 +2,13 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="d35dca92-959c-489d-8a61-f337e4cce7fa" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/GNN/Models/AWD_LSTM.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/GNN/Models/embed_regularize.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/GNN/Models/locked_dropout.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/GNN/Models/weight_drop.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/GNN/Models/WD_LSTM.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/GNN/Models/MyGAT.py" beforeDir="false" afterPath="$PROJECT_DIR$/GNN/Models/MyGAT.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/GNN/Models/MyRGCN.py" beforeDir="false" afterPath="$PROJECT_DIR$/GNN/Models/MyRGCN.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/GNN/Models/MyRNN.py" beforeDir="false" afterPath="$PROJECT_DIR$/GNN/Models/MyRNN.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/GNN/Models/Senses.py" beforeDir="false" afterPath="$PROJECT_DIR$/GNN/Models/Senses.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/GNN/Models/AWD_LSTM.py" beforeDir="false" afterPath="$PROJECT_DIR$/GNN/Models/awd_lstm/AWD_LSTM.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/GNN/Models/embed_regularize.py" beforeDir="false" afterPath="$PROJECT_DIR$/GNN/Models/awd_lstm/embed_regularize.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/GNN/Models/locked_dropout.py" beforeDir="false" afterPath="$PROJECT_DIR$/GNN/Models/awd_lstm/locked_dropout.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/GNN/Models/weight_drop.py" beforeDir="false" afterPath="$PROJECT_DIR$/GNN/Models/awd_lstm/weight_drop.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/GNN/Training.py" beforeDir="false" afterPath="$PROJECT_DIR$/GNN/Training.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Graph/nodes_32_areahops_2_graphArea_matrix.npz" beforeDir="false" afterPath="$PROJECT_DIR$/Graph/nodes_32_areahops_2_graphArea_matrix.npz" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Graph/nodes_32_areahops_2_graphArea_matrix.npz_WT2" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/InputData/indices_table.sql" beforeDir="false" afterPath="$PROJECT_DIR$/InputData/indices_table.sql" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Media/Task1_DeveloperDiary_3.docx" beforeDir="false" afterPath="$PROJECT_DIR$/Media/Task1_DeveloperDiary_3.docx" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -29,58 +23,34 @@
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/GNN/Models/Senses.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="735">
+              <caret line="56" column="111" selection-start-line="56" selection-start-column="111" selection-end-line="56" selection-end-column="111" />
+              <folding>
+                <element signature="e#0#12#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/GNN/Training.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="1035">
+              <caret line="88" column="116" selection-start-line="88" selection-start-column="116" selection-end-line="88" selection-end-column="116" />
+              <folding>
+                <element signature="e#0#12#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/GNN/Models/MyRNN.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="76">
-              <caret line="19" column="8" selection-start-line="19" selection-start-column="8" selection-end-line="19" selection-end-column="31" />
-              <folding>
-                <element signature="e#0#12#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/GNN/Models/AWD_LSTM.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="241">
-              <caret line="21" column="33" selection-start-line="21" selection-start-column="33" selection-end-line="21" selection-end-column="33" />
-              <folding>
-                <element signature="e#118#130#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/GNN/Models/weight_drop.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1470">
-              <caret line="98" column="16" selection-start-line="98" selection-start-column="16" selection-end-line="98" selection-end-column="16" />
-              <folding>
-                <element signature="e#0#12#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/GNN/Models/embed_regularize.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="570">
-              <caret line="38" column="10" selection-start-line="38" selection-start-column="10" selection-end-line="38" selection-end-column="10" />
-              <folding>
-                <element signature="e#0#18#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/GNN/Models/locked_dropout.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="210">
-              <caret line="14" column="23" selection-start-line="14" selection-start-column="23" selection-end-line="14" selection-end-column="23" />
+            <state relative-caret-position="90">
+              <caret line="16" column="24" selection-start-line="16" selection-start-column="24" selection-end-line="16" selection-end-column="24" />
               <folding>
                 <element signature="e#0#12#0" expanded="true" />
               </folding>
@@ -100,44 +70,11 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/GNN/Training.py">
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/GNN/Models/WD_LSTM.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="113">
-              <caret line="27" column="59" selection-start-line="27" selection-start-column="58" selection-end-line="27" selection-end-column="59" />
-              <folding>
-                <element signature="e#0#12#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Graph/Adjacencies.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="945">
-              <caret line="73" column="48" selection-start-line="73" selection-start-column="48" selection-end-line="73" selection-end-column="48" />
-              <folding>
-                <element signature="e#0#12#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Filesystem.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="780">
-              <caret line="52" column="10" selection-start-line="52" selection-start-column="10" selection-end-line="52" selection-end-column="10" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/GNN/Models/Senses.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="735">
-              <caret line="56" column="111" selection-start-line="56" selection-start-column="111" selection-end-line="56" selection-end-column="111" />
+            <state relative-caret-position="365">
+              <caret line="30" column="64" selection-start-line="30" selection-start-column="64" selection-end-line="30" selection-end-column="64" />
               <folding>
                 <element signature="e#0#12#0" expanded="true" />
               </folding>
@@ -156,7 +93,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>print</find>
       <find>log_chrono</find>
       <find>Para</find>
       <find>reset</find>
@@ -186,6 +122,7 @@
       <find>.A</find>
       <find>dropout</find>
       <find>encoder</find>
+      <find>WeightD</find>
     </findStrings>
     <replaceStrings>
       <replace>F</replace>
@@ -210,8 +147,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/Vocabulary/Vocabulary_FromText.py" />
-        <option value="$PROJECT_DIR$/PrepareKBInput/LemmatizeNyms.py" />
         <option value="$PROJECT_DIR$/GetKBInputData/GetWordData.py" />
         <option value="$PROJECT_DIR$/PrepareKBInput/PrepareKBInput.py" />
         <option value="$USER_HOME$/opt/anaconda3/lib/python3.7/site-packages/torch_geometric/nn/conv/message_passing.py" />
@@ -259,15 +194,17 @@
         <option value="$PROJECT_DIR$/GNN/Models/locked_dropout.py" />
         <option value="$PROJECT_DIR$/GNN/Models/embed_regularize.py" />
         <option value="$PROJECT_DIR$/GNN/Models/weight_drop.py" />
-        <option value="$PROJECT_DIR$/GNN/Training.py" />
         <option value="$PROJECT_DIR$/GNN/Models/AWD_LSTM.py" />
+        <option value="$PROJECT_DIR$/GNN/Training.py" />
+        <option value="$PROJECT_DIR$/GNN/Models/awd_lstm/AWD_LSTM.py" />
+        <option value="$PROJECT_DIR$/GNN/Models/WD_LSTM.py" />
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds">
+  <component name="ProjectFrameBounds" extendedState="6">
     <option name="y" value="23" />
     <option name="width" value="1440" />
-    <option name="height" value="801" />
+    <option name="height" value="812" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
@@ -275,7 +212,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -339,6 +275,7 @@
           <select />
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -356,16 +293,16 @@
     </option>
   </component>
   <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/GNN" />
+      <recent name="$PROJECT_DIR$/CreateEntities" />
+    </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/GNN/Models/awd-lstm" />
       <recent name="$PROJECT_DIR$/GNN/Models" />
       <recent name="$PROJECT_DIR$/Graph" />
       <recent name="$PROJECT_DIR$/TextCorpuses/SenseAnnotated" />
       <recent name="$PROJECT_DIR$/WordEmbeddings" />
-      <recent name="$PROJECT_DIR$/Vocabulary" />
-    </key>
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/GNN" />
-      <recent name="$PROJECT_DIR$/CreateEntities" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -403,10 +340,10 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="23" width="1440" height="801" extended-state="0" />
+    <frame x="0" y="23" width="1440" height="812" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.49402392" visible="true" weight="0.23962805" />
+      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.49402392" visible="true" weight="0.24678111" />
       <window_info id="Structure" order="1" sideWeight="0.50501" side_tool="true" weight="0.17596567" />
       <window_info id="Favorites" order="2" sideWeight="0.5059761" side_tool="true" weight="0.18025751" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -420,7 +357,7 @@
       <window_info anchor="bottom" id="Terminal" order="8" weight="0.32620922" />
       <window_info anchor="bottom" id="Event Log" order="9" sideWeight="0.50572246" side_tool="true" weight="0.32440057" />
       <window_info anchor="bottom" id="Inspection Results" order="10" weight="0.32863188" />
-      <window_info active="true" anchor="bottom" id="Python Console" order="11" sideWeight="0.49427754" visible="true" weight="0.32440057" />
+      <window_info active="true" anchor="bottom" id="Python Console" order="11" sideWeight="0.49427754" visible="true" weight="0.31944445" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
@@ -561,18 +498,6 @@
     </expressions>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/GNN/BatchProcessing.py" />
-    <entry file="file://$PROJECT_DIR$/GNN/PocketRGCN.py" />
-    <entry file="file://$USER_HOME$/opt/anaconda3/lib/python3.7/site-packages/torch_geometric/nn/conv/rgcn_conv.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="232">
-          <caret line="93" selection-start-line="93" selection-end-line="93" />
-          <folding>
-            <element signature="e#0#12#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$USER_HOME$/opt/anaconda3/lib/python3.7/site-packages/torch_geometric/nn/conv/message_passing.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="337">
@@ -587,13 +512,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$USER_HOME$/opt/anaconda3/lib/python3.7/site-packages/torch/nn/parameter.pyi">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="45">
-          <caret line="4" column="65" selection-start-line="4" selection-start-column="52" selection-end-line="4" selection-end-column="65" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$USER_HOME$/opt/anaconda3/lib/python3.7/site-packages/torch/nn/parameter.pyi" />
     <entry file="file://$USER_HOME$/opt/anaconda3/lib/python3.7/site-packages/torch/autograd/__init__.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="254">
@@ -684,20 +603,8 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$USER_HOME$/opt/anaconda3/lib/python3.7/site-packages/torch/utils/data/_utils/fetch.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="418">
-          <caret line="43" selection-start-line="43" selection-end-line="43" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/opt/anaconda3/lib/python3.7/site-packages/torch/__init__.pyi">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="239">
-          <caret line="858" column="43" selection-start-line="858" selection-start-column="43" selection-end-line="858" selection-end-column="43" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$USER_HOME$/opt/anaconda3/lib/python3.7/site-packages/torch/utils/data/_utils/fetch.py" />
+    <entry file="file://$USER_HOME$/opt/anaconda3/lib/python3.7/site-packages/torch/__init__.pyi" />
     <entry file="file://$USER_HOME$/Library/Caches/PyCharmCE2019.1/python_stubs/794837011/torch/_C/_TensorBase.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="46500">
@@ -882,10 +789,30 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/GNN/Models/MyGAT.py">
+    <entry file="file://$PROJECT_DIR$/GNN/Models/awd_lstm/weight_drop.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="780">
-          <caret line="58" column="24" selection-start-line="58" selection-start-column="24" selection-end-line="58" selection-end-column="24" />
+        <state relative-caret-position="1470">
+          <caret line="98" column="16" selection-start-line="98" selection-start-column="16" selection-end-line="98" selection-end-column="16" />
+          <folding>
+            <element signature="e#0#12#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/GNN/Models/awd_lstm/embed_regularize.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="570">
+          <caret line="38" column="10" selection-start-line="38" selection-start-column="10" selection-end-line="38" selection-end-column="10" />
+          <folding>
+            <element signature="e#0#18#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/GNN/Models/awd_lstm/locked_dropout.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="210">
+          <caret line="14" column="23" selection-start-line="14" selection-start-column="23" selection-end-line="14" selection-end-column="23" />
           <folding>
             <element signature="e#0#12#0" expanded="true" />
           </folding>
@@ -894,7 +821,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Graph/Adjacencies.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="945">
+        <state relative-caret-position="385">
           <caret line="73" column="48" selection-start-line="73" selection-start-column="48" selection-end-line="73" selection-end-column="48" />
           <folding>
             <element signature="e#0#12#0" expanded="true" />
@@ -904,8 +831,22 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Filesystem.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="780">
+        <state relative-caret-position="399">
           <caret line="52" column="10" selection-start-line="52" selection-start-column="10" selection-end-line="52" selection-end-column="10" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/opt/anaconda3/lib/python3.7/site-packages/torch/nn/modules/rnn.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="783">
+          <caret line="688" column="19" lean-forward="true" selection-start-line="688" selection-start-column="19" selection-end-line="688" selection-end-column="19" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/opt/anaconda3/lib/python3.7/site-packages/torchnlp/nn/weight_drop.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="33">
+          <caret line="67" column="34" lean-forward="true" selection-start-line="67" selection-start-column="34" selection-end-line="67" selection-end-column="34" />
         </state>
       </provider>
     </entry>
@@ -919,40 +860,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/GNN/Models/locked_dropout.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="210">
-          <caret line="14" column="23" selection-start-line="14" selection-start-column="23" selection-end-line="14" selection-end-column="23" />
-          <folding>
-            <element signature="e#0#12#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/GNN/Models/embed_regularize.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="570">
-          <caret line="38" column="10" selection-start-line="38" selection-start-column="10" selection-end-line="38" selection-end-column="10" />
-          <folding>
-            <element signature="e#0#18#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/GNN/Models/weight_drop.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1470">
-          <caret line="98" column="16" selection-start-line="98" selection-start-column="16" selection-end-line="98" selection-end-column="16" />
-          <folding>
-            <element signature="e#0#12#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/GNN/Training.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="113">
-          <caret line="27" column="59" selection-start-line="27" selection-start-column="58" selection-end-line="27" selection-end-column="59" />
+        <state relative-caret-position="1035">
+          <caret line="88" column="116" selection-start-line="88" selection-start-column="116" selection-end-line="88" selection-end-column="116" />
           <folding>
             <element signature="e#0#12#0" expanded="true" />
           </folding>
@@ -961,20 +872,37 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/GNN/Models/MyRNN.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="76">
-          <caret line="19" column="8" selection-start-line="19" selection-start-column="8" selection-end-line="19" selection-end-column="31" />
+        <state relative-caret-position="90">
+          <caret line="16" column="24" selection-start-line="16" selection-start-column="24" selection-end-line="16" selection-end-column="24" />
           <folding>
             <element signature="e#0#12#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/GNN/Models/AWD_LSTM.py">
+    <entry file="file://$PROJECT_DIR$/GNN/Models/MyGAT.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="241">
-          <caret line="21" column="33" selection-start-line="21" selection-start-column="33" selection-end-line="21" selection-end-column="33" />
+        <state relative-caret-position="780">
+          <caret line="58" column="24" selection-start-line="58" selection-start-column="24" selection-end-line="58" selection-end-column="24" />
           <folding>
-            <element signature="e#118#130#0" expanded="true" />
+            <element signature="e#0#12#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/GNN/Models/awd_lstm/AWD_LSTM.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="105">
+          <caret line="7" column="25" selection-start-line="7" selection-start-column="25" selection-end-line="7" selection-end-column="25" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/GNN/Models/WD_LSTM.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="365">
+          <caret line="30" column="64" selection-start-line="30" selection-start-column="64" selection-end-line="30" selection-end-column="64" />
+          <folding>
+            <element signature="e#0#12#0" expanded="true" />
           </folding>
         </state>
       </provider>

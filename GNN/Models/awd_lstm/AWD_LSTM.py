@@ -3,9 +3,9 @@
 import torch
 import torch.nn as nn
 
-from GNN.Models.embed_regularize import embedded_dropout
-from GNN.Models.locked_dropout import LockedDropout
-from GNN.Models.weight_drop import WeightDrop
+from GNN.Models.awd_lstm.embed_regularize import embedded_dropout
+from GNN.Models.awd_lstm.locked_dropout import LockedDropout
+from GNN.Models.awd_lstm.weight_drop import WeightDrop
 from torch.nn.parameter import Parameter
 
 class RNNModel(nn.Module):
@@ -95,7 +95,7 @@ class RNNModel(nn.Module):
                 #self.hdrop(raw_output)
                 raw_output = self.lockdrop(raw_output, self.dropouth)
                 outputs.append(raw_output)
-        hidden = new_hidden
+        hidden = new_hidden # how to implement .detach_().clone()?
 
         output = self.lockdrop(raw_output, self.dropout)
         outputs.append(output)

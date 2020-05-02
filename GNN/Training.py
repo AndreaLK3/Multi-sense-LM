@@ -14,10 +14,8 @@ from time import time
 from Utils import DEVICE
 import GNN.DataLoading as DL
 import GNN.ExplorePredictions as EP
-import GNN.Models.MyGAT as MyGAT
-import GNN.Models.MyRNN as MyRNN
-import GNN.Models.Senses as SensesNets
-import GNN.Models.AWD_LSTM as AWD_LSTM
+import GNN.Models.awd_lstm.AWD_LSTM as awd_lstm
+import GNN.Models.WD_LSTM as MyWD_LSTM
 from itertools import cycle
 import gc
 
@@ -88,7 +86,7 @@ def compute_model_loss(model,batch_input, batch_labels, verbose=False):
 
 def training_setup(slc_or_text_corpus, include_senses, method, grapharea_size, batch_size, sequence_length):
     graph_dataobj = DG.get_graph_dataobject(new=False, method=method).to(DEVICE)
-    model =  AWD_LSTM.RNNModel(graph_dataobj, grapharea_size, "LSTM", ninp=300, nhid=1150, nlayers=3)
+    model = MyWD_LSTM.WD_LSTM(graph_dataobj, grapharea_size, include_senses=include_senses, n_layers=3, n_units=1150)
     # SensesNets.SelfAttK(graph_dataobj, grapharea_size, num_gat_heads=4, include_senses=include_senses, num_senses_attheads=2)
     #MyRNN.GRU_RNN(graph_dataobj, grapharea_size, include_senses)
     # MyGAT.GRU_GAT(graph_dataobj, grapharea_size, num_gat_heads=4, include_senses=include_senses)
