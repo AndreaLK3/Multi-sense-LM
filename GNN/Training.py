@@ -14,7 +14,7 @@ from time import time
 from Utils import DEVICE
 import GNN.DataLoading as DL
 import GNN.ExplorePredictions as EP
-import GNN.Models.awd_lstm.AWD_LSTM as awd_lstm
+# import GNN.Models.awd_lstm.AWD_LSTM as awd_lstm
 import GNN.Models.WD_LSTM as MyWD_LSTM
 from itertools import cycle
 import gc
@@ -30,8 +30,8 @@ def write_doc_logging(train_dataloader, model, model_forParameters, learning_rat
     logging.info("Model:")
     logging.info(str(model))
     logging.info("Parameters:")
-    parameters_list = [(name, param.shape, param.requires_grad) for (name, param) in model.named_parameters()]
-    logging.info(parameters_list)
+    parameters_list = [(name, param.shape, param.dtype, param.requires_grad) for (name, param) in model.named_parameters()]
+    logging.info('\n'.join([str(p) for p in parameters_list]))
 
     model_parameters = filter(lambda p: p.requires_grad, model.parameters())
     params = sum([np.prod(p.size()) for p in model_parameters])
