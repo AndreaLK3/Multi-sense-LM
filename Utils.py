@@ -6,12 +6,14 @@ import string
 import re
 import subprocess
 import numpy as np
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import time
 from math import exp
+import torch
 
 ########## Constants ##########
-import torch
 
 BABELNET_KEY = '7ba5e9a1-1f42-4d9a-97a7-c888975a60a1' # 5000 queries per day until 31-12-2019, then 1000
 
@@ -233,3 +235,24 @@ def get_word_from_sense(sense_str):
         mtc = re.match(pattern_2, sense_str)
         word = mtc.group()
     return word
+
+
+##### Check GPU memory usage
+def get_gpu_memory_map():
+    """Get the current gpu usage.
+
+    Returns
+    -------
+    usage: dict
+        Keys are device ids as integers.
+        Values are memory usage as integers in MB.
+    """
+    result = subprocess.check_output(
+      [
+        'nvidia-smi', '--query-gpu=memory.used',
+        '--format=csv,nounits,noheader'
+      ], encoding='utf-8')
+    # Convert lines into a dictionary
+    gpu_memory = [int(x) for x in result.strip().split('\n')]
+    gpu_memory_map = dict(zip(range(len(gpu_memory)), gpu_memory))
+    return gpu_memory_map

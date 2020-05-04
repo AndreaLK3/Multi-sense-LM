@@ -25,7 +25,7 @@ class GRU_RNN(torch.nn.Module):
 
         # The embeddings matrix for: senses, globals, definitions, examples (the latter 2 may have gradient set to 0)
         self.X = Parameter(data.x.clone().detach(), requires_grad=True)
-        self.select_first_node = Parameter(torch.tensor([0]), requires_grad=False)
+        self.select_first_node = Parameter(torch.tensor([0]).to(dtype=torch.float32), requires_grad=False)
         self.embedding_zeros = Parameter(torch.zeros(size=(1, self.d)), requires_grad=False)
 
         # Input signals: current global’s word embedding || global’s node-state (|| sense’s node state)

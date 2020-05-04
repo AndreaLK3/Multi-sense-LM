@@ -31,7 +31,7 @@ class LSTM(torch.nn.Module):
 
         #self.wd_lstm = WeightDropLSTM(input_size=self.concatenated_input_dim, num_layers=n_layers, hidden_size=n_units)
         # we must use manual WeightDrop on LSTM cells, WeightDropLSTM is incompatible with PyTorch 1.4.0
-        self.lstm = torch.nn.LSTM(input_size=self.d, hidden_size=1150, num_layers=n_layers)
+        self.lstm = torch.nn.LSTM(input_size=self.d, hidden_size=n_units, num_layers=n_layers)
         # 2nd part of the network as before: 2 linear layers to the logits
         self.linear2global = torch.nn.Linear(in_features=n_units,
                                              out_features=self.last_idx_globals - self.last_idx_senses, bias=True)
@@ -81,6 +81,7 @@ class LSTM(torch.nn.Module):
             # - h_0/c_0 of shape (num_layers * num_directions, batch=1, hidden_size):
             #       tensor containing the initial hidden state/cell state for each element in the batch.
             sequence_input_signals = torch.cat(sequence_input_signals_ls, dim=0).unsqueeze(1)
+            self.lstm.flatten_parameters()
             lstm_out, (hidden_n, cells_n) = self.lstm(sequence_input_signals, (self.memory_hn, self.memory_cn))
             self.memory_hn.data.copy_(hidden_n.clone()) # store h in memory
             self.memory_cn.data.copy_(cells_n.clone())
@@ -97,6 +98,9 @@ class LSTM(torch.nn.Module):
             else:
                 predictions_senses_ls.append(torch.tensor(0).to(DEVICE)) # so I don't have to change the interface elsewhere
 
-            #Utils.log_chronometer([t0,t1,t2,t3,t4,t5, t6, t7, t8])
-        return torch.cat(predictions_globals_ls, dim=0).squeeze(), \
-               torch.cat(predictions_senses_ls, dim=0).squeeze()
+
+        predictions_globals = torch.cat(predictions_globals_ls, dim=0).squeeze()
+        predictions_senses = torch.cat(predictions_senses_ls, dim=0).squeeze() if self.include_senses \
+                             else torch.stack(predictions_senses_ls, dim=0)
+        return predictions_globals, predictions_senses
+

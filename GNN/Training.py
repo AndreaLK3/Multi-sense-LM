@@ -70,7 +70,7 @@ def compute_model_loss(model,batch_input, batch_labels, verbose=False):
     # compute the loss for the batch
     loss_global = tfunc.nll_loss(predictions_globals, batch_labels_globals)
 
-    model_forParameters = model.module if torch.cuda.device_count() > 1 else model
+    model_forParameters = model.module if torch.cuda.device_count() > 1 and model.__class__.__name__=="DataParallel" else model
     if model_forParameters.include_senses:
         loss_sense = compute_sense_loss(predictions_senses, batch_labels_senses)
     else:
@@ -85,7 +85,7 @@ def compute_model_loss(model,batch_input, batch_labels, verbose=False):
 
 ################
 
-def training_setup(slc_or_text_corpus, include_senses, method, grapharea_size, batch_size, sequence_length):
+def training_setup(slc_or_text_corpus, include_senses, method, grapharea_size, batch_size, sequence_length, allow_dataparallel=True):
     graph_dataobj = DG.get_graph_dataobject(new=False, method=method).to(DEVICE)
     model = MyWD_LSTM.LSTM(graph_dataobj, grapharea_size, include_senses=include_senses, batch_size=batch_size, n_layers=3, n_units=1150)
     # SensesNets.SelfAttK(graph_dataobj, grapharea_size, num_gat_heads=4, include_senses=include_senses, num_senses_attheads=2)
@@ -96,7 +96,7 @@ def training_setup(slc_or_text_corpus, include_senses, method, grapharea_size, b
     graph_dataobj.to(DEVICE)
 
     n_gpu = torch.cuda.device_count()
-    if n_gpu > 1:
+    if n_gpu > 1 and allow_dataparallel:
         logging.info("Using " + str(n_gpu) + " GPUs")
         model = torch.nn.DataParallel(model)
         model_forDataLoading = model.module
@@ -139,7 +139,7 @@ def training_loop(model, learning_rate, train_dataloader, valid_dataloader, num_
     training_losses_lts = [] # mutated into a lts, with (global_loss, sense_loss)
     validation_losses_lts = []
 
-    model_forParameters = model.module if torch.cuda.device_count() > 1 else model
+    model_forParameters = model.module if torch.cuda.device_count() > 1 and model.__class__.__name__=="DataParallel" else model
     hyperparams_str = write_doc_logging(train_dataloader, model, model_forParameters, learning_rate, num_epochs)
 
     steps_logging = 50
@@ -207,7 +207,7 @@ def training_loop(model, learning_rate, train_dataloader, valid_dataloader, num_
                          ". Time = " + str(round(time() - starting_time, 2)) + ". The training losses are: ")
             Utils.record_statistics(sum_epoch_loss_global, sum_epoch_loss_sense, epoch_step,
                                     max(1,epoch_senselabeled_tokens), training_losses_lts)
-
+            continue
             # Time to check the validation loss
             valid_loss_globals, valid_loss_senses = evaluation(valid_dataloader, valid_dataiter, model)
             #validation_losses_lts.append((valid_loss_globals, valid_loss_senses))
