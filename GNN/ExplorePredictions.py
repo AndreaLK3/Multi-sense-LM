@@ -79,7 +79,7 @@ def log_solution_and_predictions(label_tpl, predictions_globals, predictions_sen
 def log_batch(labels_t, predictions_globals_t, predictions_senses_t, k):
     batch_size = predictions_globals_t.shape[0]
     logging.info("log_batch:")
-    logging.info("labels_t.shape="  + str(labels_t.shape))
+    logging.info("labels_t.shape=" + str(labels_t.shape))
     logging.info("predictions_globals_t.shape=" + str(predictions_globals_t.shape))
     logging.info("predictions_senses_t.shape=" + str(predictions_senses_t.shape))
     for i in range(batch_size):

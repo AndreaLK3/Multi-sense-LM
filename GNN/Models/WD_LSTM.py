@@ -26,8 +26,8 @@ class LSTM(torch.nn.Module):
         # Input signals: current global’s word embedding || global’s node-state (|| sense’s node state)
         self.concatenated_input_dim = self.d if not (self.include_senses) else 2 * self.d
 
-        self.memory_hn = Parameter(torch.zeros(size=(n_layers, 1, n_units)), requires_grad=False)
-        self.memory_cn = Parameter(torch.zeros(size=(n_layers, 1, n_units)), requires_grad=False) # self.d if i==0 else
+        self.memory_hn = Parameter(torch.zeros(size=(n_layers, batch_size, n_units)), requires_grad=False)
+        self.memory_cn = Parameter(torch.zeros(size=(n_layers, batch_size, n_units)), requires_grad=False) # self.d if i==0 else
 
         #self.wd_lstm = WeightDropLSTM(input_size=self.concatenated_input_dim, num_layers=n_layers, hidden_size=n_units)
         # we must use manual WeightDrop on LSTM cells, WeightDropLSTM is incompatible with PyTorch 1.4.0
@@ -54,6 +54,8 @@ class LSTM(torch.nn.Module):
         else:
             sequences_in_the_batch_ls = [batchinput_tensor]
 
+        batch_input_signals_ls = []
+
         for padded_sequence in sequences_in_the_batch_ls:
             padded_sequence = padded_sequence.squeeze()
             padded_sequence = padded_sequence.chunk(chunks=padded_sequence.shape[0], dim=0)
@@ -76,31 +78,30 @@ class LSTM(torch.nn.Module):
                     input_signals = currentword_embedding
 
                 sequence_input_signals_ls.append(input_signals)
-
-            # - input of shape(seq_len, batch=1, input_size): tensor containing the features of the input sequence.
-            # - h_0/c_0 of shape (num_layers * num_directions, batch=1, hidden_size):
-            #       tensor containing the initial hidden state/cell state for each element in the batch.
             sequence_input_signals = torch.cat(sequence_input_signals_ls, dim=0).unsqueeze(1)
-            self.lstm.flatten_parameters()
-            lstm_out, (hidden_n, cells_n) = self.lstm(sequence_input_signals, (self.memory_hn, self.memory_cn))
-            self.memory_hn.data.copy_(hidden_n.clone()) # store h in memory
-            self.memory_cn.data.copy_(cells_n.clone())
-            lstm_out = lstm_out.squeeze() # removing 1 from [seq_len, batch_size=1, n_units]
-
-            # 2nd part of the architecture: predictions
-            logits_global = self.linear2global(lstm_out)  # shape=torch.Size([5])
-            sequence_predictions_globals = tfunc.log_softmax(logits_global, dim=1)
-            predictions_globals_ls.append(sequence_predictions_globals)
-            if self.include_senses:
-                logits_sense = self.linear2sense(lstm_out)
-                sample_predictions_senses = tfunc.log_softmax(logits_sense, dim=1)
-                predictions_senses_ls.append(sample_predictions_senses)
-            else:
-                predictions_senses_ls.append(torch.tensor(0).to(DEVICE)) # so I don't have to change the interface elsewhere
+            batch_input_signals_ls.append(sequence_input_signals)
+        batch_input_signals = torch.cat(batch_input_signals_ls, dim=1)
 
 
-        predictions_globals = torch.cat(predictions_globals_ls, dim=0).squeeze()
-        predictions_senses = torch.cat(predictions_senses_ls, dim=0).squeeze() if self.include_senses \
-                             else torch.stack(predictions_senses_ls, dim=0)
+        # - input of shape(seq_len, batch_size, input_size): tensor containing the features of the input sequence.
+        # - h_0/c_0 of shape (num_layers * num_directions, batch=1, hidden_size):
+        #       tensor containing the initial hidden state/cell state for each element in the batch.
+        self.lstm.flatten_parameters()
+        lstm_out, (hidden_n, cells_n) = self.lstm(batch_input_signals, (self.memory_hn, self.memory_cn))
+        self.memory_hn.data.copy_(hidden_n.clone()) # store h in memory
+        self.memory_cn.data.copy_(cells_n.clone())
+        lstm_out = lstm_out.permute(1,0,2) # going to: (batch_size, seq_len, n_units)
+        seq_len = len(sequences_in_the_batch_ls[0][0])
+        lstm_out = lstm_out.reshape(self.batch_size * seq_len, lstm_out.shape[2])
+
+        # 2nd part of the architecture: predictions
+        logits_global = self.linear2global(lstm_out)  # shape=torch.Size([5])
+        predictions_globals = tfunc.log_softmax(logits_global, dim=1)
+        if self.include_senses:
+            logits_sense = self.linear2sense(lstm_out)
+            predictions_senses = tfunc.log_softmax(logits_sense, dim=1)
+        else:
+            predictions_senses = torch.tensor([0]*self.batch_size * seq_len).to(DEVICE) # so I don't have to change the interface elsewhere
+
         return predictions_globals, predictions_senses
 

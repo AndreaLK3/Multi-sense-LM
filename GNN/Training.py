@@ -207,7 +207,7 @@ def training_loop(model, learning_rate, train_dataloader, valid_dataloader, num_
                          ". Time = " + str(round(time() - starting_time, 2)) + ". The training losses are: ")
             Utils.record_statistics(sum_epoch_loss_global, sum_epoch_loss_sense, epoch_step,
                                     max(1,epoch_senselabeled_tokens), training_losses_lts)
-            continue
+
             # Time to check the validation loss
             valid_loss_globals, valid_loss_senses = evaluation(valid_dataloader, valid_dataiter, model)
             #validation_losses_lts.append((valid_loss_globals, valid_loss_senses))
@@ -222,7 +222,7 @@ def training_loop(model, learning_rate, train_dataloader, valid_dataloader, num_
             if epoch_valid_loss > previous_valid_loss + 10:
                 if not flag_firstvalidationhigher:
                     flag_firstvalidationhigher = True
-                    logging.info("Validation loss worse thatn previous one. First occurrence.")
+                    logging.info("Validation loss worse than previous one. First occurrence.")
                 else: # already did first offence. Must early-stop
                     logging.info("Early stopping")
                     flag_earlystop = True
