@@ -2,7 +2,7 @@ from math import sqrt
 
 import torch
 from torch.nn import functional as tfunc
-
+from torch.nn.parameter import Parameter
 from Utils import DEVICE
 
 
@@ -115,3 +115,42 @@ class SelfAttention(torch.nn.Module):
             results_of_heads.append(result_sum)
 
         return torch.cat(results_of_heads, dim=0)
+
+
+######################
+### 2: DropConnect ###
+######################
+
+
+# dropout_module = torch.nn.Dropout(p=0.5, inplace=False); dropout_module(some_input):
+# During training, randomly zeroes some of the elements of the input tensor with probability p (Bernoulli distribution).
+# This function is an alternative version of: torchnlp.nn.weight_drop._weight_drop(...)
+def weight_drop(module, weights_names_ls, dropout_p):
+
+    original_module_forward = module.forward
+
+    # kwargs_dict = {"weights_names_ls": weights_names_ls,
+    #                "module": module,
+    #                "dropout_p": dropout_p,
+    #                "original_module_forward": original_module_forward}
+    forward_with_drop = forward(weights_names_ls=weights_names_ls, module=module, dropout_p=dropout_p,
+                                original_module_forward=original_module_forward)
+
+    setattr(module, 'forward', forward_with_drop)
+    return module
+
+# Functions are only pickle-able if they are defined at the top-level of a module.
+def forward(*args, **kwargs):
+
+    weights_names_ls = kwargs.get("weights_names_ls")
+    module = kwargs.get("module")
+    dropout_p = kwargs.get("dropout_p")
+    original_module_forward = kwargs.get("original_module_forward")
+
+    for name_param in weights_names_ls:
+        param = module._parameters.get(name_param)
+        param_with_droput = Parameter(torch.nn.functional.dropout(param, p=dropout_p, training=module.training),
+                                      requires_grad=param.requires_grad)
+        module._parameters.__setitem__(name_param, param_with_droput)
+
+        return original_module_forward(*args)

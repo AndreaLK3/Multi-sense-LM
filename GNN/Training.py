@@ -87,9 +87,9 @@ def compute_model_loss(model,batch_input, batch_labels, verbose=False):
 
 def training_setup(slc_or_text_corpus, include_senses, method, grapharea_size, batch_size, sequence_length, allow_dataparallel=True):
     graph_dataobj = DG.get_graph_dataobject(new=False, method=method).to(DEVICE)
-    model = MyWD_LSTM.LSTM(graph_dataobj, grapharea_size, include_senses=include_senses, batch_size=batch_size, n_layers=3, n_units=1150)
+    model = MyWD_LSTM.WD_LSTM(graph_dataobj, grapharea_size, include_senses=include_senses, batch_size=batch_size, n_layers=3, n_units=1150)
     # SensesNets.SelfAttK(graph_dataobj, grapharea_size, num_gat_heads=4, include_senses=include_senses, num_senses_attheads=2)
-    #MyRNN.GRU_RNN(graph_dataobj, grapharea_size, include_senses)
+    # MyRNN.GRU_RNN(graph_dataobj, grapharea_size, include_senses)
     # MyGAT.GRU_GAT(graph_dataobj, grapharea_size, num_gat_heads=4, include_senses=include_senses)
     grapharea_df = AD.get_grapharea_matrix(graph_dataobj, grapharea_size, hops_in_area=2)
     logging.info("Graph-data object loaded, model initialized. Moving them to GPU device(s) if present.")
@@ -122,8 +122,8 @@ def training_setup(slc_or_text_corpus, include_senses, method, grapharea_size, b
 
     valid_dataset = DL.TextDataset(slc_or_text_corpus, 'validation', senseindices_db_c, vocab_h5, model_forDataLoading,
                                    grapharea_df, grapharea_size, graph_dataobj)
-    valid_dataloader = torch.utils.data.DataLoader(valid_dataset, batch_size=sequence_length, num_workers=0,
-                                                   collate_fn=bptt_collator)
+    valid_dataloader = torch.utils.data.DataLoader(valid_dataset, batch_size=batch_size * sequence_length,
+                                                   num_workers=0, collate_fn=bptt_collator)
 
     return model, train_dataloader, valid_dataloader
 
@@ -244,7 +244,7 @@ def training_loop(model, learning_rate, train_dataloader, valid_dataloader, num_
 ################
 
 def evaluation(evaluation_dataloader, evaluation_dataiter, model):
-    model_forParameters = model.module if torch.cuda.device_count() > 1 else model
+    model_forParameters = model.module if torch.cuda.device_count() > 1 and model.__class__.__name__=="DataParallel" else model
     including_senses = model_forParameters.include_senses
 
     model.eval()  # do not train the model now
@@ -258,6 +258,8 @@ def evaluation(evaluation_dataloader, evaluation_dataiter, model):
     with torch.no_grad(): # Deactivates the autograd engine entirely to save some memory
         for b_idx in range(len(evaluation_dataloader)):
             batch_input, batch_labels = evaluation_dataiter.__next__()
+            batch_input = batch_input.to(DEVICE)
+            batch_labels = batch_labels.to(DEVICE)
             loss_globals, loss_sense = compute_model_loss(model, batch_input, batch_labels, verbose=False)
             sum_eval_loss_globals = sum_eval_loss_globals + loss_globals.item()
 
