@@ -128,29 +128,25 @@ class SelfAttention(torch.nn.Module):
 def weight_drop(module, weights_names_ls, dropout_p):
 
     original_module_forward = module.forward
-
-    # kwargs_dict = {"weights_names_ls": weights_names_ls,
-    #                "module": module,
-    #                "dropout_p": dropout_p,
-    #                "original_module_forward": original_module_forward}
-    forward_with_drop = forward(weights_names_ls=weights_names_ls, module=module, dropout_p=dropout_p,
-                                original_module_forward=original_module_forward)
-
+    forward_with_drop = ForwardWithDrop(weights_names_ls, module, dropout_p, original_module_forward)
     setattr(module, 'forward', forward_with_drop)
     return module
 
-# Functions are only pickle-able if they are defined at the top-level of a module.
-def forward(*args, **kwargs):
+# Functions are only pickle-able if they are defined at the top-level of a module,
+# so we create a class that is first initialized and then called as the forward()
+class ForwardWithDrop(object):
+    def __init__(self,weights_names_ls, module, dropout_p, original_module_forward):
+        self.weights_names_ls = weights_names_ls
+        self.module = module
+        self.dropout_p = dropout_p
+        self.original_module_forward = original_module_forward
 
-    weights_names_ls = kwargs.get("weights_names_ls")
-    module = kwargs.get("module")
-    dropout_p = kwargs.get("dropout_p")
-    original_module_forward = kwargs.get("original_module_forward")
+    def __call__(self, *args, **kwargs): # the function formerly known as "forward_new"
+        for name_param in self.weights_names_ls:
+            param = self.module._parameters.get(name_param)
+            param_with_droput = Parameter(torch.nn.functional.dropout(param, p=self.dropout_p, training=self.module.training),
+                                          requires_grad=param.requires_grad)
+            self.module._parameters.__setitem__(name_param, param_with_droput)
 
-    for name_param in weights_names_ls:
-        param = module._parameters.get(name_param)
-        param_with_droput = Parameter(torch.nn.functional.dropout(param, p=dropout_p, training=module.training),
-                                      requires_grad=param.requires_grad)
-        module._parameters.__setitem__(name_param, param_with_droput)
+        return self.original_module_forward(*args, **kwargs)
 
-        return original_module_forward(*args)
