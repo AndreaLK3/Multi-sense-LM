@@ -161,7 +161,7 @@ class WD_LSTM_GAT(torch.nn.Module):
 
         # The embeddings matrix for: senses, globals, definitions, examples (the latter 2 may have gradient set to 0)
         self.X = Parameter(data.x.clone().detach(), requires_grad=True)
-        #self.select_first_node = Parameter(torch.tensor([0]).to(torch.float32), requires_grad=False)
+        self.select_first_node = Parameter(torch.tensor([0]).to(DEVICE), requires_grad=False)
         self.embedding_zeros = Parameter(torch.zeros(size=(1, self.d)), requires_grad=False)
 
         # GAT
@@ -182,7 +182,8 @@ class WD_LSTM_GAT(torch.nn.Module):
 
         #self.wd_lstm = WeightDropLSTM(input_size=self.concatenated_input_dim, num_layers=n_layers, hidden_size=n_units)
         # we must use manual WeightDrop on LSTM cells, WeightDropLSTM is incompatible with PyTorch 1.4.0
-        self.lstm = Common.weight_drop(module=torch.nn.LSTM(input_size=self.d, hidden_size=n_units, num_layers=n_layers),
+        self.lstm = Common.weight_drop(module=torch.nn.LSTM(input_size=self.concatenated_input_dim,
+                                                            hidden_size=n_units, num_layers=n_layers),
                                   weights_names_ls=['weight_hh_l'+str(i) for i in range(n_layers)],
                                   dropout_p=0.3)
         # 2nd part of the network as before: 2 linear layers to the logits

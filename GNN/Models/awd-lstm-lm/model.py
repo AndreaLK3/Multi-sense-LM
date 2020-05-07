@@ -1,30 +1,20 @@
-
-# ********** AWD-LSTM implementation from: https://github.com/salesforce/awd-lstm-lm/blob/master/model.py **********
 import torch
 import torch.nn as nn
 
-from GNN.Models.awd_lstm.embed_regularize import embedded_dropout
-from GNN.Models.awd_lstm.locked_dropout import LockedDropout
-from GNN.Models.awd_lstm.weight_drop import WeightDrop
-from torch.nn.parameter import Parameter
+from embed_regularize import embedded_dropout
+from locked_dropout import LockedDropout
+from weight_drop import WeightDrop
 
 class RNNModel(nn.Module):
     """Container module with an encoder, a recurrent module, and a decoder."""
 
-    def __init__(self, data, grapharea_size,
-                 rnn_type, ninp, nhid, nlayers, dropout=0.5, dropouth=0.5, dropouti=0.5, dropoute=0.1, #taken out ntoken
-                 wdrop=0, tie_weights=False):
+    def __init__(self, rnn_type, ntoken, ninp, nhid, nlayers, dropout=0.5, dropouth=0.5, dropouti=0.5, dropoute=0.1, wdrop=0, tie_weights=False):
         super(RNNModel, self).__init__()
-        self.encoder = Parameter(data.x.clone().detach(), requires_grad=True) # added by me
-        self.last_idx_senses = data.node_types.tolist().index(1) #
-        self.last_idx_globals = data.node_types.tolist().index(2) #
-        self.ntoken_globals = self.last_idx_globals - self.last_idx_senses #
-        self.N = grapharea_size #
         self.lockdrop = LockedDropout()
         self.idrop = nn.Dropout(dropouti)
         self.hdrop = nn.Dropout(dropouth)
         self.drop = nn.Dropout(dropout)
-        #self.encoder = nn.Embedding(ntoken, ninp)
+        self.encoder = nn.Embedding(ntoken, ninp)
         assert rnn_type in ['LSTM', 'QRNN', 'GRU'], 'RNN type is not supported'
         if rnn_type == 'LSTM':
             self.rnns = [torch.nn.LSTM(ninp if l == 0 else nhid, nhid if l != nlayers - 1 else (ninp if tie_weights else nhid), 1, dropout=0) for l in range(nlayers)]
@@ -34,14 +24,14 @@ class RNNModel(nn.Module):
             self.rnns = [torch.nn.GRU(ninp if l == 0 else nhid, nhid if l != nlayers - 1 else ninp, 1, dropout=0) for l in range(nlayers)]
             if wdrop:
                 self.rnns = [WeightDrop(rnn, ['weight_hh_l0'], dropout=wdrop) for rnn in self.rnns]
-        # elif rnn_type == 'QRNN':
-        #     from torchqrnn import QRNNLayer
-        #     self.rnns = [QRNNLayer(input_size=ninp if l == 0 else nhid, hidden_size=nhid if l != nlayers - 1 else (ninp if tie_weights else nhid), save_prev_x=True, zoneout=0, window=2 if l == 0 else 1, output_gate=True) for l in range(nlayers)]
-        #     for rnn in self.rnns:
-        #         rnn.linear = WeightDrop(rnn.linear, ['weight'], dropout=wdrop)
+        elif rnn_type == 'QRNN':
+            from torchqrnn import QRNNLayer
+            self.rnns = [QRNNLayer(input_size=ninp if l == 0 else nhid, hidden_size=nhid if l != nlayers - 1 else (ninp if tie_weights else nhid), save_prev_x=True, zoneout=0, window=2 if l == 0 else 1, output_gate=True) for l in range(nlayers)]
+            for rnn in self.rnns:
+                rnn.linear = WeightDrop(rnn.linear, ['weight'], dropout=wdrop)
         print(self.rnns)
         self.rnns = torch.nn.ModuleList(self.rnns)
-        self.decoder = nn.Linear(nhid, self.ntoken_globals)
+        self.decoder = nn.Linear(nhid, ntoken)
 
         # Optionally tie weights as in:
         # "Using the Output Embedding to Improve Language Models" (Press & Wolf 2016)
@@ -71,7 +61,7 @@ class RNNModel(nn.Module):
 
     def init_weights(self):
         initrange = 0.1
-        # self.encoder.weight.data.uniform_(-initrange, initrange)  # taken out - we have the pretrained graph vectors
+        self.encoder.weight.data.uniform_(-initrange, initrange)
         self.decoder.bias.data.fill_(0)
         self.decoder.weight.data.uniform_(-initrange, initrange)
 
@@ -95,7 +85,7 @@ class RNNModel(nn.Module):
                 #self.hdrop(raw_output)
                 raw_output = self.lockdrop(raw_output, self.dropouth)
                 outputs.append(raw_output)
-        hidden = new_hidden # how to implement .detach_().clone()?
+        hidden = new_hidden
 
         output = self.lockdrop(raw_output, self.dropout)
         outputs.append(output)
@@ -114,4 +104,3 @@ class RNNModel(nn.Module):
         elif self.rnn_type == 'QRNN' or self.rnn_type == 'GRU':
             return [weight.new(1, bsz, self.nhid if l != self.nlayers - 1 else (self.ninp if self.tie_weights else self.nhid)).zero_()
                     for l in range(self.nlayers)]
-# ***************
