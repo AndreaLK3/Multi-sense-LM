@@ -5,10 +5,10 @@ import numpy as np
 import torch
 import torch.nn as nn
 
-import data
-import model
+import GNN.Models.awd_lstm_lm.data as data # modified: changed import
+import GNN.Models.awd_lstm_lm.model as model #
 
-from utils import batchify, get_batch, repackage_hidden
+from GNN.Models.awd_lstm_lm.utils import batchify, get_batch, repackage_hidden
 
 parser = argparse.ArgumentParser(description='PyTorch PennTreeBank RNN/LSTM Language Model')
 parser.add_argument('--data', type=str, default='data/penn/',
