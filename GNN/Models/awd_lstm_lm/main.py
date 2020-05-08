@@ -5,10 +5,10 @@ import numpy as np
 import torch
 import torch.nn as nn
 
-import GNN.Models.awd_lstm_lm.data as data # modified: changed import
-import GNN.Models.awd_lstm_lm.model as model #
+import data # GNN.Models.awd_lstm_lm.data as data # modified: changed import
+import model # GNN.Models.awd_lstm_lm.model as model #
 
-from GNN.Models.awd_lstm_lm.utils import batchify, get_batch, repackage_hidden
+from utils import batchify, get_batch, repackage_hidden
 
 parser = argparse.ArgumentParser(description='PyTorch PennTreeBank RNN/LSTM Language Model')
 parser.add_argument('--data', type=str, default='data/penn/',
@@ -110,7 +110,7 @@ test_data = batchify(corpus.test, test_batch_size, args)
 # Build the model
 ###############################################################################
 
-from splitcross import SplitCrossEntropyLoss
+from GNN.Models.awd_lstm_lm.splitcross import SplitCrossEntropyLoss # modified import
 criterion = None
 
 ntokens = len(corpus.dictionary)
@@ -122,7 +122,7 @@ if args.resume:
     optimizer.param_groups[0]['lr'] = args.lr
     model.dropouti, model.dropouth, model.dropout, args.dropoute = args.dropouti, args.dropouth, args.dropout, args.dropoute
     if args.wdrop:
-        from weight_drop import WeightDrop
+        from GNN.Models.awd_lstm_lm.weight_drop import WeightDrop # modified import
         for rnn in model.rnns:
             if type(rnn) == WeightDrop: rnn.dropout = args.wdrop
             elif rnn.zoneout > 0: rnn.zoneout = args.wdrop
@@ -181,7 +181,7 @@ def train():
         # Prevent excessively small or negative sequence lengths
         seq_len = max(5, int(np.random.normal(bptt, 5)))
         # There's a very small chance that it could select a very long sequence length resulting in OOM
-        # seq_len = min(seq_len, args.bptt + 10)
+        seq_len = min(seq_len, args.bptt + 10)
 
         lr2 = optimizer.param_groups[0]['lr']
         optimizer.param_groups[0]['lr'] = lr2 * seq_len / args.bptt

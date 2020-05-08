@@ -11,9 +11,100 @@ from torch.nn.parameter import Parameter
 import GNN.Models.Common as C
 
 
-class GRU_RNN(torch.nn.Module):
+class GRU(torch.nn.Module):
+
+    def __init__(self, data, grapharea_size, include_senses, batch_size, n_layers, n_units):
+        super(GRU, self).__init__()
+        self.include_senses = include_senses
+        self.last_idx_senses = data.node_types.tolist().index(1)
+        self.last_idx_globals = data.node_types.tolist().index(2)
+        self.N = grapharea_size
+        self.d = data.x.shape[1]
+        self.batch_size = batch_size
+
+        # The embeddings matrix for: senses, globals, definitions, examples
+        self.X = Parameter(data.x.clone().detach(), requires_grad=True)
+        self.select_first_node = Parameter(torch.tensor([0]).to(DEVICE), requires_grad=False)
+        self.embedding_zeros = Parameter(torch.zeros(size=(1, self.d)), requires_grad=False)
+
+        # Input signals: current global’s word embedding || global’s node-state (|| sense’s node state)
+        self.concatenated_input_dim = self.d if not (self.include_senses) else 2 * self.d
+
+        self.memory_hn = Parameter(torch.zeros(size=(n_layers, batch_size, n_units)), requires_grad=False)
+
+        self.gru = torch.nn.GRU(input_size=self.concatenated_input_dim, hidden_size=n_units, num_layers=n_layers)
+        # 2nd part of the network as before: 2 linear layers to the logits
+        self.linear2global = torch.nn.Linear(in_features=n_units,
+                                             out_features=self.last_idx_globals - self.last_idx_senses, bias=True)
+
+        if self.include_senses:
+            self.linear2sense = torch.nn.Linear(in_features=n_units,
+                                                out_features=self.last_idx_senses, bias=True)
+
+
+    def forward(self, batchinput_tensor):  # given the batches, the current node is at index 0
+
+        # T-BPTT: at the start of each batch, we detach_() the hidden state from the graph&history that created it
+        self.memory_hn.detach_()
+
+        if batchinput_tensor.shape[0] > 1:
+            sequences_in_the_batch_ls = torch.chunk(batchinput_tensor, chunks=batchinput_tensor.shape[0], dim=0)
+        else:
+            sequences_in_the_batch_ls = [batchinput_tensor]
+
+        batch_input_signals_ls = []
+
+        for padded_sequence in sequences_in_the_batch_ls:
+            padded_sequence = padded_sequence.squeeze()
+            padded_sequence = padded_sequence.chunk(chunks=padded_sequence.shape[0], dim=0)
+            sequence_lts = [C.unpack_input_tensor(sample_tensor, self.N) for sample_tensor in padded_sequence]
+
+            sequence_input_signals_ls = []
+
+            for ((x_indices_g, edge_index_g, edge_type_g), (x_indices_s, edge_index_s, edge_type_s)) in sequence_lts:
+                # Input signal n.1: the current (global) word
+                currentword_embedding = self.X.index_select(dim=0, index=x_indices_g[0])
+
+                # Input signal n.2: the embedding of the current sense; + concatenating the input signals
+                if self.include_senses:
+                    if x_indices_s.nonzero().shape[0] == 0: # no sense was specified
+                        currentsense_embedding = self.embedding_zeros
+                    else: # sense was specified
+                        currentsense_embedding = self.X.index_select(dim=0, index=x_indices_s[0])
+                    input_signals = torch.cat([currentword_embedding, currentsense_embedding], dim=1)
+                else:
+                    input_signals = currentword_embedding
+
+                sequence_input_signals_ls.append(input_signals)
+            sequence_input_signals = torch.cat(sequence_input_signals_ls, dim=0).unsqueeze(1)
+            batch_input_signals_ls.append(sequence_input_signals)
+        batch_input_signals = torch.cat(batch_input_signals_ls, dim=1)
+
+        # - input of shape(seq_len, batch_size, input_size): tensor containing the features of the input sequence.
+        # - h_0 of shape (num_layers * num_directions, batch=1, hidden_size):
+        #       tensor containing the initial hidden state for each element in the batch.
+        self.gru.flatten_parameters()
+        gru_out, hidden_n = self.gru(batch_input_signals, self.memory_hn)
+        self.memory_hn.data.copy_(hidden_n.clone()) # store h in memory
+        gru_out = gru_out.permute(1,0,2) # going to: (batch_size, seq_len, n_units)
+        seq_len = len(sequences_in_the_batch_ls[0][0])
+        gru_out = gru_out.reshape(self.batch_size * seq_len, gru_out.shape[2])
+
+        # 2nd part of the architecture: predictions
+        logits_global = self.linear2global(gru_out)  # shape=torch.Size([5])
+        predictions_globals = tfunc.log_softmax(logits_global, dim=1)
+        if self.include_senses:
+            logits_sense = self.linear2sense(gru_out)
+            predictions_senses = tfunc.log_softmax(logits_sense, dim=1)
+        else:
+            predictions_senses = torch.tensor([0]*self.batch_size * seq_len).to(DEVICE) # so I don't have to change the interface elsewhere
+
+        return predictions_globals, predictions_senses
+
+
+class MyGRU(torch.nn.Module):
     def __init__(self, data, grapharea_size, include_senses):
-        super(GRU_RNN, self).__init__()
+        super(MyGRU, self).__init__()
         self.include_senses = include_senses
         self.last_idx_senses = data.node_types.tolist().index(1)
         self.last_idx_globals = data.node_types.tolist().index(2)
@@ -131,9 +222,9 @@ class GRU_RNN(torch.nn.Module):
 #######
 
 
-class RNN(torch.nn.Module):
+class MyRNN(torch.nn.Module):
     def __init__(self, data, grapharea_size, hidden_state_dim, include_senses):
-        super(RNN, self).__init__()
+        super(MyRNN, self).__init__()
         self.include_senses = include_senses
         self.last_idx_senses = data.node_types.tolist().index(1)
         self.last_idx_globals = data.node_types.tolist().index(2)
