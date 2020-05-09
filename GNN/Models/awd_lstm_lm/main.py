@@ -110,7 +110,7 @@ test_data = batchify(corpus.test, test_batch_size, args)
 # Build the model
 ###############################################################################
 
-from GNN.Models.awd_lstm_lm.splitcross import SplitCrossEntropyLoss # modified import
+from splitcross import SplitCrossEntropyLoss
 criterion = None
 
 ntokens = len(corpus.dictionary)

@@ -2,6 +2,32 @@ import torch
 from torch.nn import Parameter
 from functools import wraps
 
+# *** Added: my class, to implement DropConnect and circumvent the error:
+# *** AttributeError: 'LSTM' object has no attribute 'weight_hh_l0'
+class ForwardWithDrop(object):
+    def __init__(self,weights_names_ls, module, dropout_p, original_module_forward):
+        self.weights_names_ls = weights_names_ls
+        self.module = module
+        self.dropout_p = dropout_p
+        self.original_module_forward = original_module_forward
+
+    def __call__(self, *args, **kwargs): # the function formerly known as "forward_new"
+        for name_param in self.weights_names_ls:
+            param = self.module._parameters.get(name_param)
+            param_with_droput = Parameter(torch.nn.functional.dropout(param, p=self.dropout_p, training=self.module.training),
+                                          requires_grad=param.requires_grad)
+            self.module._parameters.__setitem__(name_param, param_with_droput)
+
+        return self.original_module_forward(*args, **kwargs)
+
+# *** Added: entry function, that works similarly to torchnlp.nn's weight_drop() helper
+def my_weight_drop(module, weights_names_ls, dropout_p):
+
+    original_module_forward = module.forward
+    forward_with_drop = ForwardWithDrop(weights_names_ls, module, dropout_p, original_module_forward)
+    setattr(module, 'forward', forward_with_drop)
+    return module
+
 class WeightDrop(torch.nn.Module):
     def __init__(self, module, weights, dropout=0, variational=False):
         super(WeightDrop, self).__init__()

@@ -3,7 +3,7 @@ import torch.nn as nn
 
 from embed_regularize import embedded_dropout #GNN.Models.awd_lstm_lm.embed_regularize modified: changed import
 from locked_dropout import LockedDropout #
-from weight_drop import WeightDrop #
+from weight_drop import WeightDrop, my_weight_drop #
 
 class RNNModel(nn.Module):
     """Container module with an encoder, a recurrent module, and a decoder."""
@@ -19,11 +19,11 @@ class RNNModel(nn.Module):
         if rnn_type == 'LSTM':
             self.rnns = [torch.nn.LSTM(ninp if l == 0 else nhid, nhid if l != nlayers - 1 else (ninp if tie_weights else nhid), 1, dropout=0) for l in range(nlayers)]
             if wdrop:
-                self.rnns = [WeightDrop(rnn, ['weight_hh_l0'], dropout=wdrop) for rnn in self.rnns]
+                self.rnns = [my_weight_drop(rnn, ['weight_hh_l0'], wdrop) for rnn in self.rnns]
         if rnn_type == 'GRU':
             self.rnns = [torch.nn.GRU(ninp if l == 0 else nhid, nhid if l != nlayers - 1 else ninp, 1, dropout=0) for l in range(nlayers)]
             if wdrop:
-                self.rnns = [WeightDrop(rnn, ['weight_hh_l0'], dropout=wdrop) for rnn in self.rnns]
+                self.rnns = [my_weight_drop(rnn, ['weight_hh_l0'], wdrop) for rnn in self.rnns]
         # elif rnn_type == 'QRNN': # we do not use qrnn - torchqrnn is not installed
         #     from torchqrnn import QRNNLayer
         #     self.rnns = [QRNNLayer(input_size=ninp if l == 0 else nhid, hidden_size=nhid if l != nlayers - 1 else (ninp if tie_weights else nhid), save_prev_x=True, zoneout=0, window=2 if l == 0 else 1, output_gate=True) for l in range(nlayers)]
