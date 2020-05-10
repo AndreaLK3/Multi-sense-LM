@@ -4,6 +4,7 @@ import torch
 from torch.nn import functional as tfunc
 from torch.nn.parameter import Parameter
 from Utils import DEVICE
+import numpy as np
 
 
 #############################
@@ -55,11 +56,43 @@ def unpack_to_input_tpl(in_tensor, grapharea_size, max_edges):
 
 # splitting into the 2 parts, globals and senses
 def unpack_input_tensor(in_tensor, grapharea_size):
+    print("in_tensor.shape=" + str(in_tensor.shape))
     max_edges = int(grapharea_size**1.5)
     in_tensor = in_tensor.squeeze()
+    print("in_tensor.shape[0]//2=" + str(in_tensor.shape[0]//2))
     in_tensor_globals, in_tensor_senses = torch.split(in_tensor, split_size_or_sections=in_tensor.shape[0]//2, dim=0)
     (x_indices_g, edge_index_g, edge_type_g) = unpack_to_input_tpl(in_tensor_globals, grapharea_size, max_edges)
     (x_indices_s, edge_index_s, edge_type_s) = unpack_to_input_tpl(in_tensor_senses, grapharea_size, max_edges)
+    return ((x_indices_g, edge_index_g, edge_type_g), (x_indices_s, edge_index_s, edge_type_s))
+
+# numpy version
+def unpack_to_input_tpl_numpy(in_ndarray, grapharea_size, max_edges):
+    CURRENT_DEVICE = 'cpu' if not (torch.cuda.is_available()) else 'gpu:' + str(torch.cuda.current_device())
+    x_indices = np.extract(condition=[elem != -1 for elem in in_ndarray[0:grapharea_size]], arr=in_ndarray[0:grapharea_size])
+        # shortcut for the case when there is no sense
+    if len(x_indices) == 0:
+        edge_index = torch.zeros(size=(2,max_edges)).to(CURRENT_DEVICE)
+        edge_type = torch.zeros(size=(max_edges,)).to(CURRENT_DEVICE)
+        return (x_indices, edge_index, edge_type)
+    edge_sources = np.extract(condition=[elem!=-1 for elem in in_ndarray[grapharea_size:grapharea_size + max_edges]],
+                              arr=in_ndarray[grapharea_size:grapharea_size + max_edges])
+    edge_destinations = np.extract(condition=[elem!=-1 for elem in in_ndarray[grapharea_size + max_edges:grapharea_size + 2 * max_edges]],
+                              arr=in_ndarray[grapharea_size + max_edges:grapharea_size + 2 * max_edges])
+    edge_type = torch.tensor(np.extract(condition=[elem!=-1 for elem in in_ndarray[grapharea_size + 2 * max_edges:]],
+                              arr=in_ndarray[grapharea_size + 2 * max_edges:])).to(CURRENT_DEVICE)
+
+    edge_index = torch.stack([torch.tensor(edge_sources).to(CURRENT_DEVICE),
+                              torch.tensor(edge_destinations).to(CURRENT_DEVICE)], dim=0)
+
+    return (x_indices, edge_index, edge_type)
+
+def unpack_input_tensor_numpy(batchinput_ndarray, grapharea_size):
+    print("batchinput_ndarray.shape=" + str(batchinput_ndarray.shape))
+    max_edges = int(grapharea_size**1.5)
+    print("batchinput_ndarray.shape[0]//2=" + str(batchinput_ndarray.shape[0]//2))
+    in_tensor_globals, in_tensor_senses = np.split(batchinput_ndarray, indices_or_sections=[batchinput_ndarray.shape[0]//2], axis=0)
+    (x_indices_g, edge_index_g, edge_type_g) = unpack_to_input_tpl_numpy(in_tensor_globals, grapharea_size, max_edges)
+    (x_indices_s, edge_index_s, edge_type_s) = unpack_to_input_tpl_numpy(in_tensor_senses, grapharea_size, max_edges)
     return ((x_indices_g, edge_index_g, edge_type_g), (x_indices_s, edge_index_s, edge_type_s))
 
 

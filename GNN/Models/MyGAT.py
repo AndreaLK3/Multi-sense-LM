@@ -5,6 +5,9 @@ from math import sqrt
 import GNN.Models.Common as Common
 from Utils import DEVICE
 from torch.nn.parameter import Parameter
+from Utils import log_chronometer
+from time import time
+import numpy as np
 
 ####################
 ### 1: GRU + GAT ###
@@ -57,45 +60,65 @@ class GRU_GAT(torch.nn.Module):
         # T-BPTT: at the start of each batch, we detach_() the hidden state from the graph&history that created it
         self.memory_hn.detach_()
 
-        if batchinput_tensor.shape[0] > 1:
-            sequences_in_the_batch_ls = torch.chunk(batchinput_tensor, chunks=batchinput_tensor.shape[0], dim=0)
-        else:
-            sequences_in_the_batch_ls = [batchinput_tensor]
+        t0 = time()
+        batchinput_ndarray_0 = batchinput_tensor.cpu().numpy()
+        batchinput_ndarray = np.apply_along_axis(func1d= lambda row_in_batch : np.apply_along_axis(
+            func1d= lambda sample_tensor: Common.unpack_input_tensor_numpy(sample_tensor, self.N), arr=row_in_batch, axis=0),
+        axis=2, arr=batchinput_ndarray_0)
+        t1=time()
 
+        # if batchinput_tensor.shape[0] > 1:
+        #     sequences_in_the_batch_ls = torch.chunk(batchinput_tensor, chunks=batchinput_tensor.shape[0], dim=0)
+        # else:
+        #     sequences_in_the_batch_ls = [batchinput_tensor]
+        #
+        # batch_input_signals_ls = []
+        #
+        # for padded_sequence in sequences_in_the_batch_ls:
+        #     t0 = time()
+        #     padded_sequence = padded_sequence.squeeze()
+        #     padded_sequence = padded_sequence.chunk(chunks=padded_sequence.shape[0], dim=0)
+        #     sequence_lts = [Common.unpack_input_tensor(sample_tensor, self.N) for sample_tensor in padded_sequence]
+        #
+        #     sequence_input_signals_ls = []
+        #     t1 = time()
         batch_input_signals_ls = []
-
-        for padded_sequence in sequences_in_the_batch_ls:
-            padded_sequence = padded_sequence.squeeze()
-            padded_sequence = padded_sequence.chunk(chunks=padded_sequence.shape[0], dim=0)
-            sequence_lts = [Common.unpack_input_tensor(sample_tensor, self.N) for sample_tensor in padded_sequence]
-
+        for part_of_batch in batchinput_ndarray:
             sequence_input_signals_ls = []
+            for sequence_lts in part_of_batch:
+                for ((x_indices_g, edge_index_g, edge_type_g), (x_indices_s, edge_index_s, edge_type_s)) in sequence_lts:
+                    # Input signal n.1: the embedding of the current (global) word
+                    currentword_embedding = self.X.index_select(dim=0, index=x_indices_g[0])
 
-            for ((x_indices_g, edge_index_g, edge_type_g), (x_indices_s, edge_index_s, edge_type_s)) in sequence_lts:
-                # Input signal n.1: the embedding of the current (global) word
-                currentword_embedding = self.X.index_select(dim=0, index=x_indices_g[0])
+                    # Input signal n.2: the node-state of the current global word
+                    x = self.X.index_select(dim=0, index=x_indices_g.squeeze())
+                    # experiment: edge_index as sparse tensor, to accumulate it into batches
+                    # edge_index_g_reversed = torch.stack([edge_index_g[1], edge_index_g[0]], dim=0)
+                    # edge_index_g_sparse = torch.sparse_coo_tensor(indices = edge_index_g_reversed, values=torch.ones(edge_index_g.shape[1]))
+                    x_attention_state = self.gat_globals(x, edge_index_g)
+                    currentglobal_node_state = x_attention_state.index_select(dim=0, index=self.select_first_node)
 
-                # Input signal n.2: the node-state of the current global word
-                x = self.X.index_select(dim=0, index=x_indices_g.squeeze())
-                x_attention_state = self.gat_globals(x, edge_index_g)
-                currentglobal_node_state = x_attention_state.index_select(dim=0, index=self.select_first_node)
+                    # Input signal n.3: the node-state of the current sense; + concatenating the input signals
+                    if self.include_senses:
+                        if x_indices_s.nonzero().shape[0] == 0:  # no sense was specified
+                            currentsense_node_state = self.embedding_zeros
+                        else:  # sense was specified
+                            x_s = self.X.index_select(dim=0, index=x_indices_s.squeeze())
+                            sense_attention_state = self.gat_senses(x_s, edge_index_s)
+                            currentsense_node_state = sense_attention_state.index_select(dim=0,
+                                                                                         index=self.select_first_node)
+                        input_signals = torch.cat([currentword_embedding, currentglobal_node_state, currentsense_node_state], dim=1)
+                    else:
+                        input_signals = torch.cat([currentword_embedding, currentglobal_node_state], dim=1)
 
-                # Input signal n.3: the node-state of the current sense; + concatenating the input signals
-                if self.include_senses:
-                    if x_indices_s.nonzero().shape[0] == 0:  # no sense was specified
-                        currentsense_node_state = self.embedding_zeros
-                    else:  # sense was specified
-                        x_s = self.X.index_select(dim=0, index=x_indices_s.squeeze())
-                        sense_attention_state = self.gat_senses(x_s, edge_index_s)
-                        currentsense_node_state = sense_attention_state.index_select(dim=0,
-                                                                                     index=self.select_first_node)
-                    input_signals = torch.cat([currentword_embedding, currentglobal_node_state, currentsense_node_state], dim=1)
-                else:
-                    input_signals = torch.cat([currentword_embedding, currentglobal_node_state], dim=1)
-                sequence_input_signals_ls.append(input_signals)
+                    sequence_input_signals_ls.append(input_signals)
+            t2 = time()
             sequence_input_signals = torch.cat(sequence_input_signals_ls, dim=0).unsqueeze(1)
             batch_input_signals_ls.append(sequence_input_signals)
+            t3 = time()
+            log_chronometer([t0, t1, t2, t3])
         batch_input_signals = torch.cat(batch_input_signals_ls, dim=1)
+
 
         # - input of shape(seq_len, batch_size, input_size): tensor containing the features of the input sequence.
         # - h_0 of shape (num_layers * num_directions, batch=1, hidden_size):
