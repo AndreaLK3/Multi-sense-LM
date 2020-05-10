@@ -90,7 +90,7 @@ def training_setup(slc_or_text_corpus, include_senses, method, grapharea_size, b
     graph_dataobj = DG.get_graph_dataobject(new=False, method=method).to(DEVICE)
     model = MyGAT.GRU_GAT(graph_dataobj, grapharea_size, num_gat_heads=4, include_senses=include_senses,
                             batch_size=batch_size, n_layers=3, n_units=1150)
-    # MyRNN.GRU(graph_dataobj, grapharea_size, include_senses=include_senses, batch_size=batch_size, n_layers=3, n_units=1150)
+    #  MyRNN.GRU(graph_dataobj, grapharea_size, include_senses=include_senses, batch_size=batch_size, n_layers=3, n_units=1150)
     # MyWD_LSTM.WD_LSTM(graph_dataobj, grapharea_size, include_senses=include_senses, batch_size=batch_size, n_layers=3, n_units=1150)
     # SensesNets.SelfAttK(graph_dataobj, grapharea_size, num_gat_heads=4, include_senses=include_senses, num_senses_attheads=2)
     # MyRNN.GRU_RNN(graph_dataobj, grapharea_size, include_senses)
@@ -168,18 +168,17 @@ def training_loop(model, learning_rate, train_dataloader, valid_dataloader, num_
             flag_earlystop = False
 
             for b_idx in range(len(train_dataloader)):
+                t0=time()
                 batch_input, batch_labels = train_dataiter.__next__()
                 batch_input = batch_input.to(DEVICE)
                 batch_labels = batch_labels.to(DEVICE)
 
                 # starting operations on one batch
                 optimizer.zero_grad()
-                t0 = time()
 
                 # compute loss for the batch
                 loss_global, loss_sense = compute_model_loss(model, batch_input, batch_labels, verbose)
                 #logging.info("Batch n.: " + str(b_idx) + " loss_global = " + str(loss_global.item()))
-
                 # running sum of the training loss in the log segment
                 sum_epoch_loss_global = sum_epoch_loss_global + loss_global.item()
                 if model_forParameters.include_senses:
@@ -195,10 +194,10 @@ def training_loop(model, learning_rate, train_dataloader, valid_dataloader, num_
                 #last_embedding_to_update = model_forDataLoading.last_idx_senses + model_forDataLoading.last_idx_globals
                 #model_forDataLoading.X.grad.data[last_embedding_to_update:,:].fill_(0) # defs and examples should not change
                 optimizer.step()
-
                 overall_step = overall_step + 1
                 epoch_step = epoch_step + 1
-
+                logging.info("Iteration time=")
+                Utils.log_chronometer([t0,time()])
                 if overall_step % steps_logging == 0:
                     logging.info("Global step=" + str(overall_step) + "\t ; Iteration time=" + str(round(time()-t0,5)))
                     Utils.log_chronometer([t0, time()])

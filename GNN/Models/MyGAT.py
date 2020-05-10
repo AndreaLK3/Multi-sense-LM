@@ -56,6 +56,51 @@ class GRU_GAT(torch.nn.Module):
 
 
     def forward(self, batchinput_tensor):  # given the batches, the current node is at index 0
+        CURRENT_DEVICE = 'cpu' if not(torch.cuda.is_available()) else 'cuda:'+str(torch.cuda.current_device())
+
+        # T-BPTT: at the start of each batch, we detach_() the hidden state from the graph&history that created it
+        # self.memory_hn.detach_()
+        # t0 = time()
+        # if batchinput_tensor.shape[0] > 1:
+        #     sequences_in_the_batch_ls = torch.chunk(batchinput_tensor, chunks=batchinput_tensor.shape[0], dim=0)
+        # else:
+        #     sequences_in_the_batch_ls = [batchinput_tensor]
+        #
+        # batch_input_signals_ls = []
+        # t1=time()
+        # for padded_sequence in sequences_in_the_batch_ls:
+        #     padded_sequence = padded_sequence.squeeze()
+        #     padded_sequence = padded_sequence.chunk(chunks=padded_sequence.shape[0], dim=0)
+        #     sequence_lts = [Common.unpack_input_tensor(sample_tensor, self.N) for sample_tensor in padded_sequence]
+        #
+        #     sequence_input_signals_ls = []
+        #
+        #     for ((x_indices_g, edge_index_g, edge_type_g), (x_indices_s, edge_index_s, edge_type_s)) in sequence_lts:
+        #         # Input signal n.1: the embedding of the current (global) word
+        #         currentword_embedding = self.X.index_select(dim=0, index=x_indices_g[0])
+        #
+        #         # Input signal n.2: the node-state of the current global word
+        #         x = self.X.index_select(dim=0, index=x_indices_g.squeeze())
+        #         x_attention_state = self.gat_globals(x, edge_index_g)
+        #         currentglobal_node_state = x_attention_state.index_select(dim=0, index=self.select_first_node)
+        #
+        #         # Input signal n.3: the node-state of the current sense; + concatenating the input signals
+        #         if self.include_senses:
+        #             if x_indices_s.nonzero().shape[0] == 0:  # no sense was specified
+        #                 currentsense_node_state = self.embedding_zeros
+        #             else:  # sense was specified
+        #                 x_s = self.X.index_select(dim=0, index=x_indices_s.squeeze())
+        #                 sense_attention_state = self.gat_senses(x_s, edge_index_s)
+        #                 currentsense_node_state = sense_attention_state.index_select(dim=0,
+        #                                                                              index=self.select_first_node)
+        #             input_signals = torch.cat(
+        #                 [currentword_embedding, currentglobal_node_state, currentsense_node_state], dim=1)
+        #         else:
+        #             input_signals = torch.cat([currentword_embedding, currentglobal_node_state], dim=1)
+        #         sequence_input_signals_ls.append(input_signals)
+        #     sequence_input_signals = torch.cat(sequence_input_signals_ls, dim=0).unsqueeze(1)
+        #     batch_input_signals_ls.append(sequence_input_signals)
+        # batch_input_signals = torch.cat(batch_input_signals_ls, dim=1)
 
         # T-BPTT: at the start of each batch, we detach_() the hidden state from the graph&history that created it
         self.memory_hn.detach_()
@@ -67,58 +112,45 @@ class GRU_GAT(torch.nn.Module):
         axis=2, arr=batchinput_ndarray_0)
         t1=time()
 
-        # if batchinput_tensor.shape[0] > 1:
-        #     sequences_in_the_batch_ls = torch.chunk(batchinput_tensor, chunks=batchinput_tensor.shape[0], dim=0)
-        # else:
-        #     sequences_in_the_batch_ls = [batchinput_tensor]
-        #
-        # batch_input_signals_ls = []
-        #
-        # for padded_sequence in sequences_in_the_batch_ls:
-        #     t0 = time()
-        #     padded_sequence = padded_sequence.squeeze()
-        #     padded_sequence = padded_sequence.chunk(chunks=padded_sequence.shape[0], dim=0)
-        #     sequence_lts = [Common.unpack_input_tensor(sample_tensor, self.N) for sample_tensor in padded_sequence]
-        #
-        #     sequence_input_signals_ls = []
-        #     t1 = time()
         batch_input_signals_ls = []
         for part_of_batch in batchinput_ndarray:
             sequence_input_signals_ls = []
             for sequence_lts in part_of_batch:
-                for ((x_indices_g, edge_index_g, edge_type_g), (x_indices_s, edge_index_s, edge_type_s)) in sequence_lts:
-                    # Input signal n.1: the embedding of the current (global) word
-                    currentword_embedding = self.X.index_select(dim=0, index=x_indices_g[0])
+                (x_indices_g, edge_index_g, edge_type_g) = sequence_lts[0,:]
+                (x_indices_s, edge_index_s, edge_type_s) = sequence_lts[1,:]
+                x_indices_g = torch.tensor(x_indices_g).to(CURRENT_DEVICE)
+                x_indices_s = torch.tensor(x_indices_s).to(CURRENT_DEVICE)
+                # Input signal n.1: the embedding of the current (global) word
+                currentword_embedding = self.X.index_select(dim=0, index=x_indices_g[0])
 
-                    # Input signal n.2: the node-state of the current global word
-                    x = self.X.index_select(dim=0, index=x_indices_g.squeeze())
-                    # experiment: edge_index as sparse tensor, to accumulate it into batches
-                    # edge_index_g_reversed = torch.stack([edge_index_g[1], edge_index_g[0]], dim=0)
-                    # edge_index_g_sparse = torch.sparse_coo_tensor(indices = edge_index_g_reversed, values=torch.ones(edge_index_g.shape[1]))
-                    x_attention_state = self.gat_globals(x, edge_index_g)
-                    currentglobal_node_state = x_attention_state.index_select(dim=0, index=self.select_first_node)
+                # Input signal n.2: the node-state of the current global word
+                x = self.X.index_select(dim=0, index=x_indices_g.squeeze())
+                # experiment: edge_index as sparse tensor, to accumulate it into batches
+                # edge_index_g_reversed = torch.stack([edge_index_g[1], edge_index_g[0]], dim=0)
+                # edge_index_g_sparse = torch.sparse_coo_tensor(indices = edge_index_g_reversed, values=torch.ones(edge_index_g.shape[1]))
+                x_attention_state = self.gat_globals(x, edge_index_g)
+                currentglobal_node_state = x_attention_state.index_select(dim=0, index=self.select_first_node)
 
-                    # Input signal n.3: the node-state of the current sense; + concatenating the input signals
-                    if self.include_senses:
-                        if x_indices_s.nonzero().shape[0] == 0:  # no sense was specified
-                            currentsense_node_state = self.embedding_zeros
-                        else:  # sense was specified
-                            x_s = self.X.index_select(dim=0, index=x_indices_s.squeeze())
-                            sense_attention_state = self.gat_senses(x_s, edge_index_s)
-                            currentsense_node_state = sense_attention_state.index_select(dim=0,
-                                                                                         index=self.select_first_node)
-                        input_signals = torch.cat([currentword_embedding, currentglobal_node_state, currentsense_node_state], dim=1)
-                    else:
-                        input_signals = torch.cat([currentword_embedding, currentglobal_node_state], dim=1)
+                # Input signal n.3: the node-state of the current sense; + concatenating the input signals
+                if self.include_senses:
+                    if len(x_indices_s[x_indices_s!=0]== 0):  # no sense was specified
+                        currentsense_node_state = self.embedding_zeros
+                    else:  # sense was specified
+                        x_s = self.X.index_select(dim=0, index=x_indices_s.squeeze())
+                        sense_attention_state = self.gat_senses(x_s, edge_index_s)
+                        currentsense_node_state = sense_attention_state.index_select(dim=0,
+                                                                                     index=self.select_first_node)
+                    input_signals = torch.cat([currentword_embedding, currentglobal_node_state, currentsense_node_state], dim=1)
+                else:
+                    input_signals = torch.cat([currentword_embedding, currentglobal_node_state], dim=1)
 
-                    sequence_input_signals_ls.append(input_signals)
-            t2 = time()
+                sequence_input_signals_ls.append(input_signals)
+
             sequence_input_signals = torch.cat(sequence_input_signals_ls, dim=0).unsqueeze(1)
             batch_input_signals_ls.append(sequence_input_signals)
-            t3 = time()
-            log_chronometer([t0, t1, t2, t3])
-        batch_input_signals = torch.cat(batch_input_signals_ls, dim=1)
 
+        batch_input_signals = torch.cat(batch_input_signals_ls, dim=1)
+        t2 = time()
 
         # - input of shape(seq_len, batch_size, input_size): tensor containing the features of the input sequence.
         # - h_0 of shape (num_layers * num_directions, batch=1, hidden_size):
@@ -127,9 +159,9 @@ class GRU_GAT(torch.nn.Module):
         gru_out, hidden_n = self.gru(batch_input_signals, self.memory_hn)
         self.memory_hn.data.copy_(hidden_n.clone()) # store h in memory
         gru_out = gru_out.permute(1,0,2) # going to: (batch_size, seq_len, n_units)
-        seq_len = len(sequences_in_the_batch_ls[0][0])
+        seq_len = batchinput_ndarray_0.shape[1]  # len(sequences_in_the_batch_ls[0][0]) # #
         gru_out = gru_out.reshape(self.batch_size * seq_len, gru_out.shape[2])
-
+        t3=time()
         # 2nd part of the architecture: predictions
         logits_global = self.linear2global(gru_out)  # shape=torch.Size([5])
         predictions_globals = tfunc.log_softmax(logits_global, dim=1)
@@ -138,7 +170,8 @@ class GRU_GAT(torch.nn.Module):
             predictions_senses = tfunc.log_softmax(logits_sense, dim=1)
         else:
             predictions_senses = torch.tensor([0]*self.batch_size * seq_len).to(DEVICE) # so I don't have to change the interface elsewhere
-
+        t4=time()
+        log_chronometer([t0,t1, t2,t3,t4])
         return predictions_globals, predictions_senses
 
 

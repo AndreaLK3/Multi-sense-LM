@@ -78,6 +78,7 @@ def init_logging(logfilename, loglevel=logging.INFO):
 
 
 def log_chronometer(time_measurements):
+    logging.info("*** Chronometer:")
     for i in range(len(time_measurements)-1):
         t1 = time_measurements[i]
         t2 = time_measurements[i+1]
