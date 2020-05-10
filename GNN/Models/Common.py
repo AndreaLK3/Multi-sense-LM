@@ -85,7 +85,9 @@ def unpack_to_input_tpl_numpy(in_ndarray, grapharea_size, max_edges):
     edge_index = torch.stack([torch.tensor(edge_sources).to(CURRENT_DEVICE),
                               torch.tensor(edge_destinations).to(CURRENT_DEVICE)], dim=0)
 
-    return (x_indices, edge_index, edge_type)
+    padded_edge_index, padded_edge_type = pad_edge_tensors(x_indices, edge_index, edge_type, max_edges)
+
+    return (x_indices, padded_edge_index, padded_edge_type)
 
 def unpack_input_tensor_numpy(batchinput_ndarray, grapharea_size):
 
@@ -95,6 +97,19 @@ def unpack_input_tensor_numpy(batchinput_ndarray, grapharea_size):
     (x_indices_g, edge_index_g, edge_type_g) = unpack_to_input_tpl_numpy(in_tensor_globals, grapharea_size, max_edges)
     (x_indices_s, edge_index_s, edge_type_s) = unpack_to_input_tpl_numpy(in_tensor_senses, grapharea_size, max_edges)
     return ((x_indices_g, edge_index_g, edge_type_g), (x_indices_s, edge_index_s, edge_type_s))
+
+
+# Pads the edge tensors to the maximum possible length with self-loops (edge_type=0 or any other; they are auto-removed)
+# to allow for batch processing in the GAT
+def pad_edge_tensors(x, edge_index, edge_type, target_length):
+    selfnode_index = x[0]
+    padded_edge_index = tfunc.pad(edge_index, pad=[0, target_length - len(edge_type)], value=selfnode_index)
+    padded_edge_type = tfunc.pad(edge_type, pad=[0, target_length - len(edge_type)], value=0)
+    return padded_edge_index, padded_edge_type
+
+def get_max_num_edges_in_batch(batchinput_ndarray):
+    return max([t.shape[0] for t in batchinput_ndarray[:,:,:,2].flatten() if len(t[t!=0])>0])
+
 
 
 ###################################
