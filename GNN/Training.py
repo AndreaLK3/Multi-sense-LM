@@ -196,8 +196,8 @@ def training_loop(model, learning_rate, train_dataloader, valid_dataloader, num_
                 optimizer.step()
                 overall_step = overall_step + 1
                 epoch_step = epoch_step + 1
-                logging.info("Iteration time=")
-                Utils.log_chronometer([t0,time()])
+                #logging.info("Iteration time=")
+                #Utils.log_chronometer([t0,time()])
                 if overall_step % steps_logging == 0:
                     logging.info("Global step=" + str(overall_step) + "\t ; Iteration time=" + str(round(time()-t0,5)))
                     Utils.log_chronometer([t0, time()])

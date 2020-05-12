@@ -221,6 +221,7 @@ def train():
         ###
         batch += 1
         i += seq_len
+        torch.cuda.empty_cache() # added to try to fix leak that leads to RunTimeError: Cuda OutOfMemory
 
 # Loop over epochs.
 lr = args.lr
