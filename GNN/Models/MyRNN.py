@@ -10,7 +10,6 @@ from Utils import DEVICE, MAX_EDGES_PACKED
 from torch.nn.parameter import Parameter
 import GNN.Models.Common as C
 
-
 class GRU(torch.nn.Module):
 
     def __init__(self, data, grapharea_size, include_senses, batch_size, n_layers, n_units):
@@ -21,16 +20,20 @@ class GRU(torch.nn.Module):
         self.N = grapharea_size
         self.d = data.x.shape[1]
         self.batch_size = batch_size
+        self.n_layers = n_layers
+        self.n_units = n_units
 
         # The embeddings matrix for: senses, globals, definitions, examples
         self.X = Parameter(data.x.clone().detach(), requires_grad=True)
-        self.select_first_node = Parameter(torch.tensor([0]).to(DEVICE), requires_grad=False)
+        self.select_first_node = Parameter(torch.tensor([0]).to(torch.float32).to(DEVICE), requires_grad=False)
         self.embedding_zeros = Parameter(torch.zeros(size=(1, self.d)), requires_grad=False)
 
         # Input signals: current global’s word embedding || global’s node-state (|| sense’s node state)
         self.concatenated_input_dim = self.d if not (self.include_senses) else 2 * self.d
 
+        # This is overwritten at the 1st forward, when we know the distributed batch size
         self.memory_hn = Parameter(torch.zeros(size=(n_layers, batch_size, n_units)), requires_grad=False)
+        self.hidden_state_bsize_adjusted = False
 
         self.gru = torch.nn.GRU(input_size=self.concatenated_input_dim, hidden_size=n_units, num_layers=n_layers)
         # 2nd part of the network as before: 2 linear layers to the logits
@@ -44,6 +47,12 @@ class GRU(torch.nn.Module):
 
     def forward(self, batchinput_tensor):  # given the batches, the current node is at index 0
 
+        distributed_batch_size = batchinput_tensor.shape[0]
+        if not(distributed_batch_size == self.batch_size) and not self.hidden_state_bsize_adjusted:
+            new_num_hidden_state_elems = self.n_layers * distributed_batch_size * self.n_units
+            self.memory_hn = Parameter(torch.reshape(self.memory_hn.flatten()[0:new_num_hidden_state_elems],
+                                           (self.n_layers, distributed_batch_size, self.n_units)), requires_grad=False)
+            self.hidden_state_bsize_adjusted=True
         # T-BPTT: at the start of each batch, we detach_() the hidden state from the graph&history that created it
         self.memory_hn.detach_()
 
@@ -88,7 +97,7 @@ class GRU(torch.nn.Module):
         self.memory_hn.data.copy_(hidden_n.clone()) # store h in memory
         gru_out = gru_out.permute(1,0,2) # going to: (batch_size, seq_len, n_units)
         seq_len = len(sequences_in_the_batch_ls[0][0])
-        gru_out = gru_out.reshape(self.batch_size * seq_len, gru_out.shape[2])
+        gru_out = gru_out.reshape(distributed_batch_size * seq_len, gru_out.shape[2])
 
         # 2nd part of the architecture: predictions
         logits_global = self.linear2global(gru_out)  # shape=torch.Size([5])

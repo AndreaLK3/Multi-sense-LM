@@ -88,9 +88,9 @@ def compute_model_loss(model,batch_input, batch_labels, verbose=False):
 
 def training_setup(slc_or_text_corpus, include_senses, method, grapharea_size, batch_size, sequence_length, allow_dataparallel=True):
     graph_dataobj = DG.get_graph_dataobject(new=False, method=method).to(DEVICE)
-    model = MyGAT.GRU_GAT(graph_dataobj, grapharea_size, num_gat_heads=4, include_senses=include_senses,
-                            batch_size=batch_size, n_layers=3, n_units=1150)
-    #  MyRNN.GRU(graph_dataobj, grapharea_size, include_senses=include_senses, batch_size=batch_size, n_layers=3, n_units=1150)
+    model = MyRNN.GRU(graph_dataobj, grapharea_size, include_senses=include_senses, batch_size=batch_size, n_layers=3, n_units=1150)
+    # MyGAT.GRU_GAT(graph_dataobj, grapharea_size, num_gat_heads=4, include_senses=include_senses,
+    #                        batch_size=batch_size, n_layers=3, n_units=1150)
     # MyWD_LSTM.WD_LSTM(graph_dataobj, grapharea_size, include_senses=include_senses, batch_size=batch_size, n_layers=3, n_units=1150)
     # SensesNets.SelfAttK(graph_dataobj, grapharea_size, num_gat_heads=4, include_senses=include_senses, num_senses_attheads=2)
     # MyRNN.GRU_RNN(graph_dataobj, grapharea_size, include_senses)
@@ -102,7 +102,7 @@ def training_setup(slc_or_text_corpus, include_senses, method, grapharea_size, b
     n_gpu = torch.cuda.device_count()
     if n_gpu > 1 and allow_dataparallel:
         logging.info("Using " + str(n_gpu) + " GPUs")
-        model = torch.nn.DataParallel(model)
+        model = torch.nn.DataParallel(model, dim=0)
         model_forDataLoading = model.module
         batch_size = n_gpu if batch_size is None else batch_size  # if not specified, default batch_size = n. GPUs
     else:
