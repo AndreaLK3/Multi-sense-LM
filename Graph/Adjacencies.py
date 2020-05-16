@@ -8,23 +8,31 @@ import Utils
 import os
 from scipy import sparse
 import pandas as pd
-from Utils import DEVICE
 
-### Auxiliary getter function, to extract node area data from a row in the matrix
-def get_node_data(grapharea_matrix, i, grapharea_size):
+
+### Getter function, to extract node area data from a row in the matrix
+def get_node_data(grapharea_matrix, i, grapharea_size, features_mask=(True,True,True)):
+    CURRENT_DEVICE = 'cpu' if not (torch.cuda.is_available()) else 'cuda:' + str(torch.cuda.current_device())
     k = grapharea_size
     m = _edges_added_per_area = int(grapharea_size ** 1.5)
-    # Accessing sparse matrix. Everything was shifted +1, so now: we ignore 0 ; we shift -1; we get the data
-    nodes_ls = list(map( lambda value: value-1, filter(lambda num: num != 0, grapharea_matrix[i,0:k].todense().tolist()[0])))
-    edgeindex_sources_ls = list(map( lambda value: value-1, filter(lambda num: num != 0,
-                                                                   grapharea_matrix[i, k:k + m].todense().tolist()[0])))
-    edgeindex_targets_ls = list(map( lambda value: value-1, filter(lambda num: num != 0,
-                                                                   grapharea_matrix[i, k + m:k + 2 * m].todense().tolist()[0])))
-    edgetype_ls = list(map( lambda value: value-1, filter(lambda num: num != 0,
-                                                          grapharea_matrix[i, k + 2 * m: k + 3 * m].todense().tolist()[0])))
-    nodes = torch.tensor(nodes_ls).to(torch.long).to(DEVICE)
-    edgeindex = torch.tensor([edgeindex_sources_ls, edgeindex_targets_ls]).to(torch.int64).to(DEVICE)
-    edgetype = torch.tensor(edgetype_ls).to(torch.int64).to(DEVICE)
+    nodes=None; edgeindex=None; edgetype=None
+    if features_mask[0]==True:
+        # Accessing sparse matrix. Everything was shifted +1, so now: we ignore 0 ; we shift -1; we get the data
+        nodes_ls =list(map(lambda value: value - 1, filter(lambda num: num != 0, grapharea_matrix[i, 0:k].todense().tolist()[0])))
+        nodes = torch.tensor(nodes_ls).to(torch.long).to(CURRENT_DEVICE)
+
+    if features_mask[1] == True:
+        edgeindex_sources_ls = list(map( lambda value: value-1, filter(lambda num: num != 0,
+                                                                       grapharea_matrix[i, k:k + m].todense().tolist()[0])))
+        edgeindex_targets_ls = list(map( lambda value: value-1, filter(lambda num: num != 0,
+                                                                       grapharea_matrix[i, k + m:k + 2 * m].todense().tolist()[0])))
+        edgeindex = torch.tensor([edgeindex_sources_ls, edgeindex_targets_ls]).to(torch.int64).to(CURRENT_DEVICE)
+
+    if features_mask[2] == True:
+        edgetype_ls = list(map( lambda value: value-1, filter(lambda num: num != 0,
+                                                              grapharea_matrix[i, k + 2 * m: k + 3 * m].todense().tolist()[0])))
+        edgetype = torch.tensor(edgetype_ls).to(torch.int64).to(CURRENT_DEVICE)
+
     return nodes, edgeindex, edgetype
 
 

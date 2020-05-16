@@ -14,6 +14,7 @@ from time import time
 from Utils import DEVICE
 import GNN.DataLoading as DL
 import GNN.ExplorePredictions as EP
+import GNN.Models.Senses as SensesNets
 import GNN.Models.MyGAT as MyGAT
 # import GNN.Models.awd_lstm.AWD_LSTM as awd_lstm
 import GNN.Models.WD_LSTM as MyWD_LSTM
@@ -72,7 +73,7 @@ def compute_model_loss(model,batch_input, batch_labels, verbose=False):
     loss_global = tfunc.nll_loss(predictions_globals, batch_labels_globals)
 
     model_forParameters = model.module if torch.cuda.device_count() > 1 and model.__class__.__name__=="DataParallel" else model
-    if model_forParameters.include_senses:
+    if model_forParameters.predict_senses:
         loss_sense = compute_sense_loss(predictions_senses, batch_labels_senses)
     else:
         loss_sense = torch.tensor(0)
@@ -86,18 +87,20 @@ def compute_model_loss(model,batch_input, batch_labels, verbose=False):
 
 ################
 
-def training_setup(slc_or_text_corpus, include_senses, method, grapharea_size, batch_size, sequence_length, allow_dataparallel=True):
+def training_setup(slc_or_text_corpus, include_senses_input, predict_senses, method, grapharea_size, batch_size, sequence_length, allow_dataparallel=True):
     graph_dataobj = DG.get_graph_dataobject(new=False, method=method).to(DEVICE)
-    model = MyRNN.GRU(graph_dataobj, grapharea_size, include_senses=include_senses, batch_size=batch_size, n_layers=3, n_units=1150)
+    grapharea_matrix = AD.get_grapharea_matrix(graph_dataobj, grapharea_size, hops_in_area=2)
+    model = SensesNets.GRU_base2(graph_dataobj, grapharea_size, include_senses_input, predict_senses, batch_size)
+    # model = SensesNets.SelectK(graph_dataobj, grapharea_matrix.tolil(), grapharea_size, include_senses_input=include_senses_input, predict_senses=predict_senses, batch_size=batch_size)
+    # MyRNN.GRU(graph_dataobj, grapharea_size, include_senses=include_senses, batch1s_size=batch_size, n_layers=3, n_units=1150)
     # MyGAT.GRU_GAT(graph_dataobj, grapharea_size, num_gat_heads=4, include_senses=include_senses,
-    #                        batch_size=batch_size, n_layers=3, n_units=1150)
+    #                batch_size=batch_size, n_layers=3, n_units=1150)
+    # MyRNN.GRU(graph_dataobj, grapharea_size, include_senses=include_senses, batch_size=batch_size, n_layers=3, n_units=1150)
     # MyWD_LSTM.WD_LSTM(graph_dataobj, grapharea_size, include_senses=include_senses, batch_size=batch_size, n_layers=3, n_units=1150)
     # SensesNets.SelfAttK(graph_dataobj, grapharea_size, num_gat_heads=4, include_senses=include_senses, num_senses_attheads=2)
     # MyRNN.GRU_RNN(graph_dataobj, grapharea_size, include_senses)
 
-    grapharea_df = AD.get_grapharea_matrix(graph_dataobj, grapharea_size, hops_in_area=2)
     logging.info("Graph-data object loaded, model initialized. Moving them to GPU device(s) if present.")
-    graph_dataobj.to(DEVICE)
 
     n_gpu = torch.cuda.device_count()
     if n_gpu > 1 and allow_dataparallel:
@@ -120,12 +123,12 @@ def training_setup(slc_or_text_corpus, include_senses, method, grapharea_size, b
     bptt_collator = DL.BPTTBatchCollator(grapharea_size, sequence_length)
 
     train_dataset = DL.TextDataset(slc_or_text_corpus, 'training', senseindices_db_c, vocab_h5, model_forDataLoading,
-                                   grapharea_df, grapharea_size, graph_dataobj)
+                                   grapharea_matrix, grapharea_size, graph_dataobj)
     train_dataloader = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size * sequence_length,
                                                    num_workers=0, collate_fn=bptt_collator)
 
     valid_dataset = DL.TextDataset(slc_or_text_corpus, 'validation', senseindices_db_c, vocab_h5, model_forDataLoading,
-                                   grapharea_df, grapharea_size, graph_dataobj)
+                                   grapharea_matrix, grapharea_size, graph_dataobj)
     valid_dataloader = torch.utils.data.DataLoader(valid_dataset, batch_size=batch_size * sequence_length,
                                                    num_workers=0, collate_fn=bptt_collator)
 
@@ -181,7 +184,7 @@ def training_loop(model, learning_rate, train_dataloader, valid_dataloader, num_
                 #logging.info("Batch n.: " + str(b_idx) + " loss_global = " + str(loss_global.item()))
                 # running sum of the training loss in the log segment
                 sum_epoch_loss_global = sum_epoch_loss_global + loss_global.item()
-                if model_forParameters.include_senses:
+                if model_forParameters.predict_senses:
                     # the senses are weighted depending on the number of sense labels, so they are not skewed from no-labels
                     batch_sense_tokens = (batch_labels.t()[1][batch_labels.t()[1]!=-1].shape[0])
                     sum_epoch_loss_sense = sum_epoch_loss_sense + loss_sense.item() * batch_sense_tokens
@@ -189,6 +192,7 @@ def training_loop(model, learning_rate, train_dataloader, valid_dataloader, num_
                     loss = loss_global + loss_sense
                 else:
                     loss = loss_global
+                #torch.autograd.set_detect_anomaly(True)
                 loss.backward()
                 #In the current version, we allow for defs and examples to be moved
                 #last_embedding_to_update = model_forDataLoading.last_idx_senses + model_forDataLoading.last_idx_globals
@@ -219,13 +223,14 @@ def training_loop(model, learning_rate, train_dataloader, valid_dataloader, num_
             epoch_valid_loss = valid_loss_globals + valid_loss_senses
 
             if epoch_valid_loss < previous_valid_loss:
-                # save model
-                torch.save(model, os.path.join(F.FOLDER_GNN, hyperparams_str +
-                                           'step_' + str(overall_step) + '.rgcnmodel'))
+                pass # we can save the model often here if we so wish
             if epoch_valid_loss > previous_valid_loss + 10:
                 if not flag_firstvalidationhigher:
                     flag_firstvalidationhigher = True
                     logging.info("Validation loss worse than previous one. First occurrence.")
+                    # save model
+                    torch.save(model, os.path.join(F.FOLDER_GNN, hyperparams_str +
+                                                   'step_' + str(overall_step) + '.rgcnmodel'))
                 else: # already did first offence. Must early-stop
                     logging.info("Early stopping")
                     flag_earlystop = True
@@ -248,7 +253,7 @@ def training_loop(model, learning_rate, train_dataloader, valid_dataloader, num_
 
 def evaluation(evaluation_dataloader, evaluation_dataiter, model):
     model_forParameters = model.module if torch.cuda.device_count() > 1 and model.__class__.__name__=="DataParallel" else model
-    including_senses = model_forParameters.include_senses
+    including_senses = model_forParameters.predict_senses
 
     model.eval()  # do not train the model now
     sum_eval_loss_globals = 0

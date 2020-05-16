@@ -23,14 +23,16 @@ class GRU_GAT(torch.nn.Module):
         self.N = grapharea_size
         self.d = data.x.shape[1]
         self.batch_size = batch_size
+        self.n_layers = n_layers
+        self.n_units = n_units
 
         # The embeddings matrix for: senses, globals, definitions, examples
         self.X = Parameter(data.x.clone().detach(), requires_grad=True)
-        self.select_first_node = Parameter(torch.tensor([0]).to(DEVICE), requires_grad=False)
+        self.select_first_node = Parameter(torch.tensor([0]), requires_grad=False)
         self.embedding_zeros = Parameter(torch.zeros(size=(1, self.d)), requires_grad=False)
 
         # GAT
-        n_units_in_one_att_head = int(self.d // num_gat_heads)# int(self.d *sqrt(num_gat_heads) // num_gat_heads)
+        n_units_in_one_att_head = int(self.d *sqrt(num_gat_heads) // num_gat_heads)# int(self.d // num_gat_heads)
         self.gat_globals = GATConv(in_channels=self.d,
                                    out_channels=n_units_in_one_att_head, heads=num_gat_heads, concat=True,
                                    negative_slope=0.2, dropout=0, bias=True)
@@ -44,6 +46,7 @@ class GRU_GAT(torch.nn.Module):
                                  else self.d + 2*(n_units_in_one_att_head * num_gat_heads)
 
         self.memory_hn = Parameter(torch.zeros(size=(n_layers, batch_size, n_units)), requires_grad=False)
+        self.hidden_state_bsize_adjusted = False
 
         self.gru = torch.nn.GRU(input_size=self.concatenated_input_dim, hidden_size=n_units, num_layers=n_layers)
         # 2nd part of the network as before: 2 linear layers to the logits
@@ -56,26 +59,32 @@ class GRU_GAT(torch.nn.Module):
 
 
     def forward(self, batchinput_tensor):  # given the batches, the current node is at index 0
-        CURRENT_DEVICE = 'cpu' if not(torch.cuda.is_available()) else 'cuda:'+str(torch.cuda.current_device())
 
+        distributed_batch_size = batchinput_tensor.shape[0]
+        if not (distributed_batch_size == self.batch_size) and not self.hidden_state_bsize_adjusted:
+            new_num_hidden_state_elems = self.n_layers * distributed_batch_size * self.n_units
+            self.memory_hn = Parameter(torch.reshape(self.memory_hn.flatten()[0:new_num_hidden_state_elems],
+                                                     (self.n_layers, distributed_batch_size, self.n_units)),
+                                       requires_grad=False)
+            self.hidden_state_bsize_adjusted = True
         # T-BPTT: at the start of each batch, we detach_() the hidden state from the graph&history that created it
         self.memory_hn.detach_()
-        # 1st starting indices: 21K, 1911, 199, 18. 2nd starting indices, mini dataset: 371, 21k, 18k, 6k
-        t0 = time()
-        batchinput_ndarray_0 = batchinput_tensor.cpu().numpy()
-        batchinput_ndarray = np.apply_along_axis(func1d= lambda row_in_batch : np.apply_along_axis(
-            func1d= lambda sample_tensor: Common.unpack_input_tensor_numpy(sample_tensor, self.N), arr=row_in_batch, axis=0),
-        axis=2, arr=batchinput_ndarray_0)
-        t1=time()
+
+        if batchinput_tensor.shape[0] > 1:
+            sequences_in_the_batch_ls = torch.chunk(batchinput_tensor, chunks=batchinput_tensor.shape[0], dim=0)
+        else:
+            sequences_in_the_batch_ls = [batchinput_tensor]
 
         batch_input_signals_ls = []
-        for part_of_batch in batchinput_ndarray:
+
+        for padded_sequence in sequences_in_the_batch_ls:
+            padded_sequence = padded_sequence.squeeze()
+            padded_sequence = padded_sequence.chunk(chunks=padded_sequence.shape[0], dim=0)
+            sequence_lts = [Common.unpack_input_tensor(sample_tensor, self.N) for sample_tensor in padded_sequence]
+
             sequence_input_signals_ls = []
-            for sequence_lts in part_of_batch:
-                (x_indices_g, edge_index_g, edge_type_g) = sequence_lts[0, :]
-                (x_indices_s, edge_index_s, edge_type_s) = sequence_lts[1, :]
-                x_indices_g = torch.tensor(x_indices_g).to(CURRENT_DEVICE)
-                x_indices_s = torch.tensor(x_indices_s).to(CURRENT_DEVICE)
+
+            for ((x_indices_g, edge_index_g, edge_type_g), (x_indices_s, edge_index_s, edge_type_s)) in sequence_lts:
 
                 # Input signal n.1: the embedding of the current (global) word
                 currentword_embedding = self.X.index_select(dim=0, index=x_indices_g[0])
@@ -104,7 +113,6 @@ class GRU_GAT(torch.nn.Module):
             sequence_input_signals = torch.cat(sequence_input_signals_ls, dim=0).unsqueeze(1)
             batch_input_signals_ls.append(sequence_input_signals)
         batch_input_signals = torch.cat(batch_input_signals_ls, dim=1)
-        t2 = time()
 
         # - input of shape(seq_len, batch_size, input_size): tensor containing the features of the input sequence.
         # - h_0 of shape (num_layers * num_directions, batch=1, hidden_size):
@@ -113,8 +121,8 @@ class GRU_GAT(torch.nn.Module):
         gru_out, hidden_n = self.gru(batch_input_signals, self.memory_hn)
         self.memory_hn.data.copy_(hidden_n.clone()) # store h in memory
         gru_out = gru_out.permute(1,0,2) # going to: (batch_size, seq_len, n_units)
-        seq_len = batchinput_ndarray_0.shape[1]
-        gru_out = gru_out.reshape(self.batch_size * seq_len, gru_out.shape[2])
+        seq_len = len(sequences_in_the_batch_ls[0][0])
+        gru_out = gru_out.reshape(distributed_batch_size * seq_len, gru_out.shape[2])
         t3=time()
         # 2nd part of the architecture: predictions
         logits_global = self.linear2global(gru_out)  # shape=torch.Size([5])

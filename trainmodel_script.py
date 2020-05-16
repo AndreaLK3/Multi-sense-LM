@@ -17,7 +17,7 @@ import Graph.Adjacencies as AD
 #
 # DG.get_graph_dataobject(new=True, method=CE.Method.FASTTEXT)
 
-model, train_dataloader, valid_dataloader = T.training_setup(slc_or_text_corpus=False, include_senses = False,method=CE.Method.FASTTEXT, grapharea_size=32,batch_size=4, sequence_length=8);
+model, train_dataloader, valid_dataloader = T.training_setup(slc_or_text_corpus=False, include_senses_input = False, predict_senses=False, method=CE.Method.FASTTEXT, grapharea_size=32,batch_size=4, sequence_length=8);
 T.training_loop(model, 0.001, train_dataloader, valid_dataloader, 200);
-model, train_dataloader, valid_dataloader = T.training_setup(slc_or_text_corpus=False, include_senses = False,method=CE.Method.FASTTEXT, grapharea_size=32,batch_size=4, sequence_length=8);
+model, train_dataloader, valid_dataloader = T.training_setup(slc_or_text_corpus=True, include_senses_input = False, predict_senses=True, method=CE.Method.FASTTEXT, grapharea_size=32,batch_size=40, sequence_length=35);
 T.training_loop(model, 0.0001, train_dataloader, valid_dataloader, 300);

@@ -165,9 +165,14 @@ class SelfAttention(torch.nn.Module):
 
         return torch.cat(results_of_heads, dim=0)
 
+##########################
+### 2: Sense selection ###
+##########################
+
+
 
 ######################
-### 2: DropConnect ###
+### 3: DropConnect ###
 ######################
 
 
@@ -198,4 +203,8 @@ class ForwardWithDrop(object):
             self.module._parameters.__setitem__(name_param, param_with_droput)
 
         return self.original_module_forward(*args, **kwargs)
+
+
+
+
 

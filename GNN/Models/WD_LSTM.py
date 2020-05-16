@@ -4,7 +4,6 @@ from time import time
 from Utils import DEVICE, MAX_EDGES_PACKED
 from torch.nn.parameter import Parameter
 import GNN.Models.Common as C
-from torchnlp.nn import WeightDropLSTM, WeightDrop
 from torch.nn import LSTMCell
 
 class WD_LSTM(torch.nn.Module):
