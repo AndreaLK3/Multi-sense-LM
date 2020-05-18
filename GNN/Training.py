@@ -89,9 +89,16 @@ def compute_model_loss(model,batch_input, batch_labels, verbose=False):
 
 def training_setup(slc_or_text_corpus, include_senses_input, predict_senses, method, grapharea_size, batch_size, sequence_length, allow_dataparallel=True):
     graph_dataobj = DG.get_graph_dataobject(new=False, method=method).to(DEVICE)
-    grapharea_matrix = AD.get_grapharea_matrix(graph_dataobj, grapharea_size, hops_in_area=2)
+    grapharea_matrix = AD.get_grapharea_matrix(graph_dataobj, grapharea_size, hops_in_area=1) # currently changed from 2 to 1
+
+    globals_vocabulary_fpath = os.path.join(F.FOLDER_VOCABULARY, F.VOCABULARY_OF_GLOBALS_FILE)
+    vocab_h5 = pd.HDFStore(globals_vocabulary_fpath, mode='r')
+    globals_vocabulary_df = pd.read_hdf(globals_vocabulary_fpath, mode='r')
+    globals_vocabulary_wordList = globals_vocabulary_df['word'].to_list()
+
     # model = SensesNets.GRU_base2(graph_dataobj, grapharea_size, include_senses_input, predict_senses, batch_size)
     model = SensesNets.SelectK(graph_dataobj, grapharea_matrix.tolil(), grapharea_size, k_globals=1,
+                               vocabulary_wordlist=globals_vocabulary_wordList,
                                include_senses_input=include_senses_input, predict_senses=predict_senses,
                                batch_size=batch_size)
     # MyRNN.GRU(graph_dataobj, grapharea_size, include_senses=include_senses, batch1s_size=batch_size, n_layers=3, n_units=1150)
@@ -114,9 +121,6 @@ def training_setup(slc_or_text_corpus, include_senses_input, predict_senses, met
         model_forDataLoading = model
         batch_size = 1 if batch_size is None else batch_size
     model.to(DEVICE)
-
-    globals_vocabulary_fpath = os.path.join(F.FOLDER_VOCABULARY, F.VOCABULARY_OF_GLOBALS_FILE)
-    vocab_h5 = pd.HDFStore(globals_vocabulary_fpath, mode='r')
 
     senseindices_db_filepath = os.path.join(F.FOLDER_INPUT, Utils.INDICES_TABLE_DB)
     senseindices_db = sqlite3.connect(senseindices_db_filepath)
@@ -168,7 +172,7 @@ def training_loop(model, learning_rate, train_dataloader, valid_dataloader, num_
             sum_epoch_loss_sense = 0
             epoch_step = 0
             epoch_senselabeled_tokens = 0
-            verbose = True if epoch==num_epochs else False # log output if in last epoch
+            verbose = True if epoch in range(2, num_epochs, 20) else False # log output if in last epoch
 
             flag_earlystop = False
 
@@ -220,7 +224,7 @@ def training_loop(model, learning_rate, train_dataloader, valid_dataloader, num_
             # Time to check the validation loss
             valid_loss_globals, valid_loss_senses = evaluation(valid_dataloader, valid_dataiter, model)
             #validation_losses_lts.append((valid_loss_globals, valid_loss_senses))
-            logging.info("-----\n After training " + str(epoch)+  " epochs, the validation losses are:")
+            logging.info("After training " + str(epoch)+  " epochs, the validation losses are:")
             Utils.record_statistics(valid_loss_globals, valid_loss_senses, 1,1, losses_lts=validation_losses_lts)
             epoch_valid_loss = valid_loss_globals + valid_loss_senses
 

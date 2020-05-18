@@ -43,7 +43,7 @@ def get_indices_area_toinclude(edge_index, edge_type, node_index, area_size, max
         nodes_retrieved_lls.append([])
         current_hops = current_hops + 1
 
-    logging.debug("start_node=" + str(node_index) + " , nodes_retrieved= " + str(nodes_retrieved_lls))
+    logging.info("start_node=" + str(node_index) + " , nodes_retrieved= " + str(nodes_retrieved_lls))
     return [n for hop_nodes_ls in nodes_retrieved_lls for n in hop_nodes_ls], list(edges_retrieved_set)
 
 # Auxiliary function: find the immediate neighbours of a node, in the given order. Both directions of edges are included
@@ -71,7 +71,7 @@ def get_grapharea_elements(starting_node_index, area_size, graph, hops_in_area):
                                                       and graph.edge_index[1][edge_idx].item() in set(node_indices_ls),
                                      all_edges_retrieved_ls))  # to include an edge, both source and target node must be in the batch
     edges_indices = torch.tensor(sorted(edges_retrieved_ls)).to(torch.int64).to(DEVICE)
-    edges_defaultValues = graph.edge_index.t().index_select(0, edges_indices)
+    edges_defaultValues = graph.edge_index.t().index_select(0, edges_indices.to(DEVICE))
     logging.debug("edges_defaultValues= " + str(edges_defaultValues))
     edges_reindexed = []
     for (src, trg) in edges_defaultValues:

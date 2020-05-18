@@ -78,7 +78,7 @@ def compute_elements_embeddings(elements_name, method):
         sense_df = Utils.select_from_hdf5(input_db, elements_name, [Utils.SENSE_WN_ID], [row[0]])
         element_text_series = sense_df[elements_name]
         for element_text in element_text_series:
-            logging.debug("ComputeEmbeddings.compute_elements_embeddings(elements_name, method) > " +
+            logging.info("ComputeEmbeddings.compute_elements_embeddings(elements_name, method) > " +
                          " wn_id=row[0]=" + str(row[0]) + " ;  elements_name=" + str(elements_name) +
                          " ; element_text=" + str(element_text))
             if method == Method.DISTILBERT:

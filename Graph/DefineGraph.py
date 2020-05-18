@@ -92,7 +92,6 @@ def get_edges_sensechildren(globals_voc_df, globals_start_index_toadd):
     indicesTable_db_c = indicesTable_db.cursor()
     indicesTable_db_c.execute("SELECT * FROM indices_table")
 
-
     edges_ls = []
 
     while (True):

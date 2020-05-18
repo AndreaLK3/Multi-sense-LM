@@ -7,7 +7,18 @@ from GNN.Models.Common import SelfAttention
 from Utils import DEVICE
 from torch.nn.parameter import Parameter
 import logging
+import GNN.ExplorePredictions as EP
+import Utils
+import nltk
+from PrepareKBInput.LemmatizeNyms import lemmatize_term
 
+# ****** Auxiliary function *******
+def get_neighbours_of_k_globals(model, sample_k_indices):
+    neighbours_of_k = torch.cat(
+                    [AD.get_node_data(model.grapharea_matrix_lil, i, model.N, features_mask=(True,False,False))[0]
+                     for i in sample_k_indices], dim=0)
+    sense_neighbours_of_k = neighbours_of_k[neighbours_of_k < model.last_idx_senses]
+    return sense_neighbours_of_k
 
 
 # *****************************
@@ -17,13 +28,14 @@ import logging
 
 class SelectK(torch.nn.Module):
 
-    def __init__(self, data, grapharea_matrix, grapharea_size, k_globals, include_senses_input, predict_senses, batch_size, n_layers=3, n_units=1150):
+    def __init__(self, data, grapharea_matrix, grapharea_size, k_globals, vocabulary_wordlist, include_senses_input, predict_senses, batch_size, n_layers=3, n_units=1150):
         super(SelectK, self).__init__()
         self.include_senses_input = include_senses_input
         self.predict_senses = predict_senses
         self.last_idx_senses = data.node_types.tolist().index(1)
         self.last_idx_globals = data.node_types.tolist().index(2)
         self.grapharea_matrix_lil = grapharea_matrix
+        self.vocabulary_wordlist = vocabulary_wordlist
         self.N = grapharea_size
         self.d = data.x.shape[1]
         self.batch_size = batch_size
@@ -58,12 +70,15 @@ class SelectK(torch.nn.Module):
                                              out_features=self.last_idx_globals - self.last_idx_senses, bias=True)
         self.linear2senses = torch.nn.Linear(in_features=n_units,
                                              out_features=self.last_idx_senses, bias=True)
-        # sense selection
-        self.k_globals = k_globals  # how many k most likely globals to use for sense selection
-        self.senses_softmax = Parameter(torch.ones(size=(self.last_idx_senses,)), requires_grad=True)
+        if self.predict_senses:
+            # sense selection
+            self.k_globals = k_globals  # how many k most likely globals to use for sense selection
+            # self.senses_softmax = Parameter(torch.ones(size=(self.last_idx_senses,)), requires_grad=True)
+            self.lemmatizer = nltk.stem.WordNetLemmatizer()
 
 
     def forward(self, batchinput_tensor):  # given the batches, the current node is at index 0
+        CURRENT_DEVICE = 'cpu' if not (torch.cuda.is_available()) else 'cuda:' + str(torch.cuda.current_device())
 
         distributed_batch_size = batchinput_tensor.shape[0]
         if not (distributed_batch_size == self.batch_size) and not self.hidden_state_bsize_adjusted:
@@ -118,7 +133,6 @@ class SelectK(torch.nn.Module):
         # - h_0 of shape (num_layers * num_directions, batch=1, hidden_size):
         #       tensor containing the initial hidden state for each element in the batch.
         input = batch_input_signals
-        gru_out_1 = None
         for i in range(self.n_layers):
             layer_gru = self.maingru_ls[i]
             layer_gru.flatten_parameters()
@@ -137,48 +151,56 @@ class SelectK(torch.nn.Module):
         logits_global = self.linear2global(main_gru_out)  # shape=torch.Size([5])
         predictions_globals = tfunc.log_softmax(logits_global, dim=1)
         # senses
-        predictions_senses_ls = []
-        # line 1: GRU hidden state + linear.
-        self.gru_senses.flatten_parameters()
-        senses_gru_out, hidden_s = self.gru_senses(batch_input_signals, self.memory_hn_senses)
-        self.memory_hn_senses.data.copy_(hidden_s.clone())  # store h in memory
-        senses_gru_out = senses_gru_out.reshape(distributed_batch_size * seq_len, senses_gru_out.shape[2])
-        logits_sense = self.linear2senses(senses_gru_out)
-        # line 2: select senses of the k most likely globals
-        k_globals_indices = logits_global.sort(descending=True).indices[:,0:self.k_globals]
-        sample_k_indices_lls = k_globals_indices.tolist()
-        neighbouring_sense_nodes_ls = []
-        for s in range(distributed_batch_size*seq_len):
-            sample_k_indices = sample_k_indices_lls[s]
-            neighbours_of_k = torch.cat(
-                [AD.get_node_data(self.grapharea_matrix_lil, i, self.N, features_mask=(True,False,False))[0]
-                 for i in sample_k_indices], dim=0)
-            sense_neighbours_of_k = neighbours_of_k[neighbours_of_k < self.last_idx_senses]
-            neighbouring_sense_nodes_ls.append(sense_neighbours_of_k)
+        if self.predict_senses:
+            predictions_senses_ls = []
+            # line 1: GRU hidden state + linear.
+            self.gru_senses.flatten_parameters()
+            senses_gru_out, hidden_s = self.gru_senses(batch_input_signals, self.memory_hn_senses)
+            self.memory_hn_senses.data.copy_(hidden_s.clone())  # store h in memory
+            senses_gru_out = senses_gru_out.reshape(distributed_batch_size * seq_len, senses_gru_out.shape[2])
+            logits_sense = self.linear2senses(senses_gru_out)
 
-        senses_softmax = self.senses_softmax.repeat((distributed_batch_size * seq_len, 1))
-        for i in range(len(neighbouring_sense_nodes_ls)):
-            senses_t = neighbouring_sense_nodes_ls[i]
-            logging.info("*****")
-            logging.info("i=" + str(i) + " ; senses_t=" + str(senses_t))
-            logits_selected_senses = logits_sense[i,senses_t]
-            logging.info("logits_selected_senses=" + str(logits_selected_senses))
-            softmax_selected_senses = tfunc.softmax(input=logits_selected_senses, dim=0)
-            epsilon = 10**(-6)
-            senses_softmax = epsilon*senses_softmax # base probability value for non-selected senses: 0.000001
-            quantity_added_to_sum = epsilon*(self.last_idx_senses - len(senses_t))
-            quantity_to_subtract_from_selected = quantity_added_to_sum / len(senses_t)
-            softmax_selected_senses = softmax_selected_senses - quantity_to_subtract_from_selected
-            senses_softmax[i, senses_t] = softmax_selected_senses
-            # senses_softmax[i].scatter_(dim=0, index=senses_t, src=softmax_selected_senses)
-            #senses_softmax[i].data.copy_(senses_softmax[i].scatter(dim=0, index=senses_t, src=softmax_selected_senses))
+            # line 2: select senses of the k most likely globals
+            k_globals_indices = logits_global.sort(descending=True).indices[:,0:self.k_globals]
 
-        logging.info("########")
-        for i in range(len(neighbouring_sense_nodes_ls)):
-            logging.info("####")
-            senses_t = neighbouring_sense_nodes_ls[i]
-            logging.info("senses_softmax["+str(i)+", senses_t]=" + str(senses_softmax[i, senses_t]))
-        predictions_senses = torch.log(senses_softmax)
+
+            sample_k_indices_lls_relative = k_globals_indices.tolist()
+            #sample_k_indices_lls_absolute = []
+            neighbouring_sense_nodes_ls = []
+            for s in range(distributed_batch_size*seq_len):
+                sample_k_indices = [global_relative_idx + self.last_idx_senses for global_relative_idx in sample_k_indices_lls_relative[s]] # go to the globals.
+                #sample_k_indices_lls_absolute.append(sample_k_indices)
+                sense_neighbours_t = get_neighbours_of_k_globals(self, sample_k_indices)
+                neighbouring_sense_nodes_ls.append(sense_neighbours_t)
+
+            senses_softmax = torch.ones((distributed_batch_size * seq_len, self.last_idx_senses)).to(CURRENT_DEVICE)
+            epsilon = 10 ** (-6)
+            senses_softmax = epsilon * senses_softmax  # base probability value for non-selected senses: 0.000001
+            for i in range(len(neighbouring_sense_nodes_ls)):
+                sense_neighbours_t = neighbouring_sense_nodes_ls[i]
+                if sense_neighbours_t.shape[0]==0:
+                    # we could select no senses (e.g. because the most likely words were 'for' and 'of'
+                    k_globals_relative_indices = sample_k_indices_lls_relative[i]
+                    k_globals_words = [EP.get_globalword_fromindex(global_relative_idx) for global_relative_idx in k_globals_relative_indices]
+                    k_globals_lemmatized = [lemmatize_term(word, self.lemmatizer) for word in k_globals_words]
+                    lemmatized_indices = [Utils.word_to_vocab_index(lemmatized_word, self.vocabulary_wordlist)+self.last_idx_senses for lemmatized_word in k_globals_lemmatized]
+                    sense_neighbours_t = get_neighbours_of_k_globals(self, lemmatized_indices)
+                    if sense_neighbours_t.shape[0]==0: # no senses found, even lemmatizing. Ignore current entry
+                        # senses_softmax[i] = torch.zeros(size=(self.last_idx_senses,)).to(CURRENT_DEVICE) # the prime suspect for a segfault, removed for now
+                        continue
+                    # standard procedure: get the logits of the senses of the most likely globals,
+                    # apply a softmax only over them, and then assign an epsilon probability to the other senses
+                    logits_selected_senses = logits_sense[i,sense_neighbours_t]
+                    softmax_selected_senses = tfunc.softmax(input=logits_selected_senses, dim=0)
+                    quantity_added_to_sum = epsilon*(self.last_idx_senses - len(sense_neighbours_t))
+                    quantity_to_subtract_from_selected = quantity_added_to_sum / len(sense_neighbours_t)
+                    softmax_selected_senses = softmax_selected_senses - quantity_to_subtract_from_selected
+                    senses_softmax[i, sense_neighbours_t] = softmax_selected_senses.data.clone()
+                    #if verbose:
+                    #    logging.info("Sample: "+str(i)+ "; selected_senses=" + str([EP.get_sense_fromindex(s_idx) for s_idx in senses_t.tolist()]))
+            predictions_senses = torch.log(senses_softmax)
+        else:
+            predictions_senses = torch.tensor([0]*self.batch_size * seq_len).to(CURRENT_DEVICE)
 
         return predictions_globals, predictions_senses
 
