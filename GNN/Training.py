@@ -90,8 +90,10 @@ def compute_model_loss(model,batch_input, batch_labels, verbose=False):
 def training_setup(slc_or_text_corpus, include_senses_input, predict_senses, method, grapharea_size, batch_size, sequence_length, allow_dataparallel=True):
     graph_dataobj = DG.get_graph_dataobject(new=False, method=method).to(DEVICE)
     grapharea_matrix = AD.get_grapharea_matrix(graph_dataobj, grapharea_size, hops_in_area=2)
-    model = SensesNets.GRU_base2(graph_dataobj, grapharea_size, include_senses_input, predict_senses, batch_size)
-    # model = SensesNets.SelectK(graph_dataobj, grapharea_matrix.tolil(), grapharea_size, include_senses_input=include_senses_input, predict_senses=predict_senses, batch_size=batch_size)
+    # model = SensesNets.GRU_base2(graph_dataobj, grapharea_size, include_senses_input, predict_senses, batch_size)
+    model = SensesNets.SelectK(graph_dataobj, grapharea_matrix.tolil(), grapharea_size, k_globals=1,
+                               include_senses_input=include_senses_input, predict_senses=predict_senses,
+                               batch_size=batch_size)
     # MyRNN.GRU(graph_dataobj, grapharea_size, include_senses=include_senses, batch1s_size=batch_size, n_layers=3, n_units=1150)
     # MyGAT.GRU_GAT(graph_dataobj, grapharea_size, num_gat_heads=4, include_senses=include_senses,
     #                batch_size=batch_size, n_layers=3, n_units=1150)

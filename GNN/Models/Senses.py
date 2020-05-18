@@ -6,7 +6,7 @@ from GNN.Models.Common import unpack_input_tensor
 from GNN.Models.Common import SelfAttention
 from Utils import DEVICE
 from torch.nn.parameter import Parameter
-
+import logging
 
 
 
@@ -17,7 +17,7 @@ from torch.nn.parameter import Parameter
 
 class SelectK(torch.nn.Module):
 
-    def __init__(self, data, grapharea_matrix, grapharea_size, include_senses_input, predict_senses, batch_size, n_layers=3, n_units=1150):
+    def __init__(self, data, grapharea_matrix, grapharea_size, k_globals, include_senses_input, predict_senses, batch_size, n_layers=3, n_units=1150):
         super(SelectK, self).__init__()
         self.include_senses_input = include_senses_input
         self.predict_senses = predict_senses
@@ -40,7 +40,7 @@ class SelectK(torch.nn.Module):
 
         # This is overwritten at the 1st forward, when we know the distributed batch size
         self.memory_hn = Parameter(torch.zeros(size=(n_layers, batch_size, n_units)), requires_grad=False)
-        self.memory_hn_senses = Parameter(torch.zeros(size=(1, batch_size, n_units)), requires_grad=False)
+        self.memory_hn_senses = Parameter(torch.zeros(size=(n_layers-1, batch_size, n_units)), requires_grad=False)
         self.hidden_state_bsize_adjusted = False
 
         # GRU for globals - standard Language Model
@@ -48,30 +48,35 @@ class SelectK(torch.nn.Module):
             torch.nn.GRU(input_size=self.concatenated_input_dim if i==0 else n_units,
                          hidden_size=n_units, num_layers=1) for i in range(n_layers)])
         # GRU for senses: 1-layer GRU, taking hidden_state_1 from the main GRU (1 layer shared)
-        self.gru_senses = torch.nn.GRU(input_size=n_units, hidden_size=n_units, num_layers=1)
-        self.k_globals = 5 # how many k most likely globals to use for sense selection
+        self.gru_senses = torch.nn.GRU(input_size=self.concatenated_input_dim, hidden_size=n_units,
+                                       num_layers=n_layers - 1)
+        if self.include_senses_input:
+            self.gat_senses = GATConv(in_channels=self.d, out_channels=int(self.d / 4), heads=4)
 
-        # 2nd part of the network as before: 2 linear layers to the logits
+        # 2nd part of the network: linear layers to the logits
         self.linear2global = torch.nn.Linear(in_features=n_units,
                                              out_features=self.last_idx_globals - self.last_idx_senses, bias=True)
-
-
         self.linear2senses = torch.nn.Linear(in_features=n_units,
                                              out_features=self.last_idx_senses, bias=True)
+        # sense selection
+        self.k_globals = k_globals  # how many k most likely globals to use for sense selection
+        self.senses_softmax = Parameter(torch.ones(size=(self.last_idx_senses,)), requires_grad=True)
 
 
     def forward(self, batchinput_tensor):  # given the batches, the current node is at index 0
 
         distributed_batch_size = batchinput_tensor.shape[0]
-        if not(distributed_batch_size == self.batch_size) and not self.hidden_state_bsize_adjusted:
+        if not (distributed_batch_size == self.batch_size) and not self.hidden_state_bsize_adjusted:
             new_num_hidden_state_elems = self.n_layers * distributed_batch_size * self.n_units
             self.memory_hn = Parameter(torch.reshape(self.memory_hn.flatten()[0:new_num_hidden_state_elems],
-                                           (self.n_layers, distributed_batch_size, self.n_units)), requires_grad=False)
+                                                     (self.n_layers, distributed_batch_size, self.n_units)),
+                                       requires_grad=False)
             self.memory_hn_senses = Parameter(
-                            torch.reshape(self.memory_hn_senses.flatten()[0:(distributed_batch_size * self.n_units)],
-                                          (1, distributed_batch_size, self.n_units)),
-                            requires_grad=False)
-            self.hidden_state_bsize_adjusted=True
+                torch.reshape(
+                    self.memory_hn_senses.flatten()[0:((self.n_layers - 1) * distributed_batch_size * self.n_units)],
+                    (self.n_layers - 1, distributed_batch_size, self.n_units)),
+                requires_grad=False)
+            self.hidden_state_bsize_adjusted = True
         # T-BPTT: at the start of each batch, we detach_() the hidden state from the graph&history that created it
         self.memory_hn.detach_()
         self.memory_hn_senses.detach_()
@@ -132,25 +137,48 @@ class SelectK(torch.nn.Module):
         logits_global = self.linear2global(main_gru_out)  # shape=torch.Size([5])
         predictions_globals = tfunc.log_softmax(logits_global, dim=1)
         # senses
+        predictions_senses_ls = []
         # line 1: GRU hidden state + linear.
         self.gru_senses.flatten_parameters()
-        senses_gru_out, hidden_s =self.gru_senses(main_gru_out_layer1, self.memory_hn_senses)
+        senses_gru_out, hidden_s = self.gru_senses(batch_input_signals, self.memory_hn_senses)
         self.memory_hn_senses.data.copy_(hidden_s.clone())  # store h in memory
         senses_gru_out = senses_gru_out.reshape(distributed_batch_size * seq_len, senses_gru_out.shape[2])
         logits_sense = self.linear2senses(senses_gru_out)
         # line 2: select senses of the k most likely globals
         k_globals_indices = logits_global.sort(descending=True).indices[:,0:self.k_globals]
-        # k_grapharea_rows = self.grapharea_tensor.tolil()[logits_global.sort(descending=True).indices[:, 0:self.k_globals].flatten()]
-        # k_globals_indices = k_globals_indices.reshape(distributed_batch_size * seq_len, k_globals_indices.shape[2])
-        neighbouring_nodes_ls = [AD.get_node_data(self.grapharea_matrix_lil, i, self.N, features_mask=(True,False,False))[0]
-                                 for i in k_globals_indices.flatten()]
-        neighbouring_sense_nodes_ls = list(map(lambda neighbs_t: neighbs_t[neighbs_t < self.last_idx_senses],neighbouring_nodes_ls)) # 160 tensors of variable size, containing the indices of the senses
-        
-        for senses_t in neighbouring_sense_nodes_ls:
-            senses_embeddings = self.X.index_select(dim=0, index=senses_t)
+        sample_k_indices_lls = k_globals_indices.tolist()
+        neighbouring_sense_nodes_ls = []
+        for s in range(distributed_batch_size*seq_len):
+            sample_k_indices = sample_k_indices_lls[s]
+            neighbours_of_k = torch.cat(
+                [AD.get_node_data(self.grapharea_matrix_lil, i, self.N, features_mask=(True,False,False))[0]
+                 for i in sample_k_indices], dim=0)
+            sense_neighbours_of_k = neighbours_of_k[neighbours_of_k < self.last_idx_senses]
+            neighbouring_sense_nodes_ls.append(sense_neighbours_of_k)
 
+        senses_softmax = self.senses_softmax.repeat((distributed_batch_size * seq_len, 1))
+        for i in range(len(neighbouring_sense_nodes_ls)):
+            senses_t = neighbouring_sense_nodes_ls[i]
+            logging.info("*****")
+            logging.info("i=" + str(i) + " ; senses_t=" + str(senses_t))
+            logits_selected_senses = logits_sense[i,senses_t]
+            logging.info("logits_selected_senses=" + str(logits_selected_senses))
+            softmax_selected_senses = tfunc.softmax(input=logits_selected_senses, dim=0)
+            epsilon = 10**(-6)
+            senses_softmax = epsilon*senses_softmax # base probability value for non-selected senses: 0.000001
+            quantity_added_to_sum = epsilon*(self.last_idx_senses - len(senses_t))
+            quantity_to_subtract_from_selected = quantity_added_to_sum / len(senses_t)
+            softmax_selected_senses = softmax_selected_senses - quantity_to_subtract_from_selected
+            senses_softmax[i, senses_t] = softmax_selected_senses
+            # senses_softmax[i].scatter_(dim=0, index=senses_t, src=softmax_selected_senses)
+            #senses_softmax[i].data.copy_(senses_softmax[i].scatter(dim=0, index=senses_t, src=softmax_selected_senses))
 
-        predictions_senses = tfunc.log_softmax(logits_sense, dim=1)
+        logging.info("########")
+        for i in range(len(neighbouring_sense_nodes_ls)):
+            logging.info("####")
+            senses_t = neighbouring_sense_nodes_ls[i]
+            logging.info("senses_softmax["+str(i)+", senses_t]=" + str(senses_softmax[i, senses_t]))
+        predictions_senses = torch.log(senses_softmax)
 
         return predictions_globals, predictions_senses
 
@@ -299,7 +327,7 @@ class GRU_base2(torch.nn.Module):
 
 # *****************************
 
-# Baseline 1: GRUs only. 1 shared layer (the 1st) betwee the 2 GRUs
+# Baseline 1: GRUs only. 1 shared layer (the 1st) between the 2 GRUs
 
 class GRU_base(torch.nn.Module):
 
@@ -400,7 +428,7 @@ class GRU_base(torch.nn.Module):
         for i in range(self.n_layers):
             layer_gru = self.maingru_ls[i]
             layer_gru.flatten_parameters()
-            main_gru_out, hidden_i = layer_gru(input, self.memory_hn.index_select(dim=0, index=self.select_first_indices[i]))
+            main_gru_out, hidden_i = layer_gru(input, self.memory_hn.index_select(dim=0, index=self.select_first_indices[i].to(torch.int64)))
             self.memory_hn[i].data.copy_(hidden_i.squeeze().clone()) # store h in memory
             input = main_gru_out
             if i==0:
