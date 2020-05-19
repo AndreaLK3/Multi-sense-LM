@@ -44,9 +44,7 @@ class GRU_base2(torch.nn.Module):
         self.hidden_state_bsize_adjusted = False
 
         # GRU for globals - standard Language Model
-        self.maingru_ls = torch.nn.ModuleList([
-            torch.nn.GRU(input_size=self.concatenated_input_dim if i==0 else n_units,
-                         hidden_size=n_units, num_layers=1) for i in range(n_layers)])
+        self.main_gru = torch.nn.GRU(input_size=self.concatenated_input_dim, hidden_size=n_units, num_layers=n_layers)
         if self.include_globalnode_input:
             self.gat_globals = GATConv(in_channels=self.d, out_channels=int(self.d/4), heads=4)
         if self.include_sensenode_input:
@@ -107,7 +105,7 @@ class GRU_base2(torch.nn.Module):
                     currentglobal_node_state=None
 
                 # Input signal n.3: the node-state of the current sense; + concatenating the input signals
-                if self.include_senses:
+                if self.include_sensenode_input:
                     if len(x_indices_s[x_indices_s != 0] == 0):  # no sense was specified
                         currentsense_node_state = self.embedding_zeros
                     else:  # sense was specified
@@ -128,16 +126,10 @@ class GRU_base2(torch.nn.Module):
         # - input of shape(seq_len, batch_size, input_size): tensor containing the features of the input sequence.
         # - h_0 of shape (num_layers * num_directions, batch=1, hidden_size):
         #       tensor containing the initial hidden state for each element in the batch.
-        main_gru_out=None
-        input = batch_input_signals
-        for i in range(self.n_layers):
-            layer_gru = self.maingru_ls[i]
-            layer_gru.flatten_parameters()
-            main_gru_out, hidden_i = layer_gru(input, self.memory_hn.index_select(dim=0, index=self.select_first_indices[i].to(torch.int64)))
-            self.memory_hn[i].data.copy_(hidden_i.squeeze().clone()) # store h in memory
-            input = main_gru_out
-
-        main_gru_out = main_gru_out.permute(1,0,2) # going to: (batch_size, seq_len, n_units)
+        self.main_gru.flatten_parameters()
+        main_gru_out, hidden_n = self.main_gru(batch_input_signals, self.memory_hn)
+        self.memory_hn.data.copy_(hidden_n.clone())  # store h in memory
+        main_gru_out = main_gru_out.permute(1, 0, 2)  # going to: (batch_size, seq_len, n_units)
         seq_len = len(sequences_in_the_batch_ls[0][0])
         main_gru_out = main_gru_out.reshape(distributed_batch_size * seq_len, main_gru_out.shape[2])
 

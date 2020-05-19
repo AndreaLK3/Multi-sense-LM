@@ -92,22 +92,20 @@ def compute_model_loss(model,batch_input, batch_labels, verbose=False):
 def training_setup(slc_or_text_corpus, include_globalnode_input, include_sensenode_input, predict_senses,
                    method, grapharea_size, batch_size, sequence_length, allow_dataparallel=True):
     graph_dataobj = DG.get_graph_dataobject(new=False, method=method).to(DEVICE)
-    grapharea_matrix = AD.get_grapharea_matrix(graph_dataobj, grapharea_size, hops_in_area=1) # currently changed from 2 to 1
+    grapharea_matrix = AD.get_grapharea_matrix(graph_dataobj, grapharea_size, hops_in_area=2)
 
     globals_vocabulary_fpath = os.path.join(F.FOLDER_VOCABULARY, F.VOCABULARY_OF_GLOBALS_FILE)
     vocab_h5 = pd.HDFStore(globals_vocabulary_fpath, mode='r')
     globals_vocabulary_df = pd.read_hdf(globals_vocabulary_fpath, mode='r')
     globals_vocabulary_wordList = globals_vocabulary_df['word'].to_list().copy()
-    del globals_vocabulary_df
-    vocab_h5.close()
 
-    model = SensesNets.SelectK(graph_dataobj, grapharea_size, grapharea_matrix.tolil(), 1, globals_vocabulary_wordList,
-                               include_globalnode_input, include_sensenode_input, predict_senses,
-                               batch_size, n_layers=3, n_units=1150)
+    # model = SensesNets.SelectK(graph_dataobj, grapharea_size, grapharea_matrix.tolil(), 1, globals_vocabulary_wordList,
+    #                            include_globalnode_input, include_sensenode_input, predict_senses,
+    #                            batch_size, n_layers=3, n_units=1150)
     # Must still try the standard GRU and GRU_GAT with graph input on WikiText-2 - this time with the correct vocabulary
     # The original GRU architecture has been updated into the GRUbase2 model in Senses - I just have to specify that predict_senses=False
-    # model = GRUs.GRU_base2(graph_dataobj, grapharea_size, include_globalnode_input, include_sensenode_input, predict_senses,
-    #                       batch_size, n_layers=3, n_units=1150)
+    model = GRUs.GRU_base2(graph_dataobj, grapharea_size, include_globalnode_input, include_sensenode_input, predict_senses,
+                           batch_size, n_layers=3, n_units=1150)
 
     # model= MyRNN.GRU(graph_dataobj, grapharea_size, include_senses=include_senses, batchs_size=batch_size, n_layers=3, n_units=1150)
     # MyGAT.GRU_GAT(graph_dataobj, grapharea_size, num_gat_heads=4, include_senses=include_senses,
@@ -134,7 +132,7 @@ def training_setup(slc_or_text_corpus, include_globalnode_input, include_senseno
     senseindices_db_c = senseindices_db.cursor()
 
     bptt_collator = DL.BPTTBatchCollator(grapharea_size, sequence_length)
-    vocab_h5 = pd.HDFStore(globals_vocabulary_fpath, mode='r')
+    # vocab_h5 = pd.HDFStore(globals_vocabulary_fpath, mode='r')
     train_dataset = DL.TextDataset(slc_or_text_corpus, 'training', senseindices_db_c, vocab_h5, model_forDataLoading,
                                    grapharea_matrix, grapharea_size, graph_dataobj)
     train_dataloader = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size * sequence_length,
@@ -179,7 +177,7 @@ def training_loop(model, learning_rate, train_dataloader, valid_dataloader, num_
             sum_epoch_loss_sense = 0
             epoch_step = 0
             epoch_senselabeled_tokens = 0
-            verbose = True if epoch in range(2, num_epochs, 20) else False # log output if in last epoch
+            verbose = True if (epoch==num_epochs) or (epoch % 50==0) else False # log prediction output
 
             flag_earlystop = False
 
