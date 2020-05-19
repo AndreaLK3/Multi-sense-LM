@@ -165,9 +165,10 @@ class SelfAttention(torch.nn.Module):
 
         return torch.cat(results_of_heads, dim=0)
 
-##########################
-### 2: Sense selection ###
-##########################
+####################################
+### 2: Concatenate input signals ###
+####################################
+
 
 
 

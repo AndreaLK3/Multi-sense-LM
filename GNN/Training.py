@@ -14,11 +14,13 @@ from time import time
 from Utils import DEVICE
 import GNN.DataLoading as DL
 import GNN.ExplorePredictions as EP
-import GNN.Models.Senses as SensesNets
+import GNN.Models.MySenses as SensesNets
 import GNN.Models.MyGAT as MyGAT
 # import GNN.Models.awd_lstm.AWD_LSTM as awd_lstm
 import GNN.Models.WD_LSTM as MyWD_LSTM
 import GNN.Models.MyRNN as MyRNN
+import GNN.Models.GRUs as GRUs
+import GNN.Models.Senses as SensesNets
 from itertools import cycle
 import gc
 
@@ -87,7 +89,8 @@ def compute_model_loss(model,batch_input, batch_labels, verbose=False):
 
 ################
 
-def training_setup(slc_or_text_corpus, include_senses_input, predict_senses, method, grapharea_size, batch_size, sequence_length, allow_dataparallel=True):
+def training_setup(slc_or_text_corpus, include_globalnode_input, include_sensenode_input, predict_senses,
+                   method, grapharea_size, batch_size, sequence_length, allow_dataparallel=True):
     graph_dataobj = DG.get_graph_dataobject(new=False, method=method).to(DEVICE)
     grapharea_matrix = AD.get_grapharea_matrix(graph_dataobj, grapharea_size, hops_in_area=1) # currently changed from 2 to 1
 
@@ -98,15 +101,13 @@ def training_setup(slc_or_text_corpus, include_senses_input, predict_senses, met
     del globals_vocabulary_df
     vocab_h5.close()
 
-    # model = SensesNets.GRU_base2(graph_dataobj, grapharea_size, include_senses_input, predict_senses, batch_size)
-    # SelectK - must solve a SEGFAULT somewhere
-    # model = SensesNets.SelectK(graph_dataobj, grapharea_matrix.tolil(), grapharea_size, k_globals=1,
-    #                           vocabulary_wordlist=globals_vocabulary_wordList,
-    #                           include_senses_input=include_senses_input, predict_senses=predict_senses,
-    #                           batch_size=batch_size)
-    # Temporarily modified, to try the standard GRU and GRU_GAT with graph input on WikiText-2 - this time with the correct vocabulary
+    model = SensesNets.SelectK(graph_dataobj, grapharea_size, grapharea_matrix.tolil(), 1, globals_vocabulary_wordList,
+                               include_globalnode_input, include_sensenode_input, predict_senses,
+                               batch_size, n_layers=3, n_units=1150)
+    # Must still try the standard GRU and GRU_GAT with graph input on WikiText-2 - this time with the correct vocabulary
     # The original GRU architecture has been updated into the GRUbase2 model in Senses - I just have to specify that predict_senses=False
-
+    # model = GRUs.GRU_base2(graph_dataobj, grapharea_size, include_globalnode_input, include_sensenode_input, predict_senses,
+    #                       batch_size, n_layers=3, n_units=1150)
 
     # model= MyRNN.GRU(graph_dataobj, grapharea_size, include_senses=include_senses, batchs_size=batch_size, n_layers=3, n_units=1150)
     # MyGAT.GRU_GAT(graph_dataobj, grapharea_size, num_gat_heads=4, include_senses=include_senses,

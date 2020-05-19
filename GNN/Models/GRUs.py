@@ -17,7 +17,7 @@ from PrepareKBInput.LemmatizeNyms import lemmatize_term
 class GRU_base2(torch.nn.Module):
 
     def __init__(self, data, grapharea_size, include_globalnode_input, include_sensenode_input, predict_senses,
-                 batch_size, n_layers=3, n_units=1150):
+                 batch_size, n_layers, n_units):
         super(GRU_base2, self).__init__()
         self.include_globalnode_input = include_globalnode_input
         self.include_sensenode_input = include_sensenode_input
@@ -52,7 +52,8 @@ class GRU_base2(torch.nn.Module):
         if self.include_sensenode_input:
             self.gat_senses = GATConv(in_channels=self.d, out_channels=int(self.d/4), heads=4)
         # GRU for senses
-        self.gru_senses = torch.nn.GRU(input_size=self.concatenated_input_dim, hidden_size=n_units, num_layers=n_layers-1)
+        if predict_senses:
+            self.gru_senses = torch.nn.GRU(input_size=self.concatenated_input_dim, hidden_size=n_units, num_layers=n_layers-1)
 
         # 2nd part of the network as before: 2 linear layers to the logits
         self.linear2global = torch.nn.Linear(in_features=n_units,
@@ -63,6 +64,7 @@ class GRU_base2(torch.nn.Module):
 
 
     def forward(self, batchinput_tensor):  # given the batches, the current node is at index 0
+        CURRENT_DEVICE = 'cpu' if not (torch.cuda.is_available()) else 'cuda:' + str(torch.cuda.current_device())
 
         distributed_batch_size = batchinput_tensor.shape[0]
         if not(distributed_batch_size == self.batch_size) and not self.hidden_state_bsize_adjusted:
@@ -97,9 +99,12 @@ class GRU_base2(torch.nn.Module):
                 currentword_embedding = self.X.index_select(dim=0, index=x_indices_g[0])
 
                 # Input signal n.2: the node-state of the current global word
-                x = self.X.index_select(dim=0, index=x_indices_g.squeeze())
-                x_attention_state = self.gat_globals(x, edge_index_g)
-                currentglobal_node_state = x_attention_state.index_select(dim=0, index=self.select_first_node)
+                if self.include_globalnode_input:
+                    x = self.X.index_select(dim=0, index=x_indices_g.squeeze())
+                    x_attention_state = self.gat_globals(x, edge_index_g)
+                    currentglobal_node_state = x_attention_state.index_select(dim=0, index=self.select_first_indices[0].to(torch.int64))
+                else:
+                    currentglobal_node_state=None
 
                 # Input signal n.3: the node-state of the current sense; + concatenating the input signals
                 if self.include_senses:
@@ -108,14 +113,13 @@ class GRU_base2(torch.nn.Module):
                     else:  # sense was specified
                         x_s = self.X.index_select(dim=0, index=x_indices_s.squeeze())
                         sense_attention_state = self.gat_senses(x_s, edge_index_s)
-                        currentsense_node_state = sense_attention_state.index_select(dim=0,
-                                                                                     index=self.select_first_node)
-                    input_signals = torch.cat(
-                        [currentword_embedding, currentglobal_node_state, currentsense_node_state], dim=1)
+                        currentsense_node_state = sense_attention_state.index_select(dim=0,index=self.select_first_indices[0].to(torch.int64))
                 else:
-                    input_signals = torch.cat([currentword_embedding, currentglobal_node_state], dim=1)
+                    currentsense_node_state=None
+                input_ls = list(filter( lambda signal: signal is not None,
+                    [currentword_embedding, currentglobal_node_state, currentsense_node_state]))
+                input_signals = torch.cat(input_ls, dim=1)
                 sequence_input_signals_ls.append(input_signals)
-
 
             sequence_input_signals = torch.cat(sequence_input_signals_ls, dim=0).unsqueeze(1)
             batch_input_signals_ls.append(sequence_input_signals)
@@ -124,6 +128,7 @@ class GRU_base2(torch.nn.Module):
         # - input of shape(seq_len, batch_size, input_size): tensor containing the features of the input sequence.
         # - h_0 of shape (num_layers * num_directions, batch=1, hidden_size):
         #       tensor containing the initial hidden state for each element in the batch.
+        main_gru_out=None
         input = batch_input_signals
         for i in range(self.n_layers):
             layer_gru = self.maingru_ls[i]
@@ -141,16 +146,16 @@ class GRU_base2(torch.nn.Module):
         logits_global = self.linear2global(main_gru_out)  # shape=torch.Size([5])
         predictions_globals = tfunc.log_softmax(logits_global, dim=1)
         # senses
-        # line 1: GRU hidden state + linear.
-        self.gru_senses.flatten_parameters()
-        senses_gru_out, hidden_s =self.gru_senses(batch_input_signals, self.memory_hn_senses)
-        self.memory_hn_senses.data.copy_(hidden_s.clone())  # store h in memory
-        senses_gru_out = senses_gru_out.reshape(distributed_batch_size * seq_len, senses_gru_out.shape[2])
-        logits_sense = self.linear2senses(senses_gru_out)
-        # line 2: select senses of the k most likely globals
-        # TO BE IMPLEMENTED in another version of the model
+        # line 1: GRU for senses + linear FF-NN to logits.
+        if self.predict_senses:
+            self.gru_senses.flatten_parameters()
+            senses_gru_out, hidden_s =self.gru_senses(batch_input_signals, self.memory_hn_senses)
+            self.memory_hn_senses.data.copy_(hidden_s.clone())  # store h in memory
+            senses_gru_out = senses_gru_out.reshape(distributed_batch_size * seq_len, senses_gru_out.shape[2])
+            logits_sense = self.linear2senses(senses_gru_out)
 
-        predictions_senses = tfunc.log_softmax(logits_sense, dim=1)
-
+            predictions_senses = tfunc.log_softmax(logits_sense, dim=1)
+        else:
+            predictions_senses = torch.tensor([0] * self.batch_size * seq_len).to(CURRENT_DEVICE)
 
         return predictions_globals, predictions_senses
