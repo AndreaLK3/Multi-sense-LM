@@ -14,12 +14,13 @@ from math import exp
 
 
 ### Given the numerical index of a global, return the corresponding word/token
-def get_globalword_fromindex(global_index):
+def get_globalword_fromindex_df(global_index):
     globals_vocabulary_fpath = os.path.join(F.FOLDER_VOCABULARY, F.VOCABULARY_OF_GLOBALS_FILE)
     globals_vocabulary_df = pd.read_hdf(globals_vocabulary_fpath, mode='r')
 
     word = globals_vocabulary_df.iloc[global_index]['word']
     return word
+
 
 ### Given the numerical index of a sense, return the corresponding sense definition
 def get_sense_fromindex(sense_index):
@@ -42,7 +43,7 @@ def log_predicted_globals(predictions_globals, k=5):
     logging.debug(indices_g)
     logging.info("The top- " + str(k) + " predicted globals are:")
     for i in range(k):
-        word = get_globalword_fromindex(indices_g[i].item())
+        word = get_globalword_fromindex_df(indices_g[i].item())
         score = values_g[i].item()
         probability = round(exp(score) * 100,2)
         logging.info("Word: " + word  +" ; probability = " + str(probability) + "%")
@@ -65,7 +66,7 @@ def log_solution_and_predictions(label_tpl, predictions_globals, predictions_sen
     solution_global_idx = label_tpl[0].item()
     solution_sense_idx = label_tpl[1].item()
 
-    nextglobal = get_globalword_fromindex(solution_global_idx)
+    nextglobal = get_globalword_fromindex_df(solution_global_idx)
     nextsense = get_sense_fromindex(solution_sense_idx)
     logging.info("\n-----\nLabel: the next global is: " + str(nextglobal) + "(from " + str(solution_global_idx) + ")")
     logging.info("Label: the next sense is: " + str(nextsense)  + "(from " + str(solution_sense_idx) + ")")

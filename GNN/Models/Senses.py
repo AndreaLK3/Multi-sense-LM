@@ -181,7 +181,7 @@ class SelectK(torch.nn.Module):
                 if sense_neighbours_t.shape[0]==0:
                     # we could select no senses (e.g. because the most likely words were 'for' and 'of'
                     k_globals_relative_indices = sample_k_indices_lls_relative[i]
-                    k_globals_words = [EP.get_globalword_fromindex(global_relative_idx) for global_relative_idx in k_globals_relative_indices]
+                    k_globals_words = [self.vocabulary_wordlist[global_relative_idx] for global_relative_idx in k_globals_relative_indices]
                     k_globals_lemmatized = [lemmatize_term(word, self.lemmatizer) for word in k_globals_words]
                     lemmatized_indices = [Utils.word_to_vocab_index(lemmatized_word, self.vocabulary_wordlist)+self.last_idx_senses for lemmatized_word in k_globals_lemmatized]
                     sense_neighbours_t = get_neighbours_of_k_globals(self, lemmatized_indices)
@@ -290,10 +290,11 @@ class GRU_base2(torch.nn.Module):
 
                 # Input signal n.2: the node-state of the current sense; + concatenating the input signals
                 if self.include_senses_input:
-                    if len(x_indices_s[x_indices_s != 0] == 0):  # no sense was specified
+                    if x_indices_s[x_indices_s != 0].shape[0] == 0:  # no sense was specified
                         currentsense_node_state = self.embedding_zeros
                     else:  # sense was specified
                         x_s = self.X.index_select(dim=0, index=x_indices_s.squeeze())
+
                         sense_attention_state = self.gat_senses(x_s, edge_index_s)
                         currentsense_node_state = sense_attention_state.index_select(dim=0,
                                                                                      index=self.select_first_indices[0].to(torch.int64))

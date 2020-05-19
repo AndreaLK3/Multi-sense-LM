@@ -94,17 +94,23 @@ def training_setup(slc_or_text_corpus, include_senses_input, predict_senses, met
     globals_vocabulary_fpath = os.path.join(F.FOLDER_VOCABULARY, F.VOCABULARY_OF_GLOBALS_FILE)
     vocab_h5 = pd.HDFStore(globals_vocabulary_fpath, mode='r')
     globals_vocabulary_df = pd.read_hdf(globals_vocabulary_fpath, mode='r')
-    globals_vocabulary_wordList = globals_vocabulary_df['word'].to_list()
+    globals_vocabulary_wordList = globals_vocabulary_df['word'].to_list().copy()
+    del globals_vocabulary_df
+    vocab_h5.close()
 
     # model = SensesNets.GRU_base2(graph_dataobj, grapharea_size, include_senses_input, predict_senses, batch_size)
-    model = SensesNets.SelectK(graph_dataobj, grapharea_matrix.tolil(), grapharea_size, k_globals=1,
-                               vocabulary_wordlist=globals_vocabulary_wordList,
-                               include_senses_input=include_senses_input, predict_senses=predict_senses,
-                               batch_size=batch_size)
-    # MyRNN.GRU(graph_dataobj, grapharea_size, include_senses=include_senses, batch1s_size=batch_size, n_layers=3, n_units=1150)
+    # SelectK - must solve a SEGFAULT somewhere
+    # model = SensesNets.SelectK(graph_dataobj, grapharea_matrix.tolil(), grapharea_size, k_globals=1,
+    #                           vocabulary_wordlist=globals_vocabulary_wordList,
+    #                           include_senses_input=include_senses_input, predict_senses=predict_senses,
+    #                           batch_size=batch_size)
+    # Temporarily modified, to try the standard GRU and GRU_GAT with graph input on WikiText-2 - this time with the correct vocabulary
+    # The original GRU architecture has been updated into the GRUbase2 model in Senses - I just have to specify that predict_senses=False
+
+
+    # model= MyRNN.GRU(graph_dataobj, grapharea_size, include_senses=include_senses, batchs_size=batch_size, n_layers=3, n_units=1150)
     # MyGAT.GRU_GAT(graph_dataobj, grapharea_size, num_gat_heads=4, include_senses=include_senses,
     #                batch_size=batch_size, n_layers=3, n_units=1150)
-    # MyRNN.GRU(graph_dataobj, grapharea_size, include_senses=include_senses, batch_size=batch_size, n_layers=3, n_units=1150)
     # MyWD_LSTM.WD_LSTM(graph_dataobj, grapharea_size, include_senses=include_senses, batch_size=batch_size, n_layers=3, n_units=1150)
     # SensesNets.SelfAttK(graph_dataobj, grapharea_size, num_gat_heads=4, include_senses=include_senses, num_senses_attheads=2)
     # MyRNN.GRU_RNN(graph_dataobj, grapharea_size, include_senses)
@@ -127,7 +133,7 @@ def training_setup(slc_or_text_corpus, include_senses_input, predict_senses, met
     senseindices_db_c = senseindices_db.cursor()
 
     bptt_collator = DL.BPTTBatchCollator(grapharea_size, sequence_length)
-
+    vocab_h5 = pd.HDFStore(globals_vocabulary_fpath, mode='r')
     train_dataset = DL.TextDataset(slc_or_text_corpus, 'training', senseindices_db_c, vocab_h5, model_forDataLoading,
                                    grapharea_matrix, grapharea_size, graph_dataobj)
     train_dataloader = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size * sequence_length,
