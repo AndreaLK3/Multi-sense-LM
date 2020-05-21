@@ -95,7 +95,7 @@ def compute_model_loss(model,batch_input, batch_labels, verbose=False):
 def training_setup(slc_or_text_corpus, include_globalnode_input, include_sensenode_input, predict_senses,
                    method, grapharea_size, batch_size, sequence_length, allow_dataparallel=True):
     graph_dataobj = DG.get_graph_dataobject(new=False, method=method).to(DEVICE)
-    grapharea_matrix = AD.get_grapharea_matrix(graph_dataobj, grapharea_size, hops_in_area=2)
+    grapharea_matrix = AD.get_grapharea_matrix(graph_dataobj, grapharea_size, hops_in_area=1)
 
     globals_vocabulary_fpath = os.path.join(F.FOLDER_VOCABULARY, F.VOCABULARY_OF_GLOBALS_FILE)
     vocab_h5 = pd.HDFStore(globals_vocabulary_fpath, mode='r')

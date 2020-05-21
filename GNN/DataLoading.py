@@ -95,7 +95,7 @@ class TextDataset(torch.utils.data.Dataset):
         self.generator = SLC.read_split(split_name) if sensecorpus_or_text else standardtextcorpus_generator(split_name)
         self.senseindices_db_c = senseindices_db_c
         self.vocab_h5 = vocab_h5
-        self.gnn_model = model
+        self.nn_model = model
         self.counter = 0
 
         self.grapharea_matrix = grapharea_matrix
@@ -104,14 +104,13 @@ class TextDataset(torch.utils.data.Dataset):
         self.next_token_tpl = None
 
     def __getitem__(self, index):
-        self.current_token_tpl, self.next_token_tpl = NI.get_tokens_tpls(self.next_token_tpl , self.generator,
-                                                               self.senseindices_db_c, self.vocab_h5,
-                                                               self.gnn_model.last_idx_senses)
+        self.current_token_tpl, self.next_token_tpl = NI.get_tokens_tpls(self.next_token_tpl, self.generator,
+                                                                         self.senseindices_db_c, self.vocab_h5)
 
         global_idx, sense_idx = self.current_token_tpl
-        logging.debug("current_token_tpl=" + str(self.current_token_tpl))
+        relative_global_idx = global_idx + self.nn_model.last_idx_senses
         (global_forwardinput_triple, sense_forwardinput_triple)= \
-            get_forwardinput_forelement(global_idx, sense_idx, self.grapharea_matrix, self.area_size)
+            get_forwardinput_forelement(relative_global_idx, sense_idx, self.grapharea_matrix, self.area_size)
 
         return ((global_forwardinput_triple, sense_forwardinput_triple), self.next_token_tpl)
 

@@ -21,7 +21,7 @@ def try_to_get_wordnet_sense(wn30_key):
 
 ### Internal function to: translate the word (and if present, the sense) into numerical indices.
 # sense = [0,se) ; single prototype = [se,se+sp) ; definitions = [se+sp, se+sp+d) ; examples = [se+sp+d, e==num_nodes)
-def convert_tokendict_to_tpl(token_dict, senseindices_db_c, globals_vocabulary_h5, last_idx_senses):
+def convert_tokendict_to_tpl(token_dict, senseindices_db_c, globals_vocabulary_h5):
     keys = token_dict.keys()
     sense_index_queryresult = None
 
@@ -51,18 +51,20 @@ def convert_tokendict_to_tpl(token_dict, senseindices_db_c, globals_vocabulary_h
         global_absolute_index = Utils.select_from_hdf5(globals_vocabulary_h5, 'vocabulary', ['word'], [word]).index[0]
 
     global_index = global_absolute_index # + last_idx_senses; do not add this to globals, or we go beyond the n_classes
+    # we still have to add the relative displacement of last_idx_senses to the global, but not here
+
     logging.debug('(global_index, sense_index)=' + str((global_index, sense_index)))
     return (global_index, sense_index)
 
 ### Entry point function to: translate the word (and if present, the sense) into numerical indices.
-def get_tokens_tpls(next_token_tpl, split_datagenerator, senseindices_db_c, vocab_h5, last_idx_senses):
+def get_tokens_tpls(next_token_tpl, split_datagenerator, senseindices_db_c, vocab_h5):
     if next_token_tpl is None:
         current_token_tpl = convert_tokendict_to_tpl(split_datagenerator.__next__(),
-                                                     senseindices_db_c, vocab_h5, last_idx_senses)
+                                                     senseindices_db_c, vocab_h5)
         next_token_tpl = convert_tokendict_to_tpl(split_datagenerator.__next__(),
-                                                  senseindices_db_c, vocab_h5, last_idx_senses)
+                                                  senseindices_db_c, vocab_h5)
     else:
         current_token_tpl = next_token_tpl
-        next_token_tpl = convert_tokendict_to_tpl(split_datagenerator.__next__(),senseindices_db_c, vocab_h5, last_idx_senses)
+        next_token_tpl = convert_tokendict_to_tpl(split_datagenerator.__next__(),senseindices_db_c, vocab_h5)
 
     return current_token_tpl, next_token_tpl
