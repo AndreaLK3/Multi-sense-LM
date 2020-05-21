@@ -40,7 +40,7 @@ class GRU_base2(torch.nn.Module):
 
         # This is overwritten at the 1st forward, when we know the distributed batch size
         self.memory_hn = Parameter(torch.zeros(size=(n_layers, batch_size, n_units)), requires_grad=False)
-        self.memory_hn_senses = Parameter(torch.zeros(size=(n_layers-1, batch_size, n_units)), requires_grad=False)
+        self.memory_hn_senses = Parameter(torch.zeros(size=(n_layers, batch_size, n_units)), requires_grad=False)
         self.hidden_state_bsize_adjusted = False
 
         # GRU for globals - standard Language Model
@@ -51,7 +51,7 @@ class GRU_base2(torch.nn.Module):
             self.gat_senses = GATConv(in_channels=self.d, out_channels=int(self.d/4), heads=4)
         # GRU for senses
         if predict_senses:
-            self.gru_senses = torch.nn.GRU(input_size=self.concatenated_input_dim, hidden_size=n_units, num_layers=n_layers-1)
+            self.gru_senses = torch.nn.GRU(input_size=self.concatenated_input_dim, hidden_size=n_units, num_layers=n_layers)
 
         # 2nd part of the network as before: 2 linear layers to the logits
         self.linear2global = torch.nn.Linear(in_features=n_units,
@@ -70,8 +70,8 @@ class GRU_base2(torch.nn.Module):
             self.memory_hn = Parameter(torch.reshape(self.memory_hn.flatten()[0:new_num_hidden_state_elems],
                                            (self.n_layers, distributed_batch_size, self.n_units)), requires_grad=False)
             self.memory_hn_senses = Parameter(
-                            torch.reshape(self.memory_hn_senses.flatten()[0:((self.n_layers-1) *distributed_batch_size * self.n_units)],
-                                          (self.n_layers-1, distributed_batch_size, self.n_units)),
+                            torch.reshape(self.memory_hn_senses.flatten()[0:((self.n_layers) *distributed_batch_size * self.n_units)],
+                                          (self.n_layers, distributed_batch_size, self.n_units)),
                             requires_grad=False)
             self.hidden_state_bsize_adjusted=True
         # T-BPTT: at the start of each batch, we detach_() the hidden state from the graph&history that created it
@@ -86,7 +86,7 @@ class GRU_base2(torch.nn.Module):
         batch_input_signals_ls = []
 
         for padded_sequence in sequences_in_the_batch_ls:
-            padded_sequence = padded_sequence.squeeze()
+            padded_sequence = padded_sequence.squeeze(dim=0)
             padded_sequence = padded_sequence.chunk(chunks=padded_sequence.shape[0], dim=0)
             sequence_lts = [unpack_input_tensor(sample_tensor, self.N) for sample_tensor in padded_sequence]
 
@@ -102,7 +102,7 @@ class GRU_base2(torch.nn.Module):
                     x_attention_state = self.gat_globals(x, edge_index_g)
                     currentglobal_node_state = x_attention_state.index_select(dim=0, index=self.select_first_indices[0].to(torch.int64))
                 else:
-                    currentglobal_node_state=None
+                    currentglobal_node_state = None
 
                 # Input signal n.3: the node-state of the current sense; + concatenating the input signals
                 if self.include_sensenode_input:

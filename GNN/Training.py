@@ -24,6 +24,8 @@ import GNN.Models.Senses as SensesNets
 from itertools import cycle
 import gc
 
+# import os
+# os.environ["CUDA_VISIBLE_DEVICES"] = "2,3"
 
 # Preliminary logging, to document the hyperparameters, the model, and its parameters #
 def write_doc_logging(train_dataloader, model, model_forParameters, learning_rate, num_epochs):
@@ -47,20 +49,21 @@ def write_doc_logging(train_dataloader, model, model_forParameters, learning_rat
 
 
 # Auxiliary function for compute_model_loss
-def compute_sense_loss(predictions_senses, batch_labels_senses):
-    batch_validsenses_predicted = []
-    batch_validsenses_labels = []
-    for i in range(batch_labels_senses.shape[0]):
-        senselabel = batch_labels_senses[i]
-        if senselabel != -1:
-            batch_validsenses_labels.append(senselabel.item())
-            batch_validsenses_predicted.append(predictions_senses[i])
-    if len(batch_validsenses_labels) >= 1:
-        loss_sense = tfunc.nll_loss(torch.stack(batch_validsenses_predicted).to(DEVICE),
-                                    torch.tensor(batch_validsenses_labels, dtype=torch.int64).to(DEVICE))
-    else:
-        loss_sense = torch.tensor(0).to(DEVICE)
-    return loss_sense
+# def compute_sense_loss(predictions_senses, batch_labels_senses):
+#     batch_validsenses_predicted = []
+#     batch_validsenses_labels = []
+#     for i in range(batch_labels_senses.shape[0]):
+#         senselabel = batch_labels_senses[i]
+#         if senselabel != -1:
+#             batch_validsenses_labels.append(senselabel.item())
+#             batch_validsenses_predicted.append(predictions_senses[i])
+#     if len(batch_validsenses_labels) >= 1:
+#         loss_sense = tfunc.nll_loss(torch.stack(batch_validsenses_predicted).to(DEVICE),
+#                                     torch.tensor(batch_validsenses_labels, dtype=torch.int64).to(DEVICE))
+#     else:
+#         loss_sense = torch.tensor(0).to(DEVICE)
+#     return loss_sense
+
 
 ################
 
@@ -76,7 +79,7 @@ def compute_model_loss(model,batch_input, batch_labels, verbose=False):
 
     model_forParameters = model.module if torch.cuda.device_count() > 1 and model.__class__.__name__=="DataParallel" else model
     if model_forParameters.predict_senses:
-        loss_sense = compute_sense_loss(predictions_senses, batch_labels_senses)
+        loss_sense = tfunc.nll_loss(predictions_senses, batch_labels_senses, ignore_index=-1)
     else:
         loss_sense = torch.tensor(0)
 
@@ -104,8 +107,11 @@ def training_setup(slc_or_text_corpus, include_globalnode_input, include_senseno
     #                            batch_size, n_layers=3, n_units=1150)
     # Must still try the standard GRU and GRU_GAT with graph input on WikiText-2 - this time with the correct vocabulary
     # The original GRU architecture has been updated into the GRUbase2 model in Senses - I just have to specify that predict_senses=False
+    # torch.manual_seed(1) # for reproducibility while conducting mini-experiments
+    # if torch.cuda.is_available():
+    #     torch.cuda.manual_seed_all(1)
     model = GRUs.GRU_base2(graph_dataobj, grapharea_size, include_globalnode_input, include_sensenode_input, predict_senses,
-                           batch_size, n_layers=3, n_units=1150)
+                           batch_size, n_layers=3, n_units=600)
 
     # model= MyRNN.GRU(graph_dataobj, grapharea_size, include_senses=include_senses, batchs_size=batch_size, n_layers=3, n_units=1150)
     # MyGAT.GRU_GAT(graph_dataobj, grapharea_size, num_gat_heads=4, include_senses=include_senses,
@@ -203,16 +209,13 @@ def training_loop(model, learning_rate, train_dataloader, valid_dataloader, num_
                     loss = loss_global + loss_sense
                 else:
                     loss = loss_global
-                #torch.autograd.set_detect_anomaly(True)
+
                 loss.backward()
-                #In the current version, we allow for defs and examples to be moved
-                #last_embedding_to_update = model_forDataLoading.last_idx_senses + model_forDataLoading.last_idx_globals
-                #model_forDataLoading.X.grad.data[last_embedding_to_update:,:].fill_(0) # defs and examples should not change
+
                 optimizer.step()
                 overall_step = overall_step + 1
                 epoch_step = epoch_step + 1
-                #logging.info("Iteration time=")
-                #Utils.log_chronometer([t0,time()])
+
                 if overall_step % steps_logging == 0:
                     logging.info("Global step=" + str(overall_step) + "\t ; Iteration time=" + str(round(time()-t0,5)))
                     Utils.log_chronometer([t0, time()])

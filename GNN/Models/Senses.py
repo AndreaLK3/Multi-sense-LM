@@ -117,9 +117,7 @@ class SelectK(torch.nn.Module):
                 if self.include_globalnode_input:
                     x = self.X.index_select(dim=0, index=x_indices_g.squeeze())
                     x_attention_state = self.gat_globals(x, edge_index_g)
-                    currentglobal_node_state = x_attention_state.index_select(dim=0,
-                                                                              index=self.select_first_indices[0].to(
-                                                                                  torch.int64))
+                    currentglobal_node_state = x_attention_state.index_select(dim=0,index=self.select_first_indices[0].to(torch.int64))
                 else:
                     currentglobal_node_state = None
 
