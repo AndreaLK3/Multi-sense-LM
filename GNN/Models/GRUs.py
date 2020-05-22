@@ -16,9 +16,11 @@ from PrepareKBInput.LemmatizeNyms import lemmatize_term
 # Baseline: GRUs only.
 class GRU_base2(torch.nn.Module):
 
-    def __init__(self, data, grapharea_size, include_globalnode_input, include_sensenode_input, predict_senses,
+    def __init__(self, data, grapharea_size, grapharea_matrix, vocabulary_wordlist, include_globalnode_input, include_sensenode_input, predict_senses,
                  batch_size, n_layers, n_units):
         super(GRU_base2, self).__init__()
+        self.grapharea_matrix = grapharea_matrix
+        self.vocabulary_wordlist = vocabulary_wordlist
         self.include_globalnode_input = include_globalnode_input
         self.include_sensenode_input = include_sensenode_input
         self.predict_senses = predict_senses
@@ -47,6 +49,7 @@ class GRU_base2(torch.nn.Module):
         self.main_gru = torch.nn.GRU(input_size=self.concatenated_input_dim, hidden_size=n_units, num_layers=n_layers)
         if self.include_globalnode_input:
             self.gat_globals = GATConv(in_channels=self.d, out_channels=int(self.d/4), heads=4)
+            self.lemmatizer = nltk.stem.WordNetLemmatizer()
         if self.include_sensenode_input:
             self.gat_senses = GATConv(in_channels=self.d, out_channels=int(self.d/4), heads=4)
         # GRU for senses
@@ -98,6 +101,18 @@ class GRU_base2(torch.nn.Module):
 
                 # Input signal n.2: the node-state of the current global word
                 if self.include_globalnode_input:
+                    # lemmatization
+                    if x_indices_g.shape[0]<=1: # if we have an isolated node, that may be an inflected form ('said')...
+                        currentglobal_relative_X_idx = x_indices_g[0]
+                        currentglobal_absolute_vocab_idx = currentglobal_relative_X_idx - self.last_idx_senses
+                        word = self.vocabulary_wordlist[currentglobal_absolute_vocab_idx]
+                        lemmatized_word = lemmatize_term(word, self.lemmatizer)
+                        if lemmatized_word != word: # ... (or a stopword, in which case we do not proceed further)
+                            lemmatized_word_absolute_idx = self.vocabulary_wordlist.index(lemmatized_word)
+                            lemmatized_word_relative_idx = lemmatized_word_absolute_idx + self.last_idx_senses
+                            (x_indices_g, edge_index_g, edge_type_g) = \
+                                AD.get_node_data(self.grapharea_matrix, lemmatized_word_relative_idx, self.N)
+
                     x = self.X.index_select(dim=0, index=x_indices_g.squeeze())
                     x_attention_state = self.gat_globals(x, edge_index_g)
                     currentglobal_node_state = x_attention_state.index_select(dim=0, index=self.select_first_indices[0].to(torch.int64))

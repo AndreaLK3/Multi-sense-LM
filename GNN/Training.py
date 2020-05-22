@@ -110,7 +110,7 @@ def training_setup(slc_or_text_corpus, include_globalnode_input, include_senseno
     # torch.manual_seed(1) # for reproducibility while conducting mini-experiments
     # if torch.cuda.is_available():
     #     torch.cuda.manual_seed_all(1)
-    model = GRUs.GRU_base2(graph_dataobj, grapharea_size, include_globalnode_input, include_sensenode_input, predict_senses,
+    model = GRUs.GRU_base2(graph_dataobj, grapharea_size, grapharea_matrix, globals_vocabulary_wordList, include_globalnode_input, include_sensenode_input, predict_senses,
                            batch_size, n_layers=3, n_units=1150)
 
     # model= MyRNN.GRU(graph_dataobj, grapharea_size, include_senses=include_senses, batchs_size=batch_size, n_layers=3, n_units=1150)
