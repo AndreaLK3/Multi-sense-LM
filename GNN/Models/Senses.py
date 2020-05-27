@@ -15,7 +15,7 @@ from PrepareKBInput.LemmatizeNyms import lemmatize_term
 # ****** Auxiliary function *******
 def get_neighbours_of_k_globals(model, sample_k_indices):
     neighbours_of_k = torch.cat(
-                    [AD.get_node_data(model.grapharea_matrix_lil, i, model.N, features_mask=(True,False,False))[0]
+                    [AD.get_node_data(model.grapharea_matrix, i, model.N, features_mask=(True,False,False))[0]
                      for i in sample_k_indices], dim=0)
     sense_neighbours_of_k = neighbours_of_k[neighbours_of_k < model.last_idx_senses]
     return sense_neighbours_of_k
@@ -27,10 +27,10 @@ def get_neighbours_of_k_globals(model, sample_k_indices):
 # Multiply [the probability distribution over those] per [the distribution over the whole senses' vocabulary].
 
 class SelectK(torch.nn.Module):
-    def __init__(self, data, grapharea_size, grapharea_matrix_lil, num_k_globals, vocabulary_wordlist, include_globalnode_input, include_sensenode_input, predict_senses,
+    def __init__(self, data, grapharea_size, grapharea_matrix, num_k_globals, vocabulary_wordlist, include_globalnode_input, include_sensenode_input, predict_senses,
                  batch_size, n_layers, n_units):
         super(SelectK, self).__init__()
-        self.grapharea_matrix_lil=grapharea_matrix_lil
+        self.grapharea_matrix=grapharea_matrix
         self.k = num_k_globals
         self.vocabulary_wordlist = vocabulary_wordlist
         self.include_globalnode_input = include_globalnode_input
@@ -54,28 +54,30 @@ class SelectK(torch.nn.Module):
 
         # This is overwritten at the 1st forward, when we know the distributed batch size
         self.memory_hn = Parameter(torch.zeros(size=(n_layers, batch_size, n_units)), requires_grad=False)
-        self.memory_hn_senses = Parameter(torch.zeros(size=(n_layers-1, batch_size, n_units)), requires_grad=False)
+        self.memory_hn_senses = Parameter(torch.zeros(size=(n_layers, batch_size, int(n_units//2))), requires_grad=False)
         self.hidden_state_bsize_adjusted = False
 
         # GRU for globals - standard Language Model
-        self.maingru_ls = torch.nn.ModuleList([
-            torch.nn.GRU(input_size=self.concatenated_input_dim if i==0 else n_units,
-                         hidden_size=n_units, num_layers=1) for i in range(n_layers)])
+        self.main_gru = torch.nn.GRU(input_size=self.concatenated_input_dim, hidden_size=n_units, num_layers=n_layers)
+        # GATs for the node-states
         if self.include_globalnode_input:
             self.gat_globals = GATConv(in_channels=self.d, out_channels=int(self.d/4), heads=4)
         if self.include_sensenode_input:
             self.gat_senses = GATConv(in_channels=self.d, out_channels=int(self.d/4), heads=4)
         # GRU for senses
         if predict_senses:
-            self.gru_senses = torch.nn.GRU(input_size=self.concatenated_input_dim, hidden_size=n_units, num_layers=n_layers-1)
+            self.gru_senses = torch.nn.GRU(input_size=self.concatenated_input_dim, hidden_size=int(n_units//2), num_layers=n_layers)
+
+        # lemmatizer, we may use it for the globals or for the SelectK
+        self.lemmatizer = nltk.stem.WordNetLemmatizer()
+        lemmatize_term('init', self.lemmatizer)  # to establish LazyCorpusLoader and prevent a multi-thread crash
 
         # 2nd part of the network as before: 2 linear layers to the logits
         self.linear2global = torch.nn.Linear(in_features=n_units,
                                              out_features=self.last_idx_globals - self.last_idx_senses, bias=True)
         if predict_senses:
-            self.linear2senses = torch.nn.Linear(in_features=n_units,
+            self.linear2senses = torch.nn.Linear(in_features=int(n_units//2),
                                                  out_features=self.last_idx_senses, bias=True)
-            self.lemmatizer = nltk.stem.WordNetLemmatizer()
 
 
     def forward(self, batchinput_tensor):  # given the batches, the current node is at index 0
@@ -87,10 +89,12 @@ class SelectK(torch.nn.Module):
             self.memory_hn = Parameter(torch.reshape(self.memory_hn.flatten()[0:new_num_hidden_state_elems],
                                            (self.n_layers, distributed_batch_size, self.n_units)), requires_grad=False)
             self.memory_hn_senses = Parameter(
-                            torch.reshape(self.memory_hn_senses.flatten()[0:((self.n_layers-1) *distributed_batch_size * self.n_units)],
-                                          (self.n_layers-1, distributed_batch_size, self.n_units)),
-                            requires_grad=False)
+                                torch.reshape(self.memory_hn_senses.flatten()[
+                                              0:((self.n_layers) * distributed_batch_size * int(self.n_units // 2))],
+                                              (self.n_layers, distributed_batch_size, int(self.n_units // 2))),
+                                requires_grad=False)
             self.hidden_state_bsize_adjusted=True
+
         # T-BPTT: at the start of each batch, we detach_() the hidden state from the graph&history that created it
         self.memory_hn.detach_()
         self.memory_hn_senses.detach_()
@@ -115,9 +119,26 @@ class SelectK(torch.nn.Module):
 
                 # Input signal n.2: the node-state of the current global word
                 if self.include_globalnode_input:
+                    # lemmatization
+                    if x_indices_g.shape[0] <= 1:  # if we have an isolated node, that may be an inflected form ('said')
+                        currentglobal_relative_X_idx = x_indices_g[0]
+                        currentglobal_absolute_vocab_idx = currentglobal_relative_X_idx - self.last_idx_senses
+                        word = self.vocabulary_wordlist[currentglobal_absolute_vocab_idx]
+                        lemmatized_word = lemmatize_term(word, self.lemmatizer)
+                        if lemmatized_word != word:  # ... (or a stopword, in which case we do not proceed further)
+                            try:
+                                lemmatized_word_absolute_idx = self.vocabulary_wordlist.index(lemmatized_word)
+                                lemmatized_word_relative_idx = lemmatized_word_absolute_idx + self.last_idx_senses
+                                (x_indices_g, edge_index_g, edge_type_g) = \
+                                    AD.get_node_data(self.grapharea_matrix, lemmatized_word_relative_idx, self.N)
+                            except ValueError:
+                                pass  # the lemmatized word was not found in the vocabulary.
+
                     x = self.X.index_select(dim=0, index=x_indices_g.squeeze())
                     x_attention_state = self.gat_globals(x, edge_index_g)
-                    currentglobal_node_state = x_attention_state.index_select(dim=0,index=self.select_first_indices[0].to(torch.int64))
+                    currentglobal_node_state = x_attention_state.index_select(dim=0,
+                                                                              index=self.select_first_indices[0].to(
+                                                                                  torch.int64))
                 else:
                     currentglobal_node_state = None
 
@@ -145,18 +166,14 @@ class SelectK(torch.nn.Module):
         # - input of shape(seq_len, batch_size, input_size): tensor containing the features of the input sequence.
         # - h_0 of shape (num_layers * num_directions, batch=1, hidden_size):
         #       tensor containing the initial hidden state for each element in the batch.
-        main_gru_out=None
-        input = batch_input_signals
-        for i in range(self.n_layers):
-            layer_gru = self.maingru_ls[i]
-            layer_gru.flatten_parameters()
-            main_gru_out, hidden_i = layer_gru(input, self.memory_hn.index_select(dim=0, index=self.select_first_indices[i].to(torch.int64)))
-            self.memory_hn[i].data.copy_(hidden_i.squeeze().clone()) # store h in memory
-            input = main_gru_out
+        self.main_gru.flatten_parameters()
+        main_gru_out, hidden_n = self.main_gru(batch_input_signals, self.memory_hn)
+        self.memory_hn.data.copy_(hidden_n.clone())  # store h in memory
 
-        main_gru_out = main_gru_out.permute(1,0,2) # going to: (batch_size, seq_len, n_units)
+        main_gru_out = main_gru_out.permute(1, 0, 2)  # going to: (batch_size, seq_len, n_units)
         seq_len = len(sequences_in_the_batch_ls[0][0])
         main_gru_out = main_gru_out.reshape(distributed_batch_size * seq_len, main_gru_out.shape[2])
+
 
         # 2nd part of the architecture: predictions
         # globals

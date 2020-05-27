@@ -42,7 +42,7 @@ class GRU_base2(torch.nn.Module):
 
         # This is overwritten at the 1st forward, when we know the distributed batch size
         self.memory_hn = Parameter(torch.zeros(size=(n_layers, batch_size, n_units)), requires_grad=False)
-        self.memory_hn_senses = Parameter(torch.zeros(size=(n_layers, batch_size, n_units)), requires_grad=False)
+        self.memory_hn_senses = Parameter(torch.zeros(size=(n_layers, batch_size, int(n_units//2))), requires_grad=False)
         self.hidden_state_bsize_adjusted = False
 
         # GRU for globals - standard Language Model
@@ -50,17 +50,18 @@ class GRU_base2(torch.nn.Module):
         if self.include_globalnode_input:
             self.gat_globals = GATConv(in_channels=self.d, out_channels=int(self.d/4), heads=4)
             self.lemmatizer = nltk.stem.WordNetLemmatizer()
+            lemmatize_term('init', self.lemmatizer)# to establish LazyCorpusLoader and prevent a multi-thread crash
         if self.include_sensenode_input:
             self.gat_senses = GATConv(in_channels=self.d, out_channels=int(self.d/4), heads=4)
         # GRU for senses
         if predict_senses:
-            self.gru_senses = torch.nn.GRU(input_size=self.concatenated_input_dim, hidden_size=n_units, num_layers=n_layers)
+            self.gru_senses = torch.nn.GRU(input_size=self.concatenated_input_dim, hidden_size=int(n_units//2), num_layers=n_layers)
 
         # 2nd part of the network as before: 2 linear layers to the logits
         self.linear2global = torch.nn.Linear(in_features=n_units,
                                              out_features=self.last_idx_globals - self.last_idx_senses, bias=True)
         if predict_senses:
-            self.linear2senses = torch.nn.Linear(in_features=n_units,
+            self.linear2senses = torch.nn.Linear(in_features=int(n_units//2),
                                                  out_features=self.last_idx_senses, bias=True)
 
 
@@ -73,10 +74,11 @@ class GRU_base2(torch.nn.Module):
             self.memory_hn = Parameter(torch.reshape(self.memory_hn.flatten()[0:new_num_hidden_state_elems],
                                            (self.n_layers, distributed_batch_size, self.n_units)), requires_grad=False)
             self.memory_hn_senses = Parameter(
-                            torch.reshape(self.memory_hn_senses.flatten()[0:((self.n_layers) *distributed_batch_size * self.n_units)],
-                                          (self.n_layers, distributed_batch_size, self.n_units)),
+                            torch.reshape(self.memory_hn_senses.flatten()[0:((self.n_layers) *distributed_batch_size * int(self.n_units//2))],
+                                          (self.n_layers, distributed_batch_size, int(self.n_units//2))),
                             requires_grad=False)
             self.hidden_state_bsize_adjusted=True
+
         # T-BPTT: at the start of each batch, we detach_() the hidden state from the graph&history that created it
         self.memory_hn.detach_()
         self.memory_hn_senses.detach_()
@@ -108,10 +110,13 @@ class GRU_base2(torch.nn.Module):
                         word = self.vocabulary_wordlist[currentglobal_absolute_vocab_idx]
                         lemmatized_word = lemmatize_term(word, self.lemmatizer)
                         if lemmatized_word != word: # ... (or a stopword, in which case we do not proceed further)
-                            lemmatized_word_absolute_idx = self.vocabulary_wordlist.index(lemmatized_word)
-                            lemmatized_word_relative_idx = lemmatized_word_absolute_idx + self.last_idx_senses
-                            (x_indices_g, edge_index_g, edge_type_g) = \
-                                AD.get_node_data(self.grapharea_matrix, lemmatized_word_relative_idx, self.N)
+                            try:
+                                lemmatized_word_absolute_idx = self.vocabulary_wordlist.index(lemmatized_word)
+                                lemmatized_word_relative_idx = lemmatized_word_absolute_idx + self.last_idx_senses
+                                (x_indices_g, edge_index_g, edge_type_g) = \
+                                    AD.get_node_data(self.grapharea_matrix, lemmatized_word_relative_idx, self.N)
+                            except ValueError:
+                                pass # the lemmatized word was not found in the vocabulary.
 
                     x = self.X.index_select(dim=0, index=x_indices_g.squeeze())
                     x_attention_state = self.gat_globals(x, edge_index_g)
@@ -128,9 +133,9 @@ class GRU_base2(torch.nn.Module):
                         sense_attention_state = self.gat_senses(x_s, edge_index_s)
                         currentsense_node_state = sense_attention_state.index_select(dim=0,index=self.select_first_indices[0].to(torch.int64))
                 else:
-                    currentsense_node_state=None
+                    currentsense_node_state = None
                 input_ls = list(filter( lambda signal: signal is not None,
-                    [currentword_embedding, currentglobal_node_state, currentsense_node_state]))
+                                        [currentword_embedding, currentglobal_node_state, currentsense_node_state]))
                 input_signals = torch.cat(input_ls, dim=1)
                 sequence_input_signals_ls.append(input_signals)
 

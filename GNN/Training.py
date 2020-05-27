@@ -102,16 +102,17 @@ def training_setup(slc_or_text_corpus, include_globalnode_input, include_senseno
     globals_vocabulary_df = pd.read_hdf(globals_vocabulary_fpath, mode='r')
     globals_vocabulary_wordList = globals_vocabulary_df['word'].to_list().copy()
 
-    # model = SensesNets.SelectK(graph_dataobj, grapharea_size, grapharea_matrix.tolil(), 1, globals_vocabulary_wordList,
-    #                            include_globalnode_input, include_sensenode_input, predict_senses,
-    #                            batch_size, n_layers=3, n_units=1150)
     # Must still try the standard GRU and GRU_GAT with graph input on WikiText-2 - this time with the correct vocabulary
     # The original GRU architecture has been updated into the GRUbase2 model in Senses - I just have to specify that predict_senses=False
     # torch.manual_seed(1) # for reproducibility while conducting mini-experiments
     # if torch.cuda.is_available():
     #     torch.cuda.manual_seed_all(1)
-    model = GRUs.GRU_base2(graph_dataobj, grapharea_size, grapharea_matrix, globals_vocabulary_wordList, include_globalnode_input, include_sensenode_input, predict_senses,
-                           batch_size, n_layers=3, n_units=1150)
+    # model = GRUs.GRU_base2(graph_dataobj, grapharea_size, grapharea_matrix, globals_vocabulary_wordList,
+    #                        include_globalnode_input, include_sensenode_input, predict_senses,
+    #                        batch_size, n_layers=3, n_units=1150)
+    model = SensesNets.SelectK(graph_dataobj, grapharea_size, grapharea_matrix, 1, globals_vocabulary_wordList,
+                               include_globalnode_input, include_sensenode_input, predict_senses,
+                               batch_size, n_layers=3, n_units=1150)
 
     # model= MyRNN.GRU(graph_dataobj, grapharea_size, include_senses=include_senses, batchs_size=batch_size, n_layers=3, n_units=1150)
     # MyGAT.GRU_GAT(graph_dataobj, grapharea_size, num_gat_heads=4, include_senses=include_senses,
@@ -166,7 +167,7 @@ def training_loop(model, learning_rate, train_dataloader, valid_dataloader, num_
     model_forParameters = model.module if torch.cuda.device_count() > 1 and model.__class__.__name__=="DataParallel" else model
     hyperparams_str = write_doc_logging(train_dataloader, model, model_forParameters, learning_rate, num_epochs)
 
-    steps_logging = 50
+    steps_logging = 100
     overall_step = 0
     starting_time = time()
     previous_valid_loss = inf
@@ -183,7 +184,7 @@ def training_loop(model, learning_rate, train_dataloader, valid_dataloader, num_
             sum_epoch_loss_sense = 0
             epoch_step = 0
             epoch_senselabeled_tokens = 0
-            verbose = True if (epoch==num_epochs) or (epoch % 50==0) else False # log prediction output
+            verbose = True if (epoch==num_epochs) or ((epoch-50) % 50==0) else False # - log prediction output
 
             flag_earlystop = False
 
@@ -218,7 +219,6 @@ def training_loop(model, learning_rate, train_dataloader, valid_dataloader, num_
 
                 if overall_step % steps_logging == 0:
                     logging.info("Global step=" + str(overall_step) + "\t ; Iteration time=" + str(round(time()-t0,5)))
-                    Utils.log_chronometer([t0, time()])
                     gc.collect()
 
             # except StopIteration: the DataLoader naturally catches StopIteration
@@ -242,9 +242,6 @@ def training_loop(model, learning_rate, train_dataloader, valid_dataloader, num_
                 if not flag_firstvalidationhigher:
                     flag_firstvalidationhigher = True
                     logging.info("Validation loss worse than previous one. First occurrence.")
-                    # save model
-                    torch.save(model, os.path.join(F.FOLDER_GNN, hyperparams_str +
-                                                   'step_' + str(overall_step) + '.rgcnmodel'))
                 else: # already did first offence. Must early-stop
                     logging.info("Early stopping")
                     flag_earlystop = True
@@ -255,6 +252,9 @@ def training_loop(model, learning_rate, train_dataloader, valid_dataloader, num_
 
     except KeyboardInterrupt:
         logging.info("Training loop interrupted manually by keyboard")
+    # save model
+    torch.save(model, os.path.join(F.FOLDER_GNN, hyperparams_str +
+                                   'step_' + str(overall_step) + '.rgcnmodel'))
 
     logging.info("Saving losses.")
     np.save(hyperparams_str + '_' + Utils.TRAINING + '_' + F.LOSSES_FILEEND, np.array(training_losses_lts))
