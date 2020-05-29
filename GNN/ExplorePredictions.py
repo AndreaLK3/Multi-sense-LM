@@ -40,25 +40,24 @@ def get_sense_fromindex(sense_index):
 def log_predicted_globals(predictions_globals, k=5):
     (values_g, indices_g) = predictions_globals.sort(dim=0, descending=True)[0:k]
 
-    logging.debug(indices_g)
     logging.info("The top- " + str(k) + " predicted globals are:")
     for i in range(k):
         word = get_globalword_fromindex_df(indices_g[i].item())
         score = values_g[i].item()
         probability = round(exp(score) * 100,2)
-        logging.info("Word: " + word  +" ; probability = " + str(probability) + "%")
+        logging.info("Word: " + word  +" ; p=" + str(probability) + "%")
 
 ### Logging the predictions for : senses
 def log_predicted_senses(predictions_senses, k=5):
     (values_s, indices_s) = predictions_senses.sort(dim=0, descending=True)[0:k]
-    logging.debug(indices_s)
+
     logging.info("The top- " + str(k) + " predicted senses are:")
     for i in range(k):
         sense = get_sense_fromindex(indices_s[i].item())
         score = values_s[i].item()
         probability = round(exp(score) * 100, 2)
         if probability > 1:
-            logging.info("Sense: " + sense + " ; probability = " + str(probability) + "%")
+            logging.info("Sense: " + sense + " ; p = " + str(probability) + "%")
 
 
 ### logs the solution and prediction for 1 sample

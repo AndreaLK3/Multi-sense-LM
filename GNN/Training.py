@@ -48,25 +48,6 @@ def write_doc_logging(train_dataloader, model, model_forParameters, learning_rat
 ##########
 
 
-# Auxiliary function for compute_model_loss
-# def compute_sense_loss(predictions_senses, batch_labels_senses):
-#     batch_validsenses_predicted = []
-#     batch_validsenses_labels = []
-#     for i in range(batch_labels_senses.shape[0]):
-#         senselabel = batch_labels_senses[i]
-#         if senselabel != -1:
-#             batch_validsenses_labels.append(senselabel.item())
-#             batch_validsenses_predicted.append(predictions_senses[i])
-#     if len(batch_validsenses_labels) >= 1:
-#         loss_sense = tfunc.nll_loss(torch.stack(batch_validsenses_predicted).to(DEVICE),
-#                                     torch.tensor(batch_validsenses_labels, dtype=torch.int64).to(DEVICE))
-#     else:
-#         loss_sense = torch.tensor(0).to(DEVICE)
-#     return loss_sense
-
-
-################
-
 def compute_model_loss(model,batch_input, batch_labels, verbose=False):
     predictions_globals, predictions_senses = model(batch_input)
 
@@ -184,7 +165,7 @@ def training_loop(model, learning_rate, train_dataloader, valid_dataloader, num_
             sum_epoch_loss_sense = 0
             epoch_step = 0
             epoch_senselabeled_tokens = 0
-            verbose = True if (epoch==num_epochs) or ((epoch-50) % 50==0) else False # - log prediction output
+            verbose = True if (epoch==num_epochs) or (epoch% 50==0) else False # - log prediction output
 
             flag_earlystop = False
 

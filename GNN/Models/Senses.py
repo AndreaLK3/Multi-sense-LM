@@ -46,7 +46,7 @@ class SelectK(torch.nn.Module):
 
         # The embeddings matrix for: senses, globals, definitions, examples
         self.X = Parameter(data.x.clone().detach(), requires_grad=True)
-        self.select_first_indices = Parameter(torch.tensor([0,1,2,3,4,5]).to(torch.float32), requires_grad=False)
+        self.select_indices = Parameter(torch.tensor(list(range(int(self.N ** 1.5)))).to(torch.float32), requires_grad=False)
         self.embedding_zeros = Parameter(torch.zeros(size=(1, self.d)), requires_grad=False)
 
         # Input signals: current global’s word embedding (|| global's node state (|| sense’s node state) )
@@ -137,7 +137,7 @@ class SelectK(torch.nn.Module):
                     x = self.X.index_select(dim=0, index=x_indices_g.squeeze())
                     x_attention_state = self.gat_globals(x, edge_index_g)
                     currentglobal_node_state = x_attention_state.index_select(dim=0,
-                                                                              index=self.select_first_indices[0].to(
+                                                                              index=self.select_indices[0].to(
                                                                                   torch.int64))
                 else:
                     currentglobal_node_state = None
@@ -150,7 +150,7 @@ class SelectK(torch.nn.Module):
                         x_s = self.X.index_select(dim=0, index=x_indices_s.squeeze())
                         sense_attention_state = self.gat_senses(x_s, edge_index_s)
                         currentsense_node_state = sense_attention_state.index_select(dim=0,
-                                                                                     index=self.select_first_indices[
+                                                                                     index=self.select_indices[
                                                                                          0].to(torch.int64))
                 else:
                     currentsense_node_state = None
@@ -191,42 +191,47 @@ class SelectK(torch.nn.Module):
             # line 2: select senses of the k most likely globals
             k_globals_indices = logits_global.sort(descending=True).indices[:, 0:self.k]
 
-            sample_k_indices_lls_relative = k_globals_indices.tolist()
-            # sample_k_indices_lls_absolute = []
-            neighbouring_sense_nodes_ls = []
-            for s in range(distributed_batch_size * seq_len):
-                sample_k_indices = [global_relative_idx + self.last_idx_senses for global_relative_idx in
-                                    sample_k_indices_lls_relative[s]]  # go to the globals.
-                # sample_k_indices_lls_absolute.append(sample_k_indices)
-                sense_neighbours_t = get_neighbours_of_k_globals(self, sample_k_indices)
-                neighbouring_sense_nodes_ls.append(sense_neighbours_t)
-
             senses_softmax = torch.ones((distributed_batch_size * seq_len, self.last_idx_senses)).to(CURRENT_DEVICE)
             epsilon = 10 ** (-6)
             senses_softmax = epsilon * senses_softmax  # base probability value for non-selected senses: 0.000001
-            for i in range(len(neighbouring_sense_nodes_ls)):
-                sense_neighbours_t = neighbouring_sense_nodes_ls[i]
-                if sense_neighbours_t.shape[0] == 0:
-                    # we could select no senses (e.g. because the most likely words were 'for' and 'of'
-                    k_globals_relative_indices = sample_k_indices_lls_relative[i]
-                    k_globals_words = [self.vocabulary_wordlist[global_relative_idx] for global_relative_idx in
-                                       k_globals_relative_indices]
-                    k_globals_lemmatized = [lemmatize_term(word, self.lemmatizer) for word in k_globals_words]
-                    lemmatized_indices = [
-                        Utils.word_to_vocab_index(lemmatized_word, self.vocabulary_wordlist) + self.last_idx_senses for
-                        lemmatized_word in k_globals_lemmatized]
-                    sense_neighbours_t = get_neighbours_of_k_globals(self, lemmatized_indices)
-                    if sense_neighbours_t.shape[0] == 0:  # no senses found, even lemmatizing. Ignore current entry
-                        # senses_softmax[i] = torch.zeros(size=(self.last_idx_senses,)).to(CURRENT_DEVICE) # the prime suspect for a segfault, removed for now
-                        continue
-                    # standard procedure: get the logits of the senses of the most likely globals,
-                    # apply a softmax only over them, and then assign an epsilon probability to the other senses
-                    logits_selected_senses = logits_sense[i, sense_neighbours_t]
-                    softmax_selected_senses = tfunc.softmax(input=logits_selected_senses, dim=0)
-                    quantity_added_to_sum = epsilon * (self.last_idx_senses - len(sense_neighbours_t))
-                    quantity_to_subtract_from_selected = quantity_added_to_sum / len(sense_neighbours_t)
-                    softmax_selected_senses = softmax_selected_senses - quantity_to_subtract_from_selected
-                    senses_softmax[i, sense_neighbours_t] = softmax_selected_senses.data.clone()
+            i_senseneighbours_mask = torch.zeros(size=(distributed_batch_size * seq_len, self.last_idx_senses)).to(torch.bool).to(CURRENT_DEVICE)
+
+            sample_k_indices_lls_relative = k_globals_indices.tolist()
+            # neighbouring_sense_nodes_ls = []
+            softmax_selected_senses_ls = []
+            softmax_selected_senses = torch.zeros((distributed_batch_size * seq_len, self.last_idx_senses))
+
+            for s in range(distributed_batch_size * seq_len):
+                k_globals_relative_indices = sample_k_indices_lls_relative[s]
+                k_globals_words = [self.vocabulary_wordlist[global_relative_idx] for global_relative_idx in
+                                   k_globals_relative_indices]
+                k_globals_lemmatized = [lemmatize_term(word, self.lemmatizer) for word in k_globals_words]
+                lemmatized_indices = [
+                    Utils.word_to_vocab_index(lemmatized_word, self.vocabulary_wordlist) + self.last_idx_senses for
+                    lemmatized_word in k_globals_lemmatized]
+                sense_neighbours_t = get_neighbours_of_k_globals(self, lemmatized_indices)
+                if sense_neighbours_t.shape[0] == 0:  # no senses found, even lemmatizing. Ignore current entry
+                    # senses_softmax[i] = torch.zeros(size=(self.last_idx_senses,)).to(CURRENT_DEVICE) # the prime suspect for a segfault, removed for now
+                    continue
+                # neighbouring_sense_nodes_ls.append(sense_neighbours_t)
+
+                # standard procedure: get the logits of the senses of the most likely globals,
+                # apply a softmax only over them, and then assign an epsilon probability to the other senses
+                sample_logits_senses = logits_sense.index_select(dim=0, index=self.select_indices[s].to(torch.int64)).squeeze()
+                logits_selected_senses = sample_logits_senses.index_select(dim=0, index=sense_neighbours_t)
+                softmax_selected_senses = tfunc.softmax(input=logits_selected_senses, dim=0)
+
+                quantity_added_to_sum = epsilon * (self.last_idx_senses - len(sense_neighbours_t))
+                quantity_to_subtract_from_selected = quantity_added_to_sum / len(sense_neighbours_t)
+
+                softmax_selected_senses = softmax_selected_senses - quantity_to_subtract_from_selected
+                #sample_senses_softmax = senses_softmax.index_select(dim=0, index=self.select_indices[s].to(torch.int64))
+                #softmax_selected_senses_ls.append(sample_senses_softmax)
+
+                for i in range(len(sense_neighbours_t)):
+                    i_senseneighbours_mask[s,sense_neighbours_t[i]]=True
+
+                senses_softmax[s].masked_scatter_(mask=i_senseneighbours_mask[s], source=softmax_selected_senses)
 
             predictions_senses = torch.log(senses_softmax)
         else:
