@@ -192,14 +192,11 @@ class SelectK(torch.nn.Module):
             k_globals_indices = logits_global.sort(descending=True).indices[:, 0:self.k]
 
             senses_softmax = torch.ones((distributed_batch_size * seq_len, self.last_idx_senses)).to(CURRENT_DEVICE)
-            epsilon = 10 ** (-6)
+            epsilon = 10 ** (-8)
             senses_softmax = epsilon * senses_softmax  # base probability value for non-selected senses: 0.000001
             i_senseneighbours_mask = torch.zeros(size=(distributed_batch_size * seq_len, self.last_idx_senses)).to(torch.bool).to(CURRENT_DEVICE)
 
             sample_k_indices_lls_relative = k_globals_indices.tolist()
-            # neighbouring_sense_nodes_ls = []
-            softmax_selected_senses_ls = []
-            softmax_selected_senses = torch.zeros((distributed_batch_size * seq_len, self.last_idx_senses))
 
             for s in range(distributed_batch_size * seq_len):
                 k_globals_relative_indices = sample_k_indices_lls_relative[s]
@@ -210,10 +207,13 @@ class SelectK(torch.nn.Module):
                     Utils.word_to_vocab_index(lemmatized_word, self.vocabulary_wordlist) + self.last_idx_senses for
                     lemmatized_word in k_globals_lemmatized]
                 sense_neighbours_t = get_neighbours_of_k_globals(self, lemmatized_indices)
+                # temp debug
+                # if 'act' in k_globals_words:
+                #     logging.info("k_globals_words=" + str(k_globals_words))
+                #     logging.info("k_globals_lemmatized=" + str(k_globals_lemmatized))
+                #     logging.info("sense_neighbours_t.shape=" + str(sense_neighbours_t.shape))
                 if sense_neighbours_t.shape[0] == 0:  # no senses found, even lemmatizing. Ignore current entry
-                    # senses_softmax[i] = torch.zeros(size=(self.last_idx_senses,)).to(CURRENT_DEVICE) # the prime suspect for a segfault, removed for now
                     continue
-                # neighbouring_sense_nodes_ls.append(sense_neighbours_t)
 
                 # standard procedure: get the logits of the senses of the most likely globals,
                 # apply a softmax only over them, and then assign an epsilon probability to the other senses
@@ -225,13 +225,11 @@ class SelectK(torch.nn.Module):
                 quantity_to_subtract_from_selected = quantity_added_to_sum / len(sense_neighbours_t)
 
                 softmax_selected_senses = softmax_selected_senses - quantity_to_subtract_from_selected
-                #sample_senses_softmax = senses_softmax.index_select(dim=0, index=self.select_indices[s].to(torch.int64))
-                #softmax_selected_senses_ls.append(sample_senses_softmax)
 
                 for i in range(len(sense_neighbours_t)):
                     i_senseneighbours_mask[s,sense_neighbours_t[i]]=True
 
-                senses_softmax[s].masked_scatter_(mask=i_senseneighbours_mask[s], source=softmax_selected_senses)
+                senses_softmax[s].masked_scatter_(mask=i_senseneighbours_mask[s].data.clone(), source=softmax_selected_senses)
 
             predictions_senses = torch.log(senses_softmax)
         else:
