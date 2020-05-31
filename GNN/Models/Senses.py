@@ -225,7 +225,8 @@ class SelectK(torch.nn.Module):
                 quantity_to_subtract_from_selected = quantity_added_to_sum / len(sense_neighbours_t)
 
                 softmax_selected_senses = softmax_selected_senses - quantity_to_subtract_from_selected
-
+                if 'act' in k_globals_words:
+                    logging.info("softmax_selected_senses=" + str(softmax_selected_senses))
                 for i in range(len(sense_neighbours_t)):
                     i_senseneighbours_mask[s,sense_neighbours_t[i]]=True
 

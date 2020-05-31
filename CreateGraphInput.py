@@ -5,11 +5,10 @@ import Utils
 import os
 import pandas as pd
 import Vocabulary.Vocabulary as V
-import Vocabulary.Phrases as PHR
 import WordEmbeddings.ComputeEmbeddings as CE
 import tables
 import logging
-import GNN.SenseLabeledCorpus as SLC
+import SenseLabeledCorpus as SLC
 
 # Before starting: clean all storage files; reset vocabulary index to 0
 def reset():

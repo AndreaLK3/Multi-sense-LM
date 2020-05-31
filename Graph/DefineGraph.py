@@ -9,6 +9,11 @@ import sqlite3
 import logging
 import torch_geometric
 import Vocabulary.Vocabulary_Utilities as VocabUtils
+import SenseLabeledCorpus as SLC
+from GNN.NumericalIndices import try_to_get_wordnet_sense
+from PrepareKBInput.LemmatizeNyms import lemmatize_term
+import nltk
+
 
 def load_senses_elements(embeddings_method, elements_name):
     senses_elems_fname = Utils.VECTORIZED + '_' + str(embeddings_method.value) + '_' + elements_name + '.npy'
@@ -16,6 +21,8 @@ def load_senses_elements(embeddings_method, elements_name):
     senses_elems_X = np.load(senses_elems_fpath)
     return torch.tensor(senses_elems_X).to(torch.float32)
 
+
+# ------ Auxiliary functions to initialize nodes / create edges
 
 def initialize_senses(X_defs, X_examples, average_or_random):
 
@@ -84,7 +91,7 @@ def get_edges_elements(elements_name, elements_start_index_toadd):
     return edges_ls
 
 
- # global -> senses : [se,se+sp) -> [0,se)
+# global -> senses : [se,se+sp) -> [0,se)
 def get_edges_sensechildren(globals_voc_df, globals_start_index_toadd):
 
     db_filepath = os.path.join(F.FOLDER_INPUT, Utils.INDICES_TABLE_DB)
@@ -111,6 +118,62 @@ def get_edges_sensechildren(globals_voc_df, globals_start_index_toadd):
     return edges_ls
 
 
+def get_additional_edges_sensechildren_from_slc(globals_voc_df, globals_start_index_toadd):
+    logging.info("Reading the sense-labeled corpus, to create the connections between globals"
+                 " and the senses that belong to other words.")
+
+    slc_train_corpus_gen = SLC.read_split(Utils.TRAINING)
+    senseindices_db = sqlite3.connect(os.path.join(F.FOLDER_INPUT, Utils.INDICES_TABLE_DB))
+    senseindices_db_c = senseindices_db.cursor()
+    lemmatizer = nltk.stem.WordNetLemmatizer()
+    edges_to_add_ls = []
+    #words_and_senses_ls = [] # for debug purposes
+
+    try:
+        while True:
+            token_dict = slc_train_corpus_gen.__next__()
+            keys = token_dict.keys()
+            sense_index_queryresult = None
+
+            # 1) Get the sense (and its index) specified in the SLC for the current token
+            if 'wn30_key' in keys:
+                wn30_key = token_dict['wn30_key']
+                wordnet_sense = try_to_get_wordnet_sense(wn30_key)
+                if wordnet_sense is not None:
+                    try:
+                        query = "SELECT vocab_index FROM indices_table " + "WHERE word_sense='" + wordnet_sense + "'"
+                        sense_index_queryresult = senseindices_db_c.execute(query).fetchone()
+                    except sqlite3.OperationalError:
+                        logging.info("Error while attempting to execute query: " + query + " . Skipping sense")
+
+                if sense_index_queryresult is None:  # there was no sense-key, or we did not find the sense for the key
+                    continue # do nothing, we do not add a global-sense connection
+                else:
+                    targetsense_idx = sense_index_queryresult[0]
+            else:
+                continue # there was no sense-key specified for this token
+            # 2) Get the global word of this token
+            word = VocabUtils.process_slc_token(token_dict)  # html.unescape, and lowercase the ALL-CAPITALS
+            lemmatized_word = lemmatize_term(word, lemmatizer)# since currently we always lemmatize in SelectK and other sense architectures
+            if lemmatized_word not in wordnet_sense: # we are connecting all the "external" senses, e.g. say->state.v.01
+                try:
+                    sourceglobal_absolute_idx = globals_voc_df.loc[globals_voc_df['word'] == lemmatized_word].index[0]
+                    global_relative_X_index = globals_start_index_toadd + sourceglobal_absolute_idx
+                    edges_to_add_ls.append((global_relative_X_index, targetsense_idx))
+                    #words_and_senses_ls.append((lemmatized_word, wordnet_sense))# for debug purposes
+                except IndexError:  # global not present. No need to redirect onto <unk>, we skip
+                    pass
+            # else, we do not connect again the internal senses, e.g. say->say.v.01, we did that already
+    except StopIteration:
+        pass
+    # remove duplicates
+    edges_to_add_ls = list(set(edges_to_add_ls))
+    #words_and_senses_ls = list(set(words_and_senses_ls))
+    return edges_to_add_ls
+
+
+# Since GATs and other Graph Neural Networks do not allow for nodes without edges, we add self-loops to all
+# stopwords like for, of, etc. They are ignored by the message-passing framework
 def get_edges_selfloops(sc_edges, num_globals):
     globals_sources = sorted(list(map(lambda edge_tpl : edge_tpl[0], sc_edges)))
     senses_targets = list(map(lambda edge_tpl : edge_tpl[1], sc_edges))
@@ -163,8 +226,9 @@ def get_edges_nyms(nyms_name, globals_voc_df, globals_start_index_toadd):
 
     return edges_ls
 
+# ----------------------------------------
 
-def create_graph(method):
+def create_graph(method, slc_corpus):
     if method == Method.FASTTEXT:
         single_prototypes_file = F.SPVs_FASTTEXT_FILE
     elif method == Method.DISTILBERT:
@@ -180,10 +244,10 @@ def create_graph(method):
     X_globals = torch.tensor(np.load(os.path.join(F.FOLDER_INPUT, single_prototypes_file))).to(torch.float32)
 
     logging.info("Constructing X, matrix of node features")
-    logging.info("X_definitions.shape=" + str(X_definitions.shape)) # X_definitions.shape=torch.Size([19008, 300])
-    logging.info("X_examples.shape=" + str(X_examples.shape)) # X_examples.shape=torch.Size([20191, 300])
-    logging.info("X_senses.shape=" + str(X_senses.shape)) # X_senses.shape=torch.Size([19008, 300])
-    logging.info("X_globals.shape=" + str(X_globals.shape)) # X_globals.shape=torch.Size([13675, 300])
+    logging.info("X_definitions.shape=" + str(X_definitions.shape)) # X_definitions.shape=torch.Size([25986, 300])
+    logging.info("X_examples.shape=" + str(X_examples.shape)) # X_examples.shape=torch.Size([26003, 300])
+    logging.info("X_senses.shape=" + str(X_senses.shape)) # X_senses.shape=torch.Size([25986, 300])
+    logging.info("X_globals.shape=" + str(X_globals.shape)) # X_globals.shape=torch.Size([21988, 300])
 
     # The order for the index of the nodes:
     # sense=[0,se) ; single prototype=[se,se+sp) ; definitions=[se+sp, se+sp+d) ; examples=[se+sp+d, e==num_nodes)
@@ -194,17 +258,21 @@ def create_graph(method):
     # We can operate with a list of S-D tuples, adding t().contiguous()
     logging.info("Defining the edges: def, exs")
     def_edges_se = get_edges_elements(Utils.DEFINITIONS, X_senses.shape[0] + X_globals.shape[0])
-    logging.info("def_edges_se.__len__()=" + str(def_edges_se.__len__())) # def_edges_se.__len__()=19008
+    logging.info("def_edges_se.__len__()=" + str(def_edges_se.__len__())) # def_edges_se.__len__()=25986
     exs_edges_se = get_edges_elements(Utils.EXAMPLES, X_senses.shape[0] + X_globals.shape[0]+ X_definitions.shape[0])
-    logging.info("exs_edges_se.__len__()=" + str(exs_edges_se.__len__())) # exs_edges_se.__len__()=20191
-
+    logging.info("exs_edges_se.__len__()=" + str(exs_edges_se.__len__())) # exs_edges_se.__len__()=26003
 
     logging.info("Defining the edges: sc")
     globals_vocabulary_fpath = os.path.join(F.FOLDER_VOCABULARY, F.VOCABULARY_OF_GLOBALS_FILE )
     globals_vocabulary_df = pd.read_hdf(globals_vocabulary_fpath, mode='r')
     sc_edges = get_edges_sensechildren(globals_vocabulary_df, X_senses.shape[0])
-    logging.info("sc_edges.__len__()=" + str(sc_edges.__len__()))
-    # Note: we also add self-loops to all globals without a sense.
+    logging.info("sc_edges.__len__()=" + str(sc_edges.__len__())) # sc_edges.__len__()=25986
+    # If operating on a sense-labeled corpus, we need to connect globals & their senses that do not belong to them
+    if slc_corpus:
+        sc_external_edges = get_additional_edges_sensechildren_from_slc(globals_vocabulary_df, globals_start_index_toadd=X_senses.shape[0])
+        sc_edges.extend(sc_external_edges)
+        logging.info("sc_edges_with_external.__len__()=" + str(sc_external_edges.__len__()))
+    # We add self-loops to all globals without a sense.
     edges_selfloops = get_edges_selfloops(sc_edges, num_globals=X_globals.shape[0])
     sc_edges.extend(edges_selfloops)
     logging.info("sc_edges_with_selfloops.__len__()=" + str(sc_edges.__len__()))
@@ -235,11 +303,11 @@ def create_graph(method):
 
 
 # Entry point function: try to load the graph, else create it if it does not exist
-def get_graph_dataobject(new=False, method=Method.FASTTEXT):
+def get_graph_dataobject(new=False, method=Method.FASTTEXT, slc_corpus=False):
     graph_fpath = os.path.join('GNN', F.KBGRAPH_FILE)
     if os.path.exists(graph_fpath) and not new:
         return torch.load(graph_fpath)
     else:
-        graph_dataobj = create_graph(method)
+        graph_dataobj = create_graph(method, slc_corpus)
         torch.save(graph_dataobj, graph_fpath)
         return graph_dataobj

@@ -1,9 +1,7 @@
-import string
 import Utils
-import Filesystem as F
 import os
 import pandas as pd
-import GNN.SenseLabeledCorpus as SLC
+import SenseLabeledCorpus as SLC
 import logging
 import Vocabulary.Vocabulary_Utilities as VocabUtils
 

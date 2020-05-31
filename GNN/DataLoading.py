@@ -1,6 +1,5 @@
 import torch
-import copy
-import GNN.SenseLabeledCorpus as SLC
+import SenseLabeledCorpus as SLC
 import GNN.NumericalIndices as NI
 import logging
 from Utils import DEVICE
