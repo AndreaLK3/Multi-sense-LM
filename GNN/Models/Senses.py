@@ -12,7 +12,7 @@ import Utils
 import nltk
 from PrepareKBInput.LemmatizeNyms import lemmatize_term
 
-# ****** Auxiliary function *******
+# ****** Auxiliary functions *******
 def get_neighbours_of_k_globals(model, sample_k_indices):
     neighbours_of_k = torch.cat(
                     [AD.get_node_data(model.grapharea_matrix, i, model.N, features_mask=(True,False,False))[0]
@@ -20,6 +20,33 @@ def get_neighbours_of_k_globals(model, sample_k_indices):
     sense_neighbours_of_k = neighbours_of_k[neighbours_of_k < model.last_idx_senses]
     return sense_neighbours_of_k
 
+def adjust_probability_mass(epsilon, senses_softmax, softmax_selected_senses,
+                            n_senses_in_vocab, n_neighbours, current_sample_idx):
+    zeta = min(softmax_selected_senses)
+    if zeta < epsilon:
+        senses_softmax[current_sample_idx].data = senses_softmax[current_sample_idx].data.clone() - (epsilon - zeta)
+        quantity_added_to_sum = zeta * (n_senses_in_vocab - n_neighbours)
+        quantity_to_subtract_from_selected = quantity_added_to_sum / n_neighbours
+    else:  # standard base value of 10^(-8)
+        quantity_added_to_sum = epsilon * (n_senses_in_vocab - n_neighbours)
+        quantity_to_subtract_from_selected = quantity_added_to_sum / n_neighbours
+
+    return quantity_to_subtract_from_selected
+
+def subtract_probability_mass_from_selected(softmax_selected_senses, delta_to_subtract):
+    n_skipped = 0
+    for i in range (softmax_selected_senses.shape[0]):
+        if softmax_selected_senses[i] > delta_to_subtract:
+            softmax_selected_senses[i] = softmax_selected_senses[i] - delta_to_subtract
+        else:
+            n_skipped = n_skipped + 1
+    #2nd pass
+    for i in range (softmax_selected_senses.shape[0]):
+        if n_skipped > 0:
+            if softmax_selected_senses[i] > delta_to_subtract:
+                softmax_selected_senses[i] = softmax_selected_senses[i] - delta_to_subtract
+                n_skipped = n_skipped -1
+    return softmax_selected_senses
 
 # *****************************
 
@@ -193,7 +220,7 @@ class SelectK(torch.nn.Module):
 
             senses_softmax = torch.ones((distributed_batch_size * seq_len, self.last_idx_senses)).to(CURRENT_DEVICE)
             epsilon = 10 ** (-8)
-            senses_softmax = epsilon * senses_softmax  # base probability value for non-selected senses: 0.000001
+            senses_softmax = epsilon * senses_softmax  # base probability value for non-selected senses
             i_senseneighbours_mask = torch.zeros(size=(distributed_batch_size * seq_len, self.last_idx_senses)).to(torch.bool).to(CURRENT_DEVICE)
 
             sample_k_indices_lls_relative = k_globals_indices.tolist()
@@ -207,12 +234,8 @@ class SelectK(torch.nn.Module):
                     Utils.word_to_vocab_index(lemmatized_word, self.vocabulary_wordlist) + self.last_idx_senses for
                     lemmatized_word in k_globals_lemmatized]
                 sense_neighbours_t = get_neighbours_of_k_globals(self, lemmatized_indices)
-                # temp debug
-                # if 'act' in k_globals_words:
-                #     logging.info("k_globals_words=" + str(k_globals_words))
-                #     logging.info("k_globals_lemmatized=" + str(k_globals_lemmatized))
-                #     logging.info("sense_neighbours_t.shape=" + str(sense_neighbours_t.shape))
                 if sense_neighbours_t.shape[0] == 0:  # no senses found, even lemmatizing. Ignore current entry
+                    # senses_softmax[s] = torch.tensor(1 / self.last_idx_senses).to(CURRENT_DEVICE)
                     continue
 
                 # standard procedure: get the logits of the senses of the most likely globals,
@@ -221,15 +244,15 @@ class SelectK(torch.nn.Module):
                 logits_selected_senses = sample_logits_senses.index_select(dim=0, index=sense_neighbours_t)
                 softmax_selected_senses = tfunc.softmax(input=logits_selected_senses, dim=0)
 
-                quantity_added_to_sum = epsilon * (self.last_idx_senses - len(sense_neighbours_t))
-                quantity_to_subtract_from_selected = quantity_added_to_sum / len(sense_neighbours_t)
-
-                softmax_selected_senses = softmax_selected_senses - quantity_to_subtract_from_selected
-                if 'act' in k_globals_words:
-                    logging.info("softmax_selected_senses=" + str(softmax_selected_senses))
                 for i in range(len(sense_neighbours_t)):
                     i_senseneighbours_mask[s,sense_neighbours_t[i]]=True
 
+                # safety check, so we do not have a softmax value < 0
+                quantity_to_subtract_from_selected = adjust_probability_mass(epsilon, senses_softmax,
+                                                                             softmax_selected_senses, self.last_idx_senses,
+                                                                             len(sense_neighbours_t), s)
+
+                softmax_selected_senses = softmax_selected_senses - quantity_to_subtract_from_selected
                 senses_softmax[s].masked_scatter_(mask=i_senseneighbours_mask[s].data.clone(), source=softmax_selected_senses)
 
             predictions_senses = torch.log(senses_softmax)

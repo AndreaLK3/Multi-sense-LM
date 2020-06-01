@@ -91,7 +91,7 @@ def training_setup(slc_or_text_corpus, include_globalnode_input, include_senseno
     # model = GRUs.GRU_base2(graph_dataobj, grapharea_size, grapharea_matrix, globals_vocabulary_wordList,
     #                        include_globalnode_input, include_sensenode_input, predict_senses,
     #                        batch_size, n_layers=3, n_units=1150)
-    model = SensesNets.SelectK(graph_dataobj, grapharea_size, grapharea_matrix, 1, globals_vocabulary_wordList,
+    model = SensesNets.SelectK(graph_dataobj, grapharea_size, grapharea_matrix, 5, globals_vocabulary_wordList,
                                include_globalnode_input, include_sensenode_input, predict_senses,
                                batch_size, n_layers=3, n_units=1150)
 
@@ -160,12 +160,15 @@ def training_loop(model, learning_rate, train_dataloader, valid_dataloader, num_
         valid_dataiter = iter(cycle(valid_dataloader))
         for epoch in range(1,num_epochs+1):
             logging.info("\nTraining epoch n."+str(epoch) + ":")
+            # temp debug
+            if epoch == 300 or epoch == 400:
+                logging.info("Temp Debug via remote screen. Add breakpoint here")
 
             sum_epoch_loss_global = 0
             sum_epoch_loss_sense = 0
             epoch_step = 0
             epoch_senselabeled_tokens = 0
-            verbose = True if (epoch==num_epochs) or (epoch% 50==0) else False # - log prediction output
+            verbose = True if (epoch==num_epochs) or (epoch% 100==0) else False # - log prediction output
 
             flag_earlystop = False
 
@@ -210,6 +213,7 @@ def training_loop(model, learning_rate, train_dataloader, valid_dataloader, num_
             Utils.record_statistics(sum_epoch_loss_global, sum_epoch_loss_sense, epoch_step,
                                     max(1,epoch_senselabeled_tokens), training_losses_lts)
 
+            continue # temp for mini-experiments
             # Time to check the validation loss
             valid_loss_globals, valid_loss_senses = evaluation(valid_dataloader, valid_dataiter, model)
             #validation_losses_lts.append((valid_loss_globals, valid_loss_senses))

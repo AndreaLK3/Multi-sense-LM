@@ -43,7 +43,7 @@ def get_indices_area_toinclude(edge_index, edge_type, node_index, area_size, max
         nodes_retrieved_lls.append([])
         current_hops = current_hops + 1
 
-    logging.info("start_node=" + str(node_index) + " , nodes_retrieved= " + str(nodes_retrieved_lls))
+    logging.debug("start_node=" + str(node_index) + " , nodes_retrieved= " + str(nodes_retrieved_lls))
     return [n for hop_nodes_ls in nodes_retrieved_lls for n in hop_nodes_ls], list(edges_retrieved_set)
 
 # Auxiliary function: find the immediate neighbours of a node, in the given order. Both directions of edges are included
