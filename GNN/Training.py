@@ -160,9 +160,6 @@ def training_loop(model, learning_rate, train_dataloader, valid_dataloader, num_
         valid_dataiter = iter(cycle(valid_dataloader))
         for epoch in range(1,num_epochs+1):
             logging.info("\nTraining epoch n."+str(epoch) + ":")
-            # temp debug
-            if epoch == 300 or epoch == 400:
-                logging.info("Temp Debug via remote screen. Add breakpoint here")
 
             sum_epoch_loss_global = 0
             sum_epoch_loss_sense = 0
@@ -213,7 +210,6 @@ def training_loop(model, learning_rate, train_dataloader, valid_dataloader, num_
             Utils.record_statistics(sum_epoch_loss_global, sum_epoch_loss_sense, epoch_step,
                                     max(1,epoch_senselabeled_tokens), training_losses_lts)
 
-            continue # temp for mini-experiments
             # Time to check the validation loss
             valid_loss_globals, valid_loss_senses = evaluation(valid_dataloader, valid_dataiter, model)
             #validation_losses_lts.append((valid_loss_globals, valid_loss_senses))

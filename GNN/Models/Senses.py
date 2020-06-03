@@ -41,11 +41,13 @@ def subtract_probability_mass_from_selected(softmax_selected_senses, delta_to_su
         else:
             n_skipped = n_skipped + 1
     #2nd pass
-    for i in range (softmax_selected_senses.shape[0]):
-        if n_skipped > 0:
-            if softmax_selected_senses[i] > delta_to_subtract:
-                softmax_selected_senses[i] = softmax_selected_senses[i] - delta_to_subtract
-                n_skipped = n_skipped -1
+    n_iter = 0
+    while n_skipped > 0 and n_iter < 5:
+        n_iter = n_iter +1
+        for i in range (softmax_selected_senses.shape[0]):
+                if softmax_selected_senses[i] > delta_to_subtract:
+                    softmax_selected_senses[i] = softmax_selected_senses[i] - delta_to_subtract
+                    n_skipped = n_skipped -1
     return softmax_selected_senses
 
 # *****************************
@@ -73,7 +75,7 @@ class SelectK(torch.nn.Module):
 
         # The embeddings matrix for: senses, globals, definitions, examples
         self.X = Parameter(data.x.clone().detach(), requires_grad=True)
-        self.select_indices = Parameter(torch.tensor(list(range(int(self.N ** 1.5)))).to(torch.float32), requires_grad=False)
+        self.select_indices = Parameter(torch.tensor(list(range(2*int(self.N ** 1.5)))).to(torch.float32), requires_grad=False)
         self.embedding_zeros = Parameter(torch.zeros(size=(1, self.d)), requires_grad=False)
 
         # Input signals: current global’s word embedding (|| global's node state (|| sense’s node state) )
@@ -235,7 +237,7 @@ class SelectK(torch.nn.Module):
                     lemmatized_word in k_globals_lemmatized]
                 sense_neighbours_t = get_neighbours_of_k_globals(self, lemmatized_indices)
                 if sense_neighbours_t.shape[0] == 0:  # no senses found, even lemmatizing. Ignore current entry
-                    # senses_softmax[s] = torch.tensor(1 / self.last_idx_senses).to(CURRENT_DEVICE)
+                    senses_softmax[s] = torch.tensor(1 / self.last_idx_senses).to(CURRENT_DEVICE)
                     continue
 
                 # standard procedure: get the logits of the senses of the most likely globals,
@@ -252,7 +254,7 @@ class SelectK(torch.nn.Module):
                                                                              softmax_selected_senses, self.last_idx_senses,
                                                                              len(sense_neighbours_t), s)
 
-                softmax_selected_senses = softmax_selected_senses - quantity_to_subtract_from_selected
+                # softmax_selected_senses = subtract_probability_mass_from_selected(softmax_selected_senses, quantity_to_subtract_from_selected)
                 senses_softmax[s].masked_scatter_(mask=i_senseneighbours_mask[s].data.clone(), source=softmax_selected_senses)
 
             predictions_senses = torch.log(senses_softmax)

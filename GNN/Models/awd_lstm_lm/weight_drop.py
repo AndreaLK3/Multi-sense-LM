@@ -2,7 +2,7 @@ import torch
 from torch.nn import Parameter
 from functools import wraps
 
-# *** Added: my class, to implement DropConnect and circumvent the error:
+# *** Added: my class, to implement DropConnect and circumvent the error in Pytorch >= 1.0:
 # *** AttributeError: 'LSTM' object has no attribute 'weight_hh_l0'
 class ForwardWithDrop(object):
     def __init__(self,weights_names_ls, module, dropout_p, original_module_forward):
@@ -28,6 +28,8 @@ def my_weight_drop(module, weights_names_ls, dropout_p):
     setattr(module, 'forward', forward_with_drop)
     return module
 
+
+### Original version of DropConnect from awd-lstm-lm
 class WeightDrop(torch.nn.Module):
     def __init__(self, module, weights, dropout=0, variational=False):
         super(WeightDrop, self).__init__()
