@@ -2,11 +2,17 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="d35dca92-959c-489d-8a61-f337e4cce7fa" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/GNN/Models/awd_lstm_lm/console_main.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/GNN/Models/Senses.py" beforeDir="false" afterPath="$PROJECT_DIR$/GNN/Models/Senses.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/GNN/Models/awd_lstm_lm/weight_drop.py" beforeDir="false" afterPath="$PROJECT_DIR$/GNN/Models/awd_lstm_lm/weight_drop.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/GNN/Models/GRUs.py" beforeDir="false" afterPath="$PROJECT_DIR$/GNN/Models/RNNs.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/GNN/Models/MyRNN.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/GNN/Models/awd_lstm_lm/.idea/awd_lstm_lm.iml" beforeDir="false" afterPath="$PROJECT_DIR$/GNN/Models/awd_lstm_lm/.idea/awd_lstm_lm.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/GNN/Models/awd_lstm_lm/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/GNN/Models/awd_lstm_lm/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/GNN/Models/awd_lstm_lm/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/GNN/Models/awd_lstm_lm/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/GNN/Models/awd_lstm_lm/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/GNN/Models/awd_lstm_lm/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/GNN/Models/awd_lstm_lm/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/GNN/Models/awd_lstm_lm/utils.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/GNN/Training.py" beforeDir="false" afterPath="$PROJECT_DIR$/GNN/Training.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Media/Task1_DeveloperDiary_4.docx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Media/Task1_DeveloperDiary_4a_globals.docx" beforeDir="false" afterPath="$PROJECT_DIR$/Media/Task1_DeveloperDiary_4a_globals.docx" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -19,11 +25,23 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/GNN/Models/awd_lstm_lm/main.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-452">
-              <caret line="188" column="30" selection-start-line="188" selection-start-column="30" selection-end-line="188" selection-end-column="30" />
+            <state relative-caret-position="201">
+              <caret line="124" column="83" lean-forward="true" selection-start-line="124" selection-start-column="83" selection-end-line="124" selection-end-column="83" />
+              <folding>
+                <element signature="e#0#15#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/GNN/Models/awd_lstm_lm/console_main.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="3120">
+              <caret line="273" column="42" lean-forward="true" selection-start-line="273" selection-start-column="42" selection-end-line="273" selection-end-column="42" />
               <folding>
                 <element signature="e#0#15#0" expanded="true" />
               </folding>
@@ -32,10 +50,31 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/GNN/Models/RNNs.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="1979">
+              <caret line="168" column="30" selection-start-line="168" selection-start-column="30" selection-end-line="168" selection-end-column="30" />
+              <folding>
+                <element signature="e#0#12#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/GNN/Training.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="140">
+              <caret line="19" column="38" selection-start-line="19" selection-start-column="38" selection-end-line="19" selection-end-column="38" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/GNN/Models/awd_lstm_lm/model.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-478">
-              <caret line="34" lean-forward="true" selection-start-line="34" selection-end-line="34" />
+            <state relative-caret-position="1440">
+              <caret line="96" column="26" lean-forward="true" selection-start-line="96" selection-start-column="26" selection-end-line="96" selection-end-column="26" />
               <folding>
                 <element signature="e#0#12#0" expanded="true" />
               </folding>
@@ -46,7 +85,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/GNN/Models/awd_lstm_lm/weight_drop.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="271">
+            <state relative-caret-position="285">
               <caret line="19" selection-start-line="19" selection-end-line="19" />
               <folding>
                 <element signature="e#0#12#0" expanded="true" />
@@ -66,7 +105,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>log_ba</find>
       <find>*20</find>
       <find>lemmatize</find>
       <find>get_global</find>
@@ -96,6 +134,7 @@
       <find>nodes_retrieved</find>
       <find>init_weights</find>
       <find>cache</find>
+      <find>decoder</find>
     </findStrings>
     <replaceStrings>
       <replace>F</replace>
@@ -120,7 +159,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/GraphNN/PocketRGCN.py" />
         <option value="$PROJECT_DIR$/GraphNN/NumericalIndices.py" />
         <option value="$PROJECT_DIR$/GraphNN/SenseLabeledCorpus.py" />
         <option value="$PROJECT_DIR$/GraphNN/MyRGCN.py" />
@@ -163,14 +201,15 @@
         <option value="$PROJECT_DIR$/GNN/Models/Common.py" />
         <option value="$PROJECT_DIR$/GNN/NumericalIndices.py" />
         <option value="$PROJECT_DIR$/GNN/DataLoading.py" />
-        <option value="$PROJECT_DIR$/GNN/Models/GRUs.py" />
         <option value="$PROJECT_DIR$/GNN/ExplorePredictions.py" />
         <option value="$PROJECT_DIR$/trainmodel_script.py" />
         <option value="$PROJECT_DIR$/Graph/DefineGraph.py" />
         <option value="$PROJECT_DIR$/Graph/GraphArea.py" />
         <option value="$PROJECT_DIR$/GNN/Models/Senses.py" />
-        <option value="$PROJECT_DIR$/GNN/Training.py" />
         <option value="$PROJECT_DIR$/GNN/Models/awd_lstm_lm/weight_drop.py" />
+        <option value="$PROJECT_DIR$/GNN/Training.py" />
+        <option value="$PROJECT_DIR$/GNN/Models/GRUs.py" />
+        <option value="$PROJECT_DIR$/GNN/Models/RNNs.py" />
       </list>
     </option>
   </component>
@@ -309,7 +348,7 @@
     <frame x="0" y="23" width="1440" height="801" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.48931116" visible="true" weight="0.20958512" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.48931116" visible="true" weight="0.21816881" />
       <window_info id="Structure" order="1" sideWeight="0.51068884" side_tool="true" weight="0.15665236" />
       <window_info id="Favorites" order="2" sideWeight="0.5059761" side_tool="true" weight="0.18025751" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -323,7 +362,7 @@
       <window_info anchor="bottom" id="Terminal" order="8" weight="0.325811" />
       <window_info anchor="bottom" id="Event Log" order="9" sideWeight="0.509299" side_tool="true" weight="0.29055008" />
       <window_info anchor="bottom" id="Inspection Results" order="10" weight="0.32863188" />
-      <window_info active="true" anchor="bottom" id="Python Console" order="11" sideWeight="0.490701" visible="true" weight="0.28631875" />
+      <window_info anchor="bottom" id="Python Console" order="11" sideWeight="0.490701" visible="true" weight="0.28631875" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
@@ -524,7 +563,6 @@ print(t1[t1&lt; self.last_idx_senses])</expression-string>
     </expressions>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/GNN/Models/awd_lstm/embed_regularize.py" />
     <entry file="file://$PROJECT_DIR$/GNN/Models/awd_lstm/locked_dropout.py" />
     <entry file="file://$PROJECT_DIR$/Filesystem.py">
       <provider selected="true" editor-type-id="text-editor">
@@ -800,16 +838,6 @@ print(t1[t1&lt; self.last_idx_senses])</expression-string>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/GNN/Training.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="327">
-          <caret line="92" column="50" selection-start-line="92" selection-start-column="50" selection-end-line="92" selection-end-column="50" />
-          <folding>
-            <element signature="e#0#12#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Graph/Adjacencies.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="60">
@@ -880,20 +908,27 @@ print(t1[t1&lt; self.last_idx_senses])</expression-string>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/GNN/Models/GRUs.py">
+    <entry file="file://$PROJECT_DIR$/GNN/Models/awd_lstm_lm/weight_drop.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="412">
-          <caret line="123" column="21" selection-start-line="123" selection-start-column="21" selection-end-line="123" selection-end-column="21" />
+        <state relative-caret-position="285">
+          <caret line="19" selection-start-line="19" selection-end-line="19" />
           <folding>
             <element signature="e#0#12#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/GNN/Models/awd_lstm_lm/weight_drop.py">
+    <entry file="file://$PROJECT_DIR$/GNN/Training.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="271">
-          <caret line="19" selection-start-line="19" selection-end-line="19" />
+        <state relative-caret-position="140">
+          <caret line="19" column="38" selection-start-line="19" selection-start-column="38" selection-end-line="19" selection-end-column="38" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/GNN/Models/RNNs.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1979">
+          <caret line="168" column="30" selection-start-line="168" selection-start-column="30" selection-end-line="168" selection-end-column="30" />
           <folding>
             <element signature="e#0#12#0" expanded="true" />
           </folding>
@@ -902,8 +937,8 @@ print(t1[t1&lt; self.last_idx_senses])</expression-string>
     </entry>
     <entry file="file://$PROJECT_DIR$/GNN/Models/awd_lstm_lm/model.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-478">
-          <caret line="34" lean-forward="true" selection-start-line="34" selection-end-line="34" />
+        <state relative-caret-position="1440">
+          <caret line="96" column="26" lean-forward="true" selection-start-line="96" selection-start-column="26" selection-end-line="96" selection-end-column="26" />
           <folding>
             <element signature="e#0#12#0" expanded="true" />
           </folding>
@@ -912,8 +947,18 @@ print(t1[t1&lt; self.last_idx_senses])</expression-string>
     </entry>
     <entry file="file://$PROJECT_DIR$/GNN/Models/awd_lstm_lm/main.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-452">
-          <caret line="188" column="30" selection-start-line="188" selection-start-column="30" selection-end-line="188" selection-end-column="30" />
+        <state relative-caret-position="201">
+          <caret line="124" column="83" lean-forward="true" selection-start-line="124" selection-start-column="83" selection-end-line="124" selection-end-column="83" />
+          <folding>
+            <element signature="e#0#15#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/GNN/Models/awd_lstm_lm/console_main.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="3120">
+          <caret line="273" column="42" lean-forward="true" selection-start-line="273" selection-start-column="42" selection-end-line="273" selection-end-column="42" />
           <folding>
             <element signature="e#0#15#0" expanded="true" />
           </folding>

@@ -18,8 +18,7 @@ import GNN.Models.MySenses as SensesNets
 import GNN.Models.MyGAT as MyGAT
 # import GNN.Models.awd_lstm.AWD_LSTM as awd_lstm
 import GNN.Models.WD_LSTM as MyWD_LSTM
-import GNN.Models.MyRNN as MyRNN
-import GNN.Models.GRUs as GRUs
+import GNN.Models.RNNs as GRUs
 import GNN.Models.Senses as SensesNets
 from itertools import cycle
 import gc

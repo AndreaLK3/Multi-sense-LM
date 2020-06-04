@@ -13,12 +13,13 @@ import nltk
 from PrepareKBInput.LemmatizeNyms import lemmatize_term
 
 
-# Baseline: GRUs only.
-class GRU_base2(torch.nn.Module):
+# Baseline 1 : GRUs only.
+class RNN(torch.nn.Module):
 
-    def __init__(self, data, grapharea_size, grapharea_matrix, vocabulary_wordlist, include_globalnode_input, include_sensenode_input, predict_senses,
+    def __init__(self, model_type, data, grapharea_size, grapharea_matrix, vocabulary_wordlist, include_globalnode_input, include_sensenode_input, predict_senses,
                  batch_size, n_layers, n_units):
-        super(GRU_base2, self).__init__()
+        super(RNN, self).__init__()
+        self.model_type = model_type # it can be either 'GRU' or 'LSTM'
         self.grapharea_matrix = grapharea_matrix
         self.vocabulary_wordlist = vocabulary_wordlist
         self.include_globalnode_input = include_globalnode_input
@@ -45,15 +46,21 @@ class GRU_base2(torch.nn.Module):
         self.memory_hn_senses = Parameter(torch.zeros(size=(n_layers, batch_size, int(n_units//2))), requires_grad=False)
         self.hidden_state_bsize_adjusted = False
 
-        # GRU for globals - standard Language Model
-        self.main_gru = torch.nn.GRU(input_size=self.concatenated_input_dim, hidden_size=n_units, num_layers=n_layers)
+        # RNN for globals - standard Language Model
+        rnn = None  # eliminate warning
+        if self.model_type.upper()=='GRU': rnn = torch.nn.GRU
+        if self.model_type.upper()=='LSTM': rnn= torch.nn.LSTM
+        self.main_rnn_ls = torch.nn.ModuleList([
+            rnn(input_size=self.concatenated_input_dim if i == 0 else n_units,
+                         hidden_size=self.concatenated_input_dim if i == n_layers-1 else n_units, num_layers=1) for i in range(n_layers)])
+
         if self.include_globalnode_input:
             self.gat_globals = GATConv(in_channels=self.d, out_channels=int(self.d/4), heads=4)
             self.lemmatizer = nltk.stem.WordNetLemmatizer()
             lemmatize_term('init', self.lemmatizer)# to establish LazyCorpusLoader and prevent a multi-thread crash
         if self.include_sensenode_input:
             self.gat_senses = GATConv(in_channels=self.d, out_channels=int(self.d/4), heads=4)
-        # GRU for senses
+        # RNN for senses
         if predict_senses:
             self.gru_senses = torch.nn.GRU(input_size=self.concatenated_input_dim, hidden_size=int(n_units//2), num_layers=n_layers)
 
@@ -146,16 +153,25 @@ class GRU_base2(torch.nn.Module):
         # - input of shape(seq_len, batch_size, input_size): tensor containing the features of the input sequence.
         # - h_0 of shape (num_layers * num_directions, batch=1, hidden_size):
         #       tensor containing the initial hidden state for each element in the batch.
-        self.main_gru.flatten_parameters()
-        main_gru_out, hidden_n = self.main_gru(batch_input_signals, self.memory_hn)
-        self.memory_hn.data.copy_(hidden_n.clone())  # store h in memory
-        main_gru_out = main_gru_out.permute(1, 0, 2)  # going to: (batch_size, seq_len, n_units)
+        self.main_rnn.flatten_parameters()
+        main_rnn_out = None
+        input = batch_input_signals
+        for i in range(self.n_layers):
+            layer_rnn = self.main_rnn_ls[i]
+            layer_rnn.flatten_parameters()
+            main_rnn_out, hidden_i = layer_rnn(input, self.memory_hn.index_select(dim=0,
+                                                                                  index=self.select_first_indices[i].to(
+                                                                                      torch.int64)))
+            self.memory_hn[i].data.copy_(hidden_i.squeeze().clone())  # store h in memory
+            input = main_rnn_out
+
+        main_rnn_out = main_rnn_out.permute(1, 0, 2)  # going to: (batch_size, seq_len, n_units)
         seq_len = len(sequences_in_the_batch_ls[0][0])
-        main_gru_out = main_gru_out.reshape(distributed_batch_size * seq_len, main_gru_out.shape[2])
+        main_rnn_out = main_rnn_out.reshape(distributed_batch_size * seq_len, main_rnn_out.shape[2])
 
         # 2nd part of the architecture: predictions
         # globals
-        logits_global = self.linear2global(main_gru_out)  # shape=torch.Size([5])
+        logits_global = self.linear2global(main_rnn_out)  # shape=torch.Size([5])
         predictions_globals = tfunc.log_softmax(logits_global, dim=1)
         # senses
         # line 1: GRU for senses + linear FF-NN to logits.
