@@ -18,7 +18,7 @@ import GNN.Models.MySenses as SensesNets
 import GNN.Models.MyGAT as MyGAT
 # import GNN.Models.awd_lstm.AWD_LSTM as awd_lstm
 import GNN.Models.WD_LSTM as MyWD_LSTM
-import GNN.Models.RNNs as GRUs
+import GNN.Models.RNNs as RNNs
 import GNN.Models.Senses as SensesNets
 from itertools import cycle
 import gc
@@ -82,24 +82,17 @@ def training_setup(slc_or_text_corpus, include_globalnode_input, include_senseno
     globals_vocabulary_df = pd.read_hdf(globals_vocabulary_fpath, mode='r')
     globals_vocabulary_wordList = globals_vocabulary_df['word'].to_list().copy()
 
-    # Must still try the standard GRU and GRU_GAT with graph input on WikiText-2 - this time with the correct vocabulary
+
     # The original GRU architecture has been updated into the GRUbase2 model in Senses - I just have to specify that predict_senses=False
     # torch.manual_seed(1) # for reproducibility while conducting mini-experiments
     # if torch.cuda.is_available():
     #     torch.cuda.manual_seed_all(1)
-    # model = GRUs.GRU_base2(graph_dataobj, grapharea_size, grapharea_matrix, globals_vocabulary_wordList,
-    #                        include_globalnode_input, include_sensenode_input, predict_senses,
-    #                        batch_size, n_layers=3, n_units=1150)
-    model = SensesNets.SelectK(graph_dataobj, grapharea_size, grapharea_matrix, 5, globals_vocabulary_wordList,
-                               include_globalnode_input, include_sensenode_input, predict_senses,
-                               batch_size, n_layers=3, n_units=1150)
-
-    # model= MyRNN.GRU(graph_dataobj, grapharea_size, include_senses=include_senses, batchs_size=batch_size, n_layers=3, n_units=1150)
-    # MyGAT.GRU_GAT(graph_dataobj, grapharea_size, num_gat_heads=4, include_senses=include_senses,
-    #                batch_size=batch_size, n_layers=3, n_units=1150)
-    # MyWD_LSTM.WD_LSTM(graph_dataobj, grapharea_size, include_senses=include_senses, batch_size=batch_size, n_layers=3, n_units=1150)
-    # SensesNets.SelfAttK(graph_dataobj, grapharea_size, num_gat_heads=4, include_senses=include_senses, num_senses_attheads=2)
-    # MyRNN.GRU_RNN(graph_dataobj, grapharea_size, include_senses)
+    model = RNNs.RNN("LSTM", graph_dataobj, grapharea_size, grapharea_matrix, globals_vocabulary_wordList,
+                     include_globalnode_input, include_sensenode_input, predict_senses,
+                     batch_size, n_layers=3, n_units=1150)
+    # model = SensesNets.SelectK(graph_dataobj, grapharea_size, grapharea_matrix, 5, globals_vocabulary_wordList,
+    #                            include_globalnode_input, include_sensenode_input, predict_senses,
+    #                            batch_size, n_layers=3, n_units=1150)
 
     logging.info("Graph-data object loaded, model initialized. Moving them to GPU device(s) if present.")
 

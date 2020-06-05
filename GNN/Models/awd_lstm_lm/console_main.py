@@ -215,17 +215,24 @@ try:
     for epoch in range(1, args.epochs+1):
         epoch_start_time = time.time()
         train()
+        torch.cuda.empty_cache()
         gpu_memory_profiling() # we check after each epoch
         if epoch >=40: # we start debugging after the point where we switch to ASGD ON WT-2
-            pass # insert breakpoint here
+            print("On WT-2, we generally switch to ASGD at this point")
+
 
         print_model_named_params(model)
-        if 't0' in optimizer.param_groups[0]:
+        if 't0' in optimizer.param_groups[0]: # if ASGD
             tmp = {}
+            # for prm in model.parameters():
+            #     tmp[prm] = prm.data.clone()
+            #     if 'ax' in optimizer.state[prm]:  # added this line because of error: KeyError: 'ax'
+            #         prm.data = optimizer.state[prm]['ax'].clone()
+            # From the port for PyTorch 1.2 ; changed to:
             for prm in model.parameters():
-                tmp[prm] = prm.data.clone()
-                if 'ax' in optimizer.state[prm]:  # added this line because of error: KeyError: 'ax'
-                    prm.data = optimizer.state[prm]['ax'].clone()
+                if prm in optimizer.state.keys():
+                    tmp[prm] = prm.data.detach()
+                    prm.data = optimizer.state[prm]['ax'].detach()
 
             val_loss2 = evaluate(val_data)
             print('-' * 89)
@@ -239,14 +246,20 @@ try:
                 print('Saving Averaged!')
                 stored_loss = val_loss2
 
-            # Added fix by mourga @ GitHub issue 70
-            nparams = 0
-            nparams_in_temp_keys = 0
+            # # nparams = 0
+            # # nparams_in_temp_keys = 0
+            # # for prm in model.parameters():
+            #     nparams += 1
+            #     if prm in tmp.keys():
+            #         nparams_in_temp_keys += 1
+            #         prm.data = tmp[prm].clone()
+            # From the port for PyTorch 1.2, changed to:
             for prm in model.parameters():
-                nparams += 1
                 if prm in tmp.keys():
-                    nparams_in_temp_keys += 1
-                    prm.data = tmp[prm].clone()
+                    prm.data = tmp[prm].detach()
+                    prm.requires_grad = True
+                # print('params {}, params in tmp keys: {}'.format(nparams, nparams_in_temp_keys))
+            del tmp
 
         else:
             val_loss = evaluate(val_data, eval_batch_size)
