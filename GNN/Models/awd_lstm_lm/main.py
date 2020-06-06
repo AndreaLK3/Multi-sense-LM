@@ -243,18 +243,20 @@ try:
         train()
         gpu_memory_profiling() # we check after each epoch
         print_model_named_params(model)
-        if 't0' in optimizer.param_groups[0]:
+        if 't0' in optimizer.param_groups[0]:  # if ASGD
             tmp = {}
+
+            # From the port for PyTorch 1.2 ; changed to:
             for prm in model.parameters():
-                tmp[prm] = prm.data.clone()
-                if 'ax' in optimizer.state[prm]:  # added this line because of error: KeyError: 'ax'
-                    prm.data = optimizer.state[prm]['ax'].clone()
+                if prm in optimizer.state.keys():
+                    tmp[prm] = prm.data.detach()
+                    prm.data = optimizer.state[prm]['ax'].detach()
 
             val_loss2 = evaluate(val_data)
             print('-' * 89)
             print('| end of epoch {:3d} | time: {:5.2f}s | valid loss {:5.2f} | '
-                'valid ppl {:8.2f} | valid bpc {:8.3f}'.format(
-                    epoch, (time.time() - epoch_start_time), val_loss2, math.exp(val_loss2), val_loss2 / math.log(2)))
+                  'valid ppl {:8.2f} | valid bpc {:8.3f}'.format(
+                epoch, (time.time() - epoch_start_time), val_loss2, math.exp(val_loss2), val_loss2 / math.log(2)))
             print('-' * 89)
 
             if val_loss2 < stored_loss:
@@ -262,14 +264,13 @@ try:
                 print('Saving Averaged!')
                 stored_loss = val_loss2
 
-            # Added fix by mourga @ GitHub issue 70
-            nparams = 0
-            nparams_in_temp_keys = 0
+            # From the port for PyTorch 1.2, changed to:
             for prm in model.parameters():
-                nparams += 1
                 if prm in tmp.keys():
-                    nparams_in_temp_keys += 1
-                    prm.data = tmp[prm].clone()
+                    prm.data = tmp[prm].detach()
+                    prm.requires_grad = True
+                # print('params {}, params in tmp keys: {}'.format(nparams, nparams_in_temp_keys))
+            del tmp
 
         else:
             val_loss = evaluate(val_data, eval_batch_size)
