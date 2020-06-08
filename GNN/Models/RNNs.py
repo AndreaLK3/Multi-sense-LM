@@ -31,6 +31,7 @@ class LSTM(torch.nn.Module):
         self.batch_size = batch_size
         self.n_layers = n_layers
         self.n_units = n_hid_units
+        self.dropout = torch.nn.Dropout(p=0.2) # for regularization, we use a dropout of p=0.2 over the layers
 
         # The embeddings matrix for: senses, globals, definitions, examples
         self.X = Parameter(data.x.clone().detach(), requires_grad=True)
@@ -168,6 +169,7 @@ class LSTM(torch.nn.Module):
                            index_select(dim=2,index=self.select_first_indices[0:layer_rnn.hidden_size].to(torch.int64)),
                            self.memory_cn.index_select(dim=0, index=self.select_first_indices[i].to(torch.int64)).
                            index_select(dim=2,index=self.select_first_indices[0:layer_rnn.hidden_size].to(torch.int64))))
+            main_rnn_out = self.dropout(main_rnn_out)
             hidden_i_forcopy = hidden_i.index_select(dim=2,index=self.select_first_indices[0:layer_rnn.hidden_size].to(torch.int64))
             hidden_i_forcopy = tfunc.pad(hidden_i_forcopy, pad=[0,(self.memory_hn.shape[2] - layer_rnn.hidden_size)]).squeeze()
             cells_i_forcopy = cells_i.index_select(dim=2, index=self.select_first_indices[0:layer_rnn.hidden_size].to(torch.int64))

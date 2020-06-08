@@ -35,11 +35,11 @@ parser.add_argument('--dropout', type=float, default=0.4,
                     help='dropout applied to layers (0 = no dropout)')
 parser.add_argument('--dropouth', type=float, default=0.3,
                     help='dropout for rnn layers (0 = no dropout)')
-parser.add_argument('--dropouti', type=float, default=0.65,
+parser.add_argument('--dropouti', type=float, default=0.4, #0.65,
                     help='dropout for input embedding layers (0 = no dropout)')
 parser.add_argument('--dropoute', type=float, default=0.1,
                     help='dropout to remove words from embedding layer (0 = no dropout)')
-parser.add_argument('--wdrop', type=float, default=0.5,
+parser.add_argument('--wdrop', type=float, default=0.65, #0.5,
                     help='amount of weight dropout to apply to the RNN hidden to hidden matrix')
 parser.add_argument('--seed', type=int, default=1111,
                     help='random seed')
@@ -47,7 +47,7 @@ parser.add_argument('--nonmono', type=int, default=5,
                     help='random seed')
 parser.add_argument('--cuda', action='store_false',
                     help='use CUDA')
-parser.add_argument('--log-interval', type=int, default=200, metavar='N',
+parser.add_argument('--log-interval', type=int, default=100, metavar='N', #200
                     help='report interval')
 randomhash = ''.join(str(time.time()).split('.'))
 parser.add_argument('--save', type=str,  default=randomhash+'.pt',
@@ -122,7 +122,7 @@ if args.resume:
     optimizer.param_groups[0]['lr'] = args.lr
     model.dropouti, model.dropouth, model.dropout, args.dropoute = args.dropouti, args.dropouth, args.dropout, args.dropoute
     if args.wdrop:
-        from GNN.Models.awd_lstm_lm.weight_drop import WeightDrop # modified import
+        from weight_drop import WeightDrop # modified import
         for rnn in model.rnns:
             if type(rnn) == WeightDrop: rnn.dropout = args.wdrop
             elif rnn.zoneout > 0: rnn.zoneout = args.wdrop
@@ -241,8 +241,8 @@ try:
     for epoch in range(1, args.epochs+1):
         epoch_start_time = time.time()
         train()
-        gpu_memory_profiling() # we check after each epoch
-        print_model_named_params(model)
+        #gpu_memory_profiling() # we check after each epoch
+        #print_model_named_params(model)
         if 't0' in optimizer.param_groups[0]:  # if ASGD
             tmp = {}
 
