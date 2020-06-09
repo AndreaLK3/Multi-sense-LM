@@ -14,11 +14,12 @@ from PrepareKBInput.LemmatizeNyms import lemmatize_term
 
 
 
-class LSTM(torch.nn.Module):
+class RNN(torch.nn.Module):
 
-    def __init__(self, data, grapharea_size, grapharea_matrix, vocabulary_wordlist, include_globalnode_input, include_sensenode_input, predict_senses,
+    def __init__(self, model_type, data, grapharea_size, grapharea_matrix, vocabulary_wordlist, include_globalnode_input, include_sensenode_input, predict_senses,
                  batch_size, n_layers, n_hid_units):
-        super(LSTM, self).__init__()
+        super(RNN, self).__init__()
+        self.model_type = model_type # can be "LSTM" or "GRU"
         self.grapharea_matrix = grapharea_matrix
         self.vocabulary_wordlist = vocabulary_wordlist
         self.include_globalnode_input = include_globalnode_input
@@ -44,14 +45,20 @@ class LSTM(torch.nn.Module):
         # This is overwritten at the 1st forward, when we know the distributed batch size
         self.memory_hn = Parameter(torch.zeros(size=(n_layers, batch_size, n_hid_units)), requires_grad=False)
         self.memory_cn = Parameter(torch.zeros(size=(n_layers, batch_size, n_hid_units)), requires_grad=False)
-        self.memory_hn_senses = Parameter(torch.zeros(size=(n_layers, batch_size, int(n_hid_units // 2))), requires_grad=False)
-        self.memory_cn_senses = Parameter(torch.zeros(size=(n_layers, batch_size, int(n_hid_units // 2))), requires_grad=False)
+        self.memory_hn_senses = Parameter(torch.zeros(size=(n_layers-1, batch_size, int(n_hid_units // 2))), requires_grad=False)
+        self.memory_cn_senses = Parameter(torch.zeros(size=(n_layers-1, batch_size, int(n_hid_units // 2))), requires_grad=False)
         self.hidden_state_bsize_adjusted = False
 
-        # LSTM for globals - standard Language Model
-        self.main_lstm_ls = torch.nn.ModuleList([
-            torch.nn.LSTM(input_size=self.concatenated_input_dim if i == 0 else n_hid_units,
-                          hidden_size=int(n_hid_units / 2) if i == n_layers - 1 else n_hid_units, num_layers=1) for i in range(n_layers)])
+        # RNN for globals - standard Language Model
+        if self.model_type.upper() == 'LSTM':
+            self.main_rnn_ls = torch.nn.ModuleList([
+                torch.nn.LSTM(input_size=self.concatenated_input_dim if i == 0 else n_hid_units,
+                              hidden_size=int(n_hid_units / 2) if i == n_layers - 1 else n_hid_units, num_layers=1) for i in range(n_layers)])
+        else: # GRU
+            self.main_rnn_ls = torch.nn.ModuleList([
+                torch.nn.GRU(input_size=self.concatenated_input_dim if i == 0 else n_hid_units,
+                              hidden_size=int(n_hid_units / 2) if i == n_layers - 1 else n_hid_units, num_layers=1) for
+                i in range(n_layers)])
 
         if self.include_globalnode_input:
             self.gat_globals = GATConv(in_channels=self.d, out_channels=int(self.d/4), heads=4)
@@ -61,7 +68,11 @@ class LSTM(torch.nn.Module):
             self.gat_senses = GATConv(in_channels=self.d, out_channels=int(self.d/4), heads=4)
         # RNN for senses
         if predict_senses:
-            self.lstm_senses = torch.nn.LSTM(input_size=self.concatenated_input_dim, hidden_size=int(n_hid_units // 2), num_layers=n_layers-1)
+            if self.model_type.upper() == 'LSTM':
+                self.rnn_senses = torch.nn.LSTM(input_size=self.concatenated_input_dim, hidden_size=int(n_hid_units // 2), num_layers=n_layers - 1)
+            else: # GRU
+                self.rnn_senses = torch.nn.GRU(input_size=self.concatenated_input_dim,
+                                                hidden_size=int(n_hid_units // 2), num_layers=n_layers - 1)
 
         # 2nd part of the network as before: 2 linear layers to the logits
         self.linear2global = torch.nn.Linear(in_features=int(n_hid_units // 2),
@@ -83,9 +94,14 @@ class LSTM(torch.nn.Module):
                                                      (self.n_layers, distributed_batch_size, self.n_units)),
                                        requires_grad=False)
             self.memory_hn_senses = Parameter(
-                            torch.reshape(self.memory_hn_senses.flatten()[0:((self.n_layers) *distributed_batch_size * int(self.n_units//2))],
-                                          (self.n_layers, distributed_batch_size, int(self.n_units//2))),
+                            torch.reshape(self.memory_hn_senses.flatten()[0:((self.n_layers-1) *distributed_batch_size * int(self.n_units//2))],
+                                          (self.n_layers-1, distributed_batch_size, int(self.n_units//2))),
                             requires_grad=False)
+            self.memory_cn_senses = Parameter(
+                torch.reshape(self.memory_hn_senses.flatten()[
+                              0:((self.n_layers-1) * distributed_batch_size * int(self.n_units // 2))],
+                              (self.n_layers-1, distributed_batch_size, int(self.n_units // 2))),
+                requires_grad=False)
             self.hidden_state_bsize_adjusted=True
 
         # T-BPTT: at the start of each batch, we detach_() the hidden state from the graph&history that created it
@@ -161,21 +177,35 @@ class LSTM(torch.nn.Module):
         main_rnn_out = None
         input = batch_input_signals
         for i in range(self.n_layers):
-            layer_rnn = self.main_lstm_ls[i]
+            layer_rnn = self.main_rnn_ls[i]
             layer_rnn.flatten_parameters()
-            main_rnn_out, (hidden_i, cells_i) = \
-                layer_rnn(input,
-                          (self.memory_hn.index_select(dim=0, index=self.select_first_indices[i].to(torch.int64)).
-                           index_select(dim=2,index=self.select_first_indices[0:layer_rnn.hidden_size].to(torch.int64)),
-                           self.memory_cn.index_select(dim=0, index=self.select_first_indices[i].to(torch.int64)).
-                           index_select(dim=2,index=self.select_first_indices[0:layer_rnn.hidden_size].to(torch.int64))))
+            if self.model_type.upper() == "LSTM":
+                main_rnn_out, (hidden_i, cells_i) = \
+                    layer_rnn(input,
+                              (self.memory_hn.index_select(dim=0, index=self.select_first_indices[i].to(torch.int64)).
+                               index_select(dim=2,index=self.select_first_indices[0:layer_rnn.hidden_size].to(torch.int64)),
+                               self.memory_cn.index_select(dim=0, index=self.select_first_indices[i].to(torch.int64)).
+                               index_select(dim=2,index=self.select_first_indices[0:layer_rnn.hidden_size].to(torch.int64))))
+                cells_i_forcopy = cells_i.index_select(dim=2,
+                                                       index=self.select_first_indices[0:layer_rnn.hidden_size].to(
+                                                           torch.int64))
+                cells_i_forcopy = tfunc.pad(cells_i_forcopy,
+                                            pad=[0, self.memory_hn.shape[2] - layer_rnn.hidden_size]).squeeze()
+                self.memory_cn[i].data.copy_(cells_i_forcopy.clone())
+            else: # GRU
+                main_rnn_out, hidden_i = \
+                    layer_rnn(input,
+                              self.memory_hn.index_select(dim=0, index=self.select_first_indices[i].to(torch.int64)).
+                               index_select(dim=2,
+                                            index=self.select_first_indices[0:layer_rnn.hidden_size].to(torch.int64)))
+                hidden_i_forcopy = hidden_i.index_select(dim=2,
+                                                         index=self.select_first_indices[0:layer_rnn.hidden_size].to(
+                                                             torch.int64))
+                hidden_i_forcopy = tfunc.pad(hidden_i_forcopy,
+                                             pad=[0, (self.memory_hn.shape[2] - layer_rnn.hidden_size)]).squeeze()
+                self.memory_hn[i].data.copy_(hidden_i_forcopy.clone())  # store h in memory
+
             main_rnn_out = self.dropout(main_rnn_out)
-            hidden_i_forcopy = hidden_i.index_select(dim=2,index=self.select_first_indices[0:layer_rnn.hidden_size].to(torch.int64))
-            hidden_i_forcopy = tfunc.pad(hidden_i_forcopy, pad=[0,(self.memory_hn.shape[2] - layer_rnn.hidden_size)]).squeeze()
-            cells_i_forcopy = cells_i.index_select(dim=2, index=self.select_first_indices[0:layer_rnn.hidden_size].to(torch.int64))
-            cells_i_forcopy = tfunc.pad(cells_i_forcopy, pad=[0,self.memory_hn.shape[2] - layer_rnn.hidden_size]).squeeze()
-            self.memory_hn[i].data.copy_(hidden_i_forcopy.clone())  # store h in memory
-            self.memory_cn[i].data.copy_(cells_i_forcopy.clone())
             input = main_rnn_out
 
         main_rnn_out = main_rnn_out.permute(1, 0, 2)  # going to: (batch_size, seq_len, n_units)
@@ -189,11 +219,16 @@ class LSTM(torch.nn.Module):
         # senses
         # line 1: GRU for senses + linear FF-NN to logits.
         if self.predict_senses:
-            self.lstm_senses.flatten_parameters()
-            senses_gru_out, hidden_s =self.lstm_senses(batch_input_signals, self.memory_hn_senses)
+            self.rnn_senses.flatten_parameters()
+            if self.model_type.upper() == "LSTM":
+                senses_rnn_out, (hidden_s, cells_s) = self.rnn_senses(batch_input_signals, (self.memory_hn_senses, self.memory_cn_senses))
+                self.memory_cn_senses.data.copy_(hidden_s.clone())  # store h in memory
+            else: # GRU
+                senses_rnn_out, hidden_s = self.rnn_senses(batch_input_signals, self.memory_hn_senses)
+
             self.memory_hn_senses.data.copy_(hidden_s.clone())  # store h in memory
-            senses_gru_out = senses_gru_out.reshape(distributed_batch_size * seq_len, senses_gru_out.shape[2])
-            logits_sense = self.linear2senses(senses_gru_out)
+            senses_rnn_out = senses_rnn_out.reshape(distributed_batch_size * seq_len, senses_rnn_out.shape[2])
+            logits_sense = self.linear2senses(senses_rnn_out)
 
             predictions_senses = tfunc.log_softmax(logits_sense, dim=1)
         else:

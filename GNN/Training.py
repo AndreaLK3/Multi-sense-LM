@@ -15,7 +15,6 @@ from Utils import DEVICE
 import GNN.DataLoading as DL
 import GNN.ExplorePredictions as EP
 import GNN.Models.MySenses as SensesNets
-import GNN.Models.MyGAT as MyGAT
 # import GNN.Models.awd_lstm.AWD_LSTM as awd_lstm
 import GNN.Models.WD_LSTM as MyWD_LSTM
 import GNN.Models.RNNs as RNNs
@@ -23,10 +22,10 @@ import GNN.Models.Senses as SensesNets
 from itertools import cycle
 import gc
 
-# This code should be *before* we import torch in order to work and limit the device correctly
-import os
-os.environ["CUDA_DEVICE_ORDER"]="PCI_BUS_ID"   # see issue #152
-os.environ["CUDA_VISIBLE_DEVICES"] = "0,1,2"
+# This code should be *before* we import torch in order to work and limit correctly which devices we wish to use
+# import os
+# os.environ["CUDA_DEVICE_ORDER"]="PCI_BUS_ID"   # see issue #152
+# os.environ["CUDA_VISIBLE_DEVICES"] = "0,1,2"
 
 # Preliminary logging, to document the hyperparameters, the model, and its parameters #
 def write_doc_logging(train_dataloader, model, model_forParameters, learning_rate, num_epochs):
@@ -89,9 +88,9 @@ def training_setup(slc_or_text_corpus, include_globalnode_input, include_senseno
     # torch.manual_seed(1) # for reproducibility while conducting mini-experiments
     # if torch.cuda.is_available():
     #     torch.cuda.manual_seed_all(1)
-    model = RNNs.LSTM(graph_dataobj, grapharea_size, grapharea_matrix, globals_vocabulary_wordList,
-                      include_globalnode_input, include_sensenode_input, predict_senses,
-                      batch_size, n_layers=3, n_hid_units=1000)
+    model = RNNs.RNN("GRU", graph_dataobj, grapharea_size, grapharea_matrix, globals_vocabulary_wordList,
+                     include_globalnode_input, include_sensenode_input, predict_senses,
+                     batch_size, n_layers=3, n_hid_units=1000)
     # model = SensesNets.SelectK(graph_dataobj, grapharea_size, grapharea_matrix, 5, globals_vocabulary_wordList,
     #                            include_globalnode_input, include_sensenode_input, predict_senses,
     #                            batch_size, n_layers=3, n_units=1150)
