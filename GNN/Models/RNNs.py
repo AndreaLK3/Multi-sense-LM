@@ -3,7 +3,7 @@ from torch_geometric.nn import GATConv
 import torch.nn.functional as tfunc
 import Graph.Adjacencies as AD
 from GNN.Models.Common import unpack_input_tensor
-from GNN.Models.Common import SelfAttention
+from GNN.Models.Common import init_model_parameters
 from Utils import DEVICE
 from torch.nn.parameter import Parameter
 import logging
@@ -20,33 +20,23 @@ class RNN(torch.nn.Module):
                  batch_size, n_layers, n_hid_units):
         super(RNN, self).__init__()
         self.model_type = model_type # can be "LSTM" or "GRU"
-        self.grapharea_matrix = grapharea_matrix
-        self.vocabulary_wordlist = vocabulary_wordlist
-        self.include_globalnode_input = include_globalnode_input
-        self.include_sensenode_input = include_sensenode_input
-        self.predict_senses = predict_senses
-        self.last_idx_senses = data.node_types.tolist().index(1)
-        self.last_idx_globals = data.node_types.tolist().index(2)
-        self.N = grapharea_size
-        self.d = data.x.shape[1]
-        self.batch_size = batch_size
-        self.n_layers = n_layers
-        self.n_units = n_hid_units
-        self.dropout = torch.nn.Dropout(p=0.2) # for regularization, we use a dropout of p=0.2 over the layers
+        init_model_parameters(self, data, grapharea_size, grapharea_matrix, vocabulary_wordlist,
+                          include_globalnode_input, include_sensenode_input, predict_senses,
+                          batch_size, n_layers, n_hid_units, dropout_p=0)
 
         # The embeddings matrix for: senses, globals, definitions, examples
         self.X = Parameter(data.x.clone().detach(), requires_grad=True)
         self.select_first_indices = Parameter(torch.tensor(list(range(n_hid_units))).to(torch.float32), requires_grad=False)
-        self.embedding_zeros = Parameter(torch.zeros(size=(1, self.d)), requires_grad=False)
+        self.embedding_zeros = Parameter(torch.zeros(size=(1, self.dim_embs)), requires_grad=False)
 
         # Input signals: current global’s word embedding (|| global's node state (|| sense’s node state) )
-        self.concatenated_input_dim = self.d * (1 + int(include_globalnode_input) + int(include_sensenode_input))
+        self.concatenated_input_dim = self.dim_embs * (1 + int(include_globalnode_input) + int(include_sensenode_input))
 
         # This is overwritten at the 1st forward, when we know the distributed batch size
         self.memory_hn = Parameter(torch.zeros(size=(n_layers, batch_size, n_hid_units)), requires_grad=False)
         self.memory_cn = Parameter(torch.zeros(size=(n_layers, batch_size, n_hid_units)), requires_grad=False)
-        self.memory_hn_senses = Parameter(torch.zeros(size=(n_layers-1, batch_size, int(n_hid_units // 2))), requires_grad=False)
-        self.memory_cn_senses = Parameter(torch.zeros(size=(n_layers-1, batch_size, int(n_hid_units // 2))), requires_grad=False)
+        self.memory_hn_senses = Parameter(torch.zeros(size=(n_layers-1, batch_size, int(self.hidden_size))), requires_grad=False)
+        self.memory_cn_senses = Parameter(torch.zeros(size=(n_layers-1, batch_size, int(self.hidden_size))), requires_grad=False)
         self.hidden_state_bsize_adjusted = False
 
         # RNN for globals - standard Language Model
@@ -61,24 +51,24 @@ class RNN(torch.nn.Module):
                 i in range(n_layers)])
 
         if self.include_globalnode_input:
-            self.gat_globals = GATConv(in_channels=self.d, out_channels=int(self.d/4), heads=4)
+            self.gat_globals = GATConv(in_channels=self.dim_embs, out_channels=int(self.dim_embs / 4), heads=4)
             self.lemmatizer = nltk.stem.WordNetLemmatizer()
             lemmatize_term('init', self.lemmatizer)# to establish LazyCorpusLoader and prevent a multi-thread crash
         if self.include_sensenode_input:
-            self.gat_senses = GATConv(in_channels=self.d, out_channels=int(self.d/4), heads=4)
+            self.gat_senses = GATConv(in_channels=self.dim_embs, out_channels=int(self.dim_embs / 4), heads=4)
         # RNN for senses
         if predict_senses:
             if self.model_type.upper() == 'LSTM':
-                self.rnn_senses = torch.nn.LSTM(input_size=self.concatenated_input_dim, hidden_size=int(n_hid_units // 2), num_layers=n_layers - 1)
+                self.rnn_senses = torch.nn.LSTM(input_size=self.concatenated_input_dim, hidden_size=int(self.hidden_size), num_layers=n_layers - 1)
             else: # GRU
                 self.rnn_senses = torch.nn.GRU(input_size=self.concatenated_input_dim,
-                                                hidden_size=int(n_hid_units // 2), num_layers=n_layers - 1)
+                                                hidden_size=int(self.hidden_size), num_layers=n_layers - 1)
 
         # 2nd part of the network as before: 2 linear layers to the logits
-        self.linear2global = torch.nn.Linear(in_features=int(n_hid_units // 2),
+        self.linear2global = torch.nn.Linear(in_features=int(self.hidden_size / 2),
                                              out_features=self.last_idx_globals - self.last_idx_senses, bias=True)
         if predict_senses:
-            self.linear2senses = torch.nn.Linear(in_features=int(n_hid_units // 2),
+            self.linear2senses = torch.nn.Linear(in_features=int(self.hidden_size),
                                                  out_features=self.last_idx_senses, bias=True)
 
 
@@ -87,20 +77,20 @@ class RNN(torch.nn.Module):
 
         distributed_batch_size = batchinput_tensor.shape[0]
         if not(distributed_batch_size == self.batch_size) and not self.hidden_state_bsize_adjusted:
-            new_num_hidden_state_elems = self.n_layers * distributed_batch_size * self.n_units
+            new_num_hidden_state_elems = self.n_layers * distributed_batch_size * self.hidden_size
             self.memory_hn = Parameter(torch.reshape(self.memory_hn.flatten()[0:new_num_hidden_state_elems],
-                                           (self.n_layers, distributed_batch_size, self.n_units)), requires_grad=False)
+                                                     (self.n_layers, distributed_batch_size, self.hidden_size)), requires_grad=False)
             self.memory_cn = Parameter(torch.reshape(self.memory_cn.flatten()[0:new_num_hidden_state_elems],
-                                                     (self.n_layers, distributed_batch_size, self.n_units)),
+                                                     (self.n_layers, distributed_batch_size, self.hidden_size)),
                                        requires_grad=False)
             self.memory_hn_senses = Parameter(
-                            torch.reshape(self.memory_hn_senses.flatten()[0:((self.n_layers-1) *distributed_batch_size * int(self.n_units//2))],
-                                          (self.n_layers-1, distributed_batch_size, int(self.n_units//2))),
+                            torch.reshape(self.memory_hn_senses.flatten()[0:((self.n_layers-1) * distributed_batch_size * int(self.hidden_size))],
+                                          (self.n_layers-1, distributed_batch_size, int(self.hidden_size))),
                             requires_grad=False)
             self.memory_cn_senses = Parameter(
                 torch.reshape(self.memory_hn_senses.flatten()[
-                              0:((self.n_layers-1) * distributed_batch_size * int(self.n_units // 2))],
-                              (self.n_layers-1, distributed_batch_size, int(self.n_units // 2))),
+                              0:((self.n_layers-1) * distributed_batch_size * int(self.hidden_size))],
+                              (self.n_layers-1, distributed_batch_size, int(self.hidden_size))),
                 requires_grad=False)
             self.hidden_state_bsize_adjusted=True
 
@@ -120,7 +110,7 @@ class RNN(torch.nn.Module):
         for padded_sequence in sequences_in_the_batch_ls:
             padded_sequence = padded_sequence.squeeze(dim=0)
             padded_sequence = padded_sequence.chunk(chunks=padded_sequence.shape[0], dim=0)
-            sequence_lts = [unpack_input_tensor(sample_tensor, self.N) for sample_tensor in padded_sequence]
+            sequence_lts = [unpack_input_tensor(sample_tensor, self.grapharea_size) for sample_tensor in padded_sequence]
 
             sequence_input_signals_ls = []
 
@@ -141,7 +131,7 @@ class RNN(torch.nn.Module):
                                 lemmatized_word_absolute_idx = self.vocabulary_wordlist.index(lemmatized_word)
                                 lemmatized_word_relative_idx = lemmatized_word_absolute_idx + self.last_idx_senses
                                 (x_indices_g, edge_index_g, edge_type_g) = \
-                                    AD.get_node_data(self.grapharea_matrix, lemmatized_word_relative_idx, self.N)
+                                    AD.get_node_data(self.grapharea_matrix, lemmatized_word_relative_idx, self.grapharea_size)
                             except ValueError:
                                 pass # the lemmatized word was not found in the vocabulary.
 

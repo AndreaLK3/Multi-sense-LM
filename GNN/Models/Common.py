@@ -58,44 +58,12 @@ def unpack_to_input_tpl(in_tensor, grapharea_size, max_edges):
 def unpack_input_tensor(in_tensor, grapharea_size):
 
     max_edges = int(grapharea_size**1.5)
-    in_tensor = in_tensor.squeeze()
+    if len(in_tensor.shape) > 1:
+        in_tensor = in_tensor.squeeze()
 
     in_tensor_globals, in_tensor_senses = torch.split(in_tensor, split_size_or_sections=in_tensor.shape[0]//2, dim=0)
     (x_indices_g, edge_index_g, edge_type_g) = unpack_to_input_tpl(in_tensor_globals, grapharea_size, max_edges)
     (x_indices_s, edge_index_s, edge_type_s) = unpack_to_input_tpl(in_tensor_senses, grapharea_size, max_edges)
-    return ((x_indices_g, edge_index_g, edge_type_g), (x_indices_s, edge_index_s, edge_type_s))
-
-# numpy version
-def unpack_to_input_tpl_numpy(in_ndarray, grapharea_size, max_edges):
-    CURRENT_DEVICE = 'cpu' if not (torch.cuda.is_available()) else 'cuda:' + str(torch.cuda.current_device())
-    x_indices = np.extract(condition=[elem != -1 for elem in in_ndarray[0:grapharea_size]],
-                                        arr=in_ndarray[0:grapharea_size])
-    # shortcut for the case when there is no sense
-    if len(x_indices[x_indices!=0]) == 0:
-        edge_index = torch.zeros(size=(2,max_edges)).to(CURRENT_DEVICE)
-        edge_type = torch.zeros(size=(max_edges,)).to(CURRENT_DEVICE)
-        return (x_indices, edge_index, edge_type)
-    edge_sources = np.extract(condition=[elem!=-1 for elem in in_ndarray[grapharea_size:grapharea_size + max_edges]],
-                              arr=in_ndarray[grapharea_size:grapharea_size + max_edges])
-    edge_destinations = np.extract(condition=[elem!=-1 for elem in in_ndarray[grapharea_size + max_edges:grapharea_size + 2 * max_edges]],
-                              arr=in_ndarray[grapharea_size + max_edges:grapharea_size + 2 * max_edges])
-    edge_type = torch.tensor(np.extract(condition=[elem!=-1 for elem in in_ndarray[grapharea_size + 2 * max_edges:]],
-                              arr=in_ndarray[grapharea_size + 2 * max_edges:])).to(CURRENT_DEVICE)
-
-    edge_index = torch.stack([torch.tensor(edge_sources).to(CURRENT_DEVICE),
-                              torch.tensor(edge_destinations).to(CURRENT_DEVICE)], dim=0)
-
-    padded_edge_index, padded_edge_type = pad_edge_tensors(x_indices, edge_index, edge_type, max_edges)
-
-    return (x_indices, padded_edge_index, padded_edge_type)
-
-def unpack_input_tensor_numpy(batchinput_ndarray, grapharea_size):
-
-    max_edges = int(grapharea_size**1.5)
-
-    in_tensor_globals, in_tensor_senses = np.split(batchinput_ndarray, indices_or_sections=[batchinput_ndarray.shape[0]//2], axis=0)
-    (x_indices_g, edge_index_g, edge_type_g) = unpack_to_input_tpl_numpy(in_tensor_globals, grapharea_size, max_edges)
-    (x_indices_s, edge_index_s, edge_type_s) = unpack_to_input_tpl_numpy(in_tensor_senses, grapharea_size, max_edges)
     return ((x_indices_g, edge_index_g, edge_type_g), (x_indices_s, edge_index_s, edge_type_s))
 
 
@@ -165,9 +133,26 @@ class SelfAttention(torch.nn.Module):
 
         return torch.cat(results_of_heads, dim=0)
 
-####################################
-### 2: Concatenate input signals ###
-####################################
+#############################################
+### 2: Initialize common model parameters ###
+#############################################
+def init_model_parameters(model, graph_dataobj, grapharea_size, grapharea_matrix, vocabulary_wordlist,
+                          include_globalnode_input, include_sensenode_input, predict_senses,
+                          batch_size, n_layers, n_hid_units, dropout_p):
+    model.grapharea_matrix = grapharea_matrix
+    model.vocabulary_wordlist = vocabulary_wordlist
+    model.include_globalnode_input = include_globalnode_input
+    model.include_sensenode_input = include_sensenode_input
+    model.predict_senses = predict_senses
+    model.last_idx_senses = graph_dataobj.node_types.tolist().index(1)
+    model.last_idx_globals = graph_dataobj.node_types.tolist().index(2)
+    model.grapharea_size = grapharea_size
+    model.dim_embs = graph_dataobj.x.shape[1]
+    model.batch_size = batch_size
+    model.n_layers = n_layers
+    model.hidden_size = n_hid_units
+    model.dropout = torch.nn.Dropout(p=dropout_p)
+    return
 
 
 

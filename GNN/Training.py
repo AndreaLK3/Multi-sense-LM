@@ -15,7 +15,7 @@ from Utils import DEVICE
 import GNN.DataLoading as DL
 import GNN.ExplorePredictions as EP
 import GNN.Models.MySenses as SensesNets
-# import GNN.Models.awd_lstm.AWD_LSTM as awd_lstm
+import GNN.Models.mog_lstm as mog_lstm
 import GNN.Models.WD_LSTM as MyWD_LSTM
 import GNN.Models.RNNs as RNNs
 import GNN.Models.Senses as SensesNets
@@ -30,7 +30,7 @@ import gc
 # Preliminary logging, to document the hyperparameters, the model, and its parameters #
 def write_doc_logging(train_dataloader, model, model_forParameters, learning_rate, num_epochs):
     hyperparams_str = '_batchPerSeqlen' + str(train_dataloader.batch_size) \
-                      + '_area' + str(model_forParameters.N)\
+                      + '_area' + str(model_forParameters.grapharea_size)\
                       + '_lr' + str(learning_rate) \
                       + '_epochs' + str(num_epochs)
     logging.info("Hyperparameters: " + hyperparams_str)
@@ -88,12 +88,12 @@ def training_setup(slc_or_text_corpus, include_globalnode_input, include_senseno
     # torch.manual_seed(1) # for reproducibility while conducting mini-experiments
     # if torch.cuda.is_available():
     #     torch.cuda.manual_seed_all(1)
-    model = RNNs.RNN("GRU", graph_dataobj, grapharea_size, grapharea_matrix, globals_vocabulary_wordList,
-                     include_globalnode_input, include_sensenode_input, predict_senses,
-                     batch_size, n_layers=3, n_hid_units=1000)
-    # model = SensesNets.SelectK(graph_dataobj, grapharea_size, grapharea_matrix, 5, globals_vocabulary_wordList,
-    #                            include_globalnode_input, include_sensenode_input, predict_senses,
-    #                            batch_size, n_layers=3, n_units=1150)
+    # model = RNNs.RNN("GRU", graph_dataobj, grapharea_size, grapharea_matrix, globals_vocabulary_wordList,
+    #                   include_globalnode_input, include_sensenode_input, predict_senses,
+    #                   batch_size, n_layers=3, n_hid_units=1024)
+    model = SensesNets.SelectK(graph_dataobj, grapharea_size, grapharea_matrix, 5, globals_vocabulary_wordList,
+                               include_globalnode_input, include_sensenode_input, predict_senses,
+                               batch_size, n_layers=3, n_units=1024)
 
     logging.info("Graph-data object loaded, model initialized. Moving them to GPU device(s) if present.")
 
@@ -130,7 +130,7 @@ def training_setup(slc_or_text_corpus, include_globalnode_input, include_senseno
 ################
 def training_loop(model, learning_rate, train_dataloader, valid_dataloader, num_epochs=100):
 
-    Utils.init_logging('Training' + Utils.get_timestamp_month_to_min() + '.log')
+    Utils.init_logging('Training' + Utils.get_timestamp_month_to_min() + '.log', loglevel=logging.INFO)
 
     optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate) #  weight_decay=0.0005
 

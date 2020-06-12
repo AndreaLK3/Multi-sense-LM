@@ -3,7 +3,7 @@ from torch_geometric.nn import GATConv
 import torch.nn.functional as tfunc
 import Graph.Adjacencies as AD
 from GNN.Models.Common import unpack_input_tensor
-from GNN.Models.Common import SelfAttention
+from GNN.Models.Common import init_model_parameters
 from Utils import DEVICE
 from torch.nn.parameter import Parameter
 import logging
@@ -13,89 +13,69 @@ import nltk
 from PrepareKBInput.LemmatizeNyms import lemmatize_term
 
 # ****** Auxiliary functions *******
-def get_neighbours_of_k_globals(model, sample_k_indices):
+def get_senseneighbours_of_k_globals(model, sample_k_indices):
     neighbours_of_k = torch.cat(
-                    [AD.get_node_data(model.grapharea_matrix, i, model.N, features_mask=(True,False,False))[0]
+                    [AD.get_node_data(model.grapharea_matrix, i, model.grapharea_size, features_mask=(True,False,False))[0]
                      for i in sample_k_indices], dim=0)
     sense_neighbours_of_k = neighbours_of_k[neighbours_of_k < model.last_idx_senses]
     return sense_neighbours_of_k
 
-def adjust_probability_mass(epsilon, senses_softmax, softmax_selected_senses,
-                            n_senses_in_vocab, n_neighbours, current_sample_idx):
-    zeta = min(softmax_selected_senses)
-    if zeta < epsilon:
-        senses_softmax[current_sample_idx].data = senses_softmax[current_sample_idx].data.clone() - (epsilon - zeta)
-        quantity_added_to_sum = zeta * (n_senses_in_vocab - n_neighbours)
-        quantity_to_subtract_from_selected = quantity_added_to_sum / n_neighbours
-    else:  # standard base value of 10^(-8)
-        quantity_added_to_sum = epsilon * (n_senses_in_vocab - n_neighbours)
-        quantity_to_subtract_from_selected = quantity_added_to_sum / n_neighbours
-
-    return quantity_to_subtract_from_selected
+# def adjust_probability_mass(epsilon, senses_softmax, softmax_selected_senses,
+#                             n_senses_in_vocab, n_neighbours, current_sample_idx):
+#     zeta = min(softmax_selected_senses)
+#     if zeta < epsilon:
+#         senses_softmax[current_sample_idx].data = senses_softmax[current_sample_idx].data.clone() - (epsilon - zeta)
+#         quantity_added_to_sum = zeta * (n_senses_in_vocab - n_neighbours)
+#         quantity_to_subtract_from_selected = quantity_added_to_sum / n_neighbours
+#     else:  # standard base value of 10^(-8)
+#         quantity_added_to_sum = epsilon * (n_senses_in_vocab - n_neighbours)
+#         quantity_to_subtract_from_selected = quantity_added_to_sum / n_neighbours
+#
+#     return quantity_to_subtract_from_selected
 
 def subtract_probability_mass_from_selected(softmax_selected_senses, delta_to_subtract):
-    n_skipped = 0
-    for i in range (softmax_selected_senses.shape[0]):
-        if softmax_selected_senses[i] > delta_to_subtract:
-            softmax_selected_senses[i] = softmax_selected_senses[i] - delta_to_subtract
-        else:
-            n_skipped = n_skipped + 1
-    #2nd pass
-    n_iter = 0
-    while n_skipped > 0 and n_iter < 5:
-        n_iter = n_iter +1
-        for i in range (softmax_selected_senses.shape[0]):
-                if softmax_selected_senses[i] > delta_to_subtract:
-                    softmax_selected_senses[i] = softmax_selected_senses[i] - delta_to_subtract
-                    n_skipped = n_skipped -1
+    max_index_t = torch.argmax(softmax_selected_senses)
+    prev_max_value = softmax_selected_senses[max_index_t]
+    softmax_selected_senses[max_index_t].data = prev_max_value - delta_to_subtract
     return softmax_selected_senses
 
 # *****************************
 
 # Choose among the senses of the most likely 5 globals.
-# Multiply [the probability distribution over those] per [the distribution over the whole senses' vocabulary].
+# Add the [the probability distribution over those] to [the distribution over the whole senses' vocabulary]...
 
 class SelectK(torch.nn.Module):
     def __init__(self, data, grapharea_size, grapharea_matrix, num_k_globals, vocabulary_wordlist, include_globalnode_input, include_sensenode_input, predict_senses,
                  batch_size, n_layers, n_units):
         super(SelectK, self).__init__()
-        self.grapharea_matrix=grapharea_matrix
-        self.k = num_k_globals
-        self.vocabulary_wordlist = vocabulary_wordlist
-        self.include_globalnode_input = include_globalnode_input
-        self.include_sensenode_input = include_sensenode_input
-        self.predict_senses = predict_senses
-        self.last_idx_senses = data.node_types.tolist().index(1)
-        self.last_idx_globals = data.node_types.tolist().index(2)
-        self.N = grapharea_size
-        self.d = data.x.shape[1]
-        self.batch_size = batch_size
-        self.n_layers = n_layers
-        self.n_units = n_units
+        init_model_parameters(self, data, grapharea_size, grapharea_matrix, vocabulary_wordlist,
+                          include_globalnode_input, include_sensenode_input, predict_senses,
+                          batch_size, n_layers, n_units, dropout_p=0)
+        self.k=num_k_globals
 
         # The embeddings matrix for: senses, globals, definitions, examples
         self.X = Parameter(data.x.clone().detach(), requires_grad=True)
-        self.select_indices = Parameter(torch.tensor(list(range(2*int(self.N ** 1.5)))).to(torch.float32), requires_grad=False)
-        self.embedding_zeros = Parameter(torch.zeros(size=(1, self.d)), requires_grad=False)
+        self.select_indices = Parameter(torch.tensor(list(range(2 * int(self.grapharea_size ** 1.5)))).to(torch.float32), requires_grad=False)
+        self.embedding_zeros = Parameter(torch.zeros(size=(1, self.dim_embs)), requires_grad=False)
 
         # Input signals: current global’s word embedding (|| global's node state (|| sense’s node state) )
-        self.concatenated_input_dim = self.d * (1 + int(include_globalnode_input) + int(include_sensenode_input))
+        self.concatenated_input_dim = self.dim_embs * (1 + int(include_globalnode_input) + int(include_sensenode_input))
 
         # This is overwritten at the 1st forward, when we know the distributed batch size
         self.memory_hn = Parameter(torch.zeros(size=(n_layers, batch_size, n_units)), requires_grad=False)
-        self.memory_hn_senses = Parameter(torch.zeros(size=(n_layers, batch_size, int(n_units//2))), requires_grad=False)
+        self.memory_hn_senses = Parameter(torch.zeros(size=(n_layers-1, batch_size, int(self.hidden_size))), requires_grad=False)
         self.hidden_state_bsize_adjusted = False
 
         # GRU for globals - standard Language Model
         self.main_gru = torch.nn.GRU(input_size=self.concatenated_input_dim, hidden_size=n_units, num_layers=n_layers)
         # GATs for the node-states
         if self.include_globalnode_input:
-            self.gat_globals = GATConv(in_channels=self.d, out_channels=int(self.d/4), heads=4)
+            self.gat_globals = GATConv(in_channels=self.dim_embs, out_channels=int(self.dim_embs / 4), heads=4)
         if self.include_sensenode_input:
-            self.gat_senses = GATConv(in_channels=self.d, out_channels=int(self.d/4), heads=4)
+            self.gat_senses = GATConv(in_channels=self.dim_embs, out_channels=int(self.dim_embs / 4), heads=4)
         # GRU for senses
         if predict_senses:
-            self.gru_senses = torch.nn.GRU(input_size=self.concatenated_input_dim, hidden_size=int(n_units//2), num_layers=n_layers)
+            self.gru_senses = torch.nn.GRU(input_size=self.concatenated_input_dim, hidden_size=int(self.hidden_size), num_layers=n_layers - 1)
 
         # lemmatizer, we may use it for the globals or for the SelectK
         self.lemmatizer = nltk.stem.WordNetLemmatizer()
@@ -105,7 +85,7 @@ class SelectK(torch.nn.Module):
         self.linear2global = torch.nn.Linear(in_features=n_units,
                                              out_features=self.last_idx_globals - self.last_idx_senses, bias=True)
         if predict_senses:
-            self.linear2senses = torch.nn.Linear(in_features=int(n_units//2),
+            self.linear2senses = torch.nn.Linear(in_features=int(self.hidden_size),
                                                  out_features=self.last_idx_senses, bias=True)
 
 
@@ -114,13 +94,13 @@ class SelectK(torch.nn.Module):
 
         distributed_batch_size = batchinput_tensor.shape[0]
         if not(distributed_batch_size == self.batch_size) and not self.hidden_state_bsize_adjusted:
-            new_num_hidden_state_elems = self.n_layers * distributed_batch_size * self.n_units
+            new_num_hidden_state_elems = self.n_layers * distributed_batch_size * self.hidden_size
             self.memory_hn = Parameter(torch.reshape(self.memory_hn.flatten()[0:new_num_hidden_state_elems],
-                                           (self.n_layers, distributed_batch_size, self.n_units)), requires_grad=False)
+                                                     (self.n_layers, distributed_batch_size, self.hidden_size)), requires_grad=False)
             self.memory_hn_senses = Parameter(
                                 torch.reshape(self.memory_hn_senses.flatten()[
-                                              0:((self.n_layers) * distributed_batch_size * int(self.n_units // 2))],
-                                              (self.n_layers, distributed_batch_size, int(self.n_units // 2))),
+                                              0:((self.n_layers-1) * distributed_batch_size * int(self.hidden_size))],
+                                              (self.n_layers-1, distributed_batch_size, int(self.hidden_size))),
                                 requires_grad=False)
             self.hidden_state_bsize_adjusted=True
 
@@ -136,9 +116,9 @@ class SelectK(torch.nn.Module):
         batch_input_signals_ls = []
 
         for padded_sequence in sequences_in_the_batch_ls:
-            padded_sequence = padded_sequence.squeeze()
+            padded_sequence = padded_sequence.squeeze(dim=0)
             padded_sequence = padded_sequence.chunk(chunks=padded_sequence.shape[0], dim=0)
-            sequence_lts = [unpack_input_tensor(sample_tensor, self.N) for sample_tensor in padded_sequence]
+            sequence_lts = [unpack_input_tensor(sample_tensor, self.grapharea_size) for sample_tensor in padded_sequence]
 
             sequence_input_signals_ls = []
 
@@ -159,7 +139,7 @@ class SelectK(torch.nn.Module):
                                 lemmatized_word_absolute_idx = self.vocabulary_wordlist.index(lemmatized_word)
                                 lemmatized_word_relative_idx = lemmatized_word_absolute_idx + self.last_idx_senses
                                 (x_indices_g, edge_index_g, edge_type_g) = \
-                                    AD.get_node_data(self.grapharea_matrix, lemmatized_word_relative_idx, self.N)
+                                    AD.get_node_data(self.grapharea_matrix, lemmatized_word_relative_idx, self.grapharea_size)
                             except ValueError:
                                 pass  # the lemmatized word was not found in the vocabulary.
 
@@ -235,7 +215,7 @@ class SelectK(torch.nn.Module):
                 lemmatized_indices = [
                     Utils.word_to_vocab_index(lemmatized_word, self.vocabulary_wordlist) + self.last_idx_senses for
                     lemmatized_word in k_globals_lemmatized]
-                sense_neighbours_t = get_neighbours_of_k_globals(self, lemmatized_indices)
+                sense_neighbours_t = get_senseneighbours_of_k_globals(self, lemmatized_indices)
                 if sense_neighbours_t.shape[0] == 0:  # no senses found, even lemmatizing. Ignore current entry
                     senses_softmax[s] = torch.tensor(1 / self.last_idx_senses).to(CURRENT_DEVICE)
                     continue
@@ -249,12 +229,8 @@ class SelectK(torch.nn.Module):
                 for i in range(len(sense_neighbours_t)):
                     i_senseneighbours_mask[s,sense_neighbours_t[i]]=True
 
-                # safety check, so we do not have a softmax value < 0
-                quantity_to_subtract_from_selected = adjust_probability_mass(epsilon, senses_softmax,
-                                                                             softmax_selected_senses, self.last_idx_senses,
-                                                                             len(sense_neighbours_t), s)
-
-                # softmax_selected_senses = subtract_probability_mass_from_selected(softmax_selected_senses, quantity_to_subtract_from_selected)
+                quantity_to_subtract_from_selected = epsilon * (self.last_idx_senses - len(sense_neighbours_t))
+                softmax_selected_senses = subtract_probability_mass_from_selected(softmax_selected_senses, quantity_to_subtract_from_selected)
                 senses_softmax[s].masked_scatter_(mask=i_senseneighbours_mask[s].data.clone(), source=softmax_selected_senses)
 
             predictions_senses = torch.log(senses_softmax)
