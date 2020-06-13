@@ -43,11 +43,11 @@ class RNN(torch.nn.Module):
         if self.model_type.upper() == 'LSTM':
             self.main_rnn_ls = torch.nn.ModuleList([
                 torch.nn.LSTM(input_size=self.concatenated_input_dim if i == 0 else n_hid_units,
-                              hidden_size=int(n_hid_units / 2) if i == n_layers - 1 else n_hid_units, num_layers=1) for i in range(n_layers)])
+                              hidden_size=n_hid_units if i == n_layers - 1 else n_hid_units, num_layers=1) for i in range(n_layers)])
         else: # GRU
             self.main_rnn_ls = torch.nn.ModuleList([
                 torch.nn.GRU(input_size=self.concatenated_input_dim if i == 0 else n_hid_units,
-                              hidden_size=int(n_hid_units / 2) if i == n_layers - 1 else n_hid_units, num_layers=1) for
+                              hidden_size=n_hid_units if i == n_layers - 1 else n_hid_units, num_layers=1) for
                 i in range(n_layers)])
 
         if self.include_globalnode_input:
@@ -65,7 +65,7 @@ class RNN(torch.nn.Module):
                                                 hidden_size=int(self.hidden_size), num_layers=n_layers - 1)
 
         # 2nd part of the network as before: 2 linear layers to the logits
-        self.linear2global = torch.nn.Linear(in_features=int(self.hidden_size / 2),
+        self.linear2global = torch.nn.Linear(in_features=self.hidden_size,
                                              out_features=self.last_idx_globals - self.last_idx_senses, bias=True)
         if predict_senses:
             self.linear2senses = torch.nn.Linear(in_features=int(self.hidden_size),

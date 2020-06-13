@@ -88,12 +88,12 @@ def training_setup(slc_or_text_corpus, include_globalnode_input, include_senseno
     # torch.manual_seed(1) # for reproducibility while conducting mini-experiments
     # if torch.cuda.is_available():
     #     torch.cuda.manual_seed_all(1)
-    # model = RNNs.RNN("GRU", graph_dataobj, grapharea_size, grapharea_matrix, globals_vocabulary_wordList,
-    #                   include_globalnode_input, include_sensenode_input, predict_senses,
-    #                   batch_size, n_layers=3, n_hid_units=1024)
-    model = SensesNets.SelectK(graph_dataobj, grapharea_size, grapharea_matrix, 5, globals_vocabulary_wordList,
-                               include_globalnode_input, include_sensenode_input, predict_senses,
-                               batch_size, n_layers=3, n_units=1024)
+    model = RNNs.RNN("GRU", graph_dataobj, grapharea_size, grapharea_matrix, globals_vocabulary_wordList,
+                      include_globalnode_input, include_sensenode_input, predict_senses,
+                      batch_size, n_layers=3, n_hid_units=1024)
+    # model = SensesNets.SelectK(graph_dataobj, grapharea_size, grapharea_matrix, 5, globals_vocabulary_wordList,
+    #                            include_globalnode_input, include_sensenode_input, predict_senses,
+    #                            batch_size, n_layers=3, n_hid_units=1024)
 
     logging.info("Graph-data object loaded, model initialized. Moving them to GPU device(s) if present.")
 

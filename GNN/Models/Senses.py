@@ -46,28 +46,32 @@ def subtract_probability_mass_from_selected(softmax_selected_senses, delta_to_su
 
 class SelectK(torch.nn.Module):
     def __init__(self, data, grapharea_size, grapharea_matrix, num_k_globals, vocabulary_wordlist, include_globalnode_input, include_sensenode_input, predict_senses,
-                 batch_size, n_layers, n_units):
+                 batch_size, n_layers, n_hid_units):
         super(SelectK, self).__init__()
         init_model_parameters(self, data, grapharea_size, grapharea_matrix, vocabulary_wordlist,
-                          include_globalnode_input, include_sensenode_input, predict_senses,
-                          batch_size, n_layers, n_units, dropout_p=0)
+                              include_globalnode_input, include_sensenode_input, predict_senses,
+                              batch_size, n_layers, n_hid_units, dropout_p=0)
         self.k=num_k_globals
 
         # The embeddings matrix for: senses, globals, definitions, examples
         self.X = Parameter(data.x.clone().detach(), requires_grad=True)
-        self.select_indices = Parameter(torch.tensor(list(range(2 * int(self.grapharea_size ** 1.5)))).to(torch.float32), requires_grad=False)
+        self.select_first_indices = Parameter(torch.tensor(list(range(n_hid_units))).to(torch.float32), requires_grad=False)
         self.embedding_zeros = Parameter(torch.zeros(size=(1, self.dim_embs)), requires_grad=False)
 
         # Input signals: current global’s word embedding (|| global's node state (|| sense’s node state) )
         self.concatenated_input_dim = self.dim_embs * (1 + int(include_globalnode_input) + int(include_sensenode_input))
 
         # This is overwritten at the 1st forward, when we know the distributed batch size
-        self.memory_hn = Parameter(torch.zeros(size=(n_layers, batch_size, n_units)), requires_grad=False)
-        self.memory_hn_senses = Parameter(torch.zeros(size=(n_layers-1, batch_size, int(self.hidden_size))), requires_grad=False)
+        self.memory_hn = Parameter(torch.zeros(size=(n_layers, batch_size, n_hid_units)), requires_grad=False)
+        self.memory_hn_senses = Parameter(torch.zeros(size=(n_layers - 1, batch_size, int(self.hidden_size))),
+                                          requires_grad=False)
         self.hidden_state_bsize_adjusted = False
 
         # GRU for globals - standard Language Model
-        self.main_gru = torch.nn.GRU(input_size=self.concatenated_input_dim, hidden_size=n_units, num_layers=n_layers)
+        self.main_rnn_ls = torch.nn.ModuleList([
+            torch.nn.GRU(input_size=self.concatenated_input_dim if i == 0 else self.hidden_size,
+                          hidden_size=self.hidden_size if i == n_layers - 1 else self.hidden_size, num_layers=1) for i in
+            range(n_layers)])
         # GATs for the node-states
         if self.include_globalnode_input:
             self.gat_globals = GATConv(in_channels=self.dim_embs, out_channels=int(self.dim_embs / 4), heads=4)
@@ -82,7 +86,7 @@ class SelectK(torch.nn.Module):
         lemmatize_term('init', self.lemmatizer)  # to establish LazyCorpusLoader and prevent a multi-thread crash
 
         # 2nd part of the network as before: 2 linear layers to the logits
-        self.linear2global = torch.nn.Linear(in_features=n_units,
+        self.linear2global = torch.nn.Linear(in_features=self.hidden_size,
                                              out_features=self.last_idx_globals - self.last_idx_senses, bias=True)
         if predict_senses:
             self.linear2senses = torch.nn.Linear(in_features=int(self.hidden_size),
@@ -93,16 +97,17 @@ class SelectK(torch.nn.Module):
         CURRENT_DEVICE = 'cpu' if not (torch.cuda.is_available()) else 'cuda:' + str(torch.cuda.current_device())
 
         distributed_batch_size = batchinput_tensor.shape[0]
-        if not(distributed_batch_size == self.batch_size) and not self.hidden_state_bsize_adjusted:
+        if not (distributed_batch_size == self.batch_size) and not self.hidden_state_bsize_adjusted:
             new_num_hidden_state_elems = self.n_layers * distributed_batch_size * self.hidden_size
             self.memory_hn = Parameter(torch.reshape(self.memory_hn.flatten()[0:new_num_hidden_state_elems],
-                                                     (self.n_layers, distributed_batch_size, self.hidden_size)), requires_grad=False)
+                                                     (self.n_layers, distributed_batch_size, self.hidden_size)),
+                                       requires_grad=False)
             self.memory_hn_senses = Parameter(
-                                torch.reshape(self.memory_hn_senses.flatten()[
-                                              0:((self.n_layers-1) * distributed_batch_size * int(self.hidden_size))],
-                                              (self.n_layers-1, distributed_batch_size, int(self.hidden_size))),
-                                requires_grad=False)
-            self.hidden_state_bsize_adjusted=True
+                torch.reshape(self.memory_hn_senses.flatten()[
+                              0:((self.n_layers - 1) * distributed_batch_size * int(self.hidden_size))],
+                              (self.n_layers - 1, distributed_batch_size, int(self.hidden_size))),
+                requires_grad=False)
+            self.hidden_state_bsize_adjusted = True
 
         # T-BPTT: at the start of each batch, we detach_() the hidden state from the graph&history that created it
         self.memory_hn.detach_()
@@ -146,7 +151,7 @@ class SelectK(torch.nn.Module):
                     x = self.X.index_select(dim=0, index=x_indices_g.squeeze())
                     x_attention_state = self.gat_globals(x, edge_index_g)
                     currentglobal_node_state = x_attention_state.index_select(dim=0,
-                                                                              index=self.select_indices[0].to(
+                                                                              index=self.select_first_indices[0].to(
                                                                                   torch.int64))
                 else:
                     currentglobal_node_state = None
@@ -159,7 +164,7 @@ class SelectK(torch.nn.Module):
                         x_s = self.X.index_select(dim=0, index=x_indices_s.squeeze())
                         sense_attention_state = self.gat_senses(x_s, edge_index_s)
                         currentsense_node_state = sense_attention_state.index_select(dim=0,
-                                                                                     index=self.select_indices[
+                                                                                     index=self.select_first_indices[
                                                                                          0].to(torch.int64))
                 else:
                     currentsense_node_state = None
@@ -175,9 +180,24 @@ class SelectK(torch.nn.Module):
         # - input of shape(seq_len, batch_size, input_size): tensor containing the features of the input sequence.
         # - h_0 of shape (num_layers * num_directions, batch=1, hidden_size):
         #       tensor containing the initial hidden state for each element in the batch.
-        self.main_gru.flatten_parameters()
-        main_gru_out, hidden_n = self.main_gru(batch_input_signals, self.memory_hn)
-        self.memory_hn.data.copy_(hidden_n.clone())  # store h in memory
+        input = batch_input_signals
+        input = batch_input_signals
+        for i in range(self.n_layers):
+            layer_rnn = self.main_rnn_ls[i]
+            layer_rnn.flatten_parameters()
+            main_gru_out, hidden_i = \
+                layer_rnn(input,
+                          self.memory_hn.index_select(dim=0, index=self.select_first_indices[i].to(torch.int64)).
+                          index_select(dim=2,
+                                       index=self.select_first_indices[0:layer_rnn.hidden_size].to(torch.int64)))
+            hidden_i_forcopy = hidden_i.index_select(dim=2,
+                                                     index=self.select_first_indices[0:layer_rnn.hidden_size].to(
+                                                         torch.int64))
+            hidden_i_forcopy = tfunc.pad(hidden_i_forcopy,
+                                         pad=[0, (self.memory_hn.shape[2] - layer_rnn.hidden_size)]).squeeze()
+            self.memory_hn[i].data.copy_(hidden_i_forcopy.clone())  # store h in memory
+            main_gru_out = self.dropout(main_gru_out)
+            input = main_gru_out
 
         main_gru_out = main_gru_out.permute(1, 0, 2)  # going to: (batch_size, seq_len, n_units)
         seq_len = len(sequences_in_the_batch_ls[0][0])
@@ -222,7 +242,7 @@ class SelectK(torch.nn.Module):
 
                 # standard procedure: get the logits of the senses of the most likely globals,
                 # apply a softmax only over them, and then assign an epsilon probability to the other senses
-                sample_logits_senses = logits_sense.index_select(dim=0, index=self.select_indices[s].to(torch.int64)).squeeze()
+                sample_logits_senses = logits_sense.index_select(dim=0, index=self.select_first_indices[s].to(torch.int64)).squeeze()
                 logits_selected_senses = sample_logits_senses.index_select(dim=0, index=sense_neighbours_t)
                 softmax_selected_senses = tfunc.softmax(input=logits_selected_senses, dim=0)
 
