@@ -107,6 +107,7 @@ class TextDataset(torch.utils.data.Dataset):
                                                                          self.senseindices_db_c, self.vocab_h5)
 
         global_idx, sense_idx = self.current_token_tpl
+        #logging.info("TextDataset > global_idx, sense_idx =" + str((global_idx, sense_idx)))
         relative_global_idx = global_idx + self.nn_model.last_idx_senses
         (global_forwardinput_triple, sense_forwardinput_triple)= \
             get_forwardinput_forelement(relative_global_idx, sense_idx, self.grapharea_matrix, self.area_size)

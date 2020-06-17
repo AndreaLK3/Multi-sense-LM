@@ -48,7 +48,47 @@ def write_doc_logging(train_dataloader, model, model_forParameters, learning_rat
 ##########
 
 
-def compute_model_loss(model,batch_input, batch_labels, verbose=False):
+def update_predictions_history_dict(correct_preds_dict, predictions_globals, predictions_senses, batch_labels):
+
+    k = 10
+    batch_labels_globals = batch_labels[:,0]
+    batch_labels_senses = batch_labels[:,1]
+
+    (values_g, indices_g) = predictions_globals.sort(dim=1, descending=True)
+
+    correct_preds_dict['correct_g'] = \
+        correct_preds_dict['correct_g'] + torch.sum(indices_g[:, 0] == batch_labels_globals).item()
+    correct_preds_dict['tot_g'] = correct_preds_dict['tot_g'] + batch_labels_globals.shape[0]
+
+    top_k_predictions_g = indices_g[:, 0:k]
+    batch_counter_top_k_g = 0
+    for i in range(len(batch_labels_globals)):
+        label_g = batch_labels_globals[i]
+        if label_g in top_k_predictions_g[i]:
+            batch_counter_top_k_g = batch_counter_top_k_g+1
+    correct_preds_dict['top_k_g'] = correct_preds_dict['top_k_g'] + batch_counter_top_k_g
+
+
+    if len(predictions_senses.shape) > 1:
+        (values_s, indices_s) = predictions_senses.sort(dim=1, descending=True)
+        correct_preds_dict['correct_s'] = \
+            correct_preds_dict['correct_s'] + torch.sum(indices_s[:, 0] == batch_labels_senses).item()
+        correct_preds_dict['tot_s'] = correct_preds_dict['tot_s'] + \
+                                      (batch_labels.t()[1][batch_labels.t()[1] != -1].shape[0])
+
+        top_k_predictions_s = indices_s[:, 0:k]
+        batch_counter_top_k_s = 0
+        for i in range(len(batch_labels_senses)):
+            label_s = batch_labels_senses[i]
+            if label_s in top_k_predictions_s[i]:
+                batch_counter_top_k_s = batch_counter_top_k_s + 1
+        correct_preds_dict['top_k_s'] = correct_preds_dict['top_k_s'] + batch_counter_top_k_s
+
+    logging.debug("updated_predictions_history_dict = " +str(correct_preds_dict))
+    return
+
+
+def compute_model_loss(model, batch_input, batch_labels, correct_preds_dict, verbose=False):
     predictions_globals, predictions_senses = model(batch_input)
 
     batch_labels_t = (batch_labels).clone().t().to(DEVICE)
@@ -64,8 +104,12 @@ def compute_model_loss(model,batch_input, batch_labels, verbose=False):
     else:
         loss_sense = torch.tensor(0)
 
+    # Added to measure the senses' task, given that we can not rely on the senses' PPL for SelectK
+    update_predictions_history_dict(correct_preds_dict, predictions_globals, predictions_senses, batch_labels)
+
     # debug: check the solutions and predictions. Is there anything the model is unable to predict?
     if verbose:
+        logging.info("*******\ncompute_model_loss > verbose logging of batch")
         EP.log_batch(batch_labels, predictions_globals, predictions_senses, 5)
 
     return loss_global, loss_sense
@@ -88,12 +132,12 @@ def training_setup(slc_or_text_corpus, include_globalnode_input, include_senseno
     # torch.manual_seed(1) # for reproducibility while conducting mini-experiments
     # if torch.cuda.is_available():
     #     torch.cuda.manual_seed_all(1)
-    model = RNNs.RNN("GRU", graph_dataobj, grapharea_size, grapharea_matrix, globals_vocabulary_wordList,
-                      include_globalnode_input, include_sensenode_input, predict_senses,
-                      batch_size, n_layers=3, n_hid_units=1024)
-    # model = SensesNets.SelectK(graph_dataobj, grapharea_size, grapharea_matrix, 5, globals_vocabulary_wordList,
-    #                            include_globalnode_input, include_sensenode_input, predict_senses,
-    #                            batch_size, n_layers=3, n_hid_units=1024)
+    # model = RNNs.RNN("GRU", graph_dataobj, grapharea_size, grapharea_matrix, globals_vocabulary_wordList,
+    #                   include_globalnode_input, include_sensenode_input, predict_senses,
+    #                   batch_size, n_layers=3, n_hid_units=1024)
+    model = SensesNets.SelectK(graph_dataobj, grapharea_size, grapharea_matrix, 10, globals_vocabulary_wordList,
+                               include_globalnode_input, include_sensenode_input, predict_senses,
+                               batch_size, n_layers=3, n_hid_units=1024)
 
     logging.info("Graph-data object loaded, model initialized. Moving them to GPU device(s) if present.")
 
@@ -113,7 +157,7 @@ def training_setup(slc_or_text_corpus, include_globalnode_input, include_senseno
     senseindices_db_c = senseindices_db.cursor()
 
     bptt_collator = DL.BPTTBatchCollator(grapharea_size, sequence_length)
-    # vocab_h5 = pd.HDFStore(globals_vocabulary_fpath, mode='r')
+
     train_dataset = DL.TextDataset(slc_or_text_corpus, 'training', senseindices_db_c, vocab_h5, model_forDataLoading,
                                    grapharea_matrix, grapharea_size, graph_dataobj)
     train_dataloader = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size * sequence_length,
@@ -153,11 +197,19 @@ def training_loop(model, learning_rate, train_dataloader, valid_dataloader, num_
         valid_dataiter = iter(cycle(valid_dataloader))
         for epoch in range(1,num_epochs+1):
             logging.info("\nTraining epoch n."+str(epoch) + ":")
+            if epoch == 300:
+                logging.info("debug of correct predictions")
 
             sum_epoch_loss_global = 0
             sum_epoch_loss_sense = 0
             epoch_step = 0
             epoch_senselabeled_tokens = 0
+            correct_predictions_dict = {'correct_g':0,
+                                        'top_k_g':0,
+                                        'tot_g':0,
+                                        'correct_s':0,
+                                        'top_k_s':0,
+                                        'tot_s':0}
             verbose = True if (epoch==num_epochs) or (epoch% 100==0) else False # - log prediction output
 
             flag_earlystop = False
@@ -172,7 +224,7 @@ def training_loop(model, learning_rate, train_dataloader, valid_dataloader, num_
                 optimizer.zero_grad()
 
                 # compute loss for the batch
-                loss_global, loss_sense = compute_model_loss(model, batch_input, batch_labels, verbose)
+                loss_global, loss_sense = compute_model_loss(model, batch_input, batch_labels, correct_predictions_dict, verbose)
                 #logging.info("Batch n.: " + str(b_idx) + " loss_global = " + str(loss_global.item()))
                 # running sum of the training loss in the log segment
                 sum_epoch_loss_global = sum_epoch_loss_global + loss_global.item()
@@ -194,7 +246,6 @@ def training_loop(model, learning_rate, train_dataloader, valid_dataloader, num_
                 if overall_step % steps_logging == 0:
                     logging.info("Global step=" + str(overall_step) + "\t ; Iteration time=" + str(round(time()-t0,5)))
                     gc.collect()
-
             # except StopIteration: the DataLoader naturally catches StopIteration
                 # end of an epoch.
 
@@ -203,11 +254,15 @@ def training_loop(model, learning_rate, train_dataloader, valid_dataloader, num_
             Utils.record_statistics(sum_epoch_loss_global, sum_epoch_loss_sense, epoch_step,
                                     max(1,epoch_senselabeled_tokens), training_losses_lts)
 
+            logging.info("Training - Correct predictions / Total predictions:")
+            logging.info(correct_predictions_dict)
+
+
             # Time to check the validation loss
+            logging.info("After training " + str(epoch) + " epochs, the validation losses are:")
             valid_loss_globals, valid_loss_senses = evaluation(valid_dataloader, valid_dataiter, model)
             #validation_losses_lts.append((valid_loss_globals, valid_loss_senses))
-            logging.info("After training " + str(epoch)+  " epochs, the validation losses are:")
-            Utils.record_statistics(valid_loss_globals, valid_loss_senses, 1,1, losses_lts=validation_losses_lts)
+            Utils.record_statistics(valid_loss_globals, valid_loss_senses, 1, 1, losses_lts=validation_losses_lts)
             epoch_valid_loss = valid_loss_globals + valid_loss_senses
 
             if epoch_valid_loss < previous_valid_loss:
@@ -216,7 +271,7 @@ def training_loop(model, learning_rate, train_dataloader, valid_dataloader, num_
                 if not flag_firstvalidationhigher:
                     flag_firstvalidationhigher = True
                     logging.info("Validation loss worse than previous one. First occurrence.")
-                else: # already did first offence. Must early-stop
+                else: # previous best validation was better once already. Now we must early-stop
                     logging.info("Early stopping")
                     flag_earlystop = True
             previous_valid_loss = epoch_valid_loss
@@ -246,6 +301,12 @@ def evaluation(evaluation_dataloader, evaluation_dataiter, model):
     model.eval()  # do not train the model now
     sum_eval_loss_globals = 0
     sum_eval_loss_sense = 0
+    eval_correct_predictions_dict ={'correct_g':0,
+                                    'top_k_g':0,
+                                    'tot_g':0,
+                                    'correct_s':0,
+                                    'top_k_s':0,
+                                    'tot_s':0}
 
     evaluation_step = 0
     evaluation_senselabeled_tokens = 0
@@ -256,7 +317,7 @@ def evaluation(evaluation_dataloader, evaluation_dataiter, model):
             batch_input, batch_labels = evaluation_dataiter.__next__()
             batch_input = batch_input.to(DEVICE)
             batch_labels = batch_labels.to(DEVICE)
-            loss_globals, loss_sense = compute_model_loss(model, batch_input, batch_labels, verbose=False)
+            loss_globals, loss_sense = compute_model_loss(model, batch_input, batch_labels, eval_correct_predictions_dict, verbose=False)
             sum_eval_loss_globals = sum_eval_loss_globals + loss_globals.item()
 
             if including_senses:
@@ -275,6 +336,9 @@ def evaluation(evaluation_dataloader, evaluation_dataiter, model):
         senses_evaluation_loss = sum_eval_loss_sense / evaluation_senselabeled_tokens
     else:
         senses_evaluation_loss = 0
+
+    logging.info("Validation - Correct predictions / Total predictions:")
+    logging.info(eval_correct_predictions_dict)
 
     model.train()  # training can resume
 

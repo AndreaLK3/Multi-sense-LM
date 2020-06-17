@@ -59,6 +59,11 @@ SENSE_NOAD = 'Sense_NOAD'
 SENSE_WORDNET = 'Sense_WordNet'
 EMPTY = 'EMPTY'
 
+GLOBALS = 'globals'
+SENSES = 'senses'
+CORRECT_PREDICTIONS = 'correct_predictions'
+TOTAL = 'total'
+
 ########## Logging and development ##########
 
 

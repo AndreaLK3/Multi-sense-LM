@@ -67,7 +67,7 @@ def log_solution_and_predictions(label_tpl, predictions_globals, predictions_sen
 
     nextglobal = get_globalword_fromindex_df(solution_global_idx)
     nextsense = get_sense_fromindex(solution_sense_idx)
-    logging.info("\n-----\nLabel: the next global is: " + str(nextglobal) + "(from " + str(solution_global_idx) + ")")
+    logging.info("\nLabel: the next global is: " + str(nextglobal) + "(from " + str(solution_global_idx) + ")")
     logging.info("Label: the next sense is: " + str(nextsense)  + "(from " + str(solution_sense_idx) + ")")
 
     log_predicted_globals(predictions_globals, k)
@@ -79,8 +79,6 @@ def log_solution_and_predictions(label_tpl, predictions_globals, predictions_sen
 def log_batch(labels_t, predictions_globals_t, predictions_senses_t, k):
     batch_size = predictions_globals_t.shape[0]
     logging.info("log_batch:")
-    logging.info("labels_t.shape=" + str(labels_t.shape))
-    logging.info("predictions_globals_t.shape=" + str(predictions_globals_t.shape))
     logging.info("predictions_senses_t.shape=" + str(predictions_senses_t.shape))
     for i in range(batch_size):
         sample_labels = labels_t[i]
