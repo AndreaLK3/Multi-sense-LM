@@ -81,8 +81,9 @@ def standardtextcorpus_generator(split_name):
         for i, line in enumerate(text_file):
             if line == '':
                 break
-            tokens_in_line_truecase, _tot_tokens = VU.process_line(line, tot_tokens=0)
-            for token in tokens_in_line_truecase:
+            # tokens_in_line, _tot_tokens = VU.process_line(line, tot_tokens=0)
+            tokens_in_line_ls = line.split()
+            for token in tokens_in_line_ls:
                 token_dict ={'surface_form':token} # to use the same refinement as the tokens from sense-labeled corpus
                 yield token_dict
 

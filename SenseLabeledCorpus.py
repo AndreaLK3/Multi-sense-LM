@@ -118,7 +118,7 @@ def readgenerator_senselabeled_corpuses(split_name):
         full_fpaths = list(map(lambda fname: os.path.join(validation_subcorpuses_folder, fname),
                                [fname for fname in os.listdir(validation_subcorpuses_folder) if 'xml' in fname]))
     else: # elif dataset_split.lower() == Utils.TEST:
-        test_subcorpuses_folder = os.path.join(F.FOLDER_TEXT_CORPUSES, F.FOLDER_MYSLCCORPUS, F.FOLDER_VALIDATION)
+        test_subcorpuses_folder = os.path.join(F.FOLDER_TEXT_CORPUSES, F.FOLDER_MYSLCCORPUS, F.FOLDER_TEST)
         full_fpaths = list(map(lambda fname: os.path.join(test_subcorpuses_folder, fname),
                                [fname for fname in os.listdir(test_subcorpuses_folder) if 'xml' in fname]))
 

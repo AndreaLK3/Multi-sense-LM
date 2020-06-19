@@ -15,7 +15,6 @@ from Utils import DEVICE
 import GNN.DataLoading as DL
 import GNN.ExplorePredictions as EP
 import GNN.Models.MySenses as SensesNets
-import GNN.Models.mog_lstm as mog_lstm
 import GNN.Models.WD_LSTM as MyWD_LSTM
 import GNN.Models.RNNs as RNNs
 import GNN.Models.Senses as SensesNets
@@ -132,12 +131,12 @@ def training_setup(slc_or_text_corpus, include_globalnode_input, include_senseno
     # torch.manual_seed(1) # for reproducibility while conducting mini-experiments
     # if torch.cuda.is_available():
     #     torch.cuda.manual_seed_all(1)
-    # model = RNNs.RNN("GRU", graph_dataobj, grapharea_size, grapharea_matrix, globals_vocabulary_wordList,
-    #                   include_globalnode_input, include_sensenode_input, predict_senses,
-    #                   batch_size, n_layers=3, n_hid_units=1024)
-    model = SensesNets.SelectK(graph_dataobj, grapharea_size, grapharea_matrix, 10, globals_vocabulary_wordList,
-                               include_globalnode_input, include_sensenode_input, predict_senses,
-                               batch_size, n_layers=3, n_hid_units=1024)
+    model = RNNs.RNN("LSTM", graph_dataobj, grapharea_size, grapharea_matrix, globals_vocabulary_wordList,
+                      include_globalnode_input, include_sensenode_input, predict_senses,
+                      batch_size, n_layers=3, n_hid_units=1024)
+    # model = SensesNets.SelectK(graph_dataobj, grapharea_size, grapharea_matrix, 10, globals_vocabulary_wordList,
+    #                            include_globalnode_input, include_sensenode_input, predict_senses,
+    #                            batch_size, n_layers=3, n_hid_units=1024)
 
     logging.info("Graph-data object loaded, model initialized. Moving them to GPU device(s) if present.")
 
@@ -163,7 +162,7 @@ def training_setup(slc_or_text_corpus, include_globalnode_input, include_senseno
     train_dataloader = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size * sequence_length,
                                                    num_workers=0, collate_fn=bptt_collator)
 
-    valid_dataset = DL.TextDataset(slc_or_text_corpus, 'validation', senseindices_db_c, vocab_h5, model_forDataLoading,
+    valid_dataset = DL.TextDataset(slc_or_text_corpus, 'valid', senseindices_db_c, vocab_h5, model_forDataLoading,
                                    grapharea_matrix, grapharea_size, graph_dataobj)
     valid_dataloader = torch.utils.data.DataLoader(valid_dataset, batch_size=batch_size * sequence_length,
                                                    num_workers=0, collate_fn=bptt_collator)
@@ -256,8 +255,7 @@ def training_loop(model, learning_rate, train_dataloader, valid_dataloader, num_
 
             logging.info("Training - Correct predictions / Total predictions:")
             logging.info(correct_predictions_dict)
-
-
+            
             # Time to check the validation loss
             logging.info("After training " + str(epoch) + " epochs, the validation losses are:")
             valid_loss_globals, valid_loss_senses = evaluation(valid_dataloader, valid_dataiter, model)

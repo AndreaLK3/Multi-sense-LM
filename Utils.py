@@ -214,6 +214,7 @@ def close_list_of_files(files_ls):
 ### e.g.: where word == and, or ==''s ' or =='\'
 def select_from_hdf5(input_db, table_key, field_names, values):
     #word_df = input_db.select(key=elements_name, where="word == '" + str(word) + "'")
+    logging.debug("values (parameter)=" + str(values))
     values = list(map(lambda v: v.replace("'", ""), values))
     values = list(filter(lambda v:'\\' not in v, values))
     fields_values_lts = zip(field_names, values)

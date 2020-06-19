@@ -11,6 +11,7 @@ import logging
 import Utils
 from enum import Enum
 import transformers
+import Vocabulary.Vocabulary_Utilities as VU
 
 from WordEmbeddings.EmbedWithDBERT import compute_sentence_dBert_vector
 

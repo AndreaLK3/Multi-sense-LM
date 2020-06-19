@@ -22,6 +22,7 @@ def try_to_get_wordnet_sense(wn30_key):
 ### Internal function to: translate the word (and if present, the sense) into numerical indices.
 # sense = [0,se) ; single prototype = [se,se+sp) ; definitions = [se+sp, se+sp+d) ; examples = [se+sp+d, e==num_nodes)
 def convert_tokendict_to_tpl(token_dict, senseindices_db_c, globals_vocabulary_h5):
+
     keys = token_dict.keys()
     sense_index_queryresult = None
 
@@ -42,7 +43,7 @@ def convert_tokendict_to_tpl(token_dict, senseindices_db_c, globals_vocabulary_h
             sense_index = sense_index_queryresult[0]
     else:
         sense_index = -1
-    word = VocabUtils.process_slc_token(token_dict) # html.unescape, and lowercase the ALL-CAPITALS
+    word = VocabUtils.process_word_token(token_dict) # html.unescape
 
     try:
         global_absolute_index = Utils.select_from_hdf5(globals_vocabulary_h5, 'vocabulary', ['word'], [word]).index[0]
