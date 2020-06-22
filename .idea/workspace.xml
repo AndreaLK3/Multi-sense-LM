@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="d35dca92-959c-489d-8a61-f337e4cce7fa" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/GNN/Models/RNNs.py" beforeDir="false" afterPath="$PROJECT_DIR$/GNN/Models/RNNs.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -43,8 +42,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/GNN/Models/RNNs.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="281">
-              <caret line="149" column="52" selection-start-line="149" selection-start-column="52" selection-end-line="149" selection-end-column="52" />
+            <state relative-caret-position="285">
+              <caret line="114" lean-forward="true" selection-start-line="114" selection-end-line="114" />
               <folding>
                 <element signature="e#0#12#0" expanded="true" />
               </folding>
@@ -56,7 +55,7 @@
         <entry file="file://$PROJECT_DIR$/Graph/DefineGraph.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="330">
-              <caret line="296" column="54" lean-forward="true" selection-start-line="296" selection-start-column="54" selection-end-line="296" selection-end-column="54" />
+              <caret line="296" column="54" selection-start-line="296" selection-start-column="54" selection-end-line="296" selection-end-column="54" />
               <folding>
                 <element signature="e#0#19#0" expanded="true" />
               </folding>
@@ -367,15 +366,15 @@
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.30465445" />
       <window_info anchor="bottom" id="Run" order="2" />
-      <window_info anchor="bottom" id="Debug" order="3" sideWeight="0.490701" weight="0.40338504" />
+      <window_info anchor="bottom" id="Debug" order="3" sideWeight="0.4899857" weight="0.40338504" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" show_stripe_button="false" weight="0.32746196" />
       <window_info anchor="bottom" id="Version Control" order="7" weight="0.32722145" />
       <window_info anchor="bottom" id="Terminal" order="8" weight="0.325811" />
-      <window_info anchor="bottom" id="Event Log" order="9" sideWeight="0.5100143" side_tool="true" weight="0.28631875" />
+      <window_info anchor="bottom" id="Event Log" order="9" sideWeight="0.5107296" side_tool="true" weight="0.28631875" />
       <window_info anchor="bottom" id="Inspection Results" order="10" weight="0.32863188" />
-      <window_info active="true" anchor="bottom" id="Python Console" order="11" sideWeight="0.4899857" visible="true" weight="0.28631875" />
+      <window_info active="true" anchor="bottom" id="Python Console" order="11" sideWeight="0.4892704" visible="true" weight="0.28631875" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
@@ -427,20 +426,30 @@
           <url>file://$PROJECT_DIR$/trainmodel_script.py</url>
           <option name="timeStamp" value="98" />
         </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/GNN/Models/RNNs.py</url>
+          <line>167</line>
+          <option name="timeStamp" value="157" />
+        </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
     <watches-manager>
       <configuration name="Python Console Debugger">
-        <watch expression="t_globals_indices_ls" language="Python" />
-        <watch expression="t_current_global_indices_ls" language="Python" />
-        <watch expression="t_word_embeddings.shape" language="Python" />
-        <watch expression="[edgeindex.shape for edgeindex in t_edgeindex_g_ls]" language="Python" />
-        <watch expression="[edgeindex.shape for edgeindex in t_edgeindex_g_padded_ls]" language="Python" />
+        <watch expression="main_rnn_out.shape" language="Python" />
+        <watch expression="layer_rnn" language="Python" />
+        <watch expression="input&#10;" language="Python" />
+        <watch expression="input.shape" language="Python" />
       </configuration>
     </watches-manager>
   </component>
   <component name="debuggerHistoryManager">
     <expressions id="evaluateCodeFragment">
+      <expression>
+        <expression-string>list(filter(lambda signal: signal is not None,                         
+            [word_embeddings, global_nodestates]))</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>CODE_FRAGMENT</evaluation-mode>
+      </expression>
       <expression>
         <expression-string>max([t.shape[0] for t in batchinput_tensor[:,:,2].flatten() if len(t[t!=0])&gt;0])</expression-string>
         <language-id>Python</language-id>
@@ -497,11 +506,6 @@ batch_elements_at_t = batch_elements_at_t.chunk(chunks=batch_elements_at_t.shape
         <language-id>Python</language-id>
         <evaluation-mode>CODE_FRAGMENT</evaluation-mode>
       </expression>
-      <expression>
-        <expression-string>correct_labels_dict['correct_s'] + torch.sum(indices_s[:, 0] == batch_labels_senses).item()</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>CODE_FRAGMENT</evaluation-mode>
-      </expression>
     </expressions>
     <expressions id="setValue">
       <expression>
@@ -522,47 +526,49 @@ batch_elements_at_t = batch_elements_at_t.chunk(chunks=batch_elements_at_t.shape
     </expressions>
     <expressions id="evaluateExpression">
       <expression>
-        <expression-string>[t_globals.shape[0] for t_globals in t_globals_indices_ls]</expression-string>
+        <expression-string>input.shape</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>[t_globals.shape[0]-1 for t_globals in t_globals_indices_ls]</expression-string>
+        <expression-string>input</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>[t_globals.shape[0] for t_globals in t_globals_indices_ls]-1</expression-string>
+        <expression-string>input.shape
+
+.</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>[t_globals.shape.item for t_globals in t_globals_indices_ls]</expression-string>
+        <expression-string>layer_rnn</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>[t_globals.shape for t_globals in t_globals_indices_ls]</expression-string>
+        <expression-string>main_rnn_out</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>t_globals_indices_ls</expression-string>
+        <expression-string>batch_input_signals</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>torch.stack(currentglobal_nodestates_ls, dim=0)</expression-string>
+        <expression-string>torch.cat(t_input_ls, dim=2)</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>word_embeddings</expression-string>
+        <expression-string>torch.cat(t_input_ls, dim=1)</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>word_embeddings_ls</expression-string>
+        <expression-string>list(filter(lambda signal: signal is not None,                                [word_embeddings, global_nodestates]))</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
@@ -909,7 +915,7 @@ batch_elements_at_t = batch_elements_at_t.chunk(chunks=batch_elements_at_t.shape
     <entry file="file://$PROJECT_DIR$/Graph/DefineGraph.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="330">
-          <caret line="296" column="54" lean-forward="true" selection-start-line="296" selection-start-column="54" selection-end-line="296" selection-end-column="54" />
+          <caret line="296" column="54" selection-start-line="296" selection-start-column="54" selection-end-line="296" selection-end-column="54" />
           <folding>
             <element signature="e#0#19#0" expanded="true" />
           </folding>
@@ -925,8 +931,8 @@ batch_elements_at_t = batch_elements_at_t.chunk(chunks=batch_elements_at_t.shape
     </entry>
     <entry file="file://$PROJECT_DIR$/GNN/Models/RNNs.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="281">
-          <caret line="149" column="52" selection-start-line="149" selection-start-column="52" selection-end-line="149" selection-end-column="52" />
+        <state relative-caret-position="285">
+          <caret line="114" lean-forward="true" selection-start-line="114" selection-end-line="114" />
           <folding>
             <element signature="e#0#12#0" expanded="true" />
           </folding>
