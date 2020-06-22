@@ -107,6 +107,40 @@ class RNN(torch.nn.Module):
 
         batch_input_signals_ls = []
 
+
+        # version in development: parallelize across batches...
+        if batchinput_tensor.shape[1] > 1:
+            time_instants = torch.chunk(batchinput_tensor, chunks=batchinput_tensor.shape[1], dim=1)
+        else:
+            time_instants = [batchinput_tensor]
+        t_input_signals = []
+
+        word_embeddings_ls = []
+        for batch_elements_at_t in time_instants:
+            batch_elems_at_t = batch_elements_at_t.squeeze(dim=1)
+            logging.info("batch_elems_at_t.shape=" + str(batch_elems_at_t.shape))
+            elems_at_t_ls = batch_elements_at_t.chunk(chunks=batch_elems_at_t.shape[0], dim=0)
+            for i in range(len(elems_at_t_ls)):
+                logging.info("elems_at_t_ls[" + str(i)+"].shape=" + str(elems_at_t_ls[i].shape))
+            t_input_lts = [unpack_input_tensor(sample_tensor, self.grapharea_size) for sample_tensor in elems_at_t_ls]
+            t_globals_indices_ls = [t_input_lts[b][0][0] for b in range(len(t_input_lts))]
+
+            # Input signal n.1: the embedding of the current (global) word
+            t_current_global_indices_ls = [x_indices[0] for x_indices in t_globals_indices_ls]
+            t_current_globals_indices = torch.stack(t_current_global_indices_ls, dim=0)
+            t_word_embeddings = self.X.index_select(dim=0, index=t_current_globals_indices)
+            word_embeddings_ls.append(t_word_embeddings)
+
+
+
+        word_embeddings = torch.stack(word_embeddings_ls, dim=0)
+
+
+
+
+
+
+
         for padded_sequence in sequences_in_the_batch_ls:
             padded_sequence = padded_sequence.squeeze(dim=0)
             padded_sequence = padded_sequence.chunk(chunks=padded_sequence.shape[0], dim=0)
