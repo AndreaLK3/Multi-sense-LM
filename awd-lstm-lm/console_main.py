@@ -13,6 +13,14 @@ from model_save import model_load, model_save, model_state_save
 from sys_config import BASE_DIR, CKPT_DIR, CACHE_DIR
 
 from utils import batchify, get_batch, repackage_hidden
+import sys, os
+
+# allowing for use of tools in the parent folder
+sys.path.append(os.path.join(os.getcwd(), '..', ''))
+import Graph.DefineGraph as DG
+import WordEmbeddings.ComputeEmbeddings as CE
+import Filesystem as F
+import pandas as pd
 
 # parser = argparse.ArgumentParser(description='PyTorch PennTreeBank RNN/LSTM Language Model')
 # parser.add_argument('--data', type=str, default='data/wikitext-2',
@@ -175,8 +183,19 @@ from splitcross import SplitCrossEntropyLoss
 criterion = None
 
 ntokens = len(corpus.dictionary)
+# added
+os.chdir('..')
+graph_dataobj = DG.get_graph_dataobject(new=False, method=CE.Method.FASTTEXT, slc_corpus=False).to(device)
+globals_vocabulary_fpath = os.path.join(F.FOLDER_VOCABULARY, F.VOCABULARY_OF_GLOBALS_FILE)
+vocab_h5 = pd.HDFStore(globals_vocabulary_fpath, mode='r')
+globals_vocabulary_df = pd.read_hdf(globals_vocabulary_fpath, mode='r')
+globals_vocabulary_wordList = globals_vocabulary_df['word'].to_list().copy()
+os.chdir('awd-lstm-lm')
+variant_flags_dict = {'include_globalnode_input':False, 'include_sensenode_input':False}
+#
 model = model.AWD(args.model, ntokens, args.emsize, args.nhid,
-                       args.nlayers, args.dropout, args.dropouth,
+                       args.nlayers, graph_dataobj, variant_flags_dict, globals_vocabulary_wordList,
+                       args.dropout, args.dropouth,
                        args.dropouti, args.dropoute, args.wdrop, args.tied)
 
 ###
@@ -246,6 +265,7 @@ def train():
     ntokens = len(corpus.dictionary)
     hidden = model.init_hidden(args.batch_size)
     batch, i = 0, 0
+
     while i < train_data.size(0) - 1 - 1:
         bptt = args.bptt if np.random.random() < 0.95 else args.bptt / 2.
         # Prevent excessively small or negative sequence lengths

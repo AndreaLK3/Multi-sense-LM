@@ -4,14 +4,43 @@ import torch.nn as nn
 from embed_regularize import embedded_dropout
 from locked_dropout import LockedDropout
 from weight_drop import WeightDrop #, ForwardWithDrop
+import os, sys
+from torch.nn.parameter import Parameter
+from torch_geometric.nn import GATConv
+import nltk
+
+# allowing for use of tools in the parent folder
+sys.path.append(os.path.join(os.getcwd(), '..', ''))
+from PrepareKBInput.LemmatizeNyms import lemmatize_term
+
 
 class AWD(nn.Module):
     """Container module with an encoder, a recurrent module, and a decoder."""
 
-    def __init__(self, rnn_type, ntoken, ninp, nhid, nlayers,
+    def __init__(self, rnn_type, ntoken, ninp, nhid, nlayers, graph_dataobj, variant_flags_dict, my_vocabulary_wordlist,
                  dropout=0.5, dropouth=0.5, dropouti=0.5,
                  dropoute=0.1, wdrop=0, tie_weights=False):
         super(AWD, self).__init__()
+
+        # added by me
+
+        self.my_vocabulary_wordlist = my_vocabulary_wordlist
+        # The embeddings matrix for: senses, globals, definitions, examples
+        self.X = Parameter(graph_dataobj.x.clone().detach(), requires_grad=True)
+        self.d_external_inp = self.X.shape[1]
+        self.select_first_indices = Parameter(torch.tensor(list(range(ninp))).to(torch.float32), requires_grad=False)
+        self.embedding_zeros = Parameter(torch.zeros(size=(1, self.d_external_inp)), requires_grad=False)
+
+        self.variant_flags_dict = variant_flags_dict # dictionary with my options for this particular model
+        self.P = nn.Linear(self.d_external_inp, nhid)
+        if variant_flags_dict['include_globalnode_input']:
+            self.gat_globals = GATConv(in_channels=self.dim_embs, out_channels=int(self.dim_embs / 4), heads=4)
+            self.lemmatizer = nltk.stem.WordNetLemmatizer()
+            lemmatize_term('init', self.lemmatizer)  # to establish LazyCorpusLoader and prevent a multi-thread crash
+        if variant_flags_dict['include_sensenode_input']:
+            self.gat_senses = GATConv(in_channels=self.dim_embs, out_channels=int(self.dim_embs / 4), heads=4)
+
+        self.nhid = nhid
         self.lockdrop = LockedDropout()
         self.idrop = nn.Dropout(dropouti)
         self.hdrop = nn.Dropout(dropouth)
@@ -68,6 +97,9 @@ class AWD(nn.Module):
         self.decoder.weight.data.uniform_(-initrange, initrange)
 
     def forward(self, input, hidden, return_h=False):
+        seq_len = input.shape[0]
+        bsz = input.shape[1]
+
         emb = embedded_dropout(self.encoder, input, dropout=self.dropoute if self.training else 0)
         #emb = self.idrop(emb)
 
@@ -79,10 +111,64 @@ class AWD(nn.Module):
         raw_outputs = []
         outputs = []
 
+        # we can add another input signal for the first layer
+        # either the simple FastText embedding for the same word in the vocabulary (as a baseline)
+        # or the state of the word's global node in the KB graph
+        additional_input_signal_ls = []
+
+        #temp debug print
+        # for b in range(bsz):
+        #     sample_in_batch = input[:,b].tolist()
+        #     print(list(map(lambda token_index : self.my_vocabulary_wordlist[token_index], sample_in_batch)))
+
+        word_embeddings_across_batches_ls = []
+        for t in range(seq_len):
+            if not (self.variant_flags_dict['include_globalnode_input']):
+                time_t_word_embeddings = self.X.index_select(dim=0, index=input[t, :])
+                word_embeddings_across_batches_ls.append(time_t_word_embeddings)
+        additional_input_signal = torch.cat(word_embeddings_across_batches_ls, dim=0)
+
+        # for t in range(seq_len):
+        #     for b in range(bsz):
+        #         if not (self.variant_flags_dict['include_globalnode_input']):
+        #             currentword_embedding = self.X.index_select(dim=0, index=input[t,b]) # just use the FastText word embedding
+        #             additional_input_signal_ls.append(currentword_embedding)
+        #         else:
+        #             pass
+                    # # lemmatization
+                    # if x_indices_g.shape[
+                    #     0] <= 1:  # if we have an isolated node, that may be an inflected form ('said')...
+                    #     currentglobal_relative_X_idx = x_indices_g[0]
+                    #     currentglobal_absolute_vocab_idx = currentglobal_relative_X_idx - self.last_idx_senses
+                    #     word = self.vocabulary_wordlist[currentglobal_absolute_vocab_idx]
+                    #     lemmatized_word = lemmatize_term(word, self.lemmatizer)
+                    #     if lemmatized_word != word:  # ... (or a stopword, in which case we do not proceed further)
+                    #         try:
+                    #             lemmatized_word_absolute_idx = self.vocabulary_wordlist.index(lemmatized_word)
+                    #             lemmatized_word_relative_idx = lemmatized_word_absolute_idx + self.last_idx_senses
+                    #             (x_indices_g, edge_index_g, edge_type_g) = \
+                    #                 AD.get_node_data(self.grapharea_matrix, lemmatized_word_relative_idx,
+                    #                                  self.grapharea_size)
+                    #         except ValueError:
+                    #             pass  # the lemmatized word was not found in the vocabulary.
+                    #
+                    # x = self.X.index_select(dim=0, index=x_indices_g.squeeze())
+                    # x_attention_state = self.gat_globals(x, edge_index_g)
+                    # currentglobal_node_state = x_attention_state.index_select(dim=0,
+                    #                                                           index=self.select_first_indices[0].to(
+                    #                                                               torch.int64))
+
+        additional_contribution = self.P(additional_input_signal)
+        additional_contribution_01 = additional_contribution.view(size=(seq_len,bsz, self.nhid))
+
         for l, rnn in enumerate(self.rnns):
-            rnn.module.flatten_parameters()  # not working
+
+            rnn.module.flatten_parameters()  # * now working
             current_input = raw_output
             raw_output, new_h = rnn(raw_output, hidden[l])
+            # my modification (insertion of the additional input signal):
+            if l== 0:
+                raw_output = raw_output + additional_contribution_01
             new_hidden.append(new_h)
             raw_outputs.append(raw_output)
             if l != self.nlayers - 1:
