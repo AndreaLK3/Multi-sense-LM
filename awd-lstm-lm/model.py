@@ -48,11 +48,11 @@ class AWD(nn.Module):
         self.encoder = nn.Embedding(ntoken, ninp)
         assert rnn_type in ['LSTM', 'QRNN', 'GRU'], 'RNN type is not supported'
         if rnn_type == 'LSTM':
-            self.rnns = [torch.nn.LSTM(ninp if l == 0 else nhid, nhid if l != nlayers - 1 else (ninp if tie_weights else nhid), 1, dropout=0) for l in range(nlayers)]
+            self.rnns = [torch.nn.LSTM(ninp+self.d_external_inp if l == 0 else nhid, nhid if l != nlayers - 1 else (ninp if tie_weights else nhid), 1, dropout=0) for l in range(nlayers)]
             if wdrop:
                 self.rnns = [WeightDrop(rnn, ['weight_hh_l0'], dropout=wdrop) for rnn in self.rnns]
         if rnn_type == 'GRU':
-            self.rnns = [torch.nn.GRU(ninp if l == 0 else nhid, nhid if l != nlayers - 1 else ninp, 1, dropout=0) for l in range(nlayers)]
+            self.rnns = [torch.nn.GRU(ninp+self.d_external_inp if l == 0 else nhid, nhid if l != nlayers - 1 else ninp, 1, dropout=0) for l in range(nlayers)]
             if wdrop:
                 self.rnns = [WeightDrop(rnn, ['weight_hh_l0'], dropout=wdrop) for rnn in self.rnns]
         elif rnn_type == 'QRNN':
@@ -158,17 +158,16 @@ class AWD(nn.Module):
                     #                                                           index=self.select_first_indices[0].to(
                     #                                                               torch.int64))
 
-        additional_contribution = self.P(additional_input_signal)
-        additional_contribution_01 = additional_contribution.view(size=(seq_len,bsz, self.nhid))
+        additional_contribution = additional_input_signal.view(size=(seq_len,bsz, self.d_external_inp))
 
         for l, rnn in enumerate(self.rnns):
 
             rnn.module.flatten_parameters()  # * now working
             current_input = raw_output
+            # my modification (insertion of the additional input signal by concatenation):
+            if l == 0:
+                raw_output = torch.cat([current_input, additional_contribution], dim=2)
             raw_output, new_h = rnn(raw_output, hidden[l])
-            # my modification (insertion of the additional input signal):
-            if l== 0:
-                raw_output = raw_output + additional_contribution_01
             new_hidden.append(new_h)
             raw_outputs.append(raw_output)
             if l != self.nlayers - 1:
