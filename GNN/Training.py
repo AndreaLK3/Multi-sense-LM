@@ -157,12 +157,12 @@ def training_setup(slc_or_text_corpus, include_globalnode_input, include_senseno
 
     bptt_collator = DL.BPTTBatchCollator(grapharea_size, sequence_length)
 
-    train_dataset = DL.TextDataset(slc_or_text_corpus, 'training', senseindices_db_c, vocab_h5, model_forDataLoading,
+    train_dataset = DL.TextDataset(slc_or_text_corpus, Utils.TRAINING, senseindices_db_c, vocab_h5, model_forDataLoading,
                                    grapharea_matrix, grapharea_size, graph_dataobj)
     train_dataloader = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size * sequence_length,
                                                    num_workers=0, collate_fn=bptt_collator)
 
-    valid_dataset = DL.TextDataset(slc_or_text_corpus, 'valid', senseindices_db_c, vocab_h5, model_forDataLoading,
+    valid_dataset = DL.TextDataset(slc_or_text_corpus, Utils.VALIDATION, senseindices_db_c, vocab_h5, model_forDataLoading,
                                    grapharea_matrix, grapharea_size, graph_dataobj)
     valid_dataloader = torch.utils.data.DataLoader(valid_dataset, batch_size=batch_size * sequence_length,
                                                    num_workers=0, collate_fn=bptt_collator)
