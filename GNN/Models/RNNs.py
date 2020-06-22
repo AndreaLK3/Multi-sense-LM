@@ -1,9 +1,10 @@
 import torch
 from torch_geometric.nn import GATConv
+from torch_geometric.data.batch import Batch
+from torch_geometric.data import Data
 import torch.nn.functional as tfunc
 import Graph.Adjacencies as AD
-from GNN.Models.Common import unpack_input_tensor
-from GNN.Models.Common import init_model_parameters
+from GNN.Models.Common import unpack_input_tensor, init_model_parameters, pad_edge_tensors, get_max_num_edges_in_batch
 from Utils import DEVICE
 from torch.nn.parameter import Parameter
 import logging
@@ -51,7 +52,7 @@ class RNN(torch.nn.Module):
                 i in range(n_layers)])
 
         if self.include_globalnode_input:
-            self.gat_globals = GATConv(in_channels=self.dim_embs, out_channels=int(self.dim_embs / 4), heads=4)
+            self.gat_globals = GATConv(in_channels=self.dim_embs, out_channels=int(self.dim_embs / 4), heads=4)#, node_dim=1)
             self.lemmatizer = nltk.stem.WordNetLemmatizer()
             lemmatize_term('init', self.lemmatizer)# to establish LazyCorpusLoader and prevent a multi-thread crash
         if self.include_sensenode_input:
@@ -122,15 +123,50 @@ class RNN(torch.nn.Module):
             elems_at_t_ls = batch_elements_at_t.chunk(chunks=batch_elems_at_t.shape[0], dim=0)
             for i in range(len(elems_at_t_ls)):
                 logging.info("elems_at_t_ls[" + str(i)+"].shape=" + str(elems_at_t_ls[i].shape))
+
             t_input_lts = [unpack_input_tensor(sample_tensor, self.grapharea_size) for sample_tensor in elems_at_t_ls]
+
             t_globals_indices_ls = [t_input_lts[b][0][0] for b in range(len(t_input_lts))]
+            logging.info("t_globals_indices_ls=" + str(t_globals_indices_ls))
 
             # Input signal n.1: the embedding of the current (global) word
             t_current_global_indices_ls = [x_indices[0] for x_indices in t_globals_indices_ls]
+            logging.info("t_current_global_indices_ls=" + str(t_current_global_indices_ls))
             t_current_globals_indices = torch.stack(t_current_global_indices_ls, dim=0)
             t_word_embeddings = self.X.index_select(dim=0, index=t_current_globals_indices)
             word_embeddings_ls.append(t_word_embeddings)
 
+            # Input signal n.2: the node-state of the current global word - attempt at graph batching
+            target_length = int(self.grapharea_size ** 1.5)
+            x_padded_ls = []
+            edge_index_ls = []
+            graph_batch_ls = []
+            if self.include_globalnode_input:
+                t_edgeindex_g_ls = [t_input_lts[b][0][1] for b in range(len(t_input_lts))]
+
+                # logging.info("shapes in t_edgeindex_g_ls = "+ str([edge_index.shape for edge_index in t_edgeindex_g_ls]))
+                # edge_index_ls.append(t_edgeindex_g_ls)
+                #
+                # t_edgeindex_g_padded_ls = [tfunc.pad(edge_index, pad=[0, target_length - edge_index.shape[1]], value=0) for edge_index in t_edgeindex_g_ls]
+                # logging.info(
+                #     "shapes in t_edgeindex_g_padded_ls = " + str([edge_index.shape for edge_index in t_edgeindex_g_padded_ls]))
+                #
+                # t_edgeindex_g = torch.stack(t_edgeindex_g_padded_ls, dim=0)
+
+                for i_sample in range(batch_elems_at_t.shape[0]):
+                    sample_x = self.X.index_select(dim=0, index=t_globals_indices_ls[i_sample].squeeze())
+                    sample_edge_index = t_edgeindex_g_ls[i_sample]
+                    sample_graph = Data(x=sample_x, edge_index=sample_edge_index)
+                    graph_batch_ls.append(sample_graph)
+
+                    #sample_x_padded = tfunc.pad(sample_x, pad=[0,0,0,self.grapharea_size-len(sample_x)], value=0)
+                    #x_padded_ls.append(sample_x_padded)
+
+                #batch_edge_index = Batch.from_data_list([Data(edge_index=edge_index_g) for edge_index_g in t_edgeindex_g_ls])
+                #x_padded = torch.stack(x_padded_ls, dim=0)
+                batch_graph = Batch.from_data_list(graph_batch_ls)
+                x_attention_state = self.gat_globals(batch_graph.x, batch_graph.edge_index)
+            # for ((x_indices_g, edge_index_g, edge_type_g), (x_indices_s, edge_index_s, edge_type_s)) in t_input_lts:
 
 
         word_embeddings = torch.stack(word_embeddings_ls, dim=0)

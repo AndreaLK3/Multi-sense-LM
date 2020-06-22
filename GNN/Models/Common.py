@@ -68,15 +68,14 @@ def unpack_input_tensor(in_tensor, grapharea_size):
 
 
 # Pads the edge tensors to the maximum possible length with self-loops (edge_type=0 or any other; they are auto-removed)
-# to allow for batch processing in the GAT
-def pad_edge_tensors(x, edge_index, edge_type, target_length):
-    selfnode_index = x[0]
-    padded_edge_index = tfunc.pad(edge_index, pad=[0, target_length - len(edge_type)], value=selfnode_index)
+# to allow for batch processing in the GAT # temp: int(graph_area**1.5)...
+def pad_edge_tensors(edge_index, edge_type, target_length):
+    padded_edge_index = tfunc.pad(edge_index, pad=[0, target_length - len(edge_type)], value=0) # here 0 works as a dummy
     padded_edge_type = tfunc.pad(edge_type, pad=[0, target_length - len(edge_type)], value=0)
     return padded_edge_index, padded_edge_type
 
-def get_max_num_edges_in_batch(batchinput_ndarray):
-    return max([t.shape[0] for t in batchinput_ndarray[:,:,:,2].flatten() if len(t[t!=0])>0])
+def get_max_num_edges_in_batch(batchinput_tensor):
+    return max([t.shape[0] for t in batchinput_tensor[:,:,:,2].flatten() if len(t[t!=0])>0])
 
 
 
