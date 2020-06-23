@@ -9,6 +9,7 @@ from torch.nn.parameter import Parameter
 from torch_geometric.nn import GATConv
 import nltk
 
+
 # allowing for use of tools in the parent folder
 sys.path.append(os.path.join(os.getcwd(), '..', ''))
 from PrepareKBInput.LemmatizeNyms import lemmatize_term
@@ -32,7 +33,7 @@ class AWD(nn.Module):
         self.embedding_zeros = Parameter(torch.zeros(size=(1, self.d_external_inp)), requires_grad=False)
 
         self.variant_flags_dict = variant_flags_dict # dictionary with my options for this particular model
-        self.P = nn.Linear(self.d_external_inp, nhid)
+
         if variant_flags_dict['include_globalnode_input']:
             self.gat_globals = GATConv(in_channels=self.dim_embs, out_channels=int(self.dim_embs / 4), heads=4)
             self.lemmatizer = nltk.stem.WordNetLemmatizer()
@@ -116,17 +117,14 @@ class AWD(nn.Module):
         # or the state of the word's global node in the KB graph
         additional_input_signal_ls = []
 
-        #temp debug print
-        # for b in range(bsz):
-        #     sample_in_batch = input[:,b].tolist()
-        #     print(list(map(lambda token_index : self.my_vocabulary_wordlist[token_index], sample_in_batch)))
-
         word_embeddings_across_batches_ls = []
         for t in range(seq_len):
             if not (self.variant_flags_dict['include_globalnode_input']):
                 time_t_word_embeddings = self.X.index_select(dim=0, index=input[t, :])
                 word_embeddings_across_batches_ls.append(time_t_word_embeddings)
         additional_input_signal = torch.cat(word_embeddings_across_batches_ls, dim=0)
+        additional_input_signal = nn.functional.dropout(input=additional_input_signal, p=self.dropoute, training=self.training, inplace=False)
+        dropout = self.dropoute if self.training else 0
 
         # for t in range(seq_len):
         #     for b in range(bsz):

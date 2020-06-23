@@ -4,7 +4,7 @@ from torch_geometric.data.batch import Batch
 from torch_geometric.data import Data
 import torch.nn.functional as tfunc
 import Graph.Adjacencies as AD
-from GNN.Models.Common import unpack_input_tensor, init_model_parameters, pad_edge_tensors, get_max_num_edges_in_batch
+from GNN.Models.Common import unpack_input_tensor, init_model_parameters
 from Utils import DEVICE
 from torch.nn.parameter import Parameter
 import logging
@@ -13,6 +13,34 @@ import Utils
 import nltk
 from PrepareKBInput.LemmatizeNyms import lemmatize_term
 
+# Parameters: the x and edge_index of the grapharea of 1 node; a Lemmatizer; the graph we are operating on.
+# Returns: if the node's word can be lemmatized: the x and edge_index of the lemmatized token (e.g. 'said' -> 'say')
+#                                          else: the parameters x and edge_index of the original node, unchanged.
+def lemmatize_node(x_indices, edge_index, model):
+    currentglobal_relative_X_idx = x_indices[0]
+    currentglobal_absolute_vocab_idx = currentglobal_relative_X_idx - model.last_idx_senses
+    word = model.vocabulary_wordlist[currentglobal_absolute_vocab_idx]
+    lemmatized_word = lemmatize_term(word, model.lemmatizer)
+    logging.info("word=" + str(word) + " ; lemmatized_word="+ str(lemmatized_word))
+
+    # if a word has edges that are not all self-loops, do not lemmatize it (to avoid turning 'as' into 'a')
+    if not(all([src_dest_tpl[0]==src_dest_tpl[1] for src_dest_tpl in edge_index.t()])):
+        logging.info("word has edges that are not all self-loops")
+        return x_indices, edge_index
+    if lemmatized_word != word:  # if the lemmatized word is actually different from the original, get the data
+        try:
+            logging.info("Getting the data for the lemmatized word")
+            lemmatized_word_absolute_idx = model.vocabulary_wordlist.index(lemmatized_word)
+            lemmatized_word_relative_idx = lemmatized_word_absolute_idx + model.last_idx_senses
+            (x_indices_lemmatized, edge_index_lemmatized, _edge_type_l) = \
+                AD.get_node_data(model.grapharea_matrix, lemmatized_word_relative_idx, model.grapharea_size)
+            return x_indices_lemmatized, edge_index_lemmatized
+        except ValueError:
+            # the lemmatized word was not found in the vocabulary.
+            logging.info("The lemmatized word was not found in the vocabulary")
+            return x_indices, edge_index
+    else:
+        return x_indices, edge_index
 
 
 class RNN(torch.nn.Module):
@@ -119,12 +147,12 @@ class RNN(torch.nn.Module):
             logging.debug("shapes in t_globals_indices_ls=" + str([t_globals.shape for t_globals in t_globals_indices_ls]))
 
             # Input signal n.1: the embedding of the current (global) word
-            t_current_global_indices_ls = [x_indices[0] for x_indices in t_globals_indices_ls]
-            t_current_globals_indices = torch.stack(t_current_global_indices_ls, dim=0)
+            t_current_globals_indices_ls = [x_indices[0] for x_indices in t_globals_indices_ls]
+            t_current_globals_indices = torch.stack(t_current_globals_indices_ls, dim=0)
             t_word_embeddings = self.X.index_select(dim=0, index=t_current_globals_indices)
             word_embeddings_ls.append(t_word_embeddings)
 
-            # Input signal n.2: the node-state of the current global word - attempt at graph batching
+            # Input signal n.2: the node-state of the current global word - now with graph batching
 
             graph_batch_ls = []
             current_location_in_batchX_ls = []
@@ -133,16 +161,18 @@ class RNN(torch.nn.Module):
                 t_edgeindex_g_ls = [t_input_lts[b][0][1] for b in range(len(t_input_lts))]
 
                 for i_sample in range(batch_elems_at_t.shape[0]):
+
                     sample_x = self.X.index_select(dim=0, index=t_globals_indices_ls[i_sample].squeeze())
+                    sample_edge_index = t_edgeindex_g_ls[i_sample]
+                    lemmatize_node(t_globals_indices_ls[i_sample], sample_edge_index, self)
+
                     currentword_location_in_batchX = rows_to_skip + current_location_in_batchX_ls[-1] \
                         if len(current_location_in_batchX_ls)>0 else 0
                     rows_to_skip = sample_x.shape[0]
                     current_location_in_batchX_ls.append(currentword_location_in_batchX)
-                    sample_edge_index = t_edgeindex_g_ls[i_sample]
+
                     sample_graph = Data(x=sample_x, edge_index=sample_edge_index)
                     graph_batch_ls.append(sample_graph)
-
-                logging.info("current_location_in_batchX_ls=" + str(current_location_in_batchX_ls))
 
                 batch_graph = Batch.from_data_list(graph_batch_ls)
                 x_attention_states = self.gat_globals(batch_graph.x, batch_graph.edge_index)

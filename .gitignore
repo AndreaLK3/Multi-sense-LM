@@ -10,6 +10,7 @@
 *rgcn_model
 *.rgcnmodel
 *.torchobj
+*.WT2
 WikiText-103/
 runs/
 GraphNN/pyGAT

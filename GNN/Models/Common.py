@@ -11,25 +11,6 @@ import numpy as np
 ### 0 : Utility functions ###
 #############################
 
-# Tools to split the input of the forward call, (x, edge_index, edge_type),
-# into subgraphs (that can use different adjacency matrices).
-def split_edge_index(edge_index, edge_type):
-    sections_cutoffs = [i for i in range(edge_type.shape[0]) if edge_type[i] != edge_type[i-1]] + [edge_type.shape[0]]
-    if 0 not in sections_cutoffs:
-        sections_cutoffs = [0] + sections_cutoffs # prepend, to deal with the case of 1 edge
-    sections_lengths = [sections_cutoffs[i+1] - sections_cutoffs[i] for i in range(len(sections_cutoffs)-1)]
-    split_sources = torch.split(edge_index[0], sections_lengths)
-    split_destinations = torch.split(edge_index[1], sections_lengths)
-
-    return (split_sources, split_destinations)
-
-
-def get_antonym_nodes(edge_index, edge_type, antonym_edge_number):
-    _sources = edge_index[0].masked_select(torch.eq(edge_type, antonym_edge_number))
-    destinations = edge_index[1].masked_select(torch.eq(edge_type, antonym_edge_number))
-    return destinations
-
-######
 
 # Extracting the input elements (x_indices, edge_index, edge_type) from the padded tensor in the batch
 def unpack_to_input_tpl(in_tensor, grapharea_size, max_edges):
@@ -65,18 +46,6 @@ def unpack_input_tensor(in_tensor, grapharea_size):
     (x_indices_g, edge_index_g, edge_type_g) = unpack_to_input_tpl(in_tensor_globals, grapharea_size, max_edges)
     (x_indices_s, edge_index_s, edge_type_s) = unpack_to_input_tpl(in_tensor_senses, grapharea_size, max_edges)
     return ((x_indices_g, edge_index_g, edge_type_g), (x_indices_s, edge_index_s, edge_type_s))
-
-
-# Pads the edge tensors to the maximum possible length with self-loops (edge_type=0 or any other; they are auto-removed)
-# to allow for batch processing in the GAT # temp: int(graph_area**1.5)...
-def pad_edge_tensors(edge_index, edge_type, target_length):
-    padded_edge_index = tfunc.pad(edge_index, pad=[0, target_length - len(edge_type)], value=0) # here 0 works as a dummy
-    padded_edge_type = tfunc.pad(edge_type, pad=[0, target_length - len(edge_type)], value=0)
-    return padded_edge_index, padded_edge_type
-
-def get_max_num_edges_in_batch(batchinput_tensor):
-    return max([t.shape[0] for t in batchinput_tensor[:,:,:,2].flatten() if len(t[t!=0])>0])
-
 
 
 ###################################
@@ -135,6 +104,7 @@ class SelfAttention(torch.nn.Module):
 #############################################
 ### 2: Initialize common model parameters ###
 #############################################
+
 def init_model_parameters(model, graph_dataobj, grapharea_size, grapharea_matrix, vocabulary_wordlist,
                           include_globalnode_input, include_sensenode_input, predict_senses,
                           batch_size, n_layers, n_hid_units, dropout_p):

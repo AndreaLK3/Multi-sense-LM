@@ -20,19 +20,6 @@ def get_senseneighbours_of_k_globals(model, sample_k_indices):
     sense_neighbours_of_k = neighbours_of_k[neighbours_of_k < model.last_idx_senses]
     return sense_neighbours_of_k
 
-# def adjust_probability_mass(epsilon, senses_softmax, softmax_selected_senses,
-#                             n_senses_in_vocab, n_neighbours, current_sample_idx):
-#     zeta = min(softmax_selected_senses)
-#     if zeta < epsilon:
-#         senses_softmax[current_sample_idx].data = senses_softmax[current_sample_idx].data.clone() - (epsilon - zeta)
-#         quantity_added_to_sum = zeta * (n_senses_in_vocab - n_neighbours)
-#         quantity_to_subtract_from_selected = quantity_added_to_sum / n_neighbours
-#     else:  # standard base value of 10^(-8)
-#         quantity_added_to_sum = epsilon * (n_senses_in_vocab - n_neighbours)
-#         quantity_to_subtract_from_selected = quantity_added_to_sum / n_neighbours
-#
-#     return quantity_to_subtract_from_selected
-
 def subtract_probability_mass_from_selected(softmax_selected_senses, delta_to_subtract):
     max_index_t = torch.argmax(softmax_selected_senses)
     prev_max_value = softmax_selected_senses[max_index_t]
