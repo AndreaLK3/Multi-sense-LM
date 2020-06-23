@@ -12,12 +12,12 @@ import re
 
 # Post-processing function:
 # Modifies an already created vocabulary dictionary. Words are removed if frequency < min_count
-# def eliminate_rare_words(vocabulary_dict, min_count):
-#     logging.info('Removing from the vocabulary words with frequency < ' + str(min_count))
-#     all_words = list(vocabulary_dict.keys()) # if we operate directly on keys(), we get: RuntimeError: dictionary changed size during iteration
-#     for key in all_words:
-#         if vocabulary_dict[key] < min_count:
-#             vocabulary_dict.pop(key)
+def eliminate_rare_words(vocabulary_dict, min_count):
+    logging.info('Removing from the vocabulary words with frequency < ' + str(min_count))
+    all_words = list(vocabulary_dict.keys()) # if we operate directly on keys(), we get: RuntimeError: dictionary changed size during iteration
+    for key in all_words:
+        if vocabulary_dict[key] < min_count:
+            vocabulary_dict.pop(key)
 
 # ######### When we build a vocabulary from text, to transform the text of a line:
 #
@@ -27,7 +27,7 @@ import re
 def convert_symbols(line_text):
     symbol_patterns_ls = ['@-@', '@,@', '@.@', '@_@']
     for pat in symbol_patterns_ls:
-        line_text = re.sub(pat, pat[1], line_text) #keep the symbol, and eliminate the spaces too
+        line_text = re.sub(pat, pat[1], line_text) # keep the symbol
     #title_pattern = ' (= ){2,}|'
     #line_text = re.sub(title_pattern, "", line_text)
     return line_text
@@ -113,7 +113,7 @@ def convert_symbols(line_text):
 
 def process_word_token(token_dict):
     token_text = html.unescape(token_dict['surface_form'])
-    token_text = convert_symbols(token_text)
+    # token_text = convert_symbols(token_text)
 
     # if token_text == token_text.upper():  # if ALL CAPITALS -> must lowercase
     #     token_text = token_text.lower() # we are not lowercasing anymore, otherwise 'USA'->'usa'

@@ -3,45 +3,15 @@ from torch_geometric.nn import GATConv
 from torch_geometric.data.batch import Batch
 from torch_geometric.data import Data
 import torch.nn.functional as tfunc
-import Graph.Adjacencies as AD
-from GNN.Models.Common import unpack_input_tensor, init_model_parameters
-from Utils import DEVICE
+from GNN.Models.Common import unpack_input_tensor, init_model_parameters, lemmatize_node
 from torch.nn.parameter import Parameter
 import logging
-import GNN.ExplorePredictions as EP
-import Utils
 import nltk
 from PrepareKBInput.LemmatizeNyms import lemmatize_term
 
 # Parameters: the x and edge_index of the grapharea of 1 node; a Lemmatizer; the graph we are operating on.
 # Returns: if the node's word can be lemmatized: the x and edge_index of the lemmatized token (e.g. 'said' -> 'say')
 #                                          else: the parameters x and edge_index of the original node, unchanged.
-def lemmatize_node(x_indices, edge_index, model):
-    currentglobal_relative_X_idx = x_indices[0]
-    currentglobal_absolute_vocab_idx = currentglobal_relative_X_idx - model.last_idx_senses
-    word = model.vocabulary_wordlist[currentglobal_absolute_vocab_idx]
-    lemmatized_word = lemmatize_term(word, model.lemmatizer)
-    logging.info("word=" + str(word) + " ; lemmatized_word="+ str(lemmatized_word))
-
-    # if a word has edges that are not all self-loops, do not lemmatize it (to avoid turning 'as' into 'a')
-    if not(all([src_dest_tpl[0]==src_dest_tpl[1] for src_dest_tpl in edge_index.t()])):
-        logging.info("word has edges that are not all self-loops")
-        return x_indices, edge_index
-    if lemmatized_word != word:  # if the lemmatized word is actually different from the original, get the data
-        try:
-            logging.info("Getting the data for the lemmatized word")
-            lemmatized_word_absolute_idx = model.vocabulary_wordlist.index(lemmatized_word)
-            lemmatized_word_relative_idx = lemmatized_word_absolute_idx + model.last_idx_senses
-            (x_indices_lemmatized, edge_index_lemmatized, _edge_type_l) = \
-                AD.get_node_data(model.grapharea_matrix, lemmatized_word_relative_idx, model.grapharea_size)
-            return x_indices_lemmatized, edge_index_lemmatized
-        except ValueError:
-            # the lemmatized word was not found in the vocabulary.
-            logging.info("The lemmatized word was not found in the vocabulary")
-            return x_indices, edge_index
-    else:
-        return x_indices, edge_index
-
 
 class RNN(torch.nn.Module):
 
@@ -153,7 +123,6 @@ class RNN(torch.nn.Module):
             word_embeddings_ls.append(t_word_embeddings)
 
             # Input signal n.2: the node-state of the current global word - now with graph batching
-
             graph_batch_ls = []
             current_location_in_batchX_ls = []
             rows_to_skip = 0
@@ -178,6 +147,28 @@ class RNN(torch.nn.Module):
                 x_attention_states = self.gat_globals(batch_graph.x, batch_graph.edge_index)
                 t_currentglobal_node_states = x_attention_states.index_select(dim=0, index=torch.tensor(current_location_in_batchX_ls).to(torch.int64).to(CURRENT_DEVICE))
                 currentglobal_nodestates_ls.append(t_currentglobal_node_states)
+
+            # Input signal n.3: : the node-state of the current sense
+            if self.include_sensenode_input:
+                # in development
+                pass
+                #
+                # t_senses_indices_ls = [t_input_lts[b][1][0] for b in range(len(t_input_lts))]
+                # logging.info("shapes in t_senses_indices_ls=" + str([t_senses.shape for t_senses in t_senses_indices_ls]))
+                # t_edgeindex_g_ls = [t_input_lts[b][1][1] for b in range(len(t_input_lts))]
+                #
+                #
+                # if len(t_senses_indices_ls[t_senses_indices_ls != 0] == 0):  # no sense was specified
+                #     currentsense_node_state = self.embedding_zeros
+                # else:  # sense was specified
+                #     pass
+                #     # x_s = self.X.index_select(dim=0, index=x_indices_s.squeeze())
+                #     # sense_attention_state = self.gat_senses(x_s, edge_index_s)
+                #     # currentsense_node_state = sense_attention_state.index_select(dim=0,
+                #     #                                                              index=self.select_first_indices[
+                #     #                                                                  0].to(torch.int64))
+            else:
+                currentsense_node_state = None
 
         word_embeddings = torch.stack(word_embeddings_ls, dim=0)
         global_nodestates = torch.stack(currentglobal_nodestates_ls, dim=0) if self.include_globalnode_input else None

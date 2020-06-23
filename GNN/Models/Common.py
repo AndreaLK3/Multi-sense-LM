@@ -1,8 +1,12 @@
+import logging
 from math import sqrt
 
 import torch
 from torch.nn import functional as tfunc
 from torch.nn.parameter import Parameter
+
+from Graph import Adjacencies as AD
+from PrepareKBInput.LemmatizeNyms import lemmatize_term
 from Utils import DEVICE
 import numpy as np
 
@@ -48,8 +52,62 @@ def unpack_input_tensor(in_tensor, grapharea_size):
     return ((x_indices_g, edge_index_g, edge_type_g), (x_indices_s, edge_index_s, edge_type_s))
 
 
+################################
+### 2: Lemmatize global node ###
+################################
+
+def lemmatize_node(x_indices, edge_index, model):
+    currentglobal_relative_X_idx = x_indices[0]
+    currentglobal_absolute_vocab_idx = currentglobal_relative_X_idx - model.last_idx_senses
+    word = model.vocabulary_wordlist[currentglobal_absolute_vocab_idx]
+    lemmatized_word = lemmatize_term(word, model.lemmatizer)
+    logging.debug("***\nword=" + str(word) + " ; lemmatized_word= "+ str(lemmatized_word))
+
+    # if a word has edges that are not all self-loops, do not lemmatize it (to avoid turning 'as' into 'a')
+    if not(all([src_dest_tpl[0]==src_dest_tpl[1] for src_dest_tpl in edge_index.t()])):
+        logging.debug("word has edges that are not all self-loops")
+        return x_indices, edge_index
+    if lemmatized_word != word:  # if the lemmatized word is actually different from the original, get the data
+        try:
+            logging.debug("Getting the data for the lemmatized word")
+            lemmatized_word_absolute_idx = model.vocabulary_wordlist.index(lemmatized_word)
+            lemmatized_word_relative_idx = lemmatized_word_absolute_idx + model.last_idx_senses
+            (x_indices_lemmatized, edge_index_lemmatized, _edge_type_l) = \
+                AD.get_node_data(model.grapharea_matrix, lemmatized_word_relative_idx, model.grapharea_size)
+            return x_indices_lemmatized, edge_index_lemmatized
+        except ValueError:
+            # the lemmatized word was not found in the vocabulary.
+            logging.debug("The lemmatized word was not found in the vocabulary")
+            return x_indices, edge_index
+    else:
+        return x_indices, edge_index
+
+
+#############################################
+### 2: Initialize common model parameters ###
+#############################################
+
+def init_model_parameters(model, graph_dataobj, grapharea_size, grapharea_matrix, vocabulary_wordlist,
+                          include_globalnode_input, include_sensenode_input, predict_senses,
+                          batch_size, n_layers, n_hid_units, dropout_p):
+    model.grapharea_matrix = grapharea_matrix
+    model.vocabulary_wordlist = vocabulary_wordlist
+    model.include_globalnode_input = include_globalnode_input
+    model.include_sensenode_input = include_sensenode_input
+    model.predict_senses = predict_senses
+    model.last_idx_senses = graph_dataobj.node_types.tolist().index(1)
+    model.last_idx_globals = graph_dataobj.node_types.tolist().index(2)
+    model.grapharea_size = grapharea_size
+    model.dim_embs = graph_dataobj.x.shape[1]
+    model.batch_size = batch_size
+    model.n_layers = n_layers
+    model.hidden_size = n_hid_units
+    model.dropout = torch.nn.Dropout(p=dropout_p)
+    return
+
+
 ###################################
-### 1: Self-attention mechanism ###
+### 3: Self-attention mechanism ###
 ###################################
 
 class SelfAttention(torch.nn.Module):
@@ -101,33 +159,9 @@ class SelfAttention(torch.nn.Module):
 
         return torch.cat(results_of_heads, dim=0)
 
-#############################################
-### 2: Initialize common model parameters ###
-#############################################
-
-def init_model_parameters(model, graph_dataobj, grapharea_size, grapharea_matrix, vocabulary_wordlist,
-                          include_globalnode_input, include_sensenode_input, predict_senses,
-                          batch_size, n_layers, n_hid_units, dropout_p):
-    model.grapharea_matrix = grapharea_matrix
-    model.vocabulary_wordlist = vocabulary_wordlist
-    model.include_globalnode_input = include_globalnode_input
-    model.include_sensenode_input = include_sensenode_input
-    model.predict_senses = predict_senses
-    model.last_idx_senses = graph_dataobj.node_types.tolist().index(1)
-    model.last_idx_globals = graph_dataobj.node_types.tolist().index(2)
-    model.grapharea_size = grapharea_size
-    model.dim_embs = graph_dataobj.x.shape[1]
-    model.batch_size = batch_size
-    model.n_layers = n_layers
-    model.hidden_size = n_hid_units
-    model.dropout = torch.nn.Dropout(p=dropout_p)
-    return
-
-
-
 
 ######################
-### 3: DropConnect ###
+### 4: DropConnect ###
 ######################
 
 
@@ -158,8 +192,4 @@ class ForwardWithDrop(object):
             self.module._parameters.__setitem__(name_param, param_with_droput)
 
         return self.original_module_forward(*args, **kwargs)
-
-
-
-
 

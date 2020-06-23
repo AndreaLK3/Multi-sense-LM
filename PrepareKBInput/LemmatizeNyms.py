@@ -14,7 +14,7 @@ def get_wordnet_pos(word):
     try:
         tag = nltk.pos_tag([word])[0][1][0].upper()
     except TypeError as e:
-        logging.warning("word=" + word)
+        logging.warning("word=" + str(word))
         logging.warning(e)
         tag = 'n'
     tag_dict = {"J": 'a',# wordnet.ADJ,
@@ -26,7 +26,7 @@ def get_wordnet_pos(word):
 
 # We lemmatize synonyms and antonyms
 def lemmatize_term(nym, lemmatizer):
-    nym_lemmatized = lemmatizer.lemmatize(nym, get_wordnet_pos(nym))
+    nym_lemmatized = lemmatizer.lemmatize(str(nym), get_wordnet_pos(str(nym)))
     return nym_lemmatized
 
 

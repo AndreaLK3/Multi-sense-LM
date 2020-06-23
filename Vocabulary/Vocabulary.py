@@ -56,7 +56,7 @@ def build_vocabulary_from_text(corpus_txt_fpaths):
     # return vocab_dict
 
 
-def build_vocabulary_from_senselabeled():
+def build_vocabulary_from_senselabeled(lowercase=False):
     vocab_dict = {}
 
     tokens_toexclude = [Utils.EOS_TOKEN] # + list(string.punctuation)
@@ -66,6 +66,7 @@ def build_vocabulary_from_senselabeled():
     for slc_split_name in slc_split_names:
         for token_dict in SLC.read_split(slc_split_name):
             token = VocabUtils.process_word_token(token_dict)
+            token = token.lower() if lowercase else token
             if token not in tokens_toexclude:
                 try:
                     prev_freq = vocab_dict[token]
@@ -79,7 +80,7 @@ def build_vocabulary_from_senselabeled():
 
 
 # Entry function: if a vocabulary is already present in the specified path, load it. Otherwise, create it.
-def get_vocabulary_df(senselabeled_or_text, corpus_txt_fpaths, out_vocabulary_h5_filepath):
+def get_vocabulary_df(senselabeled_or_text, corpus_txt_fpaths, out_vocabulary_h5_filepath, min_count=1, lowercase=False):
     if os.path.exists(out_vocabulary_h5_filepath):
         vocab_df = pd.read_hdf(out_vocabulary_h5_filepath, mode='r')
         logging.info("*** The vocabulary was loaded from the file " + out_vocabulary_h5_filepath)
@@ -89,11 +90,12 @@ def get_vocabulary_df(senselabeled_or_text, corpus_txt_fpaths, out_vocabulary_h5
         vocab_h5_itemsizes = {'word': Utils.HDF5_BASE_SIZE_512 / 4, 'frequency': Utils.HDF5_BASE_SIZE_512 / 8}
 
         if senselabeled_or_text:
-            vocabulary = build_vocabulary_from_senselabeled()
+            vocabulary = build_vocabulary_from_senselabeled(lowercase)
         else:
             vocabulary = build_vocabulary_from_text(corpus_txt_fpaths)
 
-        # VocabUtils.eliminate_rare_words(vocabulary, min_count)
+        if min_count>1:
+            VocabUtils.eliminate_rare_words(vocabulary, min_count)
 
         vocab_df = pd.DataFrame(data=zip(vocabulary.keys(), vocabulary.values()), columns=['word', 'frequency'])
         vocabulary_h5.append(key='vocabulary', value=vocab_df, min_itemsize=vocab_h5_itemsizes)
