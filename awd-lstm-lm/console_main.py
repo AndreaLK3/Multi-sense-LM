@@ -193,10 +193,13 @@ globals_vocabulary_wordList = globals_vocabulary_df['word'].to_list().copy()
 os.chdir('awd-lstm-lm')
 variant_flags_dict = {'include_globalnode_input':False, 'include_sensenode_input':False}
 #
-model = model.AWD(args.model, ntokens, args.emsize, args.nhid,
+model = model.AWD_modified(args.model, ntokens, args.nhid,
                        args.nlayers, graph_dataobj, variant_flags_dict, globals_vocabulary_wordList,
                        args.dropout, args.dropouth,
                        args.dropouti, args.dropoute, args.wdrop, args.tied)
+# model = model.AWD(args.model, ntokens, args.emsize, args.nhid,
+#                        args.nlayers, args.dropout, args.dropouth,
+#                        args.dropouti, args.dropoute, args.wdrop, args.tied)
 
 ###
 if args.resume:
@@ -222,7 +225,7 @@ if not criterion:
         # WikiText-103
         splits = [2800, 20000, 76000]
     print('Using splits {}'.format(splits))
-    criterion = SplitCrossEntropyLoss(args.emsize, splits=splits, verbose=False)
+    criterion = SplitCrossEntropyLoss(model.ninp, splits=splits, verbose=False)
 
 # if torch.__version__ != '0.1.12_2':
 #     print([(name, p.device) for name, p in model.named_parameters()])
