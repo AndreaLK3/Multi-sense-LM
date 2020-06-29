@@ -19,6 +19,7 @@ import os, sys
 sys.path.append(os.path.join(os.getcwd(), '..', ''))
 import Graph.DefineGraph as DG
 import WordEmbeddings.ComputeEmbeddings as CE
+import Graph.Adjacencies as AD
 import Filesystem as F
 import pandas as pd
 
@@ -150,17 +151,24 @@ ntokens = len(corpus.dictionary)
 # added
 os.chdir('..')
 graph_dataobj = DG.get_graph_dataobject(new=False, method=CE.Method.FASTTEXT, slc_corpus=False).to(device)
+grapharea_matrix = AD.get_grapharea_matrix(graph_dataobj, area_size=32, hops_in_area=1)
+
 globals_vocabulary_fpath = os.path.join(F.FOLDER_VOCABULARY, F.VOCABULARY_OF_GLOBALS_FILE)
 vocab_h5 = pd.HDFStore(globals_vocabulary_fpath, mode='r')
 globals_vocabulary_df = pd.read_hdf(globals_vocabulary_fpath, mode='r')
 globals_vocabulary_wordList = globals_vocabulary_df['word'].to_list().copy()
 os.chdir('awd-lstm-lm')
+
 variant_flags_dict = {'include_globalnode_input':False, 'include_sensenode_input':False}
-#
+# note: to work correctly, the folders must be geared for WikiText-2 (since I am loading graph and grapharea_matrix)
 model = model.AWD_modified(args.model, ntokens, args.nhid,
-                       args.nlayers, graph_dataobj, variant_flags_dict, globals_vocabulary_wordList,
+                       args.nlayers, graph_dataobj, variant_flags_dict,
+                           globals_vocabulary_wordList, grapharea_matrix, 32, #grapharea_size,
                        args.dropout, args.dropouth,
                        args.dropouti, args.dropoute, args.wdrop, args.tied)
+# model = model.AWD(args.model, ntokens, args.emsize, args.nhid,
+#                        args.nlayers, args.dropout, args.dropouth,
+#                        args.dropouti, args.dropoute, args.wdrop, args.tied)
 
 ###
 if args.resume:
