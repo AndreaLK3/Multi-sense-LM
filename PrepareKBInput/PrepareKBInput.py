@@ -9,6 +9,7 @@ import Utils
 import pandas as pd
 import logging
 import sqlite3
+import re
 
 # Phase 1 - Preprocessing: eliminating quasi-duplicate definitions and examples, and lemmatizing synonyms & antonyms
 def preprocess(vocabulary_ls):
@@ -60,14 +61,17 @@ def create_senses_indices_table(vocabulary_words_ls):
     start_defs_count = 0
     start_examples_count = 0
 
-    all_word_senses = defs_input_db[Utils.DEFINITIONS][Utils.SENSE_WN_ID]
-    word_senses_toprocess = [sense_str for sense_str in all_word_senses if
+    # Process the wn_ids as previously > words_without_sense_set > add to the table with type=n and only vocab_index+1
+    word_senses_series_from_defs = defs_input_db[Utils.DEFINITIONS][Utils.SENSE_WN_ID]
+    word_senses_ls = [sense_str for sense_str in word_senses_series_from_defs if
                              Utils.get_word_from_sense(sense_str) in vocabulary_words_ls]
-    for wn_id in word_senses_toprocess:
+    words_with_senses_set = set()
+    for wn_id in word_senses_ls:
         logging.debug('PrepareKBInput.create_senses_vocabulary_table(vocabulary_words_ls) > word_senses_toprocess > '
                      + ' current wn_id=' + wn_id)
         sense_defs_df = Utils.select_from_hdf5(defs_input_db, Utils.DEFINITIONS, [Utils.SENSE_WN_ID], [wn_id])
         sense_examples_df = Utils.select_from_hdf5(examples_input_db, Utils.EXAMPLES, [Utils.SENSE_WN_ID], [wn_id])
+
 
         end_defs_count = start_defs_count + len(sense_defs_df.index)
         end_examples_count = start_examples_count + len(sense_examples_df.index)
@@ -83,20 +87,41 @@ def create_senses_indices_table(vocabulary_words_ls):
         my_vocabulary_index = my_vocabulary_index + 1
         start_defs_count = end_defs_count
         start_examples_count = end_examples_count
+        # add the word to the set of words that do have a sense
+        words_with_senses_set.add(wn_id[0:wn_id.find('.')])
+
+    words_without_senses_set = set(vocabulary_words_ls).difference(words_with_senses_set)
+
+    for word in words_without_senses_set:
+        # no definitions nor examples to add here. We will add the global vector as the vector of the dummy-sense.
+        dummy_wn_id = word + '.' + 'Global' + '.01'
+        end_defs_count = start_defs_count
+        end_examples_count = start_examples_count
+        out_indicesTable_db_c.execute("INSERT INTO indices_table VALUES (?,?,?,?,?,?)", (dummy_wn_id, my_vocabulary_index,
+                                                                                         start_defs_count,
+                                                                                         end_defs_count,
+                                                                                         start_examples_count,
+                                                                                         end_examples_count))
+
+        logging.debug("Vocabulary index of the sense " + dummy_wn_id + " = " + str(my_vocabulary_index))
+        logging.debug("start_defs_count=" + str(start_defs_count) + " ; end_defs_count=" + str(end_defs_count) +
+                      " ; start_examples_count=" + str(start_examples_count) + " ; end_examples_count=" + str(
+            end_examples_count))
+        my_vocabulary_index = my_vocabulary_index + 1
 
     out_indicesTable_db.commit()
     out_indicesTable_db.close()
 
 
 # ['move', 'light']
-def prepare(vocabulary, embeddings_method): #vocabulary = ['move', 'light', 'for', 'sea']
+def prepare(vocabulary_ls, embeddings_method): #vocabulary = ['move', 'light', 'for', 'sea']
     #Utils.init_logging(os.path.join("PrepareKBInput", "PrepareKBInput.log"))
 
     # Phase 1 - Preprocessing: eliminating quasi-duplicate definitions and examples, and lemmatizing synonyms & antonyms
-    preprocess(vocabulary)
+    preprocess(vocabulary_ls)
 
     # Phase 2 - Create the Vocabulary table with the correspondences (wordSense, integer index).
-    create_senses_indices_table(vocabulary)
+    create_senses_indices_table(vocabulary_ls)
 
     # Phase 3 - get the sentence embeddings for definitions and examples, using BERT or FasText, and store them
     CE.compute_elements_embeddings(Utils.DEFINITIONS, embeddings_method)

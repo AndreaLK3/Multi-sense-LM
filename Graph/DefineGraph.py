@@ -13,6 +13,7 @@ import SenseLabeledCorpus as SLC
 from GNN.NumericalIndices import try_to_get_wordnet_sense
 from PrepareKBInput.LemmatizeNyms import lemmatize_term
 import nltk
+import re
 
 
 def load_senses_elements(embeddings_method, elements_name):
@@ -24,7 +25,7 @@ def load_senses_elements(embeddings_method, elements_name):
 
 # ------ Auxiliary functions to initialize nodes / create edges
 
-def initialize_senses(X_defs, X_examples, average_or_random):
+def initialize_senses(X_defs, X_examples, X_globals, vocabulary_ls, average_or_random_flag):
 
     db_filepath = os.path.join(F.FOLDER_INPUT, Utils.INDICES_TABLE_DB)
     indicesTable_db = sqlite3.connect(db_filepath)
@@ -38,21 +39,36 @@ def initialize_senses(X_defs, X_examples, average_or_random):
         db_row = indicesTable_db_c.fetchone()
         if db_row is None:
             break
-
         current_row_idx = current_row_idx + 1
-        if average_or_random:
-            start_defs = db_row[2]
-            end_defs = db_row[3]
-            defs_vectors = X_defs[start_defs:end_defs][:]
-            start_examples = db_row[3]
-            end_examples = db_row[4]
-            examples_vectors = X_examples[start_examples:end_examples][:]
-            all_vectors = np.concatenate([defs_vectors, examples_vectors])
-            logging.debug("all_vectors.shape=" + str(all_vectors.shape) + "\n****")
-            sense_vector = np.average(all_vectors, axis=0)
-            X_senses_ls.extend([sense_vector])
 
-    if average_or_random:
+        if average_or_random_flag:
+            wn_id = db_row[0]
+
+            pt = r'\.([^.])+\.'
+            logging.info("wn_id=" + str(wn_id))
+            mtc = re.search(pt, db_row[0])
+            pos = mtc.group(0)[1:-1]
+            if pos == 'Global':
+                # no definitions and examples, this is a dummy sense. It gets initialized with the global vector
+                word = wn_id[0:wn_id.find('.')] if wn_id[0] != '.' else '.'
+                global_idx = vocabulary_ls.index(word)
+                sense_vector = X_globals[global_idx].numpy()
+                X_senses_ls.extend([sense_vector])
+
+            else:
+                start_defs = db_row[2]
+                end_defs = db_row[3]
+                defs_vectors = X_defs[start_defs:end_defs][:]
+                start_examples = db_row[3]
+                end_examples = db_row[4]
+                examples_vectors = X_examples[start_examples:end_examples][:]
+                all_vectors = np.concatenate([defs_vectors, examples_vectors])
+                logging.debug("all_vectors.shape=" + str(all_vectors.shape) + "\n****")
+                sense_vector = np.average(all_vectors, axis=0)
+                X_senses_ls.extend([sense_vector])
+            logging.info(sense_vector.dtype)
+
+    if average_or_random_flag:
         X_senses = np.array(X_senses_ls)
     else: # if average_or_random == False:
         X_senses_random_ndarray = np.random.rand(current_row_idx, X_defs.shape[1]) # uniform distribution over [0, 1)
@@ -238,10 +254,15 @@ def create_graph(method, slc_corpus):
         raise AssertionError
 
     Utils.init_logging('DefineGraph.log')
+
+    globals_vocabulary_fpath = os.path.join(F.FOLDER_VOCABULARY, F.VOCABULARY_OF_GLOBALS_FILE )
+    globals_vocabulary_df = pd.read_hdf(globals_vocabulary_fpath, mode='r')
+    globals_vocabulary_ls = globals_vocabulary_df['word'].to_list().copy()
+
     X_definitions = load_senses_elements(method, Utils.DEFINITIONS)
     X_examples = load_senses_elements(method, Utils.EXAMPLES)
-    X_senses = initialize_senses(X_definitions, X_examples, average_or_random=True)
     X_globals = torch.tensor(np.load(os.path.join(F.FOLDER_INPUT, single_prototypes_file))).to(torch.float32)
+    X_senses = initialize_senses(X_definitions, X_examples, X_globals, globals_vocabulary_ls, average_or_random_flag=True)
 
     logging.info("Constructing X, matrix of node features")
     logging.info("X_definitions.shape=" + str(X_definitions.shape)) # X_definitions.shape=torch.Size([25986, 300])
@@ -263,8 +284,6 @@ def create_graph(method, slc_corpus):
     logging.info("exs_edges_se.__len__()=" + str(exs_edges_se.__len__())) # exs_edges_se.__len__()=26003
 
     logging.info("Defining the edges: sc")
-    globals_vocabulary_fpath = os.path.join(F.FOLDER_VOCABULARY, F.VOCABULARY_OF_GLOBALS_FILE )
-    globals_vocabulary_df = pd.read_hdf(globals_vocabulary_fpath, mode='r')
     sc_edges = get_edges_sensechildren(globals_vocabulary_df, X_senses.shape[0])
     logging.info("sc_edges.__len__()=" + str(sc_edges.__len__())) # sc_edges.__len__()=25986
     # If operating on a sense-labeled corpus, we need to connect globals & their senses that do not belong to them

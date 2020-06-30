@@ -240,7 +240,7 @@ def get_word_from_sense(sense_str):
         logging.info("sense_str= " + sense_str)
         pattern_2 = '.[^.]+'
         mtc = re.match(pattern_2, sense_str)
-        word = mtc.group()
+        word = mtc.group() if mtc is not None else '.'
     return word
 
 
