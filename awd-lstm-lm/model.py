@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 
 from embed_regularize import embedded_dropout
-from locked_dropout import LockedDropoutForwardWithDrop
+from locked_dropout import LockedDropout
 from weight_drop import WeightDrop  #, ForwardWithDrop
 from weight_drop import WeightDrop  #, ForwardWithDrop
 import os, sys
@@ -105,12 +105,7 @@ class AWD_modified(nn.Module):
         self.rnns = torch.nn.ModuleList(self.rnns)
         self.decoder = nn.Linear(nhid, ntoken)
 
-        # Optionally tie weights as in:
-        # "Using the Output Embedding to Improve Language Models" (Press & Wolf 2016)
-        # https://arxiv.org/abs/1608.05859
-        # and
-        # "Tying Word Vectors and Word Classifiers: A Loss Framework for Language Modeling" (Inan et al. 2016)
-        # https://arxiv.org/abs/1611.01462
+        # Optionally tie weights:
         if tie_weights:
             # if nhid != ninp:
             #     raise ValueError('When using the tied flag, nhid must be equal to emsize')
@@ -254,12 +249,7 @@ class AWD(nn.Module):
         self.rnns = torch.nn.ModuleList(self.rnns)
         self.decoder = nn.Linear(nhid, ntoken)
 
-        # Optionally tie weights as in:
-        # "Using the Output Embedding to Improve Language Models" (Press & Wolf 2016)
-        # https://arxiv.org/abs/1608.05859
-        # and
-        # "Tying Word Vectors and Word Classifiers: A Loss Framework for Language Modeling" (Inan et al. 2016)
-        # https://arxiv.org/abs/1611.01462
+        # Optionally tie weights:
         if tie_weights:
             #if nhid != ninp:
             #    raise ValueError('When using the tied flag, nhid must be equal to emsize')
@@ -299,7 +289,7 @@ class AWD(nn.Module):
         outputs = []
 
         for l, rnn in enumerate(self.rnns):
-            rnn.module.flatten_parameters()  # not working
+            rnn.module.flatten_parameters()  # now working
             current_input = raw_output
             raw_output, new_h = rnn(raw_output, hidden[l])
             new_hidden.append(new_h)
@@ -318,13 +308,13 @@ class AWD(nn.Module):
             return result, hidden, raw_outputs, outputs
         return result, hidden
 
+
     def init_hidden(self, bsz):
         weight = next(self.parameters()).data
-        encoding_size = self.d_inp * (1 + sum([int(self.variant_flags_dict[flag]) for flag in self.variant_flags_dict]))
         if self.rnn_type == 'LSTM':
-            return [(weight.new(1, bsz, self.nhid if l != self.nlayers - 1 else (encoding_size if self.tie_weights else self.nhid)).zero_(),
-                    weight.new(1, bsz, self.nhid if l != self.nlayers - 1 else (encoding_size if self.tie_weights else self.nhid)).zero_())
+            return [(weight.new(1, bsz, self.nhid if l != self.nlayers - 1 else (self.ninp if self.tie_weights else self.nhid)).zero_(),
+                    weight.new(1, bsz, self.nhid if l != self.nlayers - 1 else (self.ninp if self.tie_weights else self.nhid)).zero_())
                     for l in range(self.nlayers)]
         elif self.rnn_type == 'QRNN' or self.rnn_type == 'GRU':
-            return [weight.new(1, bsz, self.nhid if l != self.nlayers - 1 else (encoding_size if self.tie_weights else self.nhid)).zero_()
+            return [weight.new(1, bsz, self.nhid if l != self.nlayers - 1 else (self.ninp if self.tie_weights else self.nhid)).zero_()
                     for l in range(self.nlayers)]
