@@ -74,8 +74,8 @@ def exe_from_input_to_vectors(do_reset, compute_single_prototype, sp_method, voc
                                                os.path.join(F.FOLDER_INPUT, single_prototypes_file),
                                                sp_method)
 
-    kb_data_chunk = RID.retrieve_data_WordNet(vocabulary)
+    vocabulary_ls = RID.retrieve_data_WordNet(vocabulary)
     logging.info("CreateGraphInput.exe() > "
-                 + " number of ords included in the vocabulary chunk, to be prepared: " + str(len(kb_data_chunk)))
-    PI.prepare(kb_data_chunk, sp_method)
+                 + " number of ords included in the vocabulary chunk, to be prepared: " + str(len(vocabulary_ls)))
+    PI.prepare(vocabulary_ls, sp_method)
     tables.file._open_files.close_all()

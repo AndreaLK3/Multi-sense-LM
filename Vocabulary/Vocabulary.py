@@ -4,9 +4,10 @@ import pandas as pd
 import SenseLabeledCorpus as SLC
 import logging
 import Vocabulary.Vocabulary_Utilities as VocabUtils
+import PrepareKBInput.LemmatizeNyms as LN
+import nltk
 
-
-def build_vocabulary_from_text(corpus_txt_fpaths):
+def build_vocabulary_dict_fromtext(corpus_txt_fpaths):
     vocab_dict = {}
     lines_logpoint = 1000
 
@@ -35,28 +36,8 @@ def build_vocabulary_from_text(corpus_txt_fpaths):
             logging.info("Vocabulary created from " + str(corpus_txt_fpath) + " after processing " + str(tot_tokens) + ' tokens')
     return vocab_dict
 
-        # for i, line in enumerate(open(corpus_txt_fpath, "r", encoding="utf-8")):
-        #     if line == '':
-        #         break
-        #     if i-1 % lines_logpoint == 0:
-        #         logging.info("Reading in text corpus to create vocabulary. Line n. "+ str(i+1))
-        #     tokens_in_line_truecase, tot_tokens = VocabUtils.process_line(line, tot_tokens)
-        #
-        #     different_tokens = set(token for token in tokens_in_line_truecase)
-        #
-        #     update_lts = [(token.replace('_', ' '), line.count(token) ) for token in different_tokens] # '_' was used for phrases.
-        #     for word, freq in update_lts:
-        #         try:
-        #             prev_freq = vocab_dict[word]
-        #             vocab_dict[word] = prev_freq + freq
-        #         except KeyError:
-        #             vocab_dict[word] = freq
 
-
-    # return vocab_dict
-
-
-def build_vocabulary_from_senselabeled(lowercase=False):
+def build_vocabulary_dict_from_senselabeled(lowercase=False):
     vocab_dict = {}
 
     tokens_toexclude = [Utils.EOS_TOKEN] # + list(string.punctuation)
@@ -87,19 +68,26 @@ def get_vocabulary_df(senselabeled_or_text, corpus_txt_fpaths, out_vocabulary_h5
     else:
         logging.info("*** Creating vocabulary at " + out_vocabulary_h5_filepath)
         vocabulary_h5 = pd.HDFStore(out_vocabulary_h5_filepath, mode='w')
-        vocab_h5_itemsizes = {'word': Utils.HDF5_BASE_SIZE_512 / 4, 'frequency': Utils.HDF5_BASE_SIZE_512 / 8}
+        vocab_h5_itemsizes = {'word': Utils.HDF5_BASE_SIZE_512 / 4, 'frequency': Utils.HDF5_BASE_SIZE_512 / 8,
+                              'lemmatized_form': Utils.HDF5_BASE_SIZE_512 / 4}
 
         if senselabeled_or_text:
-            vocabulary = build_vocabulary_from_senselabeled(lowercase)
+            vocabulary_wordfreq_dict = build_vocabulary_dict_from_senselabeled(lowercase)
         else:
-            vocabulary = build_vocabulary_from_text(corpus_txt_fpaths)
+            vocabulary_wordfreq_dict = build_vocabulary_dict_fromtext(corpus_txt_fpaths)
 
         if min_count>1:
-            VocabUtils.eliminate_rare_words(vocabulary, min_count)
+            VocabUtils.eliminate_rare_words(vocabulary_wordfreq_dict, min_count)
 
-        vocab_df = pd.DataFrame(data=zip(vocabulary.keys(), vocabulary.values()), columns=['word', 'frequency'])
+        vocab_df = pd.DataFrame(data=zip(vocabulary_wordfreq_dict.keys(), vocabulary_wordfreq_dict.values()), columns=['word', 'frequency'])
+        logging.info("*** The vocabulary was created. Number of words= " + str(len(vocab_df)) + "***")
+
+        vocab_wordls = vocab_df['word'].to_list().copy()
+        lemmatizer = nltk.stem.WordNetLemmatizer()
+        lemmatized_forms = [LN.lemmatize_term(word, lemmatizer) for word in vocab_wordls]
+        vocab_df['lemmatized_form'] = lemmatized_forms
+
         vocabulary_h5.append(key='vocabulary', value=vocab_df, min_itemsize=vocab_h5_itemsizes)
         vocabulary_h5.close()
-        logging.info("*** The vocabulary was created. Number of words= " + str(len(vocab_df))+"***")
 
     return vocab_df

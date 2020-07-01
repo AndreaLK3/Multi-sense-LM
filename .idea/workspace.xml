@@ -2,12 +2,14 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="d35dca92-959c-489d-8a61-f337e4cce7fa" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CreateGraphInput.py" beforeDir="false" afterPath="$PROJECT_DIR$/CreateGraphInput.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/DefineGraph.log" beforeDir="false" afterPath="$PROJECT_DIR$/DefineGraph.log" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Graph/DefineGraph.py" beforeDir="false" afterPath="$PROJECT_DIR$/Graph/DefineGraph.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Media/Task1_DeveloperDiary_4a_globals.docx" beforeDir="false" afterPath="$PROJECT_DIR$/Media/Task1_DeveloperDiary_4a_globals.docx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Media/Task1_DeveloperDiary_4b_senses.docx" beforeDir="false" afterPath="$PROJECT_DIR$/Media/Task1_DeveloperDiary_4b_senses.docx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PrepareKBInput/PrepareKBInput.py" beforeDir="false" afterPath="$PROJECT_DIR$/PrepareKBInput/PrepareKBInput.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/Utils.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Vocabulary/Vocabulary.py" beforeDir="false" afterPath="$PROJECT_DIR$/Vocabulary/Vocabulary.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/trainmodel_script.py" beforeDir="false" afterPath="$PROJECT_DIR$/trainmodel_script.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -23,8 +25,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/GNN/Training.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="320">
-              <caret line="131" column="35" lean-forward="true" selection-start-line="131" selection-start-column="35" selection-end-line="131" selection-end-column="35" />
+            <state relative-caret-position="1650">
+              <caret line="131" column="35" selection-start-line="131" selection-start-column="35" selection-end-line="131" selection-end-column="35" />
               <folding>
                 <element signature="e#0#12#0" expanded="true" />
               </folding>
@@ -35,8 +37,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/CreateGraphInput.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="546">
-              <caret line="79" column="11" selection-start-line="79" selection-start-column="11" selection-end-line="79" selection-end-column="11" />
+            <state relative-caret-position="1035">
+              <caret line="79" column="4" selection-start-line="79" selection-start-column="4" selection-end-line="79" selection-end-column="40" />
               <folding>
                 <element signature="e#0#22#0" expanded="true" />
               </folding>
@@ -47,8 +49,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/PrepareKBInput/PrepareKBInput.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="809">
-              <caret line="90" column="58" selection-start-line="90" selection-start-column="34" selection-end-line="90" selection-end-column="58" />
+            <state relative-caret-position="510">
+              <caret line="45" column="62" selection-start-line="45" selection-start-column="62" selection-end-line="45" selection-end-column="62" />
               <folding>
                 <element signature="e#0#17#0" expanded="true" />
               </folding>
@@ -59,10 +61,22 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Vocabulary/Vocabulary.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1110">
-              <caret line="74" column="41" lean-forward="true" selection-start-line="74" selection-start-column="41" selection-end-line="74" selection-end-column="41" />
+            <state relative-caret-position="1245">
+              <caret line="90" column="29" selection-start-line="90" selection-start-column="29" selection-end-line="90" selection-end-column="29" />
               <folding>
                 <element signature="e#0#12#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/GetKBInputData/WordNet.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="225">
+              <caret line="21" column="24" selection-start-line="21" selection-start-column="24" selection-end-line="21" selection-end-column="24" />
+              <folding>
+                <element signature="e#0#37#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -72,7 +86,7 @@
         <entry file="file://$PROJECT_DIR$/trainmodel_script.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="105">
-              <caret line="7" column="25" selection-start-line="7" selection-start-column="5" selection-end-line="7" selection-end-column="25" />
+              <caret line="7" selection-start-line="7" selection-end-line="7" selection-end-column="78" />
               <folding>
                 <element signature="e#0#45#0" expanded="true" />
               </folding>
@@ -83,8 +97,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Graph/DefineGraph.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="217">
-              <caret line="125" column="33" selection-start-line="125" selection-start-column="33" selection-end-line="125" selection-end-column="33" />
+            <state relative-caret-position="132">
+              <caret line="53" column="54" lean-forward="true" selection-start-line="53" selection-start-column="54" selection-end-line="53" selection-end-column="54" />
               <folding>
                 <element signature="e#0#19#0" expanded="true" />
               </folding>
@@ -95,8 +109,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Utils.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="217">
-              <caret line="242" column="54" selection-start-line="242" selection-start-column="54" selection-end-line="242" selection-end-column="54" />
+            <state relative-caret-position="66">
+              <caret line="233" column="13" selection-start-line="233" selection-start-column="13" selection-end-line="233" selection-end-column="13" />
               <folding>
                 <element signature="e#0#14#0" expanded="true" />
               </folding>
@@ -115,8 +129,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>units</find>
-      <find>.hidd</find>
       <find>int(n_hid_units // 2)</find>
       <find>select_indices</find>
       <find>/</find>
@@ -145,6 +157,8 @@
       <find>32</find>
       <find>vocab_index</find>
       <find>pt</find>
+      <find>lemmatize</find>
+      <find>logging.i</find>
     </findStrings>
     <replaceStrings>
       <replace>F</replace>
@@ -212,24 +226,24 @@
         <option value="$PROJECT_DIR$/awd-lstm-lm/model.py" />
         <option value="$PROJECT_DIR$/SenseLabeledCorpus.py" />
         <option value="$PROJECT_DIR$/WordEmbeddings/ComputeEmbeddings.py" />
-        <option value="$PROJECT_DIR$/CreateGraphInput.py" />
         <option value="$PROJECT_DIR$/GNN/DataLoading.py" />
         <option value="$PROJECT_DIR$/GNN/NumericalIndices.py" />
         <option value="$PROJECT_DIR$/GNN/Training.py" />
         <option value="$PROJECT_DIR$/GNN/Models/Senses.py" />
-        <option value="$PROJECT_DIR$/trainmodel_script.py" />
         <option value="$PROJECT_DIR$/Vocabulary/Vocabulary_Utilities.py" />
         <option value="$PROJECT_DIR$/GNN/Models/RNNs.py" />
         <option value="$PROJECT_DIR$/GNN/Models/Common.py" />
         <option value="$PROJECT_DIR$/PrepareKBInput/LemmatizeNyms.py" />
-        <option value="$PROJECT_DIR$/Vocabulary/Vocabulary.py" />
         <option value="$PROJECT_DIR$/PrepareKBInput/PrepareKBInput.py" />
+        <option value="$PROJECT_DIR$/CreateGraphInput.py" />
+        <option value="$PROJECT_DIR$/Vocabulary/Vocabulary.py" />
+        <option value="$PROJECT_DIR$/trainmodel_script.py" />
         <option value="$PROJECT_DIR$/Graph/DefineGraph.py" />
         <option value="$PROJECT_DIR$/Utils.py" />
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds">
+  <component name="ProjectFrameBounds" extendedState="6">
     <option name="y" value="23" />
     <option name="width" value="1920" />
     <option name="height" value="981" />
@@ -240,7 +254,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -315,6 +328,7 @@
           <select />
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -380,14 +394,14 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="23" width="1920" height="981" extended-state="0" />
+    <frame x="0" y="23" width="1920" height="981" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.486166" visible="true" weight="0.15282215" />
+      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.486166" visible="true" weight="0.115015976" />
       <window_info id="Structure" order="1" sideWeight="0.513834" side_tool="true" weight="0.27110156" />
       <window_info id="Favorites" order="2" sideWeight="0.5059761" side_tool="true" weight="0.18025751" />
       <window_info anchor="bottom" id="Message" order="0" />
-      <window_info anchor="bottom" id="Find" order="1" weight="0.30465445" />
+      <window_info anchor="bottom" id="Find" order="1" weight="0.30371204" />
       <window_info anchor="bottom" id="Run" order="2" />
       <window_info anchor="bottom" id="Debug" order="3" sideWeight="0.4888179" weight="0.40269965" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
@@ -397,7 +411,7 @@
       <window_info anchor="bottom" id="Terminal" order="8" weight="0.325811" />
       <window_info anchor="bottom" id="Event Log" order="9" sideWeight="0.5111821" side_tool="true" weight="0.40269965" />
       <window_info anchor="bottom" id="Inspection Results" order="10" weight="0.32863188" />
-      <window_info active="true" anchor="bottom" id="Python Console" order="11" sideWeight="0.4888179" visible="true" weight="0.21147357" />
+      <window_info active="true" anchor="bottom" id="Python Console" order="11" sideWeight="0.4888179" visible="true" weight="0.359955" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
@@ -459,16 +473,6 @@
           <url>file://$PROJECT_DIR$/PrepareKBInput/PrepareKBInput.py</url>
           <line>67</line>
           <option name="timeStamp" value="70" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/Graph/DefineGraph.py</url>
-          <line>247</line>
-          <option name="timeStamp" value="74" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/Graph/DefineGraph.py</url>
-          <line>71</line>
-          <option name="timeStamp" value="81" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
@@ -562,6 +566,21 @@ batch_elements_at_t = batch_elements_at_t.chunk(chunks=batch_elements_at_t.shape
     </expressions>
     <expressions id="evaluateExpression">
       <expression>
+        <expression-string>globals_voc_df.loc[globals_voc_df['word'] == word].index[0]</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>globals_voc_df.loc[globals_voc_df['word'] == word]</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>globals_voc_df</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
         <expression-string>torch.tensor(np.array(X_senses_ls))</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
@@ -591,21 +610,6 @@ batch_elements_at_t = batch_elements_at_t.chunk(chunks=batch_elements_at_t.shape
         <language-id>Python</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
-      <expression>
-        <expression-string>mtc.group(0)</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>mtc.group(1)</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>by</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
     </expressions>
   </component>
   <component name="editorHistoryManager">
@@ -620,16 +624,6 @@ batch_elements_at_t = batch_elements_at_t.chunk(chunks=batch_elements_at_t.shape
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="161">
           <caret line="69" selection-start-line="69" selection-end-line="69" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/GetKBInputData/WordNet.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="225">
-          <caret line="21" column="24" selection-start-line="21" selection-start-column="24" selection-end-line="21" selection-end-column="24" />
-          <folding>
-            <element signature="e#0#37#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -888,62 +882,12 @@ batch_elements_at_t = batch_elements_at_t.chunk(chunks=batch_elements_at_t.shape
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/PrepareKBInput/LemmatizeNyms.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="345">
-          <caret line="28" column="76" selection-start-line="28" selection-start-column="76" selection-end-line="28" selection-end-column="76" />
-          <folding>
-            <element signature="e#0#14#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Vocabulary/Vocabulary_Utilities.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="135">
           <caret line="15" column="68" selection-start-line="15" selection-start-column="68" selection-end-line="15" selection-end-column="68" />
           <folding>
             <element signature="e#0#11#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/trainmodel_script.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="105">
-          <caret line="7" column="25" selection-start-line="7" selection-start-column="5" selection-end-line="7" selection-end-column="25" />
-          <folding>
-            <element signature="e#0#45#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/CreateGraphInput.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="546">
-          <caret line="79" column="11" selection-start-line="79" selection-start-column="11" selection-end-line="79" selection-end-column="11" />
-          <folding>
-            <element signature="e#0#22#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Vocabulary/Vocabulary.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1110">
-          <caret line="74" column="41" lean-forward="true" selection-start-line="74" selection-start-column="41" selection-end-line="74" selection-end-column="41" />
-          <folding>
-            <element signature="e#0#12#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/GNN/Training.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="320">
-          <caret line="131" column="35" lean-forward="true" selection-start-line="131" selection-start-column="35" selection-end-line="131" selection-end-column="35" />
-          <folding>
-            <element signature="e#0#12#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -955,20 +899,80 @@ batch_elements_at_t = batch_elements_at_t.chunk(chunks=batch_elements_at_t.shape
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/PrepareKBInput/LemmatizeNyms.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="525">
+          <caret line="35" column="17" lean-forward="true" selection-start-line="35" selection-start-column="17" selection-end-line="35" selection-end-column="46" />
+          <folding>
+            <element signature="e#0#14#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/GNN/Training.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1650">
+          <caret line="131" column="35" selection-start-line="131" selection-start-column="35" selection-end-line="131" selection-end-column="35" />
+          <folding>
+            <element signature="e#0#12#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/CreateGraphInput.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1035">
+          <caret line="79" column="4" selection-start-line="79" selection-start-column="4" selection-end-line="79" selection-end-column="40" />
+          <folding>
+            <element signature="e#0#22#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/PrepareKBInput/PrepareKBInput.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="809">
-          <caret line="90" column="58" selection-start-line="90" selection-start-column="34" selection-end-line="90" selection-end-column="58" />
+        <state relative-caret-position="510">
+          <caret line="45" column="62" selection-start-line="45" selection-start-column="62" selection-end-line="45" selection-end-column="62" />
           <folding>
             <element signature="e#0#17#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/Vocabulary/Vocabulary.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1245">
+          <caret line="90" column="29" selection-start-line="90" selection-start-column="29" selection-end-line="90" selection-end-column="29" />
+          <folding>
+            <element signature="e#0#12#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/GetKBInputData/WordNet.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="225">
+          <caret line="21" column="24" selection-start-line="21" selection-start-column="24" selection-end-line="21" selection-end-column="24" />
+          <folding>
+            <element signature="e#0#37#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/trainmodel_script.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="105">
+          <caret line="7" selection-start-line="7" selection-end-line="7" selection-end-column="78" />
+          <folding>
+            <element signature="e#0#45#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/Graph/DefineGraph.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="217">
-          <caret line="125" column="33" selection-start-line="125" selection-start-column="33" selection-end-line="125" selection-end-column="33" />
+        <state relative-caret-position="132">
+          <caret line="53" column="54" lean-forward="true" selection-start-line="53" selection-start-column="54" selection-end-line="53" selection-end-column="54" />
           <folding>
             <element signature="e#0#19#0" expanded="true" />
           </folding>
@@ -977,8 +981,8 @@ batch_elements_at_t = batch_elements_at_t.chunk(chunks=batch_elements_at_t.shape
     </entry>
     <entry file="file://$PROJECT_DIR$/Utils.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="217">
-          <caret line="242" column="54" selection-start-line="242" selection-start-column="54" selection-end-line="242" selection-end-column="54" />
+        <state relative-caret-position="66">
+          <caret line="233" column="13" selection-start-line="233" selection-start-column="13" selection-end-line="233" selection-end-column="13" />
           <folding>
             <element signature="e#0#14#0" expanded="true" />
           </folding>

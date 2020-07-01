@@ -45,12 +45,12 @@ def initialize_senses(X_defs, X_examples, X_globals, vocabulary_ls, average_or_r
             wn_id = db_row[0]
 
             pt = r'\.([^.])+\.'
-            logging.info("wn_id=" + str(wn_id))
+            logging.debug("wn_id=" + str(wn_id))
             mtc = re.search(pt, db_row[0])
             pos = mtc.group(0)[1:-1]
             if pos == 'Global':
                 # no definitions and examples, this is a dummy sense. It gets initialized with the global vector
-                word = wn_id[0:wn_id.find('.')] if wn_id[0] != '.' else '.'
+                word = wn_id[0:Utils.get_locations_of_char(wn_id, '.')[-2]]
                 global_idx = vocabulary_ls.index(word)
                 sense_vector = X_globals[global_idx].numpy()
                 X_senses_ls.extend([sense_vector])
@@ -66,7 +66,6 @@ def initialize_senses(X_defs, X_examples, X_globals, vocabulary_ls, average_or_r
                 logging.debug("all_vectors.shape=" + str(all_vectors.shape) + "\n****")
                 sense_vector = np.average(all_vectors, axis=0)
                 X_senses_ls.extend([sense_vector])
-            logging.info(sense_vector.dtype)
 
     if average_or_random_flag:
         X_senses = np.array(X_senses_ls)
@@ -124,6 +123,7 @@ def get_edges_sensechildren(globals_voc_df, globals_start_index_toadd):
 
         word_sense = db_row[0]
         word = Utils.get_word_from_sense(word_sense)
+        logging.info(word)
         sourceglobal_raw_idx = globals_voc_df.loc[globals_voc_df['word'] == word].index[0]
         sourceglobal_idx = globals_start_index_toadd + sourceglobal_raw_idx
         targetsense_idx = db_row[1]

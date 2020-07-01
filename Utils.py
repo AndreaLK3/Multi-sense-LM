@@ -232,16 +232,26 @@ def select_from_hdf5(input_db, table_key, field_names, values):
 
 # e.g.: from 'sea.n.01' get 'sea'
 def get_word_from_sense(sense_str):
-    pattern = '[^.]+'
-    mtc = re.match(pattern, sense_str)
     try:
-        word = mtc.group()
+        word = sense_str[0:get_locations_of_char(sense_str, '.')[-2]]
     except AttributeError:
         logging.info("sense_str= " + sense_str)
         pattern_2 = '.[^.]+'
         mtc = re.match(pattern_2, sense_str)
         word = mtc.group() if mtc is not None else '.'
     return word
+
+
+# Returns a list of indices: where the character is located in the word/string.
+# Useful to split senses, e.g. abbreviate.v.02 or Sr..Global.01
+def get_locations_of_char(word, char):
+    locations = []
+    for i in range(len(word)):
+        c = word[i]
+        if c == char:
+            locations.append(i)
+    return locations
+
 
 
 ##### Check GPU memory usage
