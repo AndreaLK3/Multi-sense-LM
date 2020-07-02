@@ -47,12 +47,25 @@ class AWD_ensemble(nn.Module):
         self.AWD_modified = AWD_modified
         self.ninp = self.AWD_base.ninp # placeholder, we are not splitting the softmax now
 
+        self.concatenated_encoding_dim = self.AWD_base.ninp + self.AWD_modified.ninp
+        self.C = nn.LSTM(input_size=self.concatenated_encoding_dim, hidden_size=1, num_layers=1,bias=True) # layer to the coefficient (a) used to combine the logsoftmax
+
+
     def forward(self, input, hidden, return_h=False):
 
-        result_base, hidden_base = self.AWD_base.forward(input, hidden, return_h)
-        result_modified, hidden_modified = self.AWD_modified.forward(input, hidden, return_h)
+        if not(return_h):
+            result_base, hidden_base = self.AWD_base.forward(input, hidden[0], return_h)
+            result_mod, hidden_mod = self.AWD_modified.forward(input, hidden[1], return_h)
+            return ((result_base, result_mod), (hidden_base, hidden_mod))
+        else:
+            result_base, hidden_base, raw_outputs_base, outputs_base = self.AWD_base.forward(input, hidden[0], return_h)
+            result_mod, hidden_mod, raw_outputs_mod, outputs_mod = self.AWD_modified.forward(input, hidden[1], return_h)
+            return ((result_base, result_mod), (hidden_base, hidden_mod), (raw_outputs_base, raw_outputs_mod), (outputs_base, outputs_mod))
 
-
+    def init_hidden(self, bsz):
+        hidden_base = self.AWD_base.init_hidden(bsz)
+        hidden_modified = self.AWD_modified.init_hidden(bsz)
+        return (hidden_base, hidden_modified)
 
 
 class AWD_modified(nn.Module):

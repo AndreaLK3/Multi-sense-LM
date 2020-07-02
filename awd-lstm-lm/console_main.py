@@ -289,18 +289,28 @@ def train():
 
         # Starting each batch, we detach the hidden state from how it was previously produced.
         # If we didn't, the model would try backpropagating all the way to start of the dataset.
-        hidden = repackage_hidden(hidden)
+        hidden = (repackage_hidden(hidden[0]),repackage_hidden(hidden[1]))
         optimizer.zero_grad()
 
         output, hidden, rnn_hs, dropped_rnn_hs = model(data, hidden, return_h=True)
-        raw_loss = criterion(model.decoder.weight, model.decoder.bias, output, targets)
+        # raw_loss = criterion(model.decoder.weight, model.decoder.bias, output, targets)
+        last_layers_outs = (output[0].view(data.shape[0], data.shape[1], model_base.ninp),
+                            output[1].view(data.shape[0], data.shape[1], model_modified.ninp))
+        raw_loss = criterion.forward_ensemble(model, model.AWD_base, model.AWD_modified, last_layers_outs, targets)
 
-        loss = raw_loss
-        # Activation Regularization
-        if args.alpha: loss = loss + sum(
-            args.alpha * dropped_rnn_h.pow(2).mean() for dropped_rnn_h in dropped_rnn_hs[-1:])
+        loss_0, loss_1 = raw_loss
+        # First model
+        if args.alpha: loss_0 = loss + sum(
+            args.alpha * dropped_rnn_h.pow(2).mean() for dropped_rnn_h in dropped_rnn_hs[0][-1:])
+        # Second model
+        if args.alpha: loss_1 = loss + sum(
+            args.alpha * dropped_rnn_h.pow(2).mean() for dropped_rnn_h in dropped_rnn_hs[1][-1:])
         # Temporal Activation Regularization (slowness)
-        if args.beta: loss = loss + sum(args.beta * (rnn_h[1:] - rnn_h[:-1]).pow(2).mean() for rnn_h in rnn_hs[-1:])
+        # First model
+        if args.beta: loss_0 = loss + sum(args.beta * (rnn_h[1:] - rnn_h[:-1]).pow(2).mean() for rnn_h in rnn_hs[0][-1:])
+        # Second model
+        if args.beta: loss_1 = loss + sum(args.beta * (rnn_h[1:] - rnn_h[:-1]).pow(2).mean() for rnn_h in rnn_hs[0][-1:])
+        loss = loss_0 + loss_1
         loss.backward()
 
         # `clip_grad_norm` helps prevent the exploding gradient problem in RNNs / LSTMs.

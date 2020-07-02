@@ -163,7 +163,7 @@ variant_flags_dict = {'include_globalnode_input':False, 'include_sensenode_input
 # note: to work correctly, the folders must be geared for WikiText-2 (since I am loading graph and grapharea_matrix)
 model_modified = model.AWD_modified(args.model, ntokens, args.nhid,
                        args.nlayers, graph_dataobj, variant_flags_dict,
-                           globals_vocabulary_wordList, grapharea_matrix, 32, #grapharea_size,
+                           globals_vocabulary_wordList, grapharea_matrix, 32, # grapharea_size,
                        args.dropout, args.dropouth,
                        args.dropouti, args.dropoute, args.wdrop, args.tied)
 model_base = model.AWD(args.model, ntokens, args.emsize, args.nhid,
@@ -236,7 +236,7 @@ def train():
     total_loss = 0
     start_time = time.time()
     ntokens = len(corpus.dictionary)
-    hidden = model.init_hidden(args.batch_size)
+    hidden_tpl = model.init_hidden(args.batch_size)
     batch, i = 0, 0
     while i < train_data.size(0) - 1 - 1:
         bptt = args.bptt if np.random.random() < 0.95 else args.bptt / 2.
@@ -252,19 +252,23 @@ def train():
 
         # Starting each batch, we detach the hidden state from how it was previously produced.
         # If we didn't, the model would try backpropagating all the way to start of the dataset.
-        hidden = repackage_hidden(hidden)
+        hidden_tpl = (repackage_hidden(hidden_tpl[0]), repackage_hidden(hidden_tpl[1]))
         optimizer.zero_grad()
 
-        output, hidden, rnn_hs, dropped_rnn_hs = model(data, hidden, return_h=True)
+        output, hidden_tpl, rnn_hs, dropped_rnn_hs = model(data, hidden_tpl, return_h=True)
         raw_loss = criterion(model.decoder.weight, model.decoder.bias, output, targets)
 
         loss = raw_loss
         # Activation Regularization
+        # First modeldrop
         if args.alpha: loss = loss + sum(
             args.alpha * dropped_rnn_h.pow(2).mean() for dropped_rnn_h in dropped_rnn_hs[-1:])
+        # Second model
         # Temporal Activation Regularization (slowness)
+        # First model
         if args.beta: loss = loss + sum(args.beta * (rnn_h[1:] - rnn_h[:-1]).pow(2).mean() for rnn_h in rnn_hs[-1:])
         loss.backward()
+        # Second model
 
         # `clip_grad_norm` helps prevent the exploding gradient problem in RNNs / LSTMs.
         if args.clip: torch.nn.utils.clip_grad_norm_(params, args.clip)

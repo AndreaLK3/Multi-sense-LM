@@ -103,6 +103,69 @@ class SplitCrossEntropyLoss(nn.Module):
             split_hiddens.append(hiddens.masked_select(tmp_mask.unsqueeze(1).expand_as(hiddens)).view(-1, hiddens.size(1)))
         return split_targets, split_hiddens
 
+    # * Added by me, to handle the loss of an ensemble of 2 models. Currently we do not splitting the softmax
+    def forward_ensemble(self, ensemble_model, model1, model2, lastlayers_outs, targets):
+        ll_1_out, ll_2_out = lastlayers_outs
+
+        model1_weight= model1.decoder.weight
+        model1_bias= model1.decoder.bias
+        model1_lastlayer_out_flat = ll_1_out.view(ll_1_out.size(0)*ll_1_out.size(1), ll_1_out.size(2))
+
+        model2_weight = model2.decoder.weight
+        model2_bias = model2.decoder.bias
+        model2_lastlayer_out_flat = ll_2_out.view(ll_2_out.size(0)*ll_2_out.size(1), ll_2_out.size(2))
+
+        logsoftmax_1 = self.compute_logsoftmax(model1_weight, model1_bias, model1_lastlayer_out_flat, targets)
+        logsoftmax_2 = self.compute_logsoftmax(model2_weight, model2_bias, model2_lastlayer_out_flat, targets)
+
+        last_layers_concat_flat = torch.cat([model1_lastlayer_out_flat, model2_lastlayer_out_flat], dim=1)
+        last_layers_concat = last_layers_concat_flat.view((ll_1_out.size(0) , ll_1_out.size(1), ensemble_model.concatenated_encoding_dim))
+        a_out, a_hidden = ensemble_model.C(last_layers_concat)
+        a_out_01 = torch.nn.sigmoid(a_out)
+
+        ensemble_logsoftmax = a_out_01 * logsoftmax_1 + (1-a_out_01) * logsoftmax_2
+        softmaxed_all_head_res = ensemble_logsoftmax
+
+        # entropy = -torch.gather(softmaxed_all_head_res, dim=1)
+
+
+
+
+
+
+
+    # Added by me, to get the logsoftmax of one model
+    def compute_logsoftmax(self, weight, bias, hiddens, targets):
+        if self.verbose:
+            for idx in sorted(self.stats):
+                print('{}: {}'.format(idx, int(np.mean(self.stats[idx]))), end=', ')
+            print()
+
+        total_loss = None
+        if len(hiddens.size()) > 2: hiddens = hiddens.view(-1, hiddens.size(2))
+
+        split_targets, split_hiddens = self.split_on_targets(hiddens, targets)
+
+        # First we perform the first softmax on the head vocabulary and the tombstones
+        start, end = self.splits[0], self.splits[1]
+        head_weight = None if end - start == 0 else weight[start:end]
+        head_bias = None if end - start == 0 else bias[start:end]
+
+        # We only add the tombstones if we have more than one split
+        if self.nsplits > 1:
+            head_weight = self.tail_vectors if head_weight is None else torch.cat([head_weight, self.tail_vectors])
+            head_bias = self.tail_bias if head_bias is None else torch.cat([head_bias, self.tail_bias])
+
+        # Perform the softmax calculation for the word vectors in the head for all splits
+        # We need to guard against empty splits as torch.cat does not like random lists
+        combo = torch.cat([split_hiddens[i] for i in range(self.nsplits) if len(split_hiddens[i])])
+        ###
+        all_head_res = torch.nn.functional.linear(combo, head_weight, bias=head_bias)
+        softmaxed_all_head_res = torch.nn.functional.log_softmax(all_head_res, dim=-1)
+
+        return softmaxed_all_head_res
+
+
     def forward(self, weight, bias, hiddens, targets, verbose=False):
         if self.verbose or verbose:
             for idx in sorted(self.stats):
