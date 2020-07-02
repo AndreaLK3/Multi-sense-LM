@@ -42,8 +42,15 @@ def make_2D_mask(indices_rows_to_include, max_vocab_index, dim_input):
 class AWD_ensemble(nn.Module):
 
     def __init__(self, AWD_base, AWD_modified):
+        super(AWD_ensemble, self).__init__()
         self.AWD_base = AWD_base
         self.AWD_modified = AWD_modified
+        self.ninp = self.AWD_base.ninp # placeholder, we are not splitting the softmax now
+
+    def forward(self, input, hidden, return_h=False):
+
+        result_base, hidden_base = self.AWD_base.forward(input, hidden, return_h)
+        result_modified, hidden_modified = self.AWD_modified.forward(input, hidden, return_h)
 
 
 

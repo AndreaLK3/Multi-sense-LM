@@ -161,14 +161,15 @@ os.chdir('awd-lstm-lm')
 
 variant_flags_dict = {'include_globalnode_input':False, 'include_sensenode_input':False}
 # note: to work correctly, the folders must be geared for WikiText-2 (since I am loading graph and grapharea_matrix)
-model = model.AWD_modified(args.model, ntokens, args.nhid,
+model_modified = model.AWD_modified(args.model, ntokens, args.nhid,
                        args.nlayers, graph_dataobj, variant_flags_dict,
                            globals_vocabulary_wordList, grapharea_matrix, 32, #grapharea_size,
                        args.dropout, args.dropouth,
                        args.dropouti, args.dropoute, args.wdrop, args.tied)
-# model = model.AWD(args.model, ntokens, args.emsize, args.nhid,
-#                        args.nlayers, args.dropout, args.dropouth,
-#                        args.dropouti, args.dropoute, args.wdrop, args.tied)
+model_base = model.AWD(args.model, ntokens, args.emsize, args.nhid,
+                       args.nlayers, args.dropout, args.dropouth,
+                       args.dropouti, args.dropoute, args.wdrop, args.tied)
+model = model.AWD_ensemble(model_base, model_modified)
 
 ###
 if args.resume:
