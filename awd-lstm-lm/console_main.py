@@ -293,24 +293,22 @@ def train():
         optimizer.zero_grad()
 
         output, hidden, rnn_hs, dropped_rnn_hs = model(data, hidden, return_h=True)
-        # raw_loss = criterion(model.decoder.weight, model.decoder.bias, output, targets)
+        # raw_loss = criterion(model_base.decoder.weight, model_base.decoder.bias, output[0], targets)
         last_layers_outs = (output[0].view(data.shape[0], data.shape[1], model_base.ninp),
                             output[1].view(data.shape[0], data.shape[1], model_modified.ninp))
         raw_loss = criterion.forward_ensemble(model, model.AWD_base, model.AWD_modified, last_layers_outs, targets)
 
-        loss_0, loss_1 = raw_loss
-        # First model
-        if args.alpha: loss_0 = loss + sum(
+        loss = raw_loss
+        # Activation Regularization
+        if args.alpha:
+            loss = loss + sum(
             args.alpha * dropped_rnn_h.pow(2).mean() for dropped_rnn_h in dropped_rnn_hs[0][-1:])
-        # Second model
-        if args.alpha: loss_1 = loss + sum(
+            loss = loss + sum(
             args.alpha * dropped_rnn_h.pow(2).mean() for dropped_rnn_h in dropped_rnn_hs[1][-1:])
         # Temporal Activation Regularization (slowness)
-        # First model
-        if args.beta: loss_0 = loss + sum(args.beta * (rnn_h[1:] - rnn_h[:-1]).pow(2).mean() for rnn_h in rnn_hs[0][-1:])
-        # Second model
-        if args.beta: loss_1 = loss + sum(args.beta * (rnn_h[1:] - rnn_h[:-1]).pow(2).mean() for rnn_h in rnn_hs[0][-1:])
-        loss = loss_0 + loss_1
+        if args.beta:
+            loss = loss + sum(args.beta * (rnn_h[1:] - rnn_h[:-1]).pow(2).mean() for rnn_h in rnn_hs[0][-1:])
+            loss = loss + sum(args.beta * (rnn_h[1:] - rnn_h[:-1]).pow(2).mean() for rnn_h in rnn_hs[1][-1:])
         loss.backward()
 
         # `clip_grad_norm` helps prevent the exploding gradient problem in RNNs / LSTMs.

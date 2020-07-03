@@ -106,6 +106,8 @@ class SplitCrossEntropyLoss(nn.Module):
     # * Added by me, to handle the loss of an ensemble of 2 models. Currently we do not splitting the softmax
     def forward_ensemble(self, ensemble_model, model1, model2, lastlayers_outs, targets):
         ll_1_out, ll_2_out = lastlayers_outs
+        running_offset = 0
+        total_loss = None
 
         model1_weight= model1.decoder.weight
         model1_bias= model1.decoder.bias
@@ -121,16 +123,16 @@ class SplitCrossEntropyLoss(nn.Module):
         last_layers_concat_flat = torch.cat([model1_lastlayer_out_flat, model2_lastlayer_out_flat], dim=1)
         last_layers_concat = last_layers_concat_flat.view((ll_1_out.size(0) , ll_1_out.size(1), ensemble_model.concatenated_encoding_dim))
         a_out, a_hidden = ensemble_model.C(last_layers_concat)
-        a_out_01 = torch.nn.sigmoid(a_out)
+        a_out_01 = (a_out.view((ll_1_out.size(0)*ll_1_out.size(1), 1))+1) / 2 # rescaling the tanh output [-1,1] to [0,1]
 
         ensemble_logsoftmax = a_out_01 * logsoftmax_1 + (1-a_out_01) * logsoftmax_2
         softmaxed_all_head_res = ensemble_logsoftmax
 
-        # entropy = -torch.gather(softmaxed_all_head_res, dim=1)
+        entropy = -torch.gather(softmaxed_all_head_res, dim=1, index=targets.view(-1, 1))
+        running_offset += len(targets)
+        total_loss = entropy.float().sum() if total_loss is None else total_loss + entropy.float().sum()
 
-
-
-
+        return (total_loss / len(targets)).type_as(model1.decoder.weight)
 
 
 
