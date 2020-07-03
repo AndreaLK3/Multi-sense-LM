@@ -122,7 +122,10 @@ class SplitCrossEntropyLoss(nn.Module):
 
         last_layers_concat_flat = torch.cat([model1_lastlayer_out_flat, model2_lastlayer_out_flat], dim=1)
         last_layers_concat = last_layers_concat_flat.view((ll_1_out.size(0) , ll_1_out.size(1), ensemble_model.concatenated_encoding_dim))
-        a_out, a_hidden = ensemble_model.C(last_layers_concat)
+        a_out, a_hidden = ensemble_model.A(last_layers_concat, ensemble_model.memory_a_hidden)
+        ensemble_model.memory_a_hidden[0].data.copy_(a_hidden[0].clone())
+        ensemble_model.memory_a_hidden[1].data.copy_(a_hidden[1].clone())
+
         a_out_01 = (a_out.view((ll_1_out.size(0)*ll_1_out.size(1), 1))+1) / 2 # rescaling the tanh output [-1,1] to [0,1]
 
         ensemble_logsoftmax = a_out_01 * logsoftmax_1 + (1-a_out_01) * logsoftmax_2

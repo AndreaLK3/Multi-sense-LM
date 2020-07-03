@@ -41,15 +41,15 @@ def make_2D_mask(indices_rows_to_include, max_vocab_index, dim_input):
 
 class AWD_ensemble(nn.Module):
 
-    def __init__(self, AWD_base, AWD_modified):
+    def __init__(self, AWD_base, AWD_modified, batch_size):
         super(AWD_ensemble, self).__init__()
         self.AWD_base = AWD_base
         self.AWD_modified = AWD_modified
         self.ninp = self.AWD_base.ninp # placeholder, we are not splitting the softmax now
 
         self.concatenated_encoding_dim = self.AWD_base.ninp + self.AWD_modified.ninp
-        self.C = nn.LSTM(input_size=self.concatenated_encoding_dim, hidden_size=1, num_layers=1,bias=True) # layer to the coefficient (a) used to combine the logsoftmax
-
+        self.A = nn.LSTM(input_size=self.concatenated_encoding_dim, hidden_size=1, num_layers=1, bias=True) # layer to the coefficient (a) used to combine the logsoftmax
+        self.memory_a_hidden = (torch.zeros(size=(1,batch_size,1)), torch.zeros(size=(1, batch_size, 1))) # used in splitcross.py > forward_ensemble(...)
 
     def forward(self, input, hidden, return_h=False):
 

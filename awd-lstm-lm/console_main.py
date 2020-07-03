@@ -205,7 +205,7 @@ model_modified = model.AWD_modified(args.model, ntokens, args.nhid,
 model_base = model.AWD(args.model, ntokens, args.emsize, args.nhid,
                        args.nlayers, args.dropout, args.dropouth,
                        args.dropouti, args.dropoute, args.wdrop, args.tied)
-model = model.AWD_ensemble(model_base, model_modified)
+model = model.AWD_ensemble(model_base, model_modified, args.batch_size)
 
 ###
 if args.resume:
