@@ -41,7 +41,7 @@ def make_2D_mask(indices_rows_to_include, max_vocab_index, dim_input):
 
 class AWD_ensemble(nn.Module):
 
-    def __init__(self, AWD_base, AWD_modified, batch_size):
+    def __init__(self, AWD_base, AWD_modified):
         super(AWD_ensemble, self).__init__()
         self.AWD_base = AWD_base
         self.AWD_modified = AWD_modified
@@ -49,7 +49,8 @@ class AWD_ensemble(nn.Module):
 
         self.concatenated_encoding_dim = self.AWD_base.ninp + self.AWD_modified.ninp
         self.A = nn.LSTM(input_size=self.concatenated_encoding_dim, hidden_size=1, num_layers=1, bias=True) # layer to the coefficient (a) used to combine the logsoftmax
-        self.memory_a_hidden = (torch.zeros(size=(1,batch_size,1)), torch.zeros(size=(1, batch_size, 1))) # used in splitcross.py > forward_ensemble(...)
+        self.memory_a_hidden_base = Parameter(torch.zeros(size=(1, 256, 1)),requires_grad=False)  # used in splitcross.py > forward_ensemble(...)
+        self.memory_a_cells_base = Parameter(torch.zeros(size=(1, 256, 1)), requires_grad=False) # 256=overly large batch size (it gets resized in init_hidden())
 
     def forward(self, input, hidden, return_h=False):
 
@@ -65,6 +66,10 @@ class AWD_ensemble(nn.Module):
     def init_hidden(self, bsz):
         hidden_base = self.AWD_base.init_hidden(bsz)
         hidden_modified = self.AWD_modified.init_hidden(bsz)
+        self.memory_a_hidden = Parameter(torch.reshape(self.memory_a_hidden_base.flatten()[0:bsz], (1, bsz, 1)),
+                                   requires_grad=False)
+        self.memory_a_cells = Parameter(torch.reshape(self.memory_a_cells_base.flatten()[0:bsz], (1, bsz, 1)),
+                                         requires_grad=False)
         return (hidden_base, hidden_modified)
 
 

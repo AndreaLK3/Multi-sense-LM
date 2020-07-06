@@ -163,13 +163,14 @@ variant_flags_dict = {'include_globalnode_input':False, 'include_sensenode_input
 # note: to work correctly, the folders must be geared for WikiText-2 (since I am loading graph and grapharea_matrix)
 model_modified = model.AWD_modified(args.model, ntokens, args.nhid,
                        args.nlayers, graph_dataobj, variant_flags_dict,
-                           globals_vocabulary_wordList, grapharea_matrix, 32, # grapharea_size,
+                           globals_vocabulary_wordList, grapharea_matrix, 32, #grapharea_size,
                        args.dropout, args.dropouth,
                        args.dropouti, args.dropoute, args.wdrop, args.tied)
 model_base = model.AWD(args.model, ntokens, args.emsize, args.nhid,
                        args.nlayers, args.dropout, args.dropouth,
                        args.dropouti, args.dropoute, args.wdrop, args.tied)
 model = model.AWD_ensemble(model_base, model_modified)
+print(model)
 
 ###
 if args.resume:
@@ -202,6 +203,7 @@ if not criterion:
 ###
 if args.cuda:
     model = model.cuda()
+    print("Moving the model onto CUDA")
     criterion = criterion.cuda()
 ###
 params = list(model.parameters()) + list(criterion.parameters())
@@ -222,11 +224,15 @@ def evaluate(data_source, batch_size=10):
     total_loss = 0
     ntokens = len(corpus.dictionary)
     hidden = model.init_hidden(batch_size)
+    a_records_ls = []
     for i in range(0, data_source.size(0) - 1, args.bptt):
         data, targets = get_batch(data_source, i, args, evaluation=True)
         output, hidden = model(data, hidden)
-        total_loss += len(data) * criterion(model.decoder.weight, model.decoder.bias, output, targets).data
-        hidden = repackage_hidden(hidden)
+        last_layers_outs = (output[0].view(data.shape[0], data.shape[1], model_base.ninp),
+                            output[1].view(data.shape[0], data.shape[1], model_modified.ninp))
+        total_loss += len(data) * criterion.forward_ensemble(model, model.AWD_base, model.AWD_modified, last_layers_outs, targets,
+                                              force_model=(True,False)).data
+        hidden = (repackage_hidden(hidden[0]),repackage_hidden(hidden[1]))
     return total_loss.item() / len(data_source)
 
 
@@ -236,14 +242,14 @@ def train():
     total_loss = 0
     start_time = time.time()
     ntokens = len(corpus.dictionary)
-    hidden_tpl = model.init_hidden(args.batch_size)
+    hidden = model.init_hidden(args.batch_size)
     batch, i = 0, 0
     while i < train_data.size(0) - 1 - 1:
         bptt = args.bptt if np.random.random() < 0.95 else args.bptt / 2.
         # Prevent excessively small or negative sequence lengths
         seq_len = max(5, int(np.random.normal(bptt, 5)))
         # There's a very small chance that it could select a very long sequence length resulting in OOM
-        # seq_len = min(seq_len, args.bptt + 10)
+        seq_len = min(seq_len, args.bptt + 10)
 
         lr2 = optimizer.param_groups[0]['lr']
         optimizer.param_groups[0]['lr'] = lr2 * seq_len / args.bptt
@@ -252,18 +258,31 @@ def train():
 
         # Starting each batch, we detach the hidden state from how it was previously produced.
         # If we didn't, the model would try backpropagating all the way to start of the dataset.
-        hidden_tpl = (repackage_hidden(hidden_tpl[0]), repackage_hidden(hidden_tpl[1]))
+        hidden = (repackage_hidden(hidden[0]),repackage_hidden(hidden[1]))
         optimizer.zero_grad()
 
-        output, hidden_tpl, rnn_hs, dropped_rnn_hs = model(data, hidden_tpl, return_h=True)
-        raw_loss = criterion(model.decoder.weight, model.decoder.bias, output, targets)
+        output, hidden, rnn_hs, dropped_rnn_hs = model(data, hidden, return_h=True)
+
+        # raw_loss = criterion(model_base.decoder.weight, model_base.decoder.bias, output[0], targets)
+        last_layers_outs = (output[0].view(data.shape[0], data.shape[1], model_base.ninp),
+                            output[1].view(data.shape[0], data.shape[1], model_modified.ninp))
+        raw_loss = criterion.forward_ensemble(model, model.AWD_base, model.AWD_modified, last_layers_outs, targets,
+                                              force_model=(True, False))
 
         loss = raw_loss
+        # # Activation Regularization
+        # if args.alpha: loss = loss + sum(
+        #     args.alpha * dropped_rnn_h.pow(2).mean() for dropped_rnn_h in dropped_rnn_hs[-1:])
+        # # Temporal Activation Regularization (slowness)
+        # if args.beta: loss = loss + sum(args.beta * (rnn_h[1:] - rnn_h[:-1]).pow(2).mean() for rnn_h in rnn_hs[-1:])
+        # loss.backward()
         # Activation Regularization
-        if args.alpha: loss = loss + sum(
-            args.alpha * dropped_rnn_h.pow(2).mean() for dropped_rnn_h in dropped_rnn_hs[-1:])
+        if args.alpha:
+            loss = loss + sum(
+                args.alpha * dropped_rnn_h.pow(2).mean() for dropped_rnn_h in dropped_rnn_hs[0][-1:])
         # Temporal Activation Regularization (slowness)
-        if args.beta: loss = loss + sum(args.beta * (rnn_h[1:] - rnn_h[:-1]).pow(2).mean() for rnn_h in rnn_hs[-1:])
+        if args.beta:
+            loss = loss + sum(args.beta * (rnn_h[1:] - rnn_h[:-1]).pow(2).mean() for rnn_h in rnn_hs[0][-1:])
         loss.backward()
 
         # `clip_grad_norm` helps prevent the exploding gradient problem in RNNs / LSTMs.

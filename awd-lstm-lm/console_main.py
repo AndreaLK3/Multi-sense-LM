@@ -205,7 +205,8 @@ model_modified = model.AWD_modified(args.model, ntokens, args.nhid,
 model_base = model.AWD(args.model, ntokens, args.emsize, args.nhid,
                        args.nlayers, args.dropout, args.dropouth,
                        args.dropouti, args.dropoute, args.wdrop, args.tied)
-model = model.AWD_ensemble(model_base, model_modified, args.batch_size)
+model = model.AWD_ensemble(model_base, model_modified)
+print(model)
 
 ###
 if args.resume:
@@ -261,8 +262,11 @@ def evaluate(data_source, batch_size=10):
     for i in range(0, data_source.size(0) - 1, args.bptt):
         data, targets = get_batch(data_source, i, args, evaluation=True)
         output, hidden = model(data, hidden)
-        total_loss += len(data) * criterion(model.decoder.weight, model.decoder.bias, output, targets).data
-        hidden = repackage_hidden(hidden)
+        last_layers_outs = (output[0].view(data.shape[0], data.shape[1], model_base.ninp),
+                            output[1].view(data.shape[0], data.shape[1], model_modified.ninp))
+        total_loss += len(data) * criterion.forward_ensemble(model, model.AWD_base, model.AWD_modified, last_layers_outs, targets,
+                                              force_model=(True,False)).data
+        hidden = (repackage_hidden(hidden[0]),repackage_hidden(hidden[1]))
     return total_loss.item() / len(data_source)
 
 
@@ -292,23 +296,22 @@ def train():
         hidden = (repackage_hidden(hidden[0]),repackage_hidden(hidden[1]))
         optimizer.zero_grad()
 
+        output_base, hidden_base, rnn_hs_base, dropped_rnn_h_s_base = model_base(data, hidden, return_h=True)
         output, hidden, rnn_hs, dropped_rnn_hs = model(data, hidden, return_h=True)
         # raw_loss = criterion(model_base.decoder.weight, model_base.decoder.bias, output[0], targets)
         last_layers_outs = (output[0].view(data.shape[0], data.shape[1], model_base.ninp),
                             output[1].view(data.shape[0], data.shape[1], model_modified.ninp))
-        raw_loss = criterion.forward_ensemble(model, model.AWD_base, model.AWD_modified, last_layers_outs, targets)
+        raw_loss = criterion.forward_ensemble(model, model.AWD_base, model.AWD_modified, last_layers_outs, targets,
+                                              force_model=(True,False))
 
         loss = raw_loss
         # Activation Regularization
         if args.alpha:
             loss = loss + sum(
             args.alpha * dropped_rnn_h.pow(2).mean() for dropped_rnn_h in dropped_rnn_hs[0][-1:])
-            loss = loss + sum(
-            args.alpha * dropped_rnn_h.pow(2).mean() for dropped_rnn_h in dropped_rnn_hs[1][-1:])
         # Temporal Activation Regularization (slowness)
         if args.beta:
             loss = loss + sum(args.beta * (rnn_h[1:] - rnn_h[:-1]).pow(2).mean() for rnn_h in rnn_hs[0][-1:])
-            loss = loss + sum(args.beta * (rnn_h[1:] - rnn_h[:-1]).pow(2).mean() for rnn_h in rnn_hs[1][-1:])
         loss.backward()
 
         # `clip_grad_norm` helps prevent the exploding gradient problem in RNNs / LSTMs.

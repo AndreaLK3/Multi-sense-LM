@@ -3,6 +3,9 @@
   <component name="ChangeListManager">
     <list default="true" id="99cf4458-a116-49fc-8365-d27cd484b51b" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/../Media/Task1_DeveloperDiary_4a_globals.docx" beforeDir="false" afterPath="$PROJECT_DIR$/../Media/Task1_DeveloperDiary_4a_globals.docx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Media/~$sk1_DeveloperDiary_4b_senses.docx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/model.py" beforeDir="false" afterPath="$PROJECT_DIR$/model.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -12,34 +15,13 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/console_main.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="197">
-              <caret line="207" column="71" lean-forward="true" selection-start-line="207" selection-start-column="71" selection-end-line="207" selection-end-column="71" />
+            <state relative-caret-position="-2210">
+              <caret line="302" column="58" selection-start-line="302" selection-start-column="58" selection-end-line="302" selection-end-column="58" />
               <folding>
                 <element signature="e#0#15#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/splitcross.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="154">
-              <caret line="126" column="63" selection-start-line="126" selection-start-column="63" selection-end-line="126" selection-end-column="63" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/model.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="251">
-              <caret line="51" column="28" selection-start-line="51" selection-start-column="13" selection-end-line="51" selection-end-column="28" />
-              <folding>
-                <element signature="e#0#12#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -48,10 +30,31 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/main.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="154">
-              <caret line="43" column="33" selection-start-line="43" selection-start-column="23" selection-end-line="43" selection-end-column="33" />
+            <state relative-caret-position="117">
+              <caret line="262" selection-start-line="262" selection-end-line="262" />
               <folding>
                 <element signature="e#0#15#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/data.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="90">
+              <caret line="9" column="16" selection-start-line="9" selection-start-column="16" selection-end-line="9" selection-end-column="16" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/splitcross.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="271">
+              <caret line="138" lean-forward="true" selection-start-line="138" selection-end-line="138" />
+              <folding>
+                <element signature="e#0#35#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -62,15 +65,6 @@
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="510">
               <caret line="34" column="26" selection-start-line="34" selection-start-column="26" selection-end-line="34" selection-end-column="26" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/data.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="480">
-              <caret line="35" column="55" selection-start-line="35" selection-start-column="55" selection-end-line="35" selection-end-column="55" />
             </state>
           </provider>
         </entry>
@@ -100,14 +94,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>before</find>
-      <find>asgd</find>
-      <find>self.encoder</find>
-      <find>init_weights</find>
-      <find>device</find>
-      <find>DEVICE</find>
-      <find>model</find>
-      <find>encoder</find>
       <find>dropout=self.dropoute if self.training else 0</find>
       <find>ntoken</find>
       <find>emsize</find>
@@ -129,6 +115,15 @@
       <find>rnn</find>
       <find>criterion</find>
       <find>32</find>
+      <find>forwa</find>
+      <find>print</find>
+      <find>t</find>
+      <find>CURRE</find>
+      <find>eval_ba</find>
+      <find>model.cuda</find>
+      <find>forw</find>
+      <find>forwar</find>
+      <find>ensemb</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -139,10 +134,10 @@
       <list>
         <option value="$PROJECT_DIR$/weight_drop.py" />
         <option value="$PROJECT_DIR$/data.py" />
-        <option value="$PROJECT_DIR$/main.py" />
-        <option value="$PROJECT_DIR$/console_main.py" />
         <option value="$PROJECT_DIR$/model.py" />
         <option value="$PROJECT_DIR$/splitcross.py" />
+        <option value="$PROJECT_DIR$/main.py" />
+        <option value="$PROJECT_DIR$/console_main.py" />
       </list>
     </option>
   </component>
@@ -157,7 +152,7 @@
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds" extendedState="6">
+  <component name="ProjectFrameBounds">
     <option name="y" value="23" />
     <option name="width" value="1440" />
     <option name="height" value="801" />
@@ -168,7 +163,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -180,6 +174,7 @@
           <select />
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -222,10 +217,10 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="203" width="1440" height="801" extended-state="6" />
+    <frame x="0" y="23" width="1440" height="801" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.4989605" visible="true" weight="0.14949928" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.4989605" visible="true" weight="0.15379113" />
       <window_info id="Structure" order="1" sideWeight="0.5010395" side_tool="true" weight="0.13018598" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -238,24 +233,13 @@
       <window_info anchor="bottom" id="Version Control" order="7" weight="0.32863188" />
       <window_info anchor="bottom" id="Terminal" order="8" weight="0.32863188" />
       <window_info anchor="bottom" id="Event Log" order="9" sideWeight="0.52183175" side_tool="true" weight="0.32508436" />
-      <window_info active="true" anchor="bottom" id="Python Console" order="10" sideWeight="0.47816828" visible="true" weight="0.33991536" />
+      <window_info anchor="bottom" id="Python Console" order="10" sideWeight="0.47816828" visible="true" weight="0.33991536" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
       <window_info anchor="right" id="R Graphics" order="3" />
       <window_info anchor="right" id="R Packages" order="4" />
     </layout>
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/main.py</url>
-          <line>227</line>
-          <option name="timeStamp" value="11" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
   </component>
   <component name="debuggerHistoryManager">
     <expressions id="evaluateCodeFragment">
@@ -267,12 +251,39 @@
     </expressions>
     <expressions id="evaluateExpression">
       <expression>
-        <expression-string>a_hidden</expression-string>
+        <expression-string>[(weight.new(1, bsz, self.nhid if l != self.nlayers - 1 else (self.ninp if self.tie_weights else self.nhid)).zero_(),
+  weight.new(1, bsz, self.nhid if l != self.nlayers - 1 else (self.ninp if self.tie_weights else self.nhid)).zero_())
+ for l in range(self.nlayers)]</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>next(self.parameters())</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>next(self.parameters()).data</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>self.parameters()</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
       <expression>
         <expression-string>a_out_01</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>a_out_01[0:10]</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>a_hidden</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
@@ -283,31 +294,6 @@
       </expression>
       <expression>
         <expression-string>torch.max()a_out_01)</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>torch.min(a_out_01)</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>a_out_10</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>a_out</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>torch.max(a_out)</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>torch.min(a_out)</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
@@ -375,17 +361,17 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/data.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="90">
+          <caret line="9" column="16" selection-start-line="9" selection-start-column="16" selection-end-line="9" selection-end-column="16" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/utils.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="510">
           <caret line="34" column="26" selection-start-line="34" selection-start-column="26" selection-end-line="34" selection-end-column="26" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/data.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="480">
-          <caret line="35" column="55" selection-start-line="35" selection-start-column="55" selection-end-line="35" selection-end-column="55" />
         </state>
       </provider>
     </entry>
@@ -406,30 +392,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/main.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="154">
-          <caret line="43" column="33" selection-start-line="43" selection-start-column="23" selection-end-line="43" selection-end-column="33" />
-          <folding>
-            <element signature="e#0#15#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/console_main.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="197">
-          <caret line="207" column="71" lean-forward="true" selection-start-line="207" selection-start-column="71" selection-end-line="207" selection-end-column="71" />
-          <folding>
-            <element signature="e#0#15#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/model.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="251">
-          <caret line="51" column="28" selection-start-line="51" selection-start-column="13" selection-end-line="51" selection-end-column="28" />
+        <state relative-caret-position="129">
+          <caret line="161" column="12" selection-start-line="161" selection-start-column="8" selection-end-line="161" selection-end-column="12" />
           <folding>
             <element signature="e#0#12#0" expanded="true" />
           </folding>
@@ -438,8 +404,31 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/splitcross.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="154">
-          <caret line="126" column="63" selection-start-line="126" selection-start-column="63" selection-end-line="126" selection-end-column="63" />
+        <state relative-caret-position="271">
+          <caret line="138" lean-forward="true" selection-start-line="138" selection-end-line="138" />
+          <folding>
+            <element signature="e#0#35#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/main.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="117">
+          <caret line="262" selection-start-line="262" selection-end-line="262" />
+          <folding>
+            <element signature="e#0#15#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/console_main.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-2210">
+          <caret line="302" column="58" selection-start-line="302" selection-start-column="58" selection-end-line="302" selection-end-column="58" />
+          <folding>
+            <element signature="e#0#15#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

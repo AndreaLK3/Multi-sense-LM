@@ -4,7 +4,7 @@ import torch
 import torch.nn as nn
 
 import numpy as np
-
+CURRENT_DEVICE = 'cpu' if not (torch.cuda.is_available()) else 'cuda:' + str(torch.cuda.current_device())
 
 class SplitCrossEntropyLoss(nn.Module):
     r'''SplitCrossEntropyLoss calculates an approximate softmax'''
@@ -104,7 +104,8 @@ class SplitCrossEntropyLoss(nn.Module):
         return split_targets, split_hiddens
 
     # * Added by me, to handle the loss of an ensemble of 2 models. Currently we do not splitting the softmax
-    def forward_ensemble(self, ensemble_model, model1, model2, lastlayers_outs, targets):
+    def forward_ensemble(self, ensemble_model, model1, model2, lastlayers_outs, targets, force_model=(False,False)):
+
         ll_1_out, ll_2_out = lastlayers_outs
         running_offset = 0
         total_loss = None
@@ -122,14 +123,19 @@ class SplitCrossEntropyLoss(nn.Module):
 
         last_layers_concat_flat = torch.cat([model1_lastlayer_out_flat, model2_lastlayer_out_flat], dim=1)
         last_layers_concat = last_layers_concat_flat.view((ll_1_out.size(0) , ll_1_out.size(1), ensemble_model.concatenated_encoding_dim))
-        a_out, a_hidden = ensemble_model.A(last_layers_concat, ensemble_model.memory_a_hidden)
-        ensemble_model.memory_a_hidden[0].data.copy_(a_hidden[0].clone())
-        ensemble_model.memory_a_hidden[1].data.copy_(a_hidden[1].clone())
+        a_out, a_hidden = ensemble_model.A(last_layers_concat, (ensemble_model.memory_a_hidden, ensemble_model.memory_a_cells))
+        ensemble_model.memory_a_hidden.data.copy_(a_hidden[0].clone())
+        ensemble_model.memory_a_cells.data.copy_(a_hidden[1].clone())
 
         a_out_01 = (a_out.view((ll_1_out.size(0)*ll_1_out.size(1), 1))+1) / 2 # rescaling the tanh output [-1,1] to [0,1]
 
+        if force_model[0]:
+            a_out_01 = torch.ones(size=a_out_01.shape).to(CURRENT_DEVICE)
+        if force_model[1]:
+            a_out_01 = torch.zeros(size=a_out_01.shape).to(CURRENT_DEVICE)
         ensemble_logsoftmax = a_out_01 * logsoftmax_1 + (1-a_out_01) * logsoftmax_2
         softmaxed_all_head_res = ensemble_logsoftmax
+
 
         entropy = -torch.gather(softmaxed_all_head_res, dim=1, index=targets.view(-1, 1))
         running_offset += len(targets)
