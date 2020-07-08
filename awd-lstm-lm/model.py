@@ -309,7 +309,7 @@ class AWD(nn.Module):
         outputs = []
 
         for l, rnn in enumerate(self.rnns):
-            rnn.module.flatten_parameters()  # not working
+            rnn.module.flatten_parameters()  # *now working
             current_input = raw_output
             raw_output, new_h = rnn(raw_output, hidden[l])
             new_hidden.append(new_h)

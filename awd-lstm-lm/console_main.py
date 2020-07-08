@@ -44,7 +44,7 @@ args_dict = {   'data': 'data/wikitext-2',
                 'seed':1882,
                 'nonmono':5,
                 'cuda':'store_false',
-                'log_interval':200,
+                'log_interval':2,
                 'save':'WT2.pt',
                 'alpha':2.0,
                 'beta':1.0,
@@ -121,7 +121,7 @@ model_base = model.AWD(args.model, ntokens, args.emsize, args.nhid,
                         args.nlayers, args.dropout, args.dropouth,
                         args.dropouti, args.dropoute, args.wdrop, args.tied)
 
-# added by me: including the KB Graph & FastText information for our modified model
+# # added by me: including the KB Graph & FastText information for our modified model
 os.chdir('..')
 graph_dataobj = DG.get_graph_dataobject(new=False, method=CE.Method.FASTTEXT, slc_corpus=False).to(device)
 grapharea_matrix = AD.get_grapharea_matrix(graph_dataobj, area_size=32, hops_in_area=1)
@@ -133,28 +133,28 @@ globals_vocabulary_wordList = globals_vocabulary_df['word'].to_list().copy()
 os.chdir('awd-lstm-lm')
 
 variant_flags_dict = {'include_globalnode_input':False, 'include_sensenode_input':False}
-# note: to work correctly, the folders must be geared for WikiText-2 (since I am loading graph and grapharea_matrix)
+# # note: to work correctly, the folders must be geared for WikiText-2 (since I am loading graph and grapharea_matrix)
 model_modified = model.AWD_modified(args.model, ntokens, args.nhid,
                        args.nlayers, graph_dataobj, variant_flags_dict,
-                        globals_vocabulary_wordList, grapharea_matrix, 32, #grapharea_size,
+                       globals_vocabulary_wordList, grapharea_matrix, 32, #grapharea_size,
                        args.dropout, args.dropouth,
                        args.dropouti, args.dropoute, args.wdrop, args.tied)
 print(model_base)
 print(model_modified)
 ensemble_combine = model.Ensemble_Combine(model_base, model_modified)
 
-###
-if args.resume:
-    print('Resuming model ...')
-    model, criterion, optimizer, vocab, val_loss, config = model_load(args.resume)
-    optimizer.param_groups[0]['lr'] = args.lr
-    model.dropouti, model.dropouth, model.dropout, args.dropoute = args.dropouti, args.dropouth, args.dropout, args.dropoute
-    if args.wdrop:
-        from weight_drop import WeightDrop
-
-        for rnn in model.rnns:
-            if type(rnn) == WeightDrop: rnn.dropout = args.wdrop
-            elif rnn.zoneout > 0: rnn.zoneout = args.wdrop
+### unused
+# if args.resume:
+#     print('Resuming model ...')
+#     model, criterion, optimizer, vocab, val_loss, config = model_load(args.resume)
+#     optimizer.param_groups[0]['lr'] = args.lr
+#     model.dropouti, model.dropouth, model.dropout, args.dropoute = args.dropouti, args.dropouth, args.dropout, args.dropoute
+#     if args.wdrop:
+#         from weight_drop import WeightDrop
+#
+#         for rnn in model.rnns:
+#             if type(rnn) == WeightDrop: rnn.dropout = args.wdrop
+#             elif rnn.zoneout > 0: rnn.zoneout = args.wdrop
 ###
 if not criterion:
     splits = []
@@ -167,7 +167,6 @@ if not criterion:
         # WikiText-103
         splits = [2800, 20000, 76000]
     print('Using splits {}'.format(splits))
-    concatenated_out_dim = model_base.encoder.embedding_dim + model_modified.encoder.embedding_dim # added by me
     criterion = SplitCrossEntropyLoss(args.emsize, splits=splits, verbose=False)
 
 # if torch.__version__ != '0.1.12_2':
@@ -178,12 +177,17 @@ if args.cuda:
     model_modified = model_modified.cuda()
     criterion = criterion.cuda()
 ###
-for AWD_model in [model_base, model_modified]:
-    params = list(AWD_model.parameters()) + list(criterion.parameters())
-    trainable_parameters = [p for p in AWD_model.parameters() if p.requires_grad]
-    total_params = sum(x.size()[0] * x.size()[1] if len(x.size()) > 1 else x.size()[0] for x in params if x.size())
-    print('Args:', args)
-    print('Model total parameters:', total_params)
+# for AWD_model in [model_base, model_modified]:
+#     params = list(AWD_model.parameters()) + list(criterion.parameters())
+#     trainable_parameters = [p for p in AWD_model.parameters() if p.requires_grad]
+#     total_params = sum(x.size()[0] * x.size()[1] if len(x.size()) > 1 else x.size()[0] for x in params if x.size())
+#     print('Args:', args)
+#     print('Model total parameters:', total_params)
+params = list(model_base.parameters()) + list(criterion.parameters())
+trainable_parameters = [p for p in model_base.parameters() if p.requires_grad]
+total_params = sum(x.size()[0] * x.size()[1] if len(x.size()) > 1 else x.size()[0] for x in params if x.size())
+print('Args:', args)
+print('Model total parameters:', total_params)
 
 
 ###############################################################################
@@ -192,24 +196,26 @@ for AWD_model in [model_base, model_modified]:
 
 def evaluate(data_source, batch_size=10):
     # Turn on evaluation mode which disables dropout.
-    model.eval()
+    model_base.eval() # model 1
+    model_modified.eval() # model 2
     # if args.model == 'QRNN': model.reset()
     total_loss = 0
     ntokens = len(corpus.dictionary)
-    hidden_base = model_base.init_hidden(args.batch_size)  # model 1
-    hidden_modified = model_modified.init_hidden(args.batch_size)  # model 2
+    hidden_base = model_base.init_hidden(batch_size)  # model 1
+    hidden_modified = model_modified.init_hidden(batch_size)  # model 2
     for i in range(0, data_source.size(0) - 1, args.bptt):
         data, targets = get_batch(data_source, i, args, evaluation=True)
         output_base, hidden_base, rnn_hs_base, dropped_rnn_hs_base = model_base(data, hidden_base,
                                                                                 return_h=True)  # model 1
-        output_mod, hidden_modified, rnn_hs_mod, dropped_rnn_hs_mod = model_modified(data, hidden_modified,
-                                                                                     return_h=True)  # model 2
+        #output_mod, hidden_modified, rnn_hs_mod, dropped_rnn_hs_mod = model_modified(data, hidden_modified,
+        #                                                                             return_h=True)  # model 2
         # raw_loss = criterion(model_base.decoder.weight, model_base.decoder.bias, output_base, targets)
-        ensemble_loss = criterion.forward_ensemble(ensemble_combine, output_base, output_mod, targets,
-                                                   force_model=(True, False))
-        total_loss += len(data) * ensemble_loss.data
+        #ensemble_loss = criterion.forward_ensemble(ensemble_combine, output_base, output_mod, targets,
+        #                                           force_model=(True, False))
+        total_loss += len(data) * criterion(model.decoder.weight, model.decoder.bias, output_base, targets).data
+        #total_loss += len(data) * ensemble_loss.data
         hidden_base = repackage_hidden(hidden_base)  # model 1
-        hidden_modified = repackage_hidden(hidden_modified)  # model 2
+        #hidden_modified = repackage_hidden(hidden_modified)  # model 2
     return total_loss.item() / len(data_source)
 
 
@@ -219,8 +225,8 @@ def train():
     total_loss = 0
     start_time = time.time()
     ntokens = len(corpus.dictionary)
-    hidden_base = model_base.init_hidden(args.batch_size) # model 1
-    hidden_modified = model_modified.init_hidden(args.batch_size) # model 2
+    hidden_base = model_base.init_hidden(args.batch_size)  # model 1
+    hidden_modified = model_modified.init_hidden(args.batch_size)  # model 2
     batch, i = 0, 0
     while i < train_data.size(0) - 1 - 1:
         bptt = args.bptt if np.random.random() < 0.95 else args.bptt / 2.
@@ -242,11 +248,14 @@ def train():
         optimizer.zero_grad()
 
         output_base, hidden_base, rnn_hs_base, dropped_rnn_hs_base = model_base(data, hidden_base, return_h=True) # model 1
-        output_mod, hidden_modified, rnn_hs_mod, dropped_rnn_hs_mod = model_modified(data, hidden_modified, return_h=True)  # model 2
-        # raw_loss = criterion(model_base.decoder.weight, model_base.decoder.bias, output_base, targets)
-        ensemble_loss = criterion.forward_ensemble(ensemble_combine, output_base, output_mod, targets, force_model=(True,False))
+        data_bis = data.clone().detach()
+        output_mod, hidden_modified, rnn_hs_mod, dropped_rnn_hs_mod = model_modified(data_bis, hidden_modified, return_h=True)  # model 2
+        raw_loss = criterion(model_base.decoder.weight, model_base.decoder.bias, output_base, targets)
+    #   ensemble_loss = criterion.forward_ensemble(ensemble_combine, output_base, output_mod, targets, force_model=(True,False))
+        #print("raw_loss=" + str(raw_loss))
+        #print("ensemble_loss=" + str(ensemble_loss) + "\n*****\n")
 
-        loss = ensemble_loss # raw_loss
+        loss =  raw_loss # ensemble_loss
         # Activation Regularization
         if args.alpha: loss = loss + sum(
             args.alpha * dropped_rnn_h.pow(2).mean() for dropped_rnn_h in dropped_rnn_hs_base[-1:])
@@ -258,10 +267,10 @@ def train():
         if args.clip: torch.nn.utils.clip_grad_norm_(params, args.clip)
         optimizer.step()
 
-        total_loss += raw_loss.data
+        total_loss += raw_loss.data # changed
         optimizer.param_groups[0]['lr'] = lr2
         if batch % args.log_interval == 0 and batch > 0:
-            cur_loss = total_loss / args.log_interval
+            cur_loss = total_loss / args.log_interval # +1)
             elapsed = time.time() - start_time
             print('| epoch {:3d} | {:5d}/{:5d} batches | lr {:05.5f} | ms/batch {:5.2f} | '
                   'loss {:5.2f} | ppl {:8.2f} | bpc {:8.3f}'.format(
@@ -281,7 +290,6 @@ def train():
             except:
                 pass
         ####################################
-
 
 # Loop over epochs.
 lr = args.lr
@@ -324,86 +332,76 @@ try:
             except:
                 pass
         ####################################
-        if 't0' in optimizer.param_groups[0]:  # if ASGD
-            tmp = {}
-            for prm in model.parameters():
-                if prm in optimizer.state.keys():
-                    # tmp[prm] = prm.data.clone()
-                    tmp[prm] = prm.data.detach()
-                    # tmp[prm].copy_(prm.data)
-                    # if 'ax' in optimizer.state[prm]:  # added this line because of error: File "main.py", line 268, in <module> prm.data = optimizer.state[prm]['ax'].clone() KeyError: 'ax'
-                    # prm.data = optimizer.state[prm]['ax'].clone()
-                    prm.data = optimizer.state[prm]['ax'].detach()
+        for model in [model_base]: #, model_modified]:
+            if 't0' in optimizer.param_groups[0]:  # if ASGD
+                tmp = {}
+                for prm in model.parameters():
+                    if prm in optimizer.state.keys():
+                        tmp[prm] = prm.data.detach()
+                        prm.data = optimizer.state[prm]['ax'].detach()
 
-                # else:
-                #     print(prm)
+                val_loss2 = evaluate(val_data)
+                print('-' * 89)
+                print('| end of epoch {:3d} | time: {:5.2f}s | valid loss {:5.2f} | '
+                      'valid ppl {:8.2f} | valid bpc {:8.3f}'.format(
+                    epoch, (time.time() - epoch_start_time), val_loss2, math.exp(val_loss2), val_loss2 / math.log(2)))
+                print('-' * 89)
 
-                    # prm.data = optimizer.state[prm]['ax'].clone()
-                    # prm.data = optimizer.state[prm]['ax'].detach()
-                    # prm.data.copy_(optimizer.state[prm]['ax'])
+                if val_loss2 < stored_loss:
+                    # model_save(os.path.join(CKPT_DIR, args.save), model, criterion, optimizer,
+                    #            vocabulary, val_loss2, math.exp(val_loss2), vars(args), epoch)
+                    # model_state_save(os.path.join(CKPT_DIR, args.save), model, criterion, optimizer,
+                    #            vocabulary, val_loss2, math.exp(val_loss2), vars(args), epoch)
+                    # print('Saving Averaged!')
+                    stored_loss = val_loss2
 
-            val_loss2 = evaluate(val_data)
-            print('-' * 89)
-            print('| end of epoch {:3d} | time: {:5.2f}s | valid loss {:5.2f} | '
-                  'valid ppl {:8.2f} | valid bpc {:8.3f}'.format(
-                epoch, (time.time() - epoch_start_time), val_loss2, math.exp(val_loss2), val_loss2 / math.log(2)))
-            print('-' * 89)
+                # nparams = 0
+                # nparams_in_temp_keys = 0
+                for prm in model.parameters():
+                    # nparams += 1
+                    if prm in tmp.keys():
+                        # nparams_in_temp_keys += 1
+                        # prm.data = tmp[prm].clone()
+                        prm.data = tmp[prm].detach()
+                        prm.requires_grad = True
+                # print('params {}, params in tmp keys: {}'.format(nparams, nparams_in_temp_keys))
+                del tmp
+            else:
+                print('{} model params (SGD before eval)'.format(len([prm for prm in model.parameters()])))
+                val_loss = evaluate(val_data, eval_batch_size)
+                print('{} model params (SGD after eval)'.format(len([prm for prm in model.parameters()])))
+                print('-' * 89)
+                print('| end of epoch {:3d} | time: {:5.2f}s | valid loss {:5.2f} | '
+                      'valid ppl {:8.2f} | valid bpc {:8.3f}'.format(
+                    epoch, (time.time() - epoch_start_time), val_loss, math.exp(val_loss), val_loss / math.log(2)))
+                print('-' * 89)
+                #
+                # if val_loss < stored_loss:
+                #     # model_save(os.path.join(CKPT_DIR, args.save), model, criterion, optimizer,
+                #     #            vocabulary, val_loss, math.exp(val_loss), vars(args), epoch)
+                #     model_state_save(os.path.join(CKPT_DIR, args.save), model, criterion, optimizer,
+                #                vocabulary, val_loss, math.exp(val_loss), vars(args), epoch)
+                #     print('Saving model (new best validation)')
+                #     stored_loss = val_loss
 
-            if val_loss2 < stored_loss:
-                # model_save(os.path.join(CKPT_DIR, args.save), model, criterion, optimizer,
-                #            vocabulary, val_loss2, math.exp(val_loss2), vars(args), epoch)
-                model_state_save(os.path.join(CKPT_DIR, args.save), model, criterion, optimizer,
-                           vocabulary, val_loss2, math.exp(val_loss2), vars(args), epoch)
-                print('Saving Averaged!')
-                stored_loss = val_loss2
+                if args.asgd:
+                    if args.optimizer == 'sgd' and 't0' not in optimizer.param_groups[0] and (
+                            len(best_val_loss) > args.nonmono and val_loss > min(best_val_loss[:-args.nonmono])):
+                    # if 't0' not in optimizer.param_groups[0]:
+                        print('Switching to ASGD')
+                        # optimizer = ASGD(trainable_parameters, lr=args.lr, t0=0, lambd=0., weight_decay=args.wdecay)
+                        optimizer = ASGD(params, lr=args.lr, t0=0, lambd=0., weight_decay=args.wdecay)
 
-            # nparams = 0
-            # nparams_in_temp_keys = 0
-            for prm in model.parameters():
-                # nparams += 1
-                if prm in tmp.keys():
-                    # nparams_in_temp_keys += 1
-                    # prm.data = tmp[prm].clone()
-                    prm.data = tmp[prm].detach()
-                    prm.requires_grad = True
-            # print('params {}, params in tmp keys: {}'.format(nparams, nparams_in_temp_keys))
-            del tmp
-        else:
-            print('{} model params (SGD before eval)'.format(len([prm for prm in model.parameters()])))
-            val_loss = evaluate(val_data, eval_batch_size)
-            print('{} model params (SGD after eval)'.format(len([prm for prm in model.parameters()])))
-            print('-' * 89)
-            print('| end of epoch {:3d} | time: {:5.2f}s | valid loss {:5.2f} | '
-                  'valid ppl {:8.2f} | valid bpc {:8.3f}'.format(
-                epoch, (time.time() - epoch_start_time), val_loss, math.exp(val_loss), val_loss / math.log(2)))
-            print('-' * 89)
+                if epoch in args.when:
+                    # print('Saving model before learning rate decreased')
+                    # # model_save('{}.e{}'.format(os.path.join(CKPT_DIR, args.save), model, criterion, optimizer,
+                    # #            vocabulary, val_loss, math.exp(val_loss), vars(args), epoch))
+                    # model_state_save('{}.e{}'.format(os.path.join(CKPT_DIR, args.save), args.save), model, criterion, optimizer,
+                    #            vocabulary, val_loss, math.exp(val_loss), vars(args), epoch)
+                    print('Dividing learning rate by 10')
+                    optimizer.param_groups[0]['lr'] /= 10.
 
-            if val_loss < stored_loss:
-                # model_save(os.path.join(CKPT_DIR, args.save), model, criterion, optimizer,
-                #            vocabulary, val_loss, math.exp(val_loss), vars(args), epoch)
-                model_state_save(os.path.join(CKPT_DIR, args.save), model, criterion, optimizer,
-                           vocabulary, val_loss, math.exp(val_loss), vars(args), epoch)
-                print('Saving model (new best validation)')
-                stored_loss = val_loss
-
-            if args.asgd:
-                if args.optimizer == 'sgd' and 't0' not in optimizer.param_groups[0] and (
-                        len(best_val_loss) > args.nonmono and val_loss > min(best_val_loss[:-args.nonmono])):
-                # if 't0' not in optimizer.param_groups[0]:
-                    print('Switching to ASGD')
-                    # optimizer = ASGD(trainable_parameters, lr=args.lr, t0=0, lambd=0., weight_decay=args.wdecay)
-                    optimizer = ASGD(params, lr=args.lr, t0=0, lambd=0., weight_decay=args.wdecay)
-
-            if epoch in args.when:
-                print('Saving model before learning rate decreased')
-                # model_save('{}.e{}'.format(os.path.join(CKPT_DIR, args.save), model, criterion, optimizer,
-                #            vocabulary, val_loss, math.exp(val_loss), vars(args), epoch))
-                model_state_save('{}.e{}'.format(os.path.join(CKPT_DIR, args.save), args.save), model, criterion, optimizer,
-                           vocabulary, val_loss, math.exp(val_loss), vars(args), epoch)
-                print('Dividing learning rate by 10')
-                optimizer.param_groups[0]['lr'] /= 10.
-
-            best_val_loss.append(val_loss)
+                best_val_loss.append(val_loss)
 
 except KeyboardInterrupt:
     print('-' * 89)

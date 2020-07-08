@@ -110,12 +110,11 @@ class SplitCrossEntropyLoss(nn.Module):
 
         model1 = ensemble_combine.AWD_base
         model2 = ensemble_combine.AWD_modified
-        concat_out_dim = ensemble_combine.concatenated_encoding_dim
         running_offset = 0
         total_loss = None
 
         logsoftmax_1 = self.compute_logsoftmax(model1.decoder.weight, model1.decoder.bias, ll1_out, targets)
-        print("ensemble loss criterion, logsoftmax_1[0:2,0:3]=" + str(logsoftmax_1[0:2, 0:3]))
+        # print("ensemble loss criterion, logsoftmax_1[0:2,0:3]=" + str(logsoftmax_1[0:2, 0:3]))
         logsoftmax_2 = self.compute_logsoftmax(model2.decoder.weight, model2.decoder.bias, ll2_out, targets)
 
         if force_model[0]:
@@ -139,7 +138,7 @@ class SplitCrossEntropyLoss(nn.Module):
 
         softmaxed_all_head_res = ensemble_logsoftmax
         entropy = -torch.gather(softmaxed_all_head_res, dim=1, index=targets.view(-1, 1))
-        print("forward_ensemble > entropy[0:3]=" + str(entropy[0:3]))
+
         running_offset += len(targets)
         total_loss = entropy.float().sum() if total_loss is None else total_loss + entropy.float().sum()
 
@@ -217,7 +216,7 @@ class SplitCrossEntropyLoss(nn.Module):
             # For those targets in the head (idx == 0) we only need to return their loss
             if idx == 0:
                 softmaxed_head_res = softmaxed_all_head_res[running_offset:running_offset + len(split_hiddens[idx])]
-                print("standard loss criterion, softmaxed_head_res[0:2,0:3]=" + str(softmaxed_head_res[0:2,0:3]))
+                # print("standard loss criterion, softmaxed_head_res[0:2,0:3]=" + str(softmaxed_head_res[0:2, 0:3]))
                 entropy = -torch.gather(softmaxed_head_res, dim=1, index=split_targets[idx].view(-1, 1))
             # If the target is in one of the splits, the probability is the p(tombstone) * p(word within tombstone)
             else:
@@ -240,7 +239,7 @@ class SplitCrossEntropyLoss(nn.Module):
                 tail_entropy = torch.gather(torch.nn.functional.log_softmax(tail_res, dim=-1), dim=1, index=indices).squeeze()
                 entropy = -(head_entropy + tail_entropy)
             ###
-            print("SplitCross > forward > entropy[0:3]=" + str(entropy[0:3]))
+
             running_offset += len(split_hiddens[idx])
             total_loss = entropy.float().sum() if total_loss is None else total_loss + entropy.float().sum()
 
