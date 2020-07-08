@@ -148,7 +148,11 @@ from splitcross import SplitCrossEntropyLoss
 criterion = None
 
 ntokens = len(corpus.dictionary)
-# added
+model_base = model.AWD(args.model, ntokens, args.emsize, args.nhid,
+                        args.nlayers, args.dropout, args.dropouth,
+                        args.dropouti, args.dropoute, args.wdrop, args.tied)
+
+# added by me: including the KB Graph & FastText information for our modified model
 os.chdir('..')
 graph_dataobj = DG.get_graph_dataobject(new=False, method=CE.Method.FASTTEXT, slc_corpus=False).to(device)
 grapharea_matrix = AD.get_grapharea_matrix(graph_dataobj, area_size=32, hops_in_area=1)
@@ -163,14 +167,12 @@ variant_flags_dict = {'include_globalnode_input':False, 'include_sensenode_input
 # note: to work correctly, the folders must be geared for WikiText-2 (since I am loading graph and grapharea_matrix)
 model_modified = model.AWD_modified(args.model, ntokens, args.nhid,
                        args.nlayers, graph_dataobj, variant_flags_dict,
-                           globals_vocabulary_wordList, grapharea_matrix, 32, #grapharea_size,
+                       globals_vocabulary_wordList, grapharea_matrix, 32, #grapharea_size,
                        args.dropout, args.dropouth,
                        args.dropouti, args.dropoute, args.wdrop, args.tied)
-model_base = model.AWD(args.model, ntokens, args.emsize, args.nhid,
-                       args.nlayers, args.dropout, args.dropouth,
-                       args.dropouti, args.dropoute, args.wdrop, args.tied)
-model = model.AWD_ensemble(model_base, model_modified)
-print(model)
+print(model_base)
+print(model_modified)
+ensemble_combine = model.Ensemble_Combine(model_base, model_modified)
 
 ###
 if args.resume:
@@ -196,14 +198,14 @@ if not criterion:
         # WikiText-103
         splits = [2800, 20000, 76000]
     print('Using splits {}'.format(splits))
-    criterion = SplitCrossEntropyLoss(model.ninp, splits=splits, verbose=False)
+    criterion = SplitCrossEntropyLoss(args.emsize, splits=splits, verbose=False)
 
 # if torch.__version__ != '0.1.12_2':
 #     print([(name, p.device) for name, p in model.named_parameters()])
 ###
 if args.cuda:
-    model = model.cuda()
-    print("Moving the model onto CUDA")
+    model_base = model_base.cuda() # model 1
+    model_modified = model_modified.cuda() # model 2
     criterion = criterion.cuda()
 ###
 params = list(model.parameters()) + list(criterion.parameters())
@@ -220,29 +222,34 @@ print('Model total parameters:', total_params)
 def evaluate(data_source, batch_size=10):
     # Turn on evaluation mode which disables dropout.
     model.eval()
-    if args.model == 'QRNN': model.reset()
+    # if args.model == 'QRNN': model.reset()
     total_loss = 0
     ntokens = len(corpus.dictionary)
-    hidden = model.init_hidden(batch_size)
-    a_records_ls = []
+    hidden_base = model_base.init_hidden(args.batch_size)  # model 1
+    hidden_modified = model_modified.init_hidden(args.batch_size)  # model 2
     for i in range(0, data_source.size(0) - 1, args.bptt):
         data, targets = get_batch(data_source, i, args, evaluation=True)
-        output, hidden = model(data, hidden)
-        last_layers_outs = (output[0].view(data.shape[0], data.shape[1], model_base.ninp),
-                            output[1].view(data.shape[0], data.shape[1], model_modified.ninp))
-        total_loss += len(data) * criterion.forward_ensemble(model, model.AWD_base, model.AWD_modified, last_layers_outs, targets,
-                                              force_model=(True,False)).data
-        hidden = (repackage_hidden(hidden[0]),repackage_hidden(hidden[1]))
+        output_base, hidden_base, rnn_hs_base, dropped_rnn_hs_base = model_base(data, hidden_base,
+                                                                                return_h=True)  # model 1
+        output_mod, hidden_modified, rnn_hs_mod, dropped_rnn_hs_mod = model_modified(data, hidden_modified,
+                                                                                     return_h=True)  # model 2
+        # raw_loss = criterion(model_base.decoder.weight, model_base.decoder.bias, output_base, targets)
+        ensemble_loss = criterion.forward_ensemble(ensemble_combine, output_base, output_mod, targets,
+                                                   force_model=(True, False))
+        total_loss += len(data) * ensemble_loss.data
+        hidden_base = repackage_hidden(hidden_base)  # model 1
+        hidden_modified = repackage_hidden(hidden_modified)  # model 2
     return total_loss.item() / len(data_source)
 
 
 def train():
     # Turn on training mode which enables dropout.
-    if args.model == 'QRNN': model.reset()
+    # if args.model == 'QRNN': model.reset()
     total_loss = 0
     start_time = time.time()
     ntokens = len(corpus.dictionary)
-    hidden = model.init_hidden(args.batch_size)
+    hidden_base = model_base.init_hidden(args.batch_size)  # model 1
+    hidden_modified = model_modified.init_hidden(args.batch_size)  # model 2
     batch, i = 0, 0
     while i < train_data.size(0) - 1 - 1:
         bptt = args.bptt if np.random.random() < 0.95 else args.bptt / 2.
@@ -253,43 +260,34 @@ def train():
 
         lr2 = optimizer.param_groups[0]['lr']
         optimizer.param_groups[0]['lr'] = lr2 * seq_len / args.bptt
-        model.train()
+        model_base.train() # model 1
+        model_modified.train() # model 2
         data, targets = get_batch(train_data, i, args, seq_len=seq_len)
 
         # Starting each batch, we detach the hidden state from how it was previously produced.
         # If we didn't, the model would try backpropagating all the way to start of the dataset.
-        hidden = (repackage_hidden(hidden[0]),repackage_hidden(hidden[1]))
+        hidden_base = repackage_hidden(hidden_base) # model 1
+        hidden_modified = repackage_hidden(hidden_modified) # model 2
         optimizer.zero_grad()
 
-        output, hidden, rnn_hs, dropped_rnn_hs = model(data, hidden, return_h=True)
+        output_base, hidden_base, rnn_hs_base, dropped_rnn_hs_base = model_base(data, hidden_base, return_h=True) # model 1
+        output_mod, hidden_modified, rnn_hs_mod, dropped_rnn_hs_mod = model_modified(data, hidden_modified, return_h=True)  # model 2
+        # raw_loss = criterion(model_base.decoder.weight, model_base.decoder.bias, output_base, targets)
+        ensemble_loss = criterion.forward_ensemble(ensemble_combine, output_base, output_mod, targets, force_model=(True,False))
 
-        # raw_loss = criterion(model_base.decoder.weight, model_base.decoder.bias, output[0], targets)
-        last_layers_outs = (output[0].view(data.shape[0], data.shape[1], model_base.ninp),
-                            output[1].view(data.shape[0], data.shape[1], model_modified.ninp))
-        raw_loss = criterion.forward_ensemble(model, model.AWD_base, model.AWD_modified, last_layers_outs, targets,
-                                              force_model=(True, False))
-
-        loss = raw_loss
-        # # Activation Regularization
-        # if args.alpha: loss = loss + sum(
-        #     args.alpha * dropped_rnn_h.pow(2).mean() for dropped_rnn_h in dropped_rnn_hs[-1:])
-        # # Temporal Activation Regularization (slowness)
-        # if args.beta: loss = loss + sum(args.beta * (rnn_h[1:] - rnn_h[:-1]).pow(2).mean() for rnn_h in rnn_hs[-1:])
-        # loss.backward()
+        loss = ensemble_loss # raw_loss
         # Activation Regularization
-        if args.alpha:
-            loss = loss + sum(
-                args.alpha * dropped_rnn_h.pow(2).mean() for dropped_rnn_h in dropped_rnn_hs[0][-1:])
+        if args.alpha: loss = loss + sum(
+            args.alpha * dropped_rnn_h.pow(2).mean() for dropped_rnn_h in dropped_rnn_hs_base[-1:])
         # Temporal Activation Regularization (slowness)
-        if args.beta:
-            loss = loss + sum(args.beta * (rnn_h[1:] - rnn_h[:-1]).pow(2).mean() for rnn_h in rnn_hs[0][-1:])
+        if args.beta: loss = loss + sum(args.beta * (rnn_h[1:] - rnn_h[:-1]).pow(2).mean() for rnn_h in rnn_hs_base[-1:])
         loss.backward()
 
         # `clip_grad_norm` helps prevent the exploding gradient problem in RNNs / LSTMs.
         if args.clip: torch.nn.utils.clip_grad_norm_(params, args.clip)
         optimizer.step()
 
-        total_loss += raw_loss.data
+        total_loss += ensemble_loss.data
         optimizer.param_groups[0]['lr'] = lr2
         if batch % args.log_interval == 0 and batch > 0:
             cur_loss = total_loss / args.log_interval
@@ -312,7 +310,6 @@ def train():
             except:
                 pass
         ####################################
-
 
 # Loop over epochs.
 lr = args.lr

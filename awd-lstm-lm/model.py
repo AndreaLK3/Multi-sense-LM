@@ -39,38 +39,34 @@ def make_2D_mask(indices_rows_to_include, max_vocab_index, dim_input):
 
 
 
-class AWD_ensemble(nn.Module):
+class Ensemble_Combine(nn.Module):
 
     def __init__(self, AWD_base, AWD_modified):
-        super(AWD_ensemble, self).__init__()
+        super(Ensemble_Combine, self).__init__()
+
         self.AWD_base = AWD_base
         self.AWD_modified = AWD_modified
-        self.ninp = self.AWD_base.ninp # placeholder, we are not splitting the softmax now
+        self.batch_size=None # set by init_hidden
 
         self.concatenated_encoding_dim = self.AWD_base.ninp + self.AWD_modified.ninp
-        self.A = nn.LSTM(input_size=self.concatenated_encoding_dim, hidden_size=1, num_layers=1, bias=True) # layer to the coefficient (a) used to combine the logsoftmax
-        self.memory_a_hidden_base = Parameter(torch.zeros(size=(1, 256, 1)),requires_grad=False)  # used in splitcross.py > forward_ensemble(...)
-        self.memory_a_cells_base = Parameter(torch.zeros(size=(1, 256, 1)), requires_grad=False) # 256=overly large batch size (it gets resized in init_hidden())
+        # added - to handle the weighted average of the softmax of 2 models in an ensemble setting
+        self.A = nn.LSTM(input_size=self.concatenated_encoding_dim, hidden_size=1, num_layers=1,
+                         bias=True)  # layer to the coefficient (a) used to combine the logsoftmax
+        self.memory_a_hidden_base = Parameter(torch.zeros(size=(1, 256, 1)),
+                                              requires_grad=False)  # used in splitcross.py > forward_ensemble(...)
+        self.memory_a_cells_base = Parameter(torch.zeros(size=(1, 256, 1)),
+                                             requires_grad=False)  # 256=overly large batch size (it gets resized in init_hidden())
 
     def forward(self, input, hidden, return_h=False):
-
-        if not(return_h):
-            result_base, hidden_base = self.AWD_base.forward(input, hidden[0], return_h)
-            result_mod, hidden_mod = self.AWD_modified.forward(input, hidden[1], return_h)
-            return ((result_base, result_mod), (hidden_base, hidden_mod))
-        else:
-            result_base, hidden_base, raw_outputs_base, outputs_base = self.AWD_base.forward(input, hidden[0], return_h)
-            result_mod, hidden_mod, raw_outputs_mod, outputs_mod = self.AWD_modified.forward(input, hidden[1], return_h)
-            return ((result_base, result_mod), (hidden_base, hidden_mod), (raw_outputs_base, raw_outputs_mod), (outputs_base, outputs_mod))
+        pass # unused, we currently call ensemble_combine.A(...)
 
     def init_hidden(self, bsz):
-        hidden_base = self.AWD_base.init_hidden(bsz)
-        hidden_modified = self.AWD_modified.init_hidden(bsz)
-        self.memory_a_hidden = Parameter(torch.reshape(self.memory_a_hidden_base.flatten()[0:bsz], (1, bsz, 1)),
+        self.batch_size = bsz
+        self.memory_a_hidden = Parameter(torch.reshape(self.memory_a_hidden_base.flatten().clone().detach()[0:bsz], (1, bsz, 1)),
                                    requires_grad=False)
-        self.memory_a_cells = Parameter(torch.reshape(self.memory_a_cells_base.flatten()[0:bsz], (1, bsz, 1)),
+        self.memory_a_cells = Parameter(torch.reshape(self.memory_a_cells_base.flatten().clone().detach()[0:bsz], (1, bsz, 1)),
                                          requires_grad=False)
-        return (hidden_base, hidden_modified)
+        return (self.memory_a_hidden, self.memory_a_cells)
 
 
 class AWD_modified(nn.Module):
@@ -82,7 +78,7 @@ class AWD_modified(nn.Module):
                  dropoute=0.1, wdrop=0, tie_weights=False):
         super(AWD_modified, self).__init__()
 
-        # added by me
+        # *** added by me
         self.vocabulary_wordlist = my_vocabulary_wordlist
         self.grapharea_matrix = grapharea_matrix
         self.grapharea_size = grapharea_size
@@ -102,6 +98,7 @@ class AWD_modified(nn.Module):
             lemmatize_term('init', self.lemmatizer)  # to establish LazyCorpusLoader and prevent a multi-thread crash
         if variant_flags_dict['include_sensenode_input']: # not fully implemented yet
             self.gat_senses = GATConv(in_channels=self.dim_embs, out_channels=int(self.dim_embs / 4), heads=4)
+        # ***
 
         self.ninp = self.d_inp
         self.nhid = nhid
@@ -121,19 +118,12 @@ class AWD_modified(nn.Module):
             self.rnns = [torch.nn.GRU(self.d_inp if l == 0 else nhid, nhid if l != nlayers - 1 else self.d_encoding, 1, dropout=0) for l in range(nlayers)]
             if wdrop:
                 self.rnns = [WeightDrop(rnn, ['weight_hh_l0'], dropout=wdrop) for rnn in self.rnns]
-        # elif rnn_type == 'QRNN':
-        #     from torchqrnn import QRNNLayer
-        #     self.rnns = [QRNNLayer(input_size=self.d_inp if l == 0 else nhid, hidden_size=nhid if l != nlayers - 1 else (self.d_inp if tie_weights else nhid), save_prev_x=True, zoneout=0, window=2 if l == 0 else 1, output_gate=True) for l in range(nlayers)]
-        #     for rnn in self.rnns:
-        #         rnn.linear = WeightDrop(rnn.linear, ['weight'], dropout=wdrop)
         print(self.rnns)
         self.rnns = torch.nn.ModuleList(self.rnns)
         self.decoder = nn.Linear(nhid, ntoken)
 
         # Optionally tie weights:
         if tie_weights:
-            # if nhid != ninp:
-            #     raise ValueError('When using the tied flag, nhid must be equal to emsize')
             self.decoder.weight = self.encoder.weight
 
         self.init_weights(variant_flags_dict, self.X)
@@ -197,27 +187,25 @@ class AWD_modified(nn.Module):
             mask_for_scatter = make_2D_mask(current_global_indices, self.ntokens_vocab, self.d_encoding)
             self.encoder.weight.data.masked_scatter_(mask=mask_for_scatter, source=currentglobal_nodestate_update.clone())
 
-
         emb = embedded_dropout(self.encoder, input, dropout=self.dropoute if self.training else 0)
-        #emb = self.idrop(emb)
+        # emb = self.idrop(emb)
 
         emb = self.lockdrop(emb, self.dropouti)
 
         raw_output = emb
         new_hidden = []
-        #raw_output, hidden = self.rnn(emb, hidden)
+        # raw_output, hidden = self.rnn(emb, hidden)
         raw_outputs = []
         outputs = []
 
         for l, rnn in enumerate(self.rnns):
-
-            rnn.module.flatten_parameters()  # * now working
+            rnn.module.flatten_parameters()  # not working
             current_input = raw_output
             raw_output, new_h = rnn(raw_output, hidden[l])
             new_hidden.append(new_h)
             raw_outputs.append(raw_output)
             if l != self.nlayers - 1:
-                #self.hdrop(raw_output)
+                # self.hdrop(raw_output)
                 raw_output = self.lockdrop(raw_output, self.dropouth)
                 outputs.append(raw_output)
         hidden = new_hidden
@@ -225,21 +213,22 @@ class AWD_modified(nn.Module):
         output = self.lockdrop(raw_output, self.dropout)
         outputs.append(output)
 
-        result = output.view(output.size(0)*output.size(1), output.size(2))
+        result = output.view(output.size(0) * output.size(1), output.size(2))
         if return_h:
             return result, hidden, raw_outputs, outputs
         return result, hidden
 
+
     def init_hidden(self, bsz):
-        weight = next(self.parameters()).data
-        encoding_size = self.d_inp * (1 + sum([int(self.variant_flags_dict[flag]) for flag in self.variant_flags_dict]))
-        if self.rnn_type == 'LSTM':
-            return [(weight.new(1, bsz, self.nhid if l != self.nlayers - 1 else (encoding_size if self.tie_weights else self.nhid)).zero_(),
-                    weight.new(1, bsz, self.nhid if l != self.nlayers - 1 else (encoding_size if self.tie_weights else self.nhid)).zero_())
-                    for l in range(self.nlayers)]
-        elif self.rnn_type == 'QRNN' or self.rnn_type == 'GRU':
-            return [weight.new(1, bsz, self.nhid if l != self.nlayers - 1 else (encoding_size if self.tie_weights else self.nhid)).zero_()
-                    for l in range(self.nlayers)]
+            weight = next(self.parameters()).data
+            encoding_size = self.d_inp * (1 + sum([int(self.variant_flags_dict[flag]) for flag in self.variant_flags_dict]))
+            if self.rnn_type == 'LSTM':
+                return [(weight.new(1, bsz, self.nhid if l != self.nlayers - 1 else (encoding_size if self.tie_weights else self.nhid)).zero_(),
+                        weight.new(1, bsz, self.nhid if l != self.nlayers - 1 else (encoding_size if self.tie_weights else self.nhid)).zero_())
+                        for l in range(self.nlayers)]
+            elif self.rnn_type == 'QRNN' or self.rnn_type == 'GRU':
+                return [weight.new(1, bsz, self.nhid if l != self.nlayers - 1 else (encoding_size if self.tie_weights else self.nhid)).zero_()
+                        for l in range(self.nlayers)]
 
 
 
@@ -265,16 +254,22 @@ class AWD(nn.Module):
             self.rnns = [torch.nn.GRU(ninp if l == 0 else nhid, nhid if l != nlayers - 1 else ninp, 1, dropout=0) for l in range(nlayers)]
             if wdrop:
                 self.rnns = [WeightDrop(rnn, ['weight_hh_l0'], dropout=wdrop) for rnn in self.rnns]
-        # elif rnn_type == 'QRNN':
-        #     from torchqrnn import QRNNLayer
-        #     self.rnns = [QRNNLayer(input_size=ninp if l == 0 else nhid, hidden_size=nhid if l != nlayers - 1 else (ninp if tie_weights else nhid), save_prev_x=True, zoneout=0, window=2 if l == 0 else 1, output_gate=True) for l in range(nlayers)]
-        #     for rnn in self.rnns:
-        #         rnn.linear = WeightDrop(rnn.linear, ['weight'], dropout=wdrop)
+        elif rnn_type == 'QRNN':
+            pass
+            # from torchqrnn import QRNNLayer
+            # self.rnns = [QRNNLayer(input_size=ninp if l == 0 else nhid, hidden_size=nhid if l != nlayers - 1 else (ninp if tie_weights else nhid), save_prev_x=True, zoneout=0, window=2 if l == 0 else 1, output_gate=True) for l in range(nlayers)]
+            # for rnn in self.rnns:
+            #     rnn.linear = WeightDrop(rnn.linear, ['weight'], dropout=wdrop)
         print(self.rnns)
         self.rnns = torch.nn.ModuleList(self.rnns)
         self.decoder = nn.Linear(nhid, ntoken)
 
-        # Optionally tie weights:
+        # Optionally tie weights as in:
+        # "Using the Output Embedding to Improve Language Models" (Press & Wolf 2016)
+        # https://arxiv.org/abs/1608.05859
+        # and
+        # "Tying Word Vectors and Word Classifiers: A Loss Framework for Language Modeling" (Inan et al. 2016)
+        # https://arxiv.org/abs/1611.01462
         if tie_weights:
             #if nhid != ninp:
             #    raise ValueError('When using the tied flag, nhid must be equal to emsize')
@@ -314,7 +309,7 @@ class AWD(nn.Module):
         outputs = []
 
         for l, rnn in enumerate(self.rnns):
-            rnn.module.flatten_parameters()  # now working
+            rnn.module.flatten_parameters()  # not working
             current_input = raw_output
             raw_output, new_h = rnn(raw_output, hidden[l])
             new_hidden.append(new_h)
@@ -332,7 +327,6 @@ class AWD(nn.Module):
         if return_h:
             return result, hidden, raw_outputs, outputs
         return result, hidden
-
 
     def init_hidden(self, bsz):
         weight = next(self.parameters()).data

@@ -23,73 +23,6 @@ import Graph.Adjacencies as AD
 import Filesystem as F
 import pandas as pd
 
-# parser = argparse.ArgumentParser(description='PyTorch PennTreeBank RNN/LSTM Language Model')
-# parser.add_argument('--data', type=str, default='data/wikitext-2',
-#                     help='location of the data corpus')
-# parser.add_argument('--model', type=str, default='LSTM',
-#                     help='type of recurrent net (LSTM, QRNN, GRU)')
-# parser.add_argument('--emsize', type=int, default=400,
-#                     help='size of word embeddings')
-# parser.add_argument('--nhid', type=int, default=1150,
-#                     help='number of hidden units per layer')
-# parser.add_argument('--nlayers', type=int, default=3,
-#                     help='number of layers')
-# parser.add_argument('--lr', type=float, default=30,
-#                     help='initial learning rate')
-# parser.add_argument('--clip', type=float, default=0.25,
-#                     help='gradient clipping')
-# parser.add_argument('--epochs', type=int, default=800,
-# #                     help='upper epoch limit')
-# parser.add_argument('--batch_size', type=int, default=32, metavar='N',
-#                     help='batch size')
-# parser.add_argument('--bptt', type=int, default=70,
-#                     help='sequence length')
-# parser.add_argument('--dropout', type=float, default=0.4,
-#                     help='dropout applied to layers (0 = no dropout)')
-# parser.add_argument('--dropouth', type=float, default=0.3,
-#                     help='dropout for rnn layers (0 = no dropout)')
-# parser.add_argument('--dropouti', type=float, default=0.65,
-#                     help='dropout for input embedding layers (0 = no dropout)')
-# parser.add_argument('--dropoute', type=float, default=0.1,
-#                     help='dropout to remove words from embedding layer (0 = no dropout)')
-# parser.add_argument('--wdrop', type=float, default=0.5,
-#                     help='amount of weight dropout to apply to the RNN hidden to hidden matrix')
-# parser.add_argument('--seed', type=int, default=1882,
-#                     help='random seed')
-# parser.add_argument('--nonmono', type=int, default=5,
-#                     help='random seed')
-# parser.add_argument('--cuda', action='store_false',
-#                     help='use CUDA')
-# parser.add_argument('--log-interval', type=int, default=200, metavar='N',
-#                     help='report interval')
-
-# parser.add_argument('--save', type=str, default='BLIBLU' + '.pt',
-#                     help='path to save the final model')
-# parser.add_argument('--alpha', type=float, default=2,
-#                     help='alpha L2 regularization on RNN activation (alpha = 0 means no regularization)')
-# parser.add_argument('--beta', type=float, default=1,
-#                     help='beta slowness regularization applied on RNN activiation (beta = 0 means no regularization)')
-# parser.add_argument('--wdecay', type=float, default=1.2e-6,
-#                     help='weight decay applied to all weights')
-# parser.add_argument('--resume', type=str, default='',
-#                     help='path of model to resume')
-# parser.add_argument('--optimizer', type=str, default='sgd',
-#                     help='optimizer to use (sgd, adam)')
-# parser.add_argument('--when', nargs="+", type=int, default=[-1],
-#                     help='When (which epochs) to divide the learning rate by 10 - accepts multiple')
-# parser.add_argument("-g", "--gpu", required=False,
-#                     default='1', help="gpu on which this experiment runs") # we do not specify this
-# parser.add_argument("-server", "--server", required=False, # and not this either, since we do not use servers
-#                     default='ford', help="server on which this experiment runs")
-# parser.add_argument("-asgd", "--asgd", required=False,
-#                     default='True', help="server on which this experiment runs") # this, we keep, it's the optimizer
-# args = parser.parse_args()
-# args.tied = True
-
-# if args.server is 'ford':
-#    os.environ["CUDA_VISIBLE_DEVICES"] = args.gpu
-#    print("\nThis experiment runs on gpu {}...\n".format(args.gpu))
-
 # ***** My modification, to be able to run this on PyCharm's console and debug it ******
 from types import SimpleNamespace # so I don't have to change the dot-notation to access args.
 
@@ -126,8 +59,8 @@ randomhash = ''.join(str(time.time()).split('.'))
 args=SimpleNamespace(**args_dict)
 
 
-###############################################################################
 
+###############################################################################
 print("torch:", torch.__version__)
 #if torch.__version__ != '0.1.12_2':
 print("Cuda:", torch.version.cuda) # * modified: these statistics have been moved in PyTorch 1.5
@@ -184,7 +117,11 @@ from splitcross import SplitCrossEntropyLoss
 criterion = None
 
 ntokens = len(corpus.dictionary)
-# added
+model_base = model.AWD(args.model, ntokens, args.emsize, args.nhid,
+                        args.nlayers, args.dropout, args.dropouth,
+                        args.dropouti, args.dropoute, args.wdrop, args.tied)
+
+# added by me: including the KB Graph & FastText information for our modified model
 os.chdir('..')
 graph_dataobj = DG.get_graph_dataobject(new=False, method=CE.Method.FASTTEXT, slc_corpus=False).to(device)
 grapharea_matrix = AD.get_grapharea_matrix(graph_dataobj, area_size=32, hops_in_area=1)
@@ -199,14 +136,12 @@ variant_flags_dict = {'include_globalnode_input':False, 'include_sensenode_input
 # note: to work correctly, the folders must be geared for WikiText-2 (since I am loading graph and grapharea_matrix)
 model_modified = model.AWD_modified(args.model, ntokens, args.nhid,
                        args.nlayers, graph_dataobj, variant_flags_dict,
-                           globals_vocabulary_wordList, grapharea_matrix, 32, #grapharea_size,
+                        globals_vocabulary_wordList, grapharea_matrix, 32, #grapharea_size,
                        args.dropout, args.dropouth,
                        args.dropouti, args.dropoute, args.wdrop, args.tied)
-model_base = model.AWD(args.model, ntokens, args.emsize, args.nhid,
-                       args.nlayers, args.dropout, args.dropouth,
-                       args.dropouti, args.dropoute, args.wdrop, args.tied)
-model = model.AWD_ensemble(model_base, model_modified)
-print(model)
+print(model_base)
+print(model_modified)
+ensemble_combine = model.Ensemble_Combine(model_base, model_modified)
 
 ###
 if args.resume:
@@ -232,20 +167,23 @@ if not criterion:
         # WikiText-103
         splits = [2800, 20000, 76000]
     print('Using splits {}'.format(splits))
-    criterion = SplitCrossEntropyLoss(model.ninp, splits=splits, verbose=False)
+    concatenated_out_dim = model_base.encoder.embedding_dim + model_modified.encoder.embedding_dim # added by me
+    criterion = SplitCrossEntropyLoss(args.emsize, splits=splits, verbose=False)
 
 # if torch.__version__ != '0.1.12_2':
 #     print([(name, p.device) for name, p in model.named_parameters()])
 ###
 if args.cuda:
-    model = model.cuda()
+    model_base = model_base.cuda()
+    model_modified = model_modified.cuda()
     criterion = criterion.cuda()
 ###
-params = list(model.parameters()) + list(criterion.parameters())
-trainable_parameters = [p for p in model.parameters() if p.requires_grad]
-total_params = sum(x.size()[0] * x.size()[1] if len(x.size()) > 1 else x.size()[0] for x in params if x.size())
-print('Args:', args)
-print('Model total parameters:', total_params)
+for AWD_model in [model_base, model_modified]:
+    params = list(AWD_model.parameters()) + list(criterion.parameters())
+    trainable_parameters = [p for p in AWD_model.parameters() if p.requires_grad]
+    total_params = sum(x.size()[0] * x.size()[1] if len(x.size()) > 1 else x.size()[0] for x in params if x.size())
+    print('Args:', args)
+    print('Model total parameters:', total_params)
 
 
 ###############################################################################
@@ -255,30 +193,35 @@ print('Model total parameters:', total_params)
 def evaluate(data_source, batch_size=10):
     # Turn on evaluation mode which disables dropout.
     model.eval()
-    if args.model == 'QRNN': model.reset()
+    # if args.model == 'QRNN': model.reset()
     total_loss = 0
     ntokens = len(corpus.dictionary)
-    hidden = model.init_hidden(batch_size)
+    hidden_base = model_base.init_hidden(args.batch_size)  # model 1
+    hidden_modified = model_modified.init_hidden(args.batch_size)  # model 2
     for i in range(0, data_source.size(0) - 1, args.bptt):
         data, targets = get_batch(data_source, i, args, evaluation=True)
-        output, hidden = model(data, hidden)
-        last_layers_outs = (output[0].view(data.shape[0], data.shape[1], model_base.ninp),
-                            output[1].view(data.shape[0], data.shape[1], model_modified.ninp))
-        total_loss += len(data) * criterion.forward_ensemble(model, model.AWD_base, model.AWD_modified, last_layers_outs, targets,
-                                              force_model=(True,False)).data
-        hidden = (repackage_hidden(hidden[0]),repackage_hidden(hidden[1]))
+        output_base, hidden_base, rnn_hs_base, dropped_rnn_hs_base = model_base(data, hidden_base,
+                                                                                return_h=True)  # model 1
+        output_mod, hidden_modified, rnn_hs_mod, dropped_rnn_hs_mod = model_modified(data, hidden_modified,
+                                                                                     return_h=True)  # model 2
+        # raw_loss = criterion(model_base.decoder.weight, model_base.decoder.bias, output_base, targets)
+        ensemble_loss = criterion.forward_ensemble(ensemble_combine, output_base, output_mod, targets,
+                                                   force_model=(True, False))
+        total_loss += len(data) * ensemble_loss.data
+        hidden_base = repackage_hidden(hidden_base)  # model 1
+        hidden_modified = repackage_hidden(hidden_modified)  # model 2
     return total_loss.item() / len(data_source)
 
 
 def train():
     # Turn on training mode which enables dropout.
-    if args.model == 'QRNN': model.reset()
+    # if args.model == 'QRNN': model.reset()
     total_loss = 0
     start_time = time.time()
     ntokens = len(corpus.dictionary)
-    hidden = model.init_hidden(args.batch_size)
+    hidden_base = model_base.init_hidden(args.batch_size) # model 1
+    hidden_modified = model_modified.init_hidden(args.batch_size) # model 2
     batch, i = 0, 0
-
     while i < train_data.size(0) - 1 - 1:
         bptt = args.bptt if np.random.random() < 0.95 else args.bptt / 2.
         # Prevent excessively small or negative sequence lengths
@@ -288,30 +231,27 @@ def train():
 
         lr2 = optimizer.param_groups[0]['lr']
         optimizer.param_groups[0]['lr'] = lr2 * seq_len / args.bptt
-        model.train()
+        model_base.train() # model 1
+        model_modified.train() # model 2
         data, targets = get_batch(train_data, i, args, seq_len=seq_len)
 
         # Starting each batch, we detach the hidden state from how it was previously produced.
         # If we didn't, the model would try backpropagating all the way to start of the dataset.
-        hidden = (repackage_hidden(hidden[0]),repackage_hidden(hidden[1]))
+        hidden_base = repackage_hidden(hidden_base) # model 1
+        hidden_modified = repackage_hidden(hidden_modified) # model 2
         optimizer.zero_grad()
 
-        output_base, hidden_base, rnn_hs_base, dropped_rnn_h_s_base = model_base(data, hidden, return_h=True)
-        output, hidden, rnn_hs, dropped_rnn_hs = model(data, hidden, return_h=True)
-        # raw_loss = criterion(model_base.decoder.weight, model_base.decoder.bias, output[0], targets)
-        last_layers_outs = (output[0].view(data.shape[0], data.shape[1], model_base.ninp),
-                            output[1].view(data.shape[0], data.shape[1], model_modified.ninp))
-        raw_loss = criterion.forward_ensemble(model, model.AWD_base, model.AWD_modified, last_layers_outs, targets,
-                                              force_model=(True,False))
+        output_base, hidden_base, rnn_hs_base, dropped_rnn_hs_base = model_base(data, hidden_base, return_h=True) # model 1
+        output_mod, hidden_modified, rnn_hs_mod, dropped_rnn_hs_mod = model_modified(data, hidden_modified, return_h=True)  # model 2
+        # raw_loss = criterion(model_base.decoder.weight, model_base.decoder.bias, output_base, targets)
+        ensemble_loss = criterion.forward_ensemble(ensemble_combine, output_base, output_mod, targets, force_model=(True,False))
 
-        loss = raw_loss
+        loss = ensemble_loss # raw_loss
         # Activation Regularization
-        if args.alpha:
-            loss = loss + sum(
-            args.alpha * dropped_rnn_h.pow(2).mean() for dropped_rnn_h in dropped_rnn_hs[0][-1:])
+        if args.alpha: loss = loss + sum(
+            args.alpha * dropped_rnn_h.pow(2).mean() for dropped_rnn_h in dropped_rnn_hs_base[-1:])
         # Temporal Activation Regularization (slowness)
-        if args.beta:
-            loss = loss + sum(args.beta * (rnn_h[1:] - rnn_h[:-1]).pow(2).mean() for rnn_h in rnn_hs[0][-1:])
+        if args.beta: loss = loss + sum(args.beta * (rnn_h[1:] - rnn_h[:-1]).pow(2).mean() for rnn_h in rnn_hs_base[-1:])
         loss.backward()
 
         # `clip_grad_norm` helps prevent the exploding gradient problem in RNNs / LSTMs.
@@ -365,17 +305,17 @@ try:
         # memory debug
         print('Memory before train')
         if args.cuda:
-            print("Total=" + str(torch.cuda.get_device_properties(device).total_memory))
-            print("Cached=" + str(torch.cuda.memory_cached(device)))
-            print("Allocated=" + str(torch.cuda.memory_allocated(device)))
+            print(torch.cuda.get_device_properties(device).total_memory)
+            print(torch.cuda.memory_cached(device))
+            print(torch.cuda.memory_allocated(device))
         ####################################
         train()
         ####################################
         print('Memory after train')
         if args.cuda:
-            print("Total=" + str(torch.cuda.get_device_properties(device).total_memory))
-            print("Cached=" + str(torch.cuda.memory_cached(device)))
-            print("Allocated=" + str(torch.cuda.memory_allocated(device)))
+            print(torch.cuda.get_device_properties(device).total_memory)
+            print(torch.cuda.memory_cached(device))
+            print(torch.cuda.memory_allocated(device))
         ####################################
         if args.cuda:
             try:

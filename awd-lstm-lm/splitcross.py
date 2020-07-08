@@ -5,6 +5,7 @@ import torch.nn as nn
 
 import numpy as np
 CURRENT_DEVICE = 'cpu' if not (torch.cuda.is_available()) else 'cuda:' + str(torch.cuda.current_device())
+from torch.nn.parameter import Parameter
 
 class SplitCrossEntropyLoss(nn.Module):
     r'''SplitCrossEntropyLoss calculates an approximate softmax'''
@@ -22,6 +23,7 @@ class SplitCrossEntropyLoss(nn.Module):
         if self.nsplits > 1:
             self.tail_vectors = nn.Parameter(torch.zeros(self.nsplits - 1, hidden_size))
             self.tail_bias = nn.Parameter(torch.zeros(self.nsplits - 1))
+
 
     def logprob(self, weight, bias, hiddens, splits=None, softmaxed_head_res=None, verbose=False):
         # First we perform the first softmax on the head vocabulary and the tombstones
@@ -104,40 +106,40 @@ class SplitCrossEntropyLoss(nn.Module):
         return split_targets, split_hiddens
 
     # * Added by me, to handle the loss of an ensemble of 2 models. Currently we do not splitting the softmax
-    def forward_ensemble(self, ensemble_model, model1, model2, lastlayers_outs, targets, force_model=(False,False)):
+    def forward_ensemble(self, ensemble_combine, ll1_out, ll2_out, targets, force_model=(False,False)):
 
-        ll_1_out, ll_2_out = lastlayers_outs
+        model1 = ensemble_combine.AWD_base
+        model2 = ensemble_combine.AWD_modified
+        concat_out_dim = ensemble_combine.concatenated_encoding_dim
         running_offset = 0
         total_loss = None
 
-        model1_weight= model1.decoder.weight
-        model1_bias= model1.decoder.bias
-        model1_lastlayer_out_flat = ll_1_out.view(ll_1_out.size(0)*ll_1_out.size(1), ll_1_out.size(2))
-
-        model2_weight = model2.decoder.weight
-        model2_bias = model2.decoder.bias
-        model2_lastlayer_out_flat = ll_2_out.view(ll_2_out.size(0)*ll_2_out.size(1), ll_2_out.size(2))
-
-        logsoftmax_1 = self.compute_logsoftmax(model1_weight, model1_bias, model1_lastlayer_out_flat, targets)
-        logsoftmax_2 = self.compute_logsoftmax(model2_weight, model2_bias, model2_lastlayer_out_flat, targets)
-
-        last_layers_concat_flat = torch.cat([model1_lastlayer_out_flat, model2_lastlayer_out_flat], dim=1)
-        last_layers_concat = last_layers_concat_flat.view((ll_1_out.size(0) , ll_1_out.size(1), ensemble_model.concatenated_encoding_dim))
-        a_out, a_hidden = ensemble_model.A(last_layers_concat, (ensemble_model.memory_a_hidden, ensemble_model.memory_a_cells))
-        ensemble_model.memory_a_hidden.data.copy_(a_hidden[0].clone())
-        ensemble_model.memory_a_cells.data.copy_(a_hidden[1].clone())
-
-        a_out_01 = (a_out.view((ll_1_out.size(0)*ll_1_out.size(1), 1))+1) / 2 # rescaling the tanh output [-1,1] to [0,1]
+        logsoftmax_1 = self.compute_logsoftmax(model1.decoder.weight, model1.decoder.bias, ll1_out, targets)
+        print("ensemble loss criterion, logsoftmax_1[0:2,0:3]=" + str(logsoftmax_1[0:2, 0:3]))
+        logsoftmax_2 = self.compute_logsoftmax(model2.decoder.weight, model2.decoder.bias, ll2_out, targets)
 
         if force_model[0]:
-            a_out_01 = torch.ones(size=a_out_01.shape).to(CURRENT_DEVICE)
-        if force_model[1]:
-            a_out_01 = torch.zeros(size=a_out_01.shape).to(CURRENT_DEVICE)
-        ensemble_logsoftmax = a_out_01 * logsoftmax_1 + (1-a_out_01) * logsoftmax_2
+            a_out_01 = torch.ones(size=(logsoftmax_1.shape[0],)).to(CURRENT_DEVICE)
+        elif force_model[1]:
+            a_out_01 = torch.zeros(size=(logsoftmax_1.shape[0],)).to(CURRENT_DEVICE)
+        else:
+
+            last_layers_concat_flat = torch.cat([ll1_out, ll2_out], dim=1)
+            seq_len = last_layers_concat_flat.shape[0] // ensemble_combine.batch_size
+            last_layers_concat = last_layers_concat_flat.view(
+                (seq_len, ensemble_combine.batch_size, ensemble_combine.concatenated_encoding_dim))
+            a_out, a_hidden = ensemble_combine.A(last_layers_concat,
+                                               (ensemble_combine.memory_a_hidden, ensemble_combine.memory_a_cells))
+            ensemble_combine.memory_a_hidden.data.copy_(a_hidden[0].clone())
+            ensemble_combine.memory_a_cells.data.copy_(a_hidden[1].clone())
+
+            a_out_01 = (a_out.view((ensemble_combine.batch_size * seq_len), 1)) #  + 1) / 2 we may need to rescale the tanh from [-1,1] to [0,2]
+
+        ensemble_logsoftmax = a_out_01.unsqueeze(dim=1) * logsoftmax_1 + (1-a_out_01).unsqueeze(dim=1) * logsoftmax_2
+
         softmaxed_all_head_res = ensemble_logsoftmax
-
-
         entropy = -torch.gather(softmaxed_all_head_res, dim=1, index=targets.view(-1, 1))
+        print("forward_ensemble > entropy[0:3]=" + str(entropy[0:3]))
         running_offset += len(targets)
         total_loss = entropy.float().sum() if total_loss is None else total_loss + entropy.float().sum()
 
@@ -215,6 +217,7 @@ class SplitCrossEntropyLoss(nn.Module):
             # For those targets in the head (idx == 0) we only need to return their loss
             if idx == 0:
                 softmaxed_head_res = softmaxed_all_head_res[running_offset:running_offset + len(split_hiddens[idx])]
+                print("standard loss criterion, softmaxed_head_res[0:2,0:3]=" + str(softmaxed_head_res[0:2,0:3]))
                 entropy = -torch.gather(softmaxed_head_res, dim=1, index=split_targets[idx].view(-1, 1))
             # If the target is in one of the splits, the probability is the p(tombstone) * p(word within tombstone)
             else:
@@ -237,6 +240,7 @@ class SplitCrossEntropyLoss(nn.Module):
                 tail_entropy = torch.gather(torch.nn.functional.log_softmax(tail_res, dim=-1), dim=1, index=indices).squeeze()
                 entropy = -(head_entropy + tail_entropy)
             ###
+            print("SplitCross > forward > entropy[0:3]=" + str(entropy[0:3]))
             running_offset += len(split_hiddens[idx])
             total_loss = entropy.float().sum() if total_loss is None else total_loss + entropy.float().sum()
 
