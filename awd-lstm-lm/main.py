@@ -99,7 +99,7 @@ print("Cuda:", torch.version.cuda) # * modified: these statistics have been move
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 print('device: {}'.format(device))
 ###############################################################################
-global model, criterion, optimizer
+global criterion, optimizer # model,
 
 # Set the random seed manually for reproducibility.
 np.random.seed(args.seed)
@@ -165,14 +165,17 @@ os.chdir('awd-lstm-lm')
 
 variant_flags_dict = {'include_globalnode_input':False, 'include_sensenode_input':False}
 # # note: to work correctly, the folders must be geared for WikiText-2 (since I am loading graph and grapharea_matrix)
-model_modified = model.AWD_modified(args.model, ntokens, args.nhid,
-                       args.nlayers, graph_dataobj, variant_flags_dict,
-                       globals_vocabulary_wordList, grapharea_matrix, 32, #grapharea_size,
-                       args.dropout, args.dropouth,
-                       args.dropouti, args.dropoute, args.wdrop, args.tied)
+model_modified = model.AWD_empty(args.model, ntokens, args.emsize, args.nhid,
+                        args.nlayers, args.dropout, args.dropouth,
+                        args.dropouti, args.dropoute, args.wdrop, args.tied)
+    # model.AWD_modified(args.model, ntokens, args.nhid,
+    #                    args.nlayers, graph_dataobj, variant_flags_dict,
+    #                    globals_vocabulary_wordList, grapharea_matrix, 32, #grapharea_size,
+    #                    args.dropout, args.dropouth,
+    #                    args.dropouti, args.dropoute, args.wdrop, args.tied)
 print(model_base)
 print(model_modified)
-ensemble_combine = model.Ensemble_Combine(model_base, model_modified)
+#ensemble_combine = model.Ensemble_Combine(model_base, model_modified)
 
 ### unused
 # if args.resume:
@@ -226,6 +229,7 @@ print('Model total parameters:', total_params)
 ###############################################################################
 
 def evaluate(data_source, batch_size=10):
+    raise Exception # for faster debug
     # Turn on evaluation mode which disables dropout.
     model_base.eval() # model 1
     model_modified.eval() # model 2
@@ -243,7 +247,7 @@ def evaluate(data_source, batch_size=10):
         # raw_loss = criterion(model_base.decoder.weight, model_base.decoder.bias, output_base, targets)
         #ensemble_loss = criterion.forward_ensemble(ensemble_combine, output_base, output_mod, targets,
         #                                           force_model=(True, False))
-        total_loss += len(data) * criterion(model.decoder.weight, model.decoder.bias, output_base, targets).data
+        total_loss += len(data) * criterion(model_base.decoder.weight, model_base.decoder.bias, output_base, targets).data
         #total_loss += len(data) * ensemble_loss.data
         hidden_base = repackage_hidden(hidden_base)  # model 1
         #hidden_modified = repackage_hidden(hidden_modified)  # model 2
@@ -253,6 +257,7 @@ def evaluate(data_source, batch_size=10):
 def train():
     # Turn on training mode which enables dropout.
     # if args.model == 'QRNN': model.reset()
+    output_mod = None # temp debug
     total_loss = 0
     start_time = time.time()
     ntokens = len(corpus.dictionary)
@@ -268,40 +273,46 @@ def train():
 
         lr2 = optimizer.param_groups[0]['lr']
         optimizer.param_groups[0]['lr'] = lr2 * seq_len / args.bptt
-        model_base.train() # model 1
-        model_modified.train() # model 2
+        model_base.train()  # model 1
+        model_modified.train()  # model 2
         data, targets = get_batch(train_data, i, args, seq_len=seq_len)
 
         # Starting each batch, we detach the hidden state from how it was previously produced.
         # If we didn't, the model would try backpropagating all the way to start of the dataset.
-        hidden_base = repackage_hidden(hidden_base) # model 1
-        hidden_modified = repackage_hidden(hidden_modified) # model 2
+        hidden_base = repackage_hidden(hidden_base)  # model 1
+        #hidden_modified = repackage_hidden(hidden_modified)  # model 2
         optimizer.zero_grad()
 
-        output_base, hidden_base, rnn_hs_base, dropped_rnn_hs_base = model_base(data, hidden_base, return_h=True)  # model 1
+        output_base, hidden_base, rnn_hs_base, dropped_rnn_hs_base = model_base(data, hidden_base,
+                                                                                return_h=True)  # model 1
         data_bis = data.clone().detach()
-        # output_mod, hidden_modified, rnn_hs_mod, dropped_rnn_hs_mod = model_modified(data_bis, hidden_modified, return_h=True)  # model 2
+        output_mod, hidden_modified, rnn_hs_mod, dropped_rnn_hs_mod = model_modified(data_bis, hidden_modified, return_h=True)  # model 2
         raw_loss = criterion(model_base.decoder.weight, model_base.decoder.bias, output_base, targets)
-    #   ensemble_loss = criterion.forward_ensemble(ensemble_combine, output_base, output_mod, targets, force_model=(True,False))
+        #   ensemble_loss = criterion.forward_ensemble(ensemble_combine, output_base, output_mod, targets, force_model=(True,False))
         #print("raw_loss=" + str(raw_loss))
         #print("ensemble_loss=" + str(ensemble_loss) + "\n*****\n")
 
-        loss =  raw_loss # ensemble_loss
+        #print("output_mod=" + str(output_mod))
+        #print("\noptimizer.param_groups[0]['params'][0][0][0:3]=" + str(optimizer.param_groups[0]['params'][0][0][0:3]))
+        loss = raw_loss  # ensemble_loss
         # Activation Regularization
         if args.alpha: loss = loss + sum(
             args.alpha * dropped_rnn_h.pow(2).mean() for dropped_rnn_h in dropped_rnn_hs_base[-1:])
         # Temporal Activation Regularization (slowness)
-        if args.beta: loss = loss + sum(args.beta * (rnn_h[1:] - rnn_h[:-1]).pow(2).mean() for rnn_h in rnn_hs_base[-1:])
+        if args.beta: loss = loss + sum(
+            args.beta * (rnn_h[1:] - rnn_h[:-1]).pow(2).mean() for rnn_h in rnn_hs_base[-1:])
         loss.backward()
 
         # `clip_grad_norm` helps prevent the exploding gradient problem in RNNs / LSTMs.
         if args.clip: torch.nn.utils.clip_grad_norm_(params, args.clip)
         optimizer.step()
+        #print("After loss.backward() and optimizer.step(), \noptimizer.param_groups[0]['params'][0][0][0:3]=" + str(
+        #    optimizer.param_groups[0]['params'][0][0][0:3]))
 
-        total_loss += raw_loss.data # changed
+        total_loss += raw_loss.data
         optimizer.param_groups[0]['lr'] = lr2
         if batch % args.log_interval == 0 and batch > 0:
-            cur_loss = total_loss / args.log_interval # +1)
+            cur_loss = total_loss / args.log_interval  # +1)
             elapsed = time.time() - start_time
             print('| epoch {:3d} | {:5d}/{:5d} batches | lr {:05.5f} | ms/batch {:5.2f} | '
                   'loss {:5.2f} | ppl {:8.2f} | bpc {:8.3f}'.format(
