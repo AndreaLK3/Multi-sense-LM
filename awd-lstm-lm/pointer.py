@@ -58,17 +58,17 @@ def one_hot(idx, size, cuda=True):
 
 def evaluate(data_source, batch_size=10, window=args.window):
     # Turn on evaluation mode which disables dropout.
-    if args.model == 'QRNN': model.reset()
-    model.eval()
+    if args.model == 'QRNN': model_base.reset()
+    model_base.eval()
     total_loss = 0
     ntokens = len(corpus.dictionary)
-    hidden = model.init_hidden(batch_size)
+    hidden = model_base.init_hidden(batch_size)
     next_word_history = None
     pointer_history = None
     for i in range(0, data_source.size(0) - 1, args.bptt):
         if i > 0: print(i, len(data_source), math.exp(total_loss / i))
         data, targets = get_batch(data_source, i, evaluation=True, args=args)
-        output, hidden, rnn_outs, _ = model(data, hidden, return_h=True)
+        output, hidden, rnn_outs, _ = model_base(data, hidden, return_h=True)
         rnn_out = rnn_outs[-1].squeeze()
         output_flat = output.view(-1, ntokens)
         ###
@@ -115,10 +115,10 @@ def evaluate(data_source, batch_size=10, window=args.window):
 # Load the best saved model.
 with open(args.save, 'rb') as f:
     if not args.cuda:
-        model = torch.load(f, map_location=lambda storage, loc: storage)
+        model_base = torch.load(f, map_location=lambda storage, loc: storage)
     else:
-        model = torch.load(f)
-print(model)
+        model_base = torch.load(f)
+print(model_base)
 
 # Run on val data.
 val_loss = evaluate(val_data, test_batch_size)

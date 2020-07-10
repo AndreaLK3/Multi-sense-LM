@@ -6,8 +6,11 @@
       <change beforePath="$PROJECT_DIR$/Media/Task1_DeveloperDiary_4a_globals.docx" beforeDir="false" afterPath="$PROJECT_DIR$/Media/Task1_DeveloperDiary_4a_globals.docx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/awd-lstm-lm/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/awd-lstm-lm/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/awd-lstm-lm/console_main.py" beforeDir="false" afterPath="$PROJECT_DIR$/awd-lstm-lm/console_main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/awd-lstm-lm/finetune.py" beforeDir="false" afterPath="$PROJECT_DIR$/awd-lstm-lm/finetune.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/awd-lstm-lm/generate.py" beforeDir="false" afterPath="$PROJECT_DIR$/awd-lstm-lm/generate.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/awd-lstm-lm/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/awd-lstm-lm/main.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/awd-lstm-lm/model.py" beforeDir="false" afterPath="$PROJECT_DIR$/awd-lstm-lm/model.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/awd-lstm-lm/pointer.py" beforeDir="false" afterPath="$PROJECT_DIR$/awd-lstm-lm/pointer.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -35,7 +38,7 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/CreateGraphInput.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="339">
+            <state relative-caret-position="340">
               <caret line="74" column="57" selection-start-line="74" selection-start-column="57" selection-end-line="74" selection-end-column="57" />
               <folding>
                 <element signature="e#0#22#0" expanded="true" />
@@ -241,7 +244,7 @@
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds" extendedState="6">
+  <component name="ProjectFrameBounds">
     <option name="y" value="23" />
     <option name="width" value="1920" />
     <option name="height" value="981" />
@@ -392,9 +395,9 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="2" y="23" width="1440" height="804" extended-state="6" />
+    <frame x="0" y="23" width="1920" height="981" extended-state="6" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.486166" visible="true" weight="0.19599427" />
+      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.486166" visible="true" weight="0.19808307" />
       <window_info id="Structure" order="1" sideWeight="0.513834" side_tool="true" weight="0.27110156" />
       <window_info id="Favorites" order="2" sideWeight="0.5059761" side_tool="true" weight="0.18025751" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -408,7 +411,7 @@
       <window_info anchor="bottom" id="Terminal" order="8" weight="0.325811" />
       <window_info anchor="bottom" id="Event Log" order="9" sideWeight="0.5111821" side_tool="true" weight="0.40269965" />
       <window_info anchor="bottom" id="Inspection Results" order="10" weight="0.32863188" />
-      <window_info active="true" anchor="bottom" id="Python Console" order="11" sideWeight="0.4888179" visible="true" weight="0.35955057" />
+      <window_info active="true" anchor="bottom" id="Python Console" order="11" sideWeight="0.4888179" visible="true" weight="0.35883015" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
@@ -978,7 +981,7 @@ batch_elements_at_t = batch_elements_at_t.chunk(chunks=batch_elements_at_t.shape
     </entry>
     <entry file="file://$PROJECT_DIR$/CreateGraphInput.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="339">
+        <state relative-caret-position="340">
           <caret line="74" column="57" selection-start-line="74" selection-start-column="57" selection-end-line="74" selection-end-column="57" />
           <folding>
             <element signature="e#0#22#0" expanded="true" />

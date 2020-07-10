@@ -67,7 +67,7 @@ print("Cuda:", torch.version.cuda) # * modified: these statistics have been move
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 print('device: {}'.format(device))
 ###############################################################################
-global criterion, optimizer # model,
+global model_base, criterion, optimizer
 
 # Set the random seed manually for reproducibility.
 np.random.seed(args.seed)
@@ -117,14 +117,13 @@ criterion = None
 
 ntokens = len(corpus.dictionary)
 model_base = model.AWD(args.model, ntokens, args.emsize, args.nhid,
-                        args.nlayers, args.dropout, args.dropouth,
-                        args.dropouti, args.dropoute, args.wdrop, args.tied)
+                            args.nlayers, args.dropout, args.dropouth,
+                            args.dropouti, args.dropoute, args.wdrop, args.tied)
 
-# # added by me: including the KB Graph & FastText information for our modified model
+# added by me: including the KB Graph & FastText information for our modified model
 os.chdir('..')
 graph_dataobj = DG.get_graph_dataobject(new=False, method=CE.Method.FASTTEXT, slc_corpus=False).to(device)
 grapharea_matrix = AD.get_grapharea_matrix(graph_dataobj, area_size=32, hops_in_area=1)
-
 globals_vocabulary_fpath = os.path.join(F.FOLDER_VOCABULARY, F.VOCABULARY_OF_GLOBALS_FILE)
 vocab_h5 = pd.HDFStore(globals_vocabulary_fpath, mode='r')
 globals_vocabulary_df = pd.read_hdf(globals_vocabulary_fpath, mode='r')
@@ -132,29 +131,26 @@ globals_vocabulary_wordList = globals_vocabulary_df['word'].to_list().copy()
 os.chdir('awd-lstm-lm')
 
 variant_flags_dict = {'include_globalnode_input':False, 'include_sensenode_input':False}
-# # note: to work correctly, the folders must be geared for WikiText-2 (since I am loading graph and grapharea_matrix)
-model_modified = model.AWD_empty(args.model, ntokens, args.emsize, args.nhid,
-                        args.nlayers, args.dropout, args.dropouth,
-                        args.dropouti, args.dropoute, args.wdrop, args.tied)
-    # model.AWD_modified(args.model, ntokens, args.nhid,
-    #                    args.nlayers, graph_dataobj, variant_flags_dict,
-    #                    globals_vocabulary_wordList, grapharea_matrix, 32, #grapharea_size,
-    #                    args.dropout, args.dropouth,
-    #                    args.dropouti, args.dropoute, args.wdrop, args.tied)
+# note: to work correctly, the folders must be geared for WikiText-2 (since I am loading graph and grapharea_matrix)
+model_modified = model.AWD_modified(args.model, ntokens, args.nhid,
+                       args.nlayers, graph_dataobj, variant_flags_dict,
+                       globals_vocabulary_wordList, grapharea_matrix, 32, #grapharea_size,
+                       args.dropout, args.dropouth,
+                       args.dropouti, args.dropoute, args.wdrop, args.tied)
 print(model_base)
 print(model_modified)
-#ensemble_combine = model.Ensemble_Combine(model_base, model_modified)
+ensemble_combine = model.Ensemble_Combine(model_base, model_modified)
 
 ### unused
 # if args.resume:
 #     print('Resuming model ...')
-#     model, criterion, optimizer, vocab, val_loss, config = model_load(args.resume)
+#     model_base, criterion, optimizer, vocab, val_loss, config = model_load(args.resume)
 #     optimizer.param_groups[0]['lr'] = args.lr
-#     model.dropouti, model.dropouth, model.dropout, args.dropoute = args.dropouti, args.dropouth, args.dropout, args.dropoute
+#     model_base.dropouti, model_base.dropouth, model_base.dropout, args.dropoute = args.dropouti, args.dropouth, args.dropout, args.dropoute
 #     if args.wdrop:
 #         from weight_drop import WeightDrop
 #
-#         for rnn in model.rnns:
+#         for rnn in model_base.rnns:
 #             if type(rnn) == WeightDrop: rnn.dropout = args.wdrop
 #             elif rnn.zoneout > 0: rnn.zoneout = args.wdrop
 ###
@@ -179,28 +175,28 @@ if args.cuda:
     model_modified = model_modified.cuda()
     criterion = criterion.cuda()
 ###
-# for AWD_model in [model_base, model_modified]:
-#     params = list(AWD_model.parameters()) + list(criterion.parameters())
-#     trainable_parameters = [p for p in AWD_model.parameters() if p.requires_grad]
-#     total_params = sum(x.size()[0] * x.size()[1] if len(x.size()) > 1 else x.size()[0] for x in params if x.size())
-#     print('Args:', args)
-#     print('Model total parameters:', total_params)
+# statistics
+for AWD_model in [model_base, model_modified]:
+    params = list(AWD_model.parameters()) + list(criterion.parameters())
+    total_params = sum(x.size()[0] * x.size()[1] if len(x.size()) > 1 else x.size()[0] for x in params if x.size())
+    #print('Args:', args)
+    print('Model total parameters:', total_params)
+
 params = list(model_base.parameters()) + list(criterion.parameters())
 trainable_parameters = [p for p in model_base.parameters() if p.requires_grad]
 total_params = sum(x.size()[0] * x.size()[1] if len(x.size()) > 1 else x.size()[0] for x in params if x.size())
 print('Args:', args)
 print('Model total parameters:', total_params)
 
-
+torch.autograd.set_detect_anomaly(True)
 ###############################################################################
 # Training code
 ###############################################################################
 
 def evaluate(data_source, batch_size=10):
-    raise Exception # for faster debug
     # Turn on evaluation mode which disables dropout.
-    model_base.eval() # model 1
-    model_modified.eval() # model 2
+    model_base.eval()  # model 1
+    model_modified.eval()  # model 2
     # if args.model == 'QRNN': model.reset()
     total_loss = 0
     ntokens = len(corpus.dictionary)
@@ -210,22 +206,19 @@ def evaluate(data_source, batch_size=10):
         data, targets = get_batch(data_source, i, args, evaluation=True)
         output_base, hidden_base, rnn_hs_base, dropped_rnn_hs_base = model_base(data, hidden_base,
                                                                                 return_h=True)  # model 1
-        #output_mod, hidden_modified, rnn_hs_mod, dropped_rnn_hs_mod = model_modified(data, hidden_modified,
-        #                                                                             return_h=True)  # model 2
-        # raw_loss = criterion(model_base.decoder.weight, model_base.decoder.bias, output_base, targets)
-        #ensemble_loss = criterion.forward_ensemble(ensemble_combine, output_base, output_mod, targets,
-        #                                           force_model=(True, False))
-        total_loss += len(data) * criterion(model_base.decoder.weight, model_base.decoder.bias, output_base, targets).data
-        #total_loss += len(data) * ensemble_loss.data
+        output_mod, hidden_modified, rnn_hs_mod, dropped_rnn_hs_mod = model_modified(data, hidden_modified,
+                                                                                     return_h=True)  # model 2
+        ensemble_loss = criterion.forward_ensemble(ensemble_combine, output_base, output_mod, targets,
+                                                   force_model=(False, True))
+        total_loss += len(data) * ensemble_loss.data
         hidden_base = repackage_hidden(hidden_base)  # model 1
-        #hidden_modified = repackage_hidden(hidden_modified)  # model 2
+        hidden_modified = repackage_hidden(hidden_modified)  # model 2
     return total_loss.item() / len(data_source)
 
 
 def train():
     # Turn on training mode which enables dropout.
-    # if args.model == 'QRNN': model.reset()
-    output_mod = None # temp debug
+    if args.model == 'QRNN': model_base.reset()
     total_loss = 0
     start_time = time.time()
     ntokens = len(corpus.dictionary)
@@ -248,39 +241,30 @@ def train():
         # Starting each batch, we detach the hidden state from how it was previously produced.
         # If we didn't, the model would try backpropagating all the way to start of the dataset.
         hidden_base = repackage_hidden(hidden_base)  # model 1
-        #hidden_modified = repackage_hidden(hidden_modified)  # model 2
+        hidden_modified = repackage_hidden(hidden_modified)  # model 2
         optimizer.zero_grad()
 
-        output_base, hidden_base, rnn_hs_base, dropped_rnn_hs_base = model_base(data, hidden_base,
-                                                                                return_h=True)  # model 1
-        data_bis = data.clone().detach()
-        output_mod, hidden_modified, rnn_hs_mod, dropped_rnn_hs_mod = model_modified(data_bis, hidden_modified, return_h=True)  # model 2
-        raw_loss = criterion(model_base.decoder.weight, model_base.decoder.bias, output_base, targets)
-        #   ensemble_loss = criterion.forward_ensemble(ensemble_combine, output_base, output_mod, targets, force_model=(True,False))
-        #print("raw_loss=" + str(raw_loss))
-        #print("ensemble_loss=" + str(ensemble_loss) + "\n*****\n")
+        output_base, hidden_base, rnn_hs_base, dropped_rnn_hs_base = model_base(data, hidden_base, return_h=True) # model 1
+        output_mod, hidden_modified, rnn_hs_mod, dropped_rnn_hs_mod = model_modified(data, hidden_modified, return_h=True)  # model 2
+        ensemble_loss = criterion.forward_ensemble(ensemble_combine, output_base, output_mod, targets,
+                                                   force_model=(False, True))
 
-        #print("output_mod=" + str(output_mod))
-        #print("\noptimizer.param_groups[0]['params'][0][0][0:3]=" + str(optimizer.param_groups[0]['params'][0][0][0:3]))
-        loss = raw_loss  # ensemble_loss
+        loss = ensemble_loss
         # Activation Regularization
         if args.alpha: loss = loss + sum(
             args.alpha * dropped_rnn_h.pow(2).mean() for dropped_rnn_h in dropped_rnn_hs_base[-1:])
         # Temporal Activation Regularization (slowness)
-        if args.beta: loss = loss + sum(
-            args.beta * (rnn_h[1:] - rnn_h[:-1]).pow(2).mean() for rnn_h in rnn_hs_base[-1:])
+        if args.beta: loss = loss + sum(args.beta * (rnn_h[1:] - rnn_h[:-1]).pow(2).mean() for rnn_h in rnn_hs_base[-1:])
         loss.backward()
 
         # `clip_grad_norm` helps prevent the exploding gradient problem in RNNs / LSTMs.
         if args.clip: torch.nn.utils.clip_grad_norm_(params, args.clip)
         optimizer.step()
-        #print("After loss.backward() and optimizer.step(), \noptimizer.param_groups[0]['params'][0][0][0:3]=" + str(
-        #    optimizer.param_groups[0]['params'][0][0][0:3]))
 
-        total_loss += raw_loss.data
+        total_loss += ensemble_loss.data
         optimizer.param_groups[0]['lr'] = lr2
         if batch % args.log_interval == 0 and batch > 0:
-            cur_loss = total_loss / args.log_interval  # +1)
+            cur_loss = total_loss / args.log_interval
             elapsed = time.time() - start_time
             print('| epoch {:3d} | {:5d}/{:5d} batches | lr {:05.5f} | ms/batch {:5.2f} | '
                   'loss {:5.2f} | ppl {:8.2f} | bpc {:8.3f}'.format(
@@ -300,6 +284,7 @@ def train():
             except:
                 pass
         ####################################
+
 
 # Loop over epochs.
 lr = args.lr
@@ -342,76 +327,86 @@ try:
             except:
                 pass
         ####################################
-        for model in [model_base]: #, model_modified]:
-            if 't0' in optimizer.param_groups[0]:  # if ASGD
-                tmp = {}
-                for prm in model.parameters():
-                    if prm in optimizer.state.keys():
-                        tmp[prm] = prm.data.detach()
-                        prm.data = optimizer.state[prm]['ax'].detach()
+        if 't0' in optimizer.param_groups[0]:  # if ASGD
+            tmp = {}
+            for prm in model_base.parameters():
+                if prm in optimizer.state.keys():
+                    # tmp[prm] = prm.data.clone()
+                    tmp[prm] = prm.data.detach()
+                    # tmp[prm].copy_(prm.data)
+                    # if 'ax' in optimizer.state[prm]:  # added this line because of error: File "main.py", line 268, in <module> prm.data = optimizer.state[prm]['ax'].clone() KeyError: 'ax'
+                    # prm.data = optimizer.state[prm]['ax'].clone()
+                    prm.data = optimizer.state[prm]['ax'].detach()
 
-                val_loss2 = evaluate(val_data)
-                print('-' * 89)
-                print('| end of epoch {:3d} | time: {:5.2f}s | valid loss {:5.2f} | '
-                      'valid ppl {:8.2f} | valid bpc {:8.3f}'.format(
-                    epoch, (time.time() - epoch_start_time), val_loss2, math.exp(val_loss2), val_loss2 / math.log(2)))
-                print('-' * 89)
+                # else:
+                #     print(prm)
 
-                if val_loss2 < stored_loss:
-                    # model_save(os.path.join(CKPT_DIR, args.save), model, criterion, optimizer,
-                    #            vocabulary, val_loss2, math.exp(val_loss2), vars(args), epoch)
-                    # model_state_save(os.path.join(CKPT_DIR, args.save), model, criterion, optimizer,
-                    #            vocabulary, val_loss2, math.exp(val_loss2), vars(args), epoch)
-                    # print('Saving Averaged!')
-                    stored_loss = val_loss2
+                    # prm.data = optimizer.state[prm]['ax'].clone()
+                    # prm.data = optimizer.state[prm]['ax'].detach()
+                    # prm.data.copy_(optimizer.state[prm]['ax'])
 
-                # nparams = 0
-                # nparams_in_temp_keys = 0
-                for prm in model.parameters():
-                    # nparams += 1
-                    if prm in tmp.keys():
-                        # nparams_in_temp_keys += 1
-                        # prm.data = tmp[prm].clone()
-                        prm.data = tmp[prm].detach()
-                        prm.requires_grad = True
-                # print('params {}, params in tmp keys: {}'.format(nparams, nparams_in_temp_keys))
-                del tmp
-            else:
-                print('{} model params (SGD before eval)'.format(len([prm for prm in model.parameters()])))
-                val_loss = evaluate(val_data, eval_batch_size)
-                print('{} model params (SGD after eval)'.format(len([prm for prm in model.parameters()])))
-                print('-' * 89)
-                print('| end of epoch {:3d} | time: {:5.2f}s | valid loss {:5.2f} | '
-                      'valid ppl {:8.2f} | valid bpc {:8.3f}'.format(
-                    epoch, (time.time() - epoch_start_time), val_loss, math.exp(val_loss), val_loss / math.log(2)))
-                print('-' * 89)
-                #
-                # if val_loss < stored_loss:
-                #     # model_save(os.path.join(CKPT_DIR, args.save), model, criterion, optimizer,
-                #     #            vocabulary, val_loss, math.exp(val_loss), vars(args), epoch)
-                #     model_state_save(os.path.join(CKPT_DIR, args.save), model, criterion, optimizer,
-                #                vocabulary, val_loss, math.exp(val_loss), vars(args), epoch)
-                #     print('Saving model (new best validation)')
-                #     stored_loss = val_loss
+            val_loss2 = evaluate(val_data)
+            print('-' * 89)
+            print('| end of epoch {:3d} | time: {:5.2f}s | valid loss {:5.2f} | '
+                  'valid ppl {:8.2f} | valid bpc {:8.3f}'.format(
+                epoch, (time.time() - epoch_start_time), val_loss2, math.exp(val_loss2), val_loss2 / math.log(2)))
+            print('-' * 89)
 
-                if args.asgd:
-                    if args.optimizer == 'sgd' and 't0' not in optimizer.param_groups[0] and (
-                            len(best_val_loss) > args.nonmono and val_loss > min(best_val_loss[:-args.nonmono])):
-                    # if 't0' not in optimizer.param_groups[0]:
-                        print('Switching to ASGD')
-                        # optimizer = ASGD(trainable_parameters, lr=args.lr, t0=0, lambd=0., weight_decay=args.wdecay)
-                        optimizer = ASGD(params, lr=args.lr, t0=0, lambd=0., weight_decay=args.wdecay)
+            if val_loss2 < stored_loss:
+                # model_save(os.path.join(CKPT_DIR, args.save), model, criterion, optimizer,
+                #            vocabulary, val_loss2, math.exp(val_loss2), vars(args), epoch)
+                model_state_save(os.path.join(CKPT_DIR, args.save), model_base, criterion, optimizer,
+                                 vocabulary, val_loss2, math.exp(val_loss2), vars(args), epoch)
+                print('Saving Averaged!')
+                stored_loss = val_loss2
 
-                if epoch in args.when:
-                    # print('Saving model before learning rate decreased')
-                    # # model_save('{}.e{}'.format(os.path.join(CKPT_DIR, args.save), model, criterion, optimizer,
-                    # #            vocabulary, val_loss, math.exp(val_loss), vars(args), epoch))
-                    # model_state_save('{}.e{}'.format(os.path.join(CKPT_DIR, args.save), args.save), model, criterion, optimizer,
-                    #            vocabulary, val_loss, math.exp(val_loss), vars(args), epoch)
-                    print('Dividing learning rate by 10')
-                    optimizer.param_groups[0]['lr'] /= 10.
+            # nparams = 0
+            # nparams_in_temp_keys = 0
+            for prm in model_base.parameters():
+                # nparams += 1
+                if prm in tmp.keys():
+                    # nparams_in_temp_keys += 1
+                    # prm.data = tmp[prm].clone()
+                    prm.data = tmp[prm].detach()
+                    prm.requires_grad = True
+            # print('params {}, params in tmp keys: {}'.format(nparams, nparams_in_temp_keys))
+            del tmp
+        else:
+            print('{} model params (SGD before eval)'.format(len([prm for prm in model_base.parameters()])))
+            val_loss = evaluate(val_data, eval_batch_size)
+            print('{} model params (SGD after eval)'.format(len([prm for prm in model_base.parameters()])))
+            print('-' * 89)
+            print('| end of epoch {:3d} | time: {:5.2f}s | valid loss {:5.2f} | '
+                  'valid ppl {:8.2f} | valid bpc {:8.3f}'.format(
+                epoch, (time.time() - epoch_start_time), val_loss, math.exp(val_loss), val_loss / math.log(2)))
+            print('-' * 89)
 
-                best_val_loss.append(val_loss)
+            if val_loss < stored_loss:
+                # model_save(os.path.join(CKPT_DIR, args.save), model, criterion, optimizer,
+                #            vocabulary, val_loss, math.exp(val_loss), vars(args), epoch)
+                model_state_save(os.path.join(CKPT_DIR, args.save), model_base, criterion, optimizer,
+                                 vocabulary, val_loss, math.exp(val_loss), vars(args), epoch)
+                print('Saving model (new best validation)')
+                stored_loss = val_loss
+
+            if args.asgd:
+                if args.optimizer == 'sgd' and 't0' not in optimizer.param_groups[0] and (
+                        len(best_val_loss) > args.nonmono and val_loss > min(best_val_loss[:-args.nonmono])):
+                # if 't0' not in optimizer.param_groups[0]:
+                    print('Switching to ASGD')
+                    # optimizer = ASGD(trainable_parameters, lr=args.lr, t0=0, lambd=0., weight_decay=args.wdecay)
+                    optimizer = ASGD(params, lr=args.lr, t0=0, lambd=0., weight_decay=args.wdecay)
+
+            if epoch in args.when:
+                print('Saving model before learning rate decreased')
+                # model_save('{}.e{}'.format(os.path.join(CKPT_DIR, args.save), model, criterion, optimizer,
+                #            vocabulary, val_loss, math.exp(val_loss), vars(args), epoch))
+                model_state_save('{}.e{}'.format(os.path.join(CKPT_DIR, args.save), args.save), model_base, criterion, optimizer,
+                                 vocabulary, val_loss, math.exp(val_loss), vars(args), epoch)
+                print('Dividing learning rate by 10')
+                optimizer.param_groups[0]['lr'] /= 10.
+
+            best_val_loss.append(val_loss)
 
 except KeyboardInterrupt:
     print('-' * 89)

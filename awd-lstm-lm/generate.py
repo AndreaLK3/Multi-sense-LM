@@ -47,26 +47,26 @@ if args.temperature < 1e-3:
     parser.error("--temperature has to be greater or equal 1e-3")
 
 with open(args.checkpoint, 'rb') as f:
-    model = torch.load(f)
-model.eval()
+    model_base = torch.load(f)
+model_base.eval()
 if args.model == 'QRNN':
-    model.reset()
+    model_base.reset()
 
 if args.cuda:
-    model.cuda()
+    model_base.cuda()
 else:
-    model.cpu()
+    model_base.cpu()
 
 corpus = data.Corpus(args.data)
 ntokens = len(corpus.dictionary)
-hidden = model.init_hidden(1)
+hidden = model_base.init_hidden(1)
 input = Variable(torch.rand(1, 1).mul(ntokens).long(), volatile=True)
 if args.cuda:
     input.data = input.data.cuda()
 
 with open(args.outf, 'w') as outf:
     for i in range(args.words):
-        output, hidden = model(input, hidden)
+        output, hidden = model_base(input, hidden)
         word_weights = output.squeeze().data.div(args.temperature).exp().cpu()
         word_idx = torch.multinomial(word_weights, 1)[0]
         input.data.fill_(word_idx)

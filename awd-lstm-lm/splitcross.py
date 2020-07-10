@@ -142,7 +142,7 @@ class SplitCrossEntropyLoss(nn.Module):
         running_offset += len(targets)
         total_loss = entropy.float().sum() if total_loss is None else total_loss + entropy.float().sum()
 
-        return (total_loss / len(targets)).type_as(model1.decoder.weight)
+        return ( (total_loss / len(targets)).type_as(model1.decoder.weight), torch.mean(a_out_01))
 
 
 
