@@ -124,16 +124,16 @@ def training_setup(slc_or_text_corpus, include_globalnode_input, include_senseno
     globals_vocabulary_fpath = os.path.join(F.FOLDER_VOCABULARY, F.VOCABULARY_OF_GLOBALS_FILE)
     vocab_h5 = pd.HDFStore(globals_vocabulary_fpath, mode='r')
     globals_vocabulary_df = pd.read_hdf(globals_vocabulary_fpath, mode='r')
-    globals_vocabulary_wordList = globals_vocabulary_df['word'].to_list().copy()
+
 
 
     # The original GRU architecture has been updated into the GRUbase2 model in Senses - I just have to specify that predict_senses=False
     # torch.manual_seed(1) # for reproducibility while conducting mini-experiments
     # if torch.cuda.is_available():
     #     torch.cuda.manual_seed_all(1)
-    model = RNNs.RNN("LSTM", graph_dataobj, grapharea_size, grapharea_matrix, globals_vocabulary_wordList,
+    model = RNNs.RNN("LSTM", graph_dataobj, grapharea_size, grapharea_matrix, globals_vocabulary_df,
                       include_globalnode_input, include_sensenode_input, predict_senses,
-                      batch_size, n_layers=3, n_hid_units=1024)
+                      batch_size=batch_size, n_layers=3, n_hid_units=1150)
     # model = SensesNets.SelectK(graph_dataobj, grapharea_size, grapharea_matrix, 10, globals_vocabulary_wordList,
     #                            include_globalnode_input, include_sensenode_input, predict_senses,
     #                            batch_size, n_layers=3, n_hid_units=1024)

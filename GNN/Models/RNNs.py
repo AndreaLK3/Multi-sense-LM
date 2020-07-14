@@ -3,15 +3,12 @@ from torch_geometric.nn import GATConv
 from torch_geometric.data.batch import Batch
 from torch_geometric.data import Data
 import torch.nn.functional as tfunc
-from GNN.Models.Common import unpack_input_tensor, init_model_parameters, lemmatize_node
+from GNN.Models.Common import unpack_input_tensor, init_model_parameters, lemmatize_node, get_lemmatized_form
 from torch.nn.parameter import Parameter
 import logging
 import nltk
 from PrepareKBInput.LemmatizeNyms import lemmatize_term
 
-# Parameters: the x and edge_index of the grapharea of 1 node; a Lemmatizer; the graph we are operating on.
-# Returns: if the node's word can be lemmatized: the x and edge_index of the lemmatized token (e.g. 'said' -> 'say')
-#                                          else: the parameters x and edge_index of the original node, unchanged.
 
 class RNN(torch.nn.Module):
 
@@ -21,11 +18,11 @@ class RNN(torch.nn.Module):
         self.model_type = model_type # can be "LSTM" or "GRU"
         init_model_parameters(self, data, grapharea_size, grapharea_matrix, vocabulary_wordlist,
                           include_globalnode_input, include_sensenode_input, predict_senses,
-                          batch_size, n_layers, n_hid_units, dropout_p=0)
+                          batch_size, n_layers, n_hid_units, dropout_p=0.1)
 
         # The embeddings matrix for: senses, globals, definitions, examples
         self.X = Parameter(data.x.clone().detach(), requires_grad=True)
-        self.select_first_indices = Parameter(torch.tensor(list(range(n_hid_units))).to(torch.float32), requires_grad=False)
+        self.select_first_indices = Parameter(torch.tensor(list(range(self.dim_embs))).to(torch.float32), requires_grad=False)
         self.embedding_zeros = Parameter(torch.zeros(size=(1, self.dim_embs)), requires_grad=False)
 
         # Input signals: current global’s word embedding (|| global's node state (|| sense’s node state) )
@@ -34,40 +31,39 @@ class RNN(torch.nn.Module):
         # This is overwritten at the 1st forward, when we know the distributed batch size
         self.memory_hn = Parameter(torch.zeros(size=(n_layers, batch_size, n_hid_units)), requires_grad=False)
         self.memory_cn = Parameter(torch.zeros(size=(n_layers, batch_size, n_hid_units)), requires_grad=False)
-        self.memory_hn_senses = Parameter(torch.zeros(size=(n_layers-1, batch_size, int(self.hidden_size))), requires_grad=False)
-        self.memory_cn_senses = Parameter(torch.zeros(size=(n_layers-1, batch_size, int(self.hidden_size))), requires_grad=False)
+        self.memory_hn_senses = Parameter(torch.zeros(size=(n_layers, batch_size, int(n_hid_units))), requires_grad=False)
+        self.memory_cn_senses = Parameter(torch.zeros(size=(n_layers, batch_size, int(n_hid_units))), requires_grad=False)
         self.hidden_state_bsize_adjusted = False
 
         # RNN for globals - standard Language Model
         if self.model_type.upper() == 'LSTM':
             self.main_rnn_ls = torch.nn.ModuleList([
                 torch.nn.LSTM(input_size=self.concatenated_input_dim if i == 0 else n_hid_units,
-                              hidden_size=n_hid_units if i == n_layers - 1 else n_hid_units, num_layers=1) for i in range(n_layers)])
-        else: # GRU
+                              hidden_size=400 if i == n_layers - 1 else n_hid_units, num_layers=1) for i in range(n_layers)])
+        else:  # GRU
             self.main_rnn_ls = torch.nn.ModuleList([
                 torch.nn.GRU(input_size=self.concatenated_input_dim if i == 0 else n_hid_units,
-                              hidden_size=n_hid_units if i == n_layers - 1 else n_hid_units, num_layers=1) for
+                              hidden_size=400 if i == n_layers - 1 else n_hid_units, num_layers=1) for
                 i in range(n_layers)])
 
         if self.include_globalnode_input:
             self.gat_globals = GATConv(in_channels=self.dim_embs, out_channels=int(self.dim_embs / 4), heads=4)#, node_dim=1)
-            self.lemmatizer = nltk.stem.WordNetLemmatizer()
-            lemmatize_term('init', self.lemmatizer)# to establish LazyCorpusLoader and prevent a multi-thread crash
+            # lemmatize_term('init', self.lemmatizer)# to establish LazyCorpusLoader and prevent a multi-thread crash
         if self.include_sensenode_input:
             self.gat_senses = GATConv(in_channels=self.dim_embs, out_channels=int(self.dim_embs / 4), heads=4)
         # RNN for senses
         if predict_senses:
             if self.model_type.upper() == 'LSTM':
-                self.rnn_senses = torch.nn.LSTM(input_size=self.concatenated_input_dim, hidden_size=int(self.hidden_size), num_layers=n_layers - 1)
-            else: # GRU
+                self.rnn_senses = torch.nn.LSTM(input_size=self.concatenated_input_dim, hidden_size=n_hid_units, num_layers=n_layers - 1)
+            else:  # GRU
                 self.rnn_senses = torch.nn.GRU(input_size=self.concatenated_input_dim,
-                                                hidden_size=int(self.hidden_size), num_layers=n_layers - 1)
+                                                hidden_size=n_hid_units, num_layers=n_layers - 1)
 
         # 2nd part of the network as before: 2 linear layers to the logits
-        self.linear2global = torch.nn.Linear(in_features=int(self.hidden_size),
+        self.linear2global = torch.nn.Linear(in_features=400,
                                              out_features=self.last_idx_globals - self.last_idx_senses, bias=True)
         if predict_senses:
-            self.linear2senses = torch.nn.Linear(in_features=int(self.hidden_size),
+            self.linear2senses = torch.nn.Linear(in_features=400,
                                                  out_features=self.last_idx_senses, bias=True)
 
 
@@ -132,7 +128,7 @@ class RNN(torch.nn.Module):
                 for i_sample in range(batch_elems_at_t.shape[0]):
 
                     sample_edge_index = t_edgeindex_g_ls[i_sample]
-                    x_indices, sample_edge_index = lemmatize_node(t_globals_indices_ls[i_sample], sample_edge_index, self)
+                    x_indices, sample_edge_index = get_lemmatized_form(t_globals_indices_ls[i_sample], sample_edge_index, self)
                     sample_x = self.X.index_select(dim=0, index=x_indices.squeeze())
 
                     currentword_location_in_batchX = rows_to_skip + current_location_in_batchX_ls[-1] \

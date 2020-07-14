@@ -106,7 +106,7 @@ class SplitCrossEntropyLoss(nn.Module):
         return split_targets, split_hiddens
 
     # * Added by me, to handle the loss of an ensemble of 2 models. Currently we do not splitting the softmax
-    def forward_ensemble(self, ensemble_combine, ll1_out, ll2_out, targets, force_model=(False,False)):
+    def forward_ensemble(self, ensemble_combine, ll1_out, ll2_out, targets, fixed_a=None):
 
         model1 = ensemble_combine.AWD_base
         model2 = ensemble_combine.AWD_modified
@@ -114,13 +114,10 @@ class SplitCrossEntropyLoss(nn.Module):
         total_loss = None
 
         logsoftmax_1 = self.compute_logsoftmax(model1.decoder.weight, model1.decoder.bias, ll1_out, targets)
-        # print("ensemble loss criterion, logsoftmax_1[0:2,0:3]=" + str(logsoftmax_1[0:2, 0:3]))
         logsoftmax_2 = self.compute_logsoftmax(model2.decoder.weight, model2.decoder.bias, ll2_out, targets)
 
-        if force_model[0]:
-            a_out_01 = torch.ones(size=(logsoftmax_1.shape[0],)).to(CURRENT_DEVICE)
-        elif force_model[1]:
-            a_out_01 = torch.zeros(size=(logsoftmax_1.shape[0],)).to(CURRENT_DEVICE)
+        if fixed_a is not None:
+            a_out_01 = torch.ones(size=(logsoftmax_1.shape[0],)).to(CURRENT_DEVICE) * fixed_a
         else:
 
             last_layers_concat_flat = torch.cat([ll1_out, ll2_out], dim=1)

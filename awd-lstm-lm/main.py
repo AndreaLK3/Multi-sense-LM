@@ -91,6 +91,7 @@ if args.server is 'ford':
     os.environ["CUDA_VISIBLE_DEVICES"] = args.gpu
     print("\nThis experiment runs on gpu {}...\n".format(args.gpu))
 
+
 ###############################################################################
 print("torch:", torch.__version__)
 #if torch.__version__ != '0.1.12_2':
@@ -207,18 +208,18 @@ if args.cuda:
     model_modified = model_modified.cuda()
     criterion = criterion.cuda()
 ###
-# statistics
+# statistics, and parameters for gradient clipping
+params = []
+i=0
 for AWD_model in [model_base, model_modified]:
-    params = list(AWD_model.parameters()) + list(criterion.parameters())
+    params = params + list(AWD_model.parameters()) + list(criterion.parameters()) if i==0 else params + list(AWD_model.parameters())
+    i = i+1
     total_params = sum(x.size()[0] * x.size()[1] if len(x.size()) > 1 else x.size()[0] for x in params if x.size())
-    #print('Args:', args)
     print('Model total parameters:', total_params)
 
-params = list(model_modified.parameters()) + list(criterion.parameters()) # model_base
-trainable_parameters = [p for p in model_modified.parameters() if p.requires_grad] # model_base
+# trainable_parameters = [p for p in model_modified.parameters() if p.requires_grad]
 total_params = sum(x.size()[0] * x.size()[1] if len(x.size()) > 1 else x.size()[0] for x in params if x.size())
 print('Args:', args)
-print('Model total parameters:', total_params)
 
 torch.autograd.set_detect_anomaly(True)
 ###############################################################################
@@ -234,6 +235,7 @@ def evaluate(data_source, batch_size=10):
     ntokens = len(corpus.dictionary)
     hidden_base = model_base.init_hidden(batch_size)  # model 1
     hidden_modified = model_modified.init_hidden(batch_size)  # model 2
+    ensemble_combine.init_hidden(batch_size)
     for i in range(0, data_source.size(0) - 1, args.bptt):
         data, targets = get_batch(data_source, i, args, evaluation=True)
         output_base, hidden_base, rnn_hs_base, dropped_rnn_hs_base = model_base(data, hidden_base,
@@ -241,7 +243,7 @@ def evaluate(data_source, batch_size=10):
         output_mod, hidden_modified, rnn_hs_mod, dropped_rnn_hs_mod = model_modified(data, hidden_modified,
                                                                                      return_h=True)  # model 2
         (ensemble_loss, a_mean) = criterion.forward_ensemble(ensemble_combine, output_base, output_mod, targets,
-                                                   force_model=(False, True))
+                                                   fixed_a=None)
         # ensemble_loss = criterion(model_modified.decoder.weight, model_modified.decoder.bias, output_mod, targets) # temp debug
         total_loss += len(data) * ensemble_loss.data
         hidden_base = repackage_hidden(hidden_base)  # model 1
@@ -257,7 +259,9 @@ def train():
     ntokens = len(corpus.dictionary)
     hidden_base = model_base.init_hidden(args.batch_size)  # model 1
     hidden_modified = model_modified.init_hidden(args.batch_size)  # model 2
+    ensemble_combine.init_hidden(args.batch_size)
     batch, i = 0, 0
+    a_mean_ls = []
     while i < train_data.size(0) - 1 - 1:
         bptt = args.bptt if np.random.random() < 0.95 else args.bptt / 2.
         # Prevent excessively small or negative sequence lengths
@@ -280,15 +284,21 @@ def train():
         output_base, hidden_base, rnn_hs_base, dropped_rnn_hs_base = model_base(data, hidden_base, return_h=True) # model 1
         output_mod, hidden_modified, rnn_hs_mod, dropped_rnn_hs_mod = model_modified(data, hidden_modified, return_h=True)  # model 2
         (ensemble_loss, a_mean) = criterion.forward_ensemble(ensemble_combine, output_base, output_mod, targets,
-                                                   force_model=(False, True))
+                                                   fixed_a=None)
+        a_mean_ls.append(a_mean)
         # ensemble_loss = criterion(model_modified.decoder.weight, model_modified.decoder.bias, output_mod, targets)
         loss = ensemble_loss # temp debug
 
-        # Activation Regularization
-        if args.alpha: loss = loss + sum(
-            args.alpha * dropped_rnn_h.pow(2).mean() for dropped_rnn_h in dropped_rnn_hs_mod[-1:]) # dropped_rnn_hs_base
-        # Temporal Activation Regularization (slowness)
-        if args.beta: loss = loss + sum(args.beta * (rnn_h[1:] - rnn_h[:-1]).pow(2).mean() for rnn_h in rnn_hs_mod[-1:]) #
+        # Activation Regularization and Temporal Activation Regularization (slowness) depend on both models,
+        # in the measure we are currently using model 1 or 2, i.e. from the mean of the coefficient a
+        if args.alpha:
+            ar_contribution_model_base = sum(args.alpha * dropped_rnn_h.pow(2).mean() for dropped_rnn_h in dropped_rnn_hs_base[-1:])
+            ar_contribution_model_modified = sum(args.alpha * dropped_rnn_h.pow(2).mean() for dropped_rnn_h in dropped_rnn_hs_mod[-1:])
+            loss = loss + a_mean*ar_contribution_model_base + (1-a_mean)*ar_contribution_model_modified
+        if args.beta:
+            tar_contribution_model_base = sum(args.beta * (rnn_h[1:] - rnn_h[:-1]).pow(2).mean() for rnn_h in rnn_hs_base[-1:])
+            tar_contribution_model_modified = sum(args.beta * (rnn_h[1:] - rnn_h[:-1]).pow(2).mean() for rnn_h in rnn_hs_mod[-1:])
+            loss = loss + a_mean*tar_contribution_model_base + (1-a_mean)*tar_contribution_model_modified
         loss.backward()
 
         # `clip_grad_norm` helps prevent the exploding gradient problem in RNNs / LSTMs.
@@ -306,6 +316,8 @@ def train():
                               elapsed * 1000 / args.log_interval, cur_loss, math.exp(cur_loss), cur_loss / math.log(2)))
             total_loss = 0
             start_time = time.time()
+            print("mean of the learned coefficient 'a' for mixing models base+mod=" + str(
+                torch.mean(torch.tensor(a_mean_ls))))
         ###
         batch += 1
         i += seq_len
@@ -318,6 +330,7 @@ def train():
             except:
                 pass
         ####################################
+    print("mean of the learned coefficient 'a' for mixing models base+mod=" + str(torch.mean(torch.tensor(a_mean_ls))))
 
 
 # Loop over epochs.

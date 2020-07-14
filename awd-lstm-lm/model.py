@@ -61,11 +61,12 @@ class Ensemble_Combine(nn.Module):
         pass # unused, we currently call ensemble_combine.A(...)
 
     def init_hidden(self, bsz):
+        CURRENT_DEVICE = 'cpu' if not (torch.cuda.is_available()) else 'cuda:' + str(torch.cuda.current_device())
         self.batch_size = bsz
-        self.memory_a_hidden = Parameter(torch.reshape(self.memory_a_hidden_base.flatten().clone().detach()[0:bsz], (1, bsz, 1)),
-                                   requires_grad=False)
-        self.memory_a_cells = Parameter(torch.reshape(self.memory_a_cells_base.flatten().clone().detach()[0:bsz], (1, bsz, 1)),
-                                         requires_grad=False)
+        self.memory_a_hidden = Parameter(torch.zeros(size=(1,bsz,1)), # torch.reshape(self.memory_a_hidden_base.flatten().clone().detach()[0:bsz], (1, bsz, 1)),
+                                   requires_grad=False).to(CURRENT_DEVICE)
+        self.memory_a_cells = Parameter(torch.zeros(size=(1,bsz,1)), # torch.reshape(self.memory_a_cells_base.flatten().clone().detach()[0:bsz], (1, bsz, 1)),
+                                         requires_grad=False).to(CURRENT_DEVICE)
         return (self.memory_a_hidden, self.memory_a_cells)
 
 
