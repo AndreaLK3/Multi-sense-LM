@@ -175,7 +175,7 @@ def training_loop(model, learning_rate, train_dataloader, valid_dataloader, num_
 
     Utils.init_logging('Training' + Utils.get_timestamp_month_to_min() + '.log', loglevel=logging.INFO)
 
-    optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate) #  weight_decay=0.0005
+    optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)  # weight_decay=0.0005
 
     model.train()
     training_losses_lts = [] # mutated into a lts, with (global_loss, sense_loss)

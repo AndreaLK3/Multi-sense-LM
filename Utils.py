@@ -235,7 +235,7 @@ def get_word_from_sense(sense_str):
     try:
         word = sense_str[0:get_locations_of_char(sense_str, '.')[-2]]
     except AttributeError:
-        logging.info("sense_str= " + sense_str)
+        logging.debug("sense_str= " + sense_str)
         pattern_2 = '.[^.]+'
         mtc = re.match(pattern_2, sense_str)
         word = mtc.group() if mtc is not None else '.'

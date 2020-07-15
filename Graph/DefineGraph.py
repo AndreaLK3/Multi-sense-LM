@@ -123,7 +123,7 @@ def get_edges_sensechildren(globals_voc_df, globals_start_index_toadd):
 
         word_sense = db_row[0]
         word = Utils.get_word_from_sense(word_sense)
-        logging.info(word)
+        logging.debug(word)
         sourceglobal_raw_idx = globals_voc_df.loc[globals_voc_df['word'] == word].index[0]
         sourceglobal_idx = globals_start_index_toadd + sourceglobal_raw_idx
         targetsense_idx = db_row[1]

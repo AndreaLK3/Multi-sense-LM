@@ -112,7 +112,7 @@ def convert_symbols(line_text):
 ######### When we build a vocabulary from the sense-labeled corpus(es), to transform a token:
 
 def process_word_token(token_dict):
-    token_text = html.unescape(token_dict['surface_form'])
+    token_text = html.unescape(str(token_dict['surface_form']))
     # token_text = convert_symbols(token_text)
 
     # if token_text == token_text.upper():  # if ALL CAPITALS -> must lowercase
