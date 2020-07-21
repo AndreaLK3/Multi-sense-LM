@@ -34,6 +34,7 @@ def initialize_senses(X_defs, X_examples, X_globals, vocabulary_ls, average_or_r
     indicesTable_db_c.execute("SELECT * FROM indices_table")
     current_row_idx = 0
     X_senses_ls = []
+    num_dummy_senses = 0
 
     while (True):
         db_row = indicesTable_db_c.fetchone()
@@ -48,12 +49,13 @@ def initialize_senses(X_defs, X_examples, X_globals, vocabulary_ls, average_or_r
             logging.debug("wn_id=" + str(wn_id))
             mtc = re.search(pt, db_row[0])
             pos = mtc.group(0)[1:-1]
-            if pos == 'Global':
+            if pos == 'dummySense':
                 # no definitions and examples, this is a dummy sense. It gets initialized with the global vector
                 word = wn_id[0:Utils.get_locations_of_char(wn_id, '.')[-2]]
                 global_idx = vocabulary_ls.index(word)
                 sense_vector = X_globals[global_idx].numpy()
                 X_senses_ls.extend([sense_vector])
+                num_dummy_senses = num_dummy_senses+1
 
             else:
                 start_defs = db_row[2]
@@ -74,7 +76,7 @@ def initialize_senses(X_defs, X_examples, X_globals, vocabulary_ls, average_or_r
         X_senses_random = torch.from_numpy(X_senses_random_ndarray)
         X_senses = X_senses_random
 
-    return torch.tensor(X_senses)
+    return torch.tensor(X_senses), num_dummy_senses
 
 
 # definitions -> senses : [se+sp, se+sp+d) -> [0,se)
@@ -189,19 +191,24 @@ def get_additional_edges_sensechildren_from_slc(globals_voc_df, globals_start_in
 
 
 # Since GATs and other Graph Neural Networks do not allow for nodes without edges, we add self-loops to all
-# stopwords like for, of, etc. They are ignored by the message-passing framework
-def get_edges_selfloops(sc_edges, num_globals):
+# stopwords like for, of, etc. And to the dummy senses, too. They are ignored by the message-passing framework
+def get_edges_selfloops(sc_edges, num_globals, num_dummysenses):
     globals_sources = sorted(list(map(lambda edge_tpl : edge_tpl[0], sc_edges)))
     senses_targets = list(map(lambda edge_tpl : edge_tpl[1], sc_edges))
     max_sense = max(senses_targets)
 
     all_globals_indices = list(range(max_sense+1,max_sense+num_globals+1))
-
     globals_needing_selfloop = [g_idx for g_idx in all_globals_indices if g_idx not in globals_sources]
+    logging.info("Globals with no edges, needing self-loops: " + str(len(globals_needing_selfloop)))
+    logging.info(str(globals_needing_selfloop))
+    globals_edges_selfloops = [(g_idx, g_idx) for g_idx in globals_needing_selfloop]
 
-    edges_selfloops = [(g_idx, g_idx) for g_idx in globals_needing_selfloop]
+    dummysenses_indices = list(range(max_sense-num_dummysenses,max_sense+1))
+    dummysenses_edges_selfloops = [(s_idx, s_idx) for s_idx in dummysenses_indices]
+    logging.info("Dummy senses, needing self-loops: " + str(len(dummysenses_indices)))
+    logging.info(dummysenses_indices)
 
-    return edges_selfloops
+    return globals_edges_selfloops + dummysenses_edges_selfloops
 
 
 # Synonyms and antonyms: global -> global : [se,se+sp) -> [se,se+sp).
@@ -262,7 +269,7 @@ def create_graph(method, slc_corpus):
     X_definitions = load_senses_elements(method, Utils.DEFINITIONS)
     X_examples = load_senses_elements(method, Utils.EXAMPLES)
     X_globals = torch.tensor(np.load(os.path.join(F.FOLDER_INPUT, single_prototypes_file))).to(torch.float32)
-    X_senses = initialize_senses(X_definitions, X_examples, X_globals, globals_vocabulary_ls, average_or_random_flag=True)
+    X_senses, num_dummysenses = initialize_senses(X_definitions, X_examples, X_globals, globals_vocabulary_ls, average_or_random_flag=True)
 
     logging.info("Constructing X, matrix of node features")
     logging.info("X_definitions.shape=" + str(X_definitions.shape)) # X_definitions.shape=torch.Size([25986, 300])
@@ -292,7 +299,7 @@ def create_graph(method, slc_corpus):
         sc_edges.extend(sc_external_edges)
         logging.info("sc_edges_with_external.__len__()=" + str(sc_external_edges.__len__()))
     # We add self-loops to all globals without a sense.
-    edges_selfloops = get_edges_selfloops(sc_edges, num_globals=X_globals.shape[0])
+    edges_selfloops = get_edges_selfloops(sc_edges, num_globals=X_globals.shape[0], num_dummysenses=num_dummysenses)
     sc_edges.extend(edges_selfloops)
     logging.info("sc_edges_with_selfloops.__len__()=" + str(sc_edges.__len__()))
 

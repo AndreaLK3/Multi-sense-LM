@@ -243,7 +243,7 @@ def get_word_from_sense(sense_str):
 
 
 # Returns a list of indices: where the character is located in the word/string.
-# Useful to split senses, e.g. abbreviate.v.02 or Sr..Global.01
+# Useful to split senses, e.g. abbreviate.v.02 or Sr..dummySense.01
 def get_locations_of_char(word, char):
     locations = []
     for i in range(len(word)):

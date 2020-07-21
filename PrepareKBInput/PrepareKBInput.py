@@ -94,7 +94,7 @@ def create_senses_indices_table(vocabulary_words_ls):
 
     for word in words_without_senses_set:
         # no definitions nor examples to add here. We will add the global vector as the vector of the dummy-sense.
-        dummy_wn_id = word + '.' + 'Global' + '.01'
+        dummy_wn_id = word + '.' + 'dummySense' + '.01'
         end_defs_count = start_defs_count
         end_examples_count = start_examples_count
         out_indicesTable_db_c.execute("INSERT INTO indices_table VALUES (?,?,?,?,?,?)", (dummy_wn_id, my_vocabulary_index,

@@ -38,7 +38,7 @@ def get_node_data(grapharea_matrix, i, grapharea_size, features_mask=(True,True,
 
 ### Creation function - numpy version
 def create_adjacencies_matrix_numpy(graph_dataobj, area_size, hops_in_area):
-    #Utils.init_logging('create_adjacencies_matrix_numpy.log')
+    Utils.init_logging('create_adjacencies_matrix_numpy.log')
 
     logging.info(graph_dataobj)
     tot_nodes = graph_dataobj.x.shape[0]
@@ -48,26 +48,31 @@ def create_adjacencies_matrix_numpy(graph_dataobj, area_size, hops_in_area):
     k = area_size
     tot_dim_row = area_size + 3 * m
     nodes_arraytable = np.ones(shape=(tot_nodes, tot_dim_row)) * -1
-
     for i in range(tot_nodes):
-        node_index = i
-        (adj_nodes_ls, adj_edge_index, adj_edge_type) = GA.get_grapharea_elements(node_index, area_size, graph_dataobj, hops_in_area)
-        if i % 1000 == 0:
-            logging.info("node_index=" + str(node_index))
-        # extract sources and targets from the edge_index related to the node
-        adj_edge_sources = adj_edge_index[0]
-        adj_edge_targets = adj_edge_index[1]
+        try:  # debug
+            node_index = i
+            (adj_nodes_ls, adj_edge_index, adj_edge_type) = GA.get_grapharea_elements(node_index, area_size, graph_dataobj, hops_in_area)
+            if i % 1000 == 0:
+                logging.info("node_index=" + str(node_index))
+            # extract sources and targets from the edge_index related to the node
+            adj_edge_sources = adj_edge_index[0]
+            adj_edge_targets = adj_edge_index[1]
 
-        # convert
-        arr_adj_edge_sources = adj_edge_sources.cpu().numpy()
-        arr_adj_edge_targets = adj_edge_targets.cpu().numpy()
-        arr_adj_edge_type = adj_edge_type.cpu().numpy()
+            # convert
+            arr_adj_edge_sources = adj_edge_sources.cpu().numpy()
+            arr_adj_edge_targets = adj_edge_targets.cpu().numpy()
+            arr_adj_edge_type = adj_edge_type.cpu().numpy()
 
-        # assign at the appropriate locations
-        nodes_arraytable[i][0:len(adj_nodes_ls)] = np.array(adj_nodes_ls)
-        nodes_arraytable[i][k: k + min(len(arr_adj_edge_sources), m)] = arr_adj_edge_sources[0:m]
-        nodes_arraytable[i][k + m: k + m + min(len(arr_adj_edge_targets), m)] = arr_adj_edge_targets[0:m]
-        nodes_arraytable[i][k + 2 * m: k + 2 * m + min(len(arr_adj_edge_type), m)] = arr_adj_edge_type[0:m]
+            # assign at the appropriate locations
+            nodes_arraytable[i][0:len(adj_nodes_ls)] = np.array(adj_nodes_ls)
+            nodes_arraytable[i][k: k + min(len(arr_adj_edge_sources), m)] = arr_adj_edge_sources[0:m]
+            nodes_arraytable[i][k + m: k + m + min(len(arr_adj_edge_targets), m)] = arr_adj_edge_targets[0:m]
+            nodes_arraytable[i][k + 2 * m: k + 2 * m + min(len(arr_adj_edge_type), m)] = arr_adj_edge_type[0:m]
+        except Exception:
+            logging.info("graph_dataobj="+str(graph_dataobj))
+            logging.info("adj_nodes_ls="+str(adj_nodes_ls))
+            logging.info("adj_edge_index=" + str(adj_edge_index))
+            logging.info("adj_edge_type=" + str(adj_edge_type))
 
     return nodes_arraytable
 
