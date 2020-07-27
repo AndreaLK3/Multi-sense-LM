@@ -1,0 +1,131 @@
+INFO : Organizing subcorpus at: TextCorpuses/My Sense-Labeled Corpus/semcor.xml
+INFO : The corpus at TextCorpuses/My Sense-Labeled Corpus/semcor.xml has 26 documents
+INFO : Training dataset will contain: 20 documents , Validation dataset will contain: 3 documents , Test dataset will contain: 3 documents
+INFO : Writing train_root ElementTree to XML file...
+INFO : Writing valid_root ElementTree to XML file...
+INFO : Writing test_root ElementTree to XML file...
+INFO : *** Creating vocabulary at Vocabulary/vocabulary_of_globals.h5
+INFO : Generator over subcorpus at TextCorpuses/My Sense-Labeled Corpus/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/My Sense-Labeled Corpus/Validation/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/My Sense-Labeled Corpus/Test/semcor.xml
+INFO : *** The vocabulary was created. Number of words= 10301***
+INFO : loading 2000000 words for fastText model from WordEmbeddings/cc.en.300.bin
+INFO : resetting layer weights
+INFO : Updating model with new vocabulary
+INFO : New added 2000000 unique words (50% of original 4000000) and increased the count of 2000000 pre-existing words (50% of original 4000000)
+INFO : deleting the raw counts dictionary of 2000000 items
+INFO : sample=1e-05 downsamples 6996 most-common words
+INFO : downsampling leaves estimated 390315457935 word corpus (70.7% of prior 552001338161)
+INFO : loaded (4000000, 300) weight matrix for fastText model from WordEmbeddings/cc.en.300.bin
+WARNING : could not extract any ngrams from '/3', returning origin vector
+INFO : Computed the single-prototype embeddings for the vocabulary tokens, at: InputData/SinglePrototypes_withFastText.npy
+INFO : 0
+INFO : Retrieving WordNet senses data for word: other - n.100
+INFO : Retrieving WordNet senses data for word: populous - n.200
+INFO : Retrieving WordNet senses data for word: fair - n.300
+INFO : Retrieving WordNet senses data for word: meeting - n.400
+INFO : Retrieving WordNet senses data for word: 1961 - n.500
+INFO : Retrieving WordNet senses data for word: resolution - n.600
+INFO : Retrieving WordNet senses data for word: After - n.700
+INFO : Retrieving WordNet senses data for word: Thursday - n.800
+INFO : Retrieving WordNet senses data for word: circulation - n.900
+INFO : Retrieving WordNet senses data for word: why - n.1000
+INFO : Retrieving WordNet senses data for word: penalty - n.1100
+INFO : Retrieving WordNet senses data for word: big - n.1200
+INFO : Retrieving WordNet senses data for word: Paris_Junior_College - n.1300
+INFO : Retrieving WordNet senses data for word: relatives - n.1400
+INFO : Retrieving WordNet senses data for word: relieved - n.1500
+INFO : Retrieving WordNet senses data for word: Russ_Snyder - n.1600
+INFO : Retrieving WordNet senses data for word: 15000 - n.1700
+INFO : Retrieving WordNet senses data for word: accelerated - n.1800
+INFO : Retrieving WordNet senses data for word: wire - n.1900
+INFO : Retrieving WordNet senses data for word: tenths - n.2000
+INFO : Retrieving WordNet senses data for word: leg - n.2100
+INFO : Retrieving WordNet senses data for word: insists - n.2200
+INFO : Retrieving WordNet senses data for word: reserves - n.2300
+INFO : Retrieving WordNet senses data for word: fullbacking - n.2400
+INFO : Retrieving WordNet senses data for word: Ron_Nischwitz - n.2500
+INFO : Retrieving WordNet senses data for word: stage - n.2600
+INFO : Retrieving WordNet senses data for word: Union_Pacific_Railroad - n.2700
+INFO : Retrieving WordNet senses data for word: ball_player - n.2800
+INFO : Retrieving WordNet senses data for word: am - n.2900
+INFO : Retrieving WordNet senses data for word: Minnesota_Vikings - n.3000
+INFO : Retrieving WordNet senses data for word: imminent - n.3100
+INFO : Retrieving WordNet senses data for word: following - n.3200
+INFO : Retrieving WordNet senses data for word: heartening - n.3300
+INFO : Retrieving WordNet senses data for word: thereby - n.3400
+INFO : Retrieving WordNet senses data for word: Bob_Nieman - n.3500
+INFO : Retrieving WordNet senses data for word: lavish - n.3600
+INFO : Retrieving WordNet senses data for word: Larry_Scherer - n.3700
+INFO : Retrieving WordNet senses data for word: No. - n.3800
+INFO : Retrieving WordNet senses data for word: shantung - n.3900
+INFO : Retrieving WordNet senses data for word: shaving - n.4000
+INFO : Retrieving WordNet senses data for word: thyroid - n.4100
+INFO : Retrieving WordNet senses data for word: modern_Greek - n.4200
+INFO : Retrieving WordNet senses data for word: easy_money - n.4300
+INFO : Retrieving WordNet senses data for word: Explain - n.4400
+INFO : Retrieving WordNet senses data for word: in_the_name_of - n.4500
+INFO : Retrieving WordNet senses data for word: 500 - n.4600
+INFO : Retrieving WordNet senses data for word: fixed - n.4700
+INFO : Retrieving WordNet senses data for word: procedures - n.4800
+INFO : Retrieving WordNet senses data for word: uniforms - n.4900
+INFO : Retrieving WordNet senses data for word: tunes - n.5000
+INFO : Retrieving WordNet senses data for word: Civic_Opera_house - n.5100
+INFO : Retrieving WordNet senses data for word: manor_house - n.5200
+INFO : Retrieving WordNet senses data for word: Oneupmanship - n.5300
+INFO : Retrieving WordNet senses data for word: Grigory_Kozintsev - n.5400
+INFO : Retrieving WordNet senses data for word: documentary - n.5500
+INFO : Retrieving WordNet senses data for word: telephone_poles - n.5600
+INFO : Retrieving WordNet senses data for word: uncommon - n.5700
+INFO : Retrieving WordNet senses data for word: active - n.5800
+INFO : Retrieving WordNet senses data for word: meticulously - n.5900
+INFO : Retrieving WordNet senses data for word: miserable - n.6000
+INFO : Retrieving WordNet senses data for word: fell_in_love - n.6100
+INFO : Retrieving WordNet senses data for word: come_back - n.6200
+INFO : Retrieving WordNet senses data for word: highly - n.6300
+INFO : Retrieving WordNet senses data for word: educated - n.6400
+INFO : Retrieving WordNet senses data for word: mixture - n.6500
+INFO : Retrieving WordNet senses data for word: existence - n.6600
+INFO : Retrieving WordNet senses data for word: goals - n.6700
+INFO : Retrieving WordNet senses data for word: religion - n.6800
+INFO : Retrieving WordNet senses data for word: Ritschl - n.6900
+INFO : Retrieving WordNet senses data for word: interpretation - n.7000
+INFO : Retrieving WordNet senses data for word: Tractarians - n.7100
+INFO : Retrieving WordNet senses data for word: unite - n.7200
+INFO : Retrieving WordNet senses data for word: successive - n.7300
+INFO : Retrieving WordNet senses data for word: Whence - n.7400
+INFO : Retrieving WordNet senses data for word: forfeit - n.7500
+INFO : Retrieving WordNet senses data for word: sunny - n.7600
+INFO : Retrieving WordNet senses data for word: Bench_Press - n.7700
+INFO : Retrieving WordNet senses data for word: prizes - n.7800
+INFO : Retrieving WordNet senses data for word: plants - n.7900
+INFO : Retrieving WordNet senses data for word: thawing - n.8000
+INFO : Retrieving WordNet senses data for word: tart - n.8100
+INFO : Retrieving WordNet senses data for word: infectious - n.8200
+INFO : Retrieving WordNet senses data for word: closer - n.8300
+INFO : Retrieving WordNet senses data for word: absolute - n.8400
+INFO : Retrieving WordNet senses data for word: lacked - n.8500
+INFO : Retrieving WordNet senses data for word: interested - n.8600
+INFO : Retrieving WordNet senses data for word: species - n.8700
+INFO : Retrieving WordNet senses data for word: velocity - n.8800
+INFO : Retrieving WordNet senses data for word: all_too - n.8900
+INFO : Retrieving WordNet senses data for word: solo - n.9000
+INFO : Retrieving WordNet senses data for word: applicants - n.9100
+INFO : Retrieving WordNet senses data for word: admissions - n.9200
+INFO : Retrieving WordNet senses data for word: confessing - n.9300
+INFO : Retrieving WordNet senses data for word: at_a_loss - n.9400
+INFO : Retrieving WordNet senses data for word: violent - n.9500
+INFO : Retrieving WordNet senses data for word: ailment - n.9600
+INFO : Retrieving WordNet senses data for word: operator - n.9700
+INFO : Retrieving WordNet senses data for word: arsenic - n.9800
+INFO : Retrieving WordNet senses data for word: imperialism - n.9900
+INFO : Retrieving WordNet senses data for word: homogeneous - n.10000
+INFO : Retrieving WordNet senses data for word: progandist - n.10100
+INFO : Retrieving WordNet senses data for word: large_numbers - n.10200
+INFO : Retrieving WordNet senses data for word: taking_aim - n.10300
+INFO : Finished retrieving input data for the 10301 words of the vocabulary.
+INFO : CreateGraphInput.exe() >  number of ords included in the vocabulary chunk, to be prepared: 10268
+INFO : Eliminating quasi-duplicate definitions for the current vocabulary subset.
+INFO : Eliminating quasi-duplicate examples for the current vocabulary subset.
+INFO : Lemmatizing synonyms for the current vocabulary subset.
+INFO : Lemmatizing antonyms for the current vocabulary subset.

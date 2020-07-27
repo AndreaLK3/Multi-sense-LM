@@ -15,6 +15,15 @@ from PrepareKBInput.LemmatizeNyms import lemmatize_term
 import nltk
 import re
 
+def log_edges_minmax_nodes(edges_ls, name):
+    if len(edges_ls) > 0:
+        logging.info("Min source node in edges-" + name + " = " + str(min([tpl[0] for tpl in edges_ls])))
+        logging.info("Max source node in edges-" + name + " = " + str(max([tpl[0] for tpl in edges_ls])))
+        logging.info("Min target node in edges-" + name + " = " + str(min([tpl[1] for tpl in edges_ls])))
+        logging.info("Max target node in edges-" + name + " = " + str(max([tpl[1] for tpl in edges_ls])))
+    else:
+        logging.info("len(edges_ls)==0")
+
 
 def load_senses_elements(embeddings_method, elements_name):
     senses_elems_fname = Utils.VECTORIZED + '_' + str(embeddings_method.value) + '_' + elements_name + '.npy'
@@ -105,6 +114,7 @@ def get_edges_elements(elements_name, elements_start_index_toadd):
             edges_ls.append((source, target_idx))
 
     indicesTable_db.close()
+    log_edges_minmax_nodes(edges_ls, elements_name)
     return edges_ls
 
 
@@ -132,6 +142,7 @@ def get_edges_sensechildren(globals_voc_df, globals_start_index_toadd):
 
         edges_ls.append((sourceglobal_idx, targetsense_idx))
 
+    log_edges_minmax_nodes(edges_ls, "get_edges_sensechildren")
     indicesTable_db.close()
     return edges_ls
 
@@ -186,7 +197,7 @@ def get_additional_edges_sensechildren_from_slc(globals_voc_df, globals_start_in
         pass
     # remove duplicates
     edges_to_add_ls = list(set(edges_to_add_ls))
-    #words_and_senses_ls = list(set(words_and_senses_ls))
+    log_edges_minmax_nodes(edges_to_add_ls, "get_additional_edges_sensechildren_from_slc")
     return edges_to_add_ls
 
 
@@ -196,19 +207,19 @@ def get_edges_selfloops(sc_edges, num_globals, num_dummysenses):
     globals_sources = sorted(list(map(lambda edge_tpl : edge_tpl[0], sc_edges)))
     senses_targets = list(map(lambda edge_tpl : edge_tpl[1], sc_edges))
     max_sense = max(senses_targets)
+    logging.info("get_edges_selfloops>max_sense=" + str(max_sense))
 
     all_globals_indices = list(range(max_sense+1,max_sense+num_globals+1))
     globals_needing_selfloop = [g_idx for g_idx in all_globals_indices if g_idx not in globals_sources]
-    logging.info("Globals with no edges, needing self-loops: " + str(len(globals_needing_selfloop)))
-    logging.info(str(globals_needing_selfloop))
     globals_edges_selfloops = [(g_idx, g_idx) for g_idx in globals_needing_selfloop]
+    logging.info(globals_needing_selfloop)
+    # The dummy senses should already be connected to the globals they belong to
+    # And therefore, this shoudl m
+    # dummysenses_indices = list(range(max_sense-num_dummysenses,max_sense+1))
+    # dummysenses_edges_selfloops = [(s_idx, s_idx) for s_idx in dummysenses_indices]
 
-    dummysenses_indices = list(range(max_sense-num_dummysenses,max_sense+1))
-    dummysenses_edges_selfloops = [(s_idx, s_idx) for s_idx in dummysenses_indices]
-    logging.info("Dummy senses, needing self-loops: " + str(len(dummysenses_indices)))
-    logging.info(dummysenses_indices)
-
-    return globals_edges_selfloops + dummysenses_edges_selfloops
+    log_edges_minmax_nodes(globals_edges_selfloops, "get_edges_selfloops")
+    return globals_edges_selfloops
 
 
 # Synonyms and antonyms: global -> global : [se,se+sp) -> [se,se+sp).
@@ -272,10 +283,10 @@ def create_graph(method, slc_corpus):
     X_senses, num_dummysenses = initialize_senses(X_definitions, X_examples, X_globals, globals_vocabulary_ls, average_or_random_flag=True)
 
     logging.info("Constructing X, matrix of node features")
-    logging.info("X_definitions.shape=" + str(X_definitions.shape)) # X_definitions.shape=torch.Size([25986, 300])
-    logging.info("X_examples.shape=" + str(X_examples.shape)) # X_examples.shape=torch.Size([26003, 300])
-    logging.info("X_senses.shape=" + str(X_senses.shape)) # X_senses.shape=torch.Size([25986, 300])
-    logging.info("X_globals.shape=" + str(X_globals.shape)) # X_globals.shape=torch.Size([21988, 300])
+    logging.info("X_definitions.shape=" + str(X_definitions.shape)) # X_definitions.shape=torch.Size([75718, 300])
+    logging.info("X_examples.shape=" + str(X_examples.shape)) # X_examples.shape=torch.Size([65964, 300])
+    logging.info("X_senses.shape=" + str(X_senses.shape)) # X_senses.shape=torch.Size([73706, 300])
+    logging.info("X_globals.shape=" + str(X_globals.shape)) # X_globals.shape=torch.Size([53139, 300])
 
     # The order for the index of the nodes:
     # sense=[0,se) ; single prototype=[se,se+sp) ; definitions=[se+sp, se+sp+d) ; examples=[se+sp+d, e==num_nodes)

@@ -8,6 +8,34 @@ import Utils
 import os
 from scipy import sparse
 import pandas as pd
+from GNN.Models.Common import unpack_to_input_tpl
+
+
+# Utility function: determine which globals have more than 1 sense, versus the dummySenses and 0or1 sense.
+# Used to compute different Perpexities
+def get_globals_lists_by_numsenses(graph_dataobj, grapharea_matrix, grapharea_size):
+    globals_1_sense = []
+    globals_multiple_senses = []
+    max_edges = int(grapharea_size ** 1.5)
+    last_idx_senses = graph_dataobj.node_types.tolist().index(1)
+    last_idx_globals = graph_dataobj.node_types.tolist().index(2)
+    logging.info("Examining the graph, to determine which globals have multiple senses")
+    # iterate over the globals
+    for idx in range(last_idx_senses, last_idx_senses+last_idx_globals):
+        ith_global_row = grapharea_matrix[idx]
+        ith_global_index = ith_global_row[0]
+        edge_type_indices = list(map(lambda idx: idx + grapharea_size + 2 * max_edges,
+                                     [(ith_global_row[grapharea_size + 2 * max_edges:] != -1).nonzero().flatten()]))
+        edge_type = ith_global_row[edge_type_indices]
+        # remembering: edge_types = torch.tensor([0] * len(def_edges_se) + [1] * len(exs_edges_se) + [2] * len(sc_edges) +
+        #                                        [3] * len(syn_edges) + [4] * len(ant_edges))
+        if edge_type.count(2) > 1:
+            globals_multiple_senses.append(idx)
+        else:
+            globals_1_sense.append(idx)
+
+    return (globals_1_sense, globals_multiple_senses)
+
 
 
 ### Getter function, to extract node area data from a row in the matrix
@@ -70,6 +98,7 @@ def create_adjacencies_matrix_numpy(graph_dataobj, area_size, hops_in_area):
             nodes_arraytable[i][k + 2 * m: k + 2 * m + min(len(arr_adj_edge_type), m)] = arr_adj_edge_type[0:m]
         except Exception:
             logging.info("graph_dataobj="+str(graph_dataobj))
+            logging.info("node_index=" + str(node_index))
             logging.info("adj_nodes_ls="+str(adj_nodes_ls))
             logging.info("adj_edge_index=" + str(adj_edge_index))
             logging.info("adj_edge_type=" + str(adj_edge_type))

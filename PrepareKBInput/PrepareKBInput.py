@@ -39,7 +39,7 @@ def preprocess(vocabulary_ls):
 # establish a correspondence with an integer index.
 # Moreover, counting the number of defs and examples, define start&end indices for the matrix of word embeddings.
 def create_senses_indices_table(vocabulary_words_ls):
-    #Utils.init_logging('CreateSensesVocabularyTable.log', logging.INFO)
+    Utils.init_logging('CreateSensesVocabularyTable.log', logging.INFO)
 
     defs_input_filepath = os.path.join(Filesystem.FOLDER_INPUT, Utils.PROCESSED + '_' + Utils.DEFINITIONS + ".h5")
     examples_input_filepath = os.path.join(Filesystem.FOLDER_INPUT, Utils.PROCESSED + '_' + Utils.EXAMPLES + ".h5")
@@ -60,6 +60,8 @@ def create_senses_indices_table(vocabulary_words_ls):
     my_vocabulary_index = 0
     start_defs_count = 0
     start_examples_count = 0
+
+    logging.debug("vocabulary_words_ls=" + str(vocabulary_words_ls))
 
     # Process the wn_ids as previously > words_without_sense_set > add to the table with type=n and only vocab_index+1
     word_senses_series_from_defs = defs_input_db[Utils.DEFINITIONS][Utils.SENSE_WN_ID]
@@ -88,13 +90,15 @@ def create_senses_indices_table(vocabulary_words_ls):
         start_defs_count = end_defs_count
         start_examples_count = end_examples_count
         # add the word to the set of words that do have a sense
-        words_with_senses_set.add(wn_id[0:wn_id.find('.')])
+        words_with_senses_set.add(Utils.get_word_from_sense(wn_id))
 
     words_without_senses_set = set(vocabulary_words_ls).difference(words_with_senses_set)
+    logging.info("words_without_senses_set=" + str(words_without_senses_set))
 
     for word in words_without_senses_set:
         # no definitions nor examples to add here. We will add the global vector as the vector of the dummy-sense.
         dummy_wn_id = word + '.' + 'dummySense' + '.01'
+        logging.debug("dummy_wn_id=" + str(dummy_wn_id))
         end_defs_count = start_defs_count
         end_examples_count = start_examples_count
         out_indicesTable_db_c.execute("INSERT INTO indices_table VALUES (?,?,?,?,?,?)", (dummy_wn_id, my_vocabulary_index,
