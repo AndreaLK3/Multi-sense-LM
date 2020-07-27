@@ -1,5 +1,5 @@
 import sqlite3
-
+import re
 import Filesystem
 import WordEmbeddings.EmbedWithDBERT as EDB
 import WordEmbeddings.EmbedWithFastText as EFT
@@ -76,6 +76,13 @@ def compute_elements_embeddings(elements_name, method):
     vocabTable_db_c.execute("SELECT * FROM indices_table")
 
     for row in vocabTable_db_c: # consuming the cursor iterator. Tuple returned: ('wide.a.1', 2, 4,5, 16,18)
+
+        pt = r'\.([^.])+\.'
+        mtc = re.search(pt, row[0])
+        pos = mtc.group(0)[1:-1]
+        if pos == "dummySense":
+            break
+
         sense_df = Utils.select_from_hdf5(input_db, elements_name, [Utils.SENSE_WN_ID], [row[0]])
         element_text_series = sense_df[elements_name]
         for element_text in element_text_series:

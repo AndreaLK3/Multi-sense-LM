@@ -208,8 +208,6 @@ def close_list_of_files(files_ls):
     for file in files_ls:
         file.close()
 
-
-
 ### Selecting from a HDF5 archive, and dealing with the possible syntax errors
 ### e.g.: where word == and, or ==''s ' or =='\'
 def select_from_hdf5(input_db, table_key, field_names, values):

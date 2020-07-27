@@ -1,15 +1,16 @@
 import Filesystem
 import PrepareKBInput.RemoveQuasiDuplicates as RQD
 import PrepareKBInput.LemmatizeNyms as LN
-import PrepareKBInput.SenseDenominations as SD
+import pandas as pd
 import WordEmbeddings.ComputeEmbeddings as CE
-import WordEmbeddings.EmbedWithDBERT as EWB
+import Vocabulary.Vocabulary as V
 import os
 import Utils
 import pandas as pd
 import logging
 import sqlite3
 import re
+import Filesystem as F
 
 # Phase 1 - Preprocessing: eliminating quasi-duplicate definitions and examples, and lemmatizing synonyms & antonyms
 def preprocess(vocabulary_ls):
@@ -38,8 +39,12 @@ def preprocess(vocabulary_ls):
 # Phase 2 - Considering the wordSenses in the vocabulary, located in the archive of processed definitions,
 # establish a correspondence with an integer index.
 # Moreover, counting the number of defs and examples, define start&end indices for the matrix of word embeddings.
-def create_senses_indices_table(vocabulary_words_ls):
+def create_senses_indices_table():
     Utils.init_logging('CreateSensesVocabularyTable.log', logging.INFO)
+
+    vocab_fpath = os.path.join(F.FOLDER_VOCABULARY, F.VOCABULARY_OF_GLOBALS_FILE)
+    vocabulary_df = pd.read_hdf(vocab_fpath)
+    vocabulary_words_ls = vocabulary_df['word'].to_list().copy()
 
     defs_input_filepath = os.path.join(Filesystem.FOLDER_INPUT, Utils.PROCESSED + '_' + Utils.DEFINITIONS + ".h5")
     examples_input_filepath = os.path.join(Filesystem.FOLDER_INPUT, Utils.PROCESSED + '_' + Utils.EXAMPLES + ".h5")
@@ -125,7 +130,7 @@ def prepare(vocabulary_ls, embeddings_method): #vocabulary = ['move', 'light', '
     preprocess(vocabulary_ls)
 
     # Phase 2 - Create the Vocabulary table with the correspondences (wordSense, integer index).
-    create_senses_indices_table(vocabulary_ls)
+    create_senses_indices_table()
 
     # Phase 3 - get the sentence embeddings for definitions and examples, using BERT or FasText, and store them
     CE.compute_elements_embeddings(Utils.DEFINITIONS, embeddings_method)
