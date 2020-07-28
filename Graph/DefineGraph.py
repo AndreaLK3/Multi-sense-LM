@@ -302,13 +302,15 @@ def create_graph(method, slc_corpus):
     logging.info("exs_edges_se.__len__()=" + str(exs_edges_se.__len__())) # exs_edges_se.__len__()=26003
 
     logging.info("Defining the edges: sc")
-    sc_edges = get_edges_sensechildren(globals_vocabulary_df, X_senses.shape[0])
-    logging.info("sc_edges.__len__()=" + str(sc_edges.__len__())) # sc_edges.__len__()=25986
+    sc_edges = []
     # If operating on a sense-labeled corpus, we need to connect globals & their senses that do not belong to them
     if slc_corpus:
-        sc_external_edges = get_additional_edges_sensechildren_from_slc(globals_vocabulary_df, globals_start_index_toadd=X_senses.shape[0])
+        sc_external_edges = get_additional_edges_sensechildren_from_slc(globals_vocabulary_df,
+                                                                        globals_start_index_toadd=X_senses.shape[0])
         sc_edges.extend(sc_external_edges)
         logging.info("sc_edges_with_external.__len__()=" + str(sc_external_edges.__len__()))
+    sc_edges.extend(get_edges_sensechildren(globals_vocabulary_df, X_senses.shape[0]))
+    logging.info("sc_edges.__len__()=" + str(sc_edges.__len__())) # sc_edges.__len__()=25986
     # We add self-loops to all globals without a sense.
     edges_selfloops = get_edges_selfloops(sc_edges, num_globals=X_globals.shape[0], num_dummysenses=num_dummysenses)
     sc_edges.extend(edges_selfloops)
