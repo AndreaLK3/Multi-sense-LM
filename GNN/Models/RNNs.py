@@ -3,7 +3,7 @@ from torch_geometric.nn import GATConv
 from torch_geometric.data.batch import Batch
 from torch_geometric.data import Data
 import torch.nn.functional as tfunc
-from GNN.Models.Common import unpack_input_tensor, init_model_parameters, lemmatize_node, get_lemmatized_form
+from GNN.Models.Common import unpack_input_tensor, init_model_parameters, lemmatize_node
 from torch.nn.parameter import Parameter
 import logging
 import nltk
@@ -128,7 +128,7 @@ class RNN(torch.nn.Module):
                 for i_sample in range(batch_elems_at_t.shape[0]):
 
                     sample_edge_index = t_edgeindex_g_ls[i_sample]
-                    x_indices, sample_edge_index = get_lemmatized_form(t_globals_indices_ls[i_sample], sample_edge_index, self)
+                    x_indices, sample_edge_index = lemmatize_node(t_globals_indices_ls[i_sample], sample_edge_index, self)
                     sample_x = self.X.index_select(dim=0, index=x_indices.squeeze())
 
                     currentword_location_in_batchX = rows_to_skip + current_location_in_batchX_ls[-1] \

@@ -1,2 +1,5 @@
 INFO : NumExpr defaulting to 8 threads.
 INFO : Loading graphArea matrix, with area_size=32 from: Graph/nodes_32_areahops_1_graphArea_matrix.npz
+INFO : Examining the graph, to determine which globals have multiple senses
+INFO : Examining the graph, to determine which globals have multiple senses
+INFO : Examining the graph, to determine which globals have multiple senses

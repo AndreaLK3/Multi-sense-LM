@@ -12,6 +12,9 @@ import matplotlib.pyplot as plt
 import time
 from math import exp
 import torch
+import os
+import Filesystem as F
+import sqlite3
 
 ########## Constants ##########
 
@@ -271,3 +274,21 @@ def get_gpu_memory_map():
     gpu_memory = [int(x) for x in result.strip().split('\n')]
     gpu_memory_map = dict(zip(range(len(gpu_memory)), gpu_memory))
     return gpu_memory_map
+
+
+# Read the indices_table.sql, in order to determine the start of the dummmySenses.
+def get_startpoint_dummySenses():
+    indicesTable_db = sqlite3.connect(os.path.join(F.FOLDER_INPUT, INDICES_TABLE_DB))
+    indicesTable_db_c = indicesTable_db.cursor()
+    counter = 1
+
+    indicesTable_db_c.execute("SELECT * FROM indices_table")
+    while (True):
+        db_row = indicesTable_db_c.fetchone()
+        if db_row is None:
+            break
+        sense_id = db_row[0]
+        if 'dummySense' in sense_id:
+            return counter
+        counter = counter +1
+    return counter

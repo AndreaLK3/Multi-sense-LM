@@ -56,58 +56,60 @@ def unpack_input_tensor(in_tensor, grapharea_size):
 ### 2: Lemmatize global node ###
 ################################
 
-def lemmatize_node(x_indices, edge_index, model):
-    currentglobal_relative_X_idx = x_indices[0]
-    currentglobal_absolute_vocab_idx = currentglobal_relative_X_idx - model.last_idx_senses
-    word = model.vocabulary_wordlist[currentglobal_absolute_vocab_idx]
-    lemmatized_word = lemmatize_term(word, model.lemmatizer)
-    logging.debug("***\nword=" + str(word) + " ; lemmatized_word= "+ str(lemmatized_word))
+# def lemmatize_node(x_indices, edge_index, model):
+#     currentglobal_relative_X_idx = x_indices[0]
+#     currentglobal_absolute_vocab_idx = currentglobal_relative_X_idx - model.last_idx_senses
+#     word = model.vocabulary_wordlist[currentglobal_absolute_vocab_idx]
+#     lemmatized_word = lemmatize_term(word, model.lemmatizer)
+#     logging.debug("***\nword=" + str(word) + " ; lemmatized_word= "+ str(lemmatized_word))
+#
+#     # if a word has edges that are not all self-loops, do not lemmatize it (to avoid turning 'as' into 'a')
+#     if not(all([src_dest_tpl[0]==src_dest_tpl[1] for src_dest_tpl in edge_index.t()])):
+#         logging.debug("word has edges that are not all self-loops")
+#         return x_indices, edge_index
+#     if lemmatized_word != word:  # if the lemmatized word is actually different from the original, get the data
+#         try:
+#             logging.debug("Getting the data for the lemmatized word")
+#             lemmatized_word_absolute_idx = model.vocabulary_wordlist.index(lemmatized_word)
+#             lemmatized_word_relative_idx = lemmatized_word_absolute_idx + model.last_idx_senses
+#             (x_indices_lemmatized, edge_index_lemmatized, _edge_type_l) = \
+#                 AD.get_node_data(model.grapharea_matrix, lemmatized_word_relative_idx, model.grapharea_size)
+#             return x_indices_lemmatized, edge_index_lemmatized
+#         except ValueError:
+#             # the lemmatized word was not found in the vocabulary.
+#             logging.debug("The lemmatized word was not found in the vocabulary")
+#             return x_indices, edge_index
+#     else:
+#         return x_indices, edge_index
 
-    # if a word has edges that are not all self-loops, do not lemmatize it (to avoid turning 'as' into 'a')
-    if not(all([src_dest_tpl[0]==src_dest_tpl[1] for src_dest_tpl in edge_index.t()])):
-        logging.debug("word has edges that are not all self-loops")
-        return x_indices, edge_index
-    if lemmatized_word != word:  # if the lemmatized word is actually different from the original, get the data
-        try:
-            logging.debug("Getting the data for the lemmatized word")
-            lemmatized_word_absolute_idx = model.vocabulary_wordlist.index(lemmatized_word)
-            lemmatized_word_relative_idx = lemmatized_word_absolute_idx + model.last_idx_senses
-            (x_indices_lemmatized, edge_index_lemmatized, _edge_type_l) = \
-                AD.get_node_data(model.grapharea_matrix, lemmatized_word_relative_idx, model.grapharea_size)
-            return x_indices_lemmatized, edge_index_lemmatized
-        except ValueError:
-            # the lemmatized word was not found in the vocabulary.
-            logging.debug("The lemmatized word was not found in the vocabulary")
-            return x_indices, edge_index
-    else:
-        return x_indices, edge_index
-
-def get_lemmatized_form(x_indices, edge_index, model):
+def lemmatize_node(x_indices, edge_index, edge_type, model):
     currentglobal_relative_X_idx = x_indices[0]
     currentglobal_absolute_vocab_idx = currentglobal_relative_X_idx - model.last_idx_senses
     word = model.vocabulary_wordlist[currentglobal_absolute_vocab_idx]
     lemmatized_word = model.vocabulary_lemmatizedList[currentglobal_absolute_vocab_idx]
+
     logging.debug("***\nword=" + str(word) + " ; lemmatized_word= "+ str(lemmatized_word))
 
+    num_dummy_senses = len(list(filter(lambda n: model.first_idx_dummySenses < n and n < model.last_idx_senses, x_indices)))
+
     # if a word has edges that are not all self-loops, do not lemmatize it (to avoid turning 'as' into 'a')
-    if not(all([src_dest_tpl[0]==src_dest_tpl[1] for src_dest_tpl in edge_index.t()])):
-        logging.debug("word has edges that are not all self-loops")
-        return x_indices, edge_index
+    if len(edge_type)>num_dummy_senses:
+        logging.debug("word has edges that are not all connections to dummySenses. We don't lemmatize")
+        return x_indices, edge_index, edge_type
     if lemmatized_word != word:  # if the lemmatized word is actually different from the original, get the data
         try:
             logging.debug("Getting the data for the lemmatized word")
             lemmatized_word_absolute_idx = model.vocabulary_wordlist.index(lemmatized_word)
             lemmatized_word_relative_idx = lemmatized_word_absolute_idx + model.last_idx_senses
-            (x_indices_lemmatized, edge_index_lemmatized, _edge_type_l) = \
+            (x_indices_lemmatized, edge_index_lemmatized, edge_type_lemmatized) = \
                 AD.get_node_data(model.grapharea_matrix, lemmatized_word_relative_idx, model.grapharea_size)
-            return x_indices_lemmatized, edge_index_lemmatized
+            return x_indices_lemmatized, edge_index_lemmatized, edge_type_lemmatized
         except ValueError:
             # the lemmatized word was not found in the vocabulary.
             logging.debug("The lemmatized word was not found in the vocabulary")
-            return x_indices, edge_index
+            return x_indices, edge_index, edge_type
     else:
-        return x_indices, edge_index
-
+        return x_indices, edge_index, edge_type
 
 #############################################
 ### 2: Initialize common model parameters ###
