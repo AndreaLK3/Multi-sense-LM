@@ -14,25 +14,24 @@ from types import SimpleNamespace
 
 # Utility function: determine which globals have more than 1 sense, versus the dummySenses and 0or1 sense.
 # (We evaluate the number of senses of the lemmatized form). Used to compute different Perpexities
-def get_globals_lists_by_numsenses(graph_dataobj, grapharea_matrix, grapharea_size, debug=False):
-    globals_1_sense = []
-    globals_multiple_senses = []
-    max_edges = int(grapharea_size ** 1.5)
+def compute_globals_numsenses(graph_dataobj, grapharea_matrix, grapharea_size):
+    num_senses_ls = []
     last_idx_senses = graph_dataobj.node_types.tolist().index(1)
     last_idx_globals = graph_dataobj.node_types.tolist().index(2)
     first_idx_dummySenses = Utils.get_startpoint_dummySenses()
-    logging.info("Examining the graph, to determine which globals have multiple senses")
+    logging.info("Examining the graph + corpus, to determine which globals have multiple senses...")
 
     vocab_fpath = os.path.join("Vocabulary", "vocabulary_of_globals.h5");
     vocabulary_df = pd.read_hdf(vocab_fpath)
     vocabulary_wordList = vocabulary_df['word'].to_list().copy()
     vocabulary_lemmatizedWordsList = vocabulary_df['lemmatized_form'].to_list().copy()
+    vocabulary_frequencyList = vocabulary_df['frequency'].to_list().copy()
 
+    log_idx = 10000
     # iterate over the globals
     for idx in range(last_idx_senses, last_idx_globals):
-
+        if idx % log_idx == 0: logging.info("global idx=" + str(idx) + "...")
         adjacent_nodes, edges, edge_type = get_node_data(grapharea_matrix, idx, grapharea_size, features_mask=(True, True, True))
-
 
         args_dict = {'first_idx_dummySenses': first_idx_dummySenses, 'last_idx_senses':last_idx_senses,
                      'vocabulary_wordlist':vocabulary_wordList, 'vocabulary_lemmatizedList':vocabulary_lemmatizedWordsList,
@@ -46,20 +45,25 @@ def get_globals_lists_by_numsenses(graph_dataobj, grapharea_matrix, grapharea_si
 
         logging.debug("word=" + str(vocabulary_wordList[idx-last_idx_senses]) +
                          " ; edge_type="+str(edge_type) + " ; num_senses=" + str(num_senses))
+        num_senses_ls.append(num_senses)
 
-        if num_senses > 1:
-            globals_multiple_senses.append(idx)
-        else:
-            globals_1_sense.append(idx)
+    new_vocabulary_data = list(zip(vocabulary_wordList, vocabulary_frequencyList, vocabulary_lemmatizedWordsList, num_senses_ls))
+    new_vocabulary_df = pd.DataFrame(data=new_vocabulary_data, columns=['word','frequency','lemmatized_form','num_senses'])
+    vocabulary_h5_archive = pd.HDFStore(vocab_fpath, mode='w')
+    min_itemsize_dict = {'word': Utils.HDF5_BASE_SIZE_512 / 4, 'frequency': Utils.HDF5_BASE_SIZE_512 / 8,
+                         'lemmatized_form': Utils.HDF5_BASE_SIZE_512 / 4, 'num_senses': Utils.HDF5_BASE_SIZE_512 / 8}
+    vocabulary_h5_archive.append(key='vocabulary', value=new_vocabulary_df, min_itemsize=min_itemsize_dict)
+    vocabulary_h5_archive.close()
 
-    # words_1_sense = [vocabulary_wordList[i-last_idx_senses] for i in globals_1_sense]
-    # words_multiple_senses = [vocabulary_wordList[i - last_idx_senses] for i in globals_multiple_senses]
-    logging.info("len(words_1_sense)=" + str(len(globals_1_sense)))
-    logging.info("len(words_multiple_senses)=" + str(len(globals_multiple_senses)))
-    # logging.debug("words_1_sense=" + str(words_1_sense))
-    # logging.debug("words_multiple_senses=" + str(words_multiple_senses))
 
-    return (globals_1_sense, globals_multiple_senses)
+def get_multisense_globals_indices():
+    vocab_fpath = os.path.join("Vocabulary", "vocabulary_of_globals.h5");
+    vocabulary_df = pd.read_hdf(vocab_fpath)
+    vocabulary_num_senses_ls = vocabulary_df['num_senses'].to_list().copy()
+
+    multisense_globals_indices = [i for i in range(len(vocabulary_num_senses_ls)) if vocabulary_num_senses_ls[i] > 1]
+
+    return multisense_globals_indices
 
 
 

@@ -12,10 +12,9 @@ import Graph.Adjacencies as AD
 import numpy as np
 from time import time
 from Utils import DEVICE
+import Graph.Adjacencies as AD
 import GNN.DataLoading as DL
 import GNN.ExplorePredictions as EP
-import GNN.Models.MySenses as SensesNets
-import GNN.Models.WD_LSTM as MyWD_LSTM
 import GNN.Models.RNNs as RNNs
 import GNN.Models.Senses as SensesNets
 from itertools import cycle
@@ -92,16 +91,16 @@ def compute_model_loss(model, batch_input, batch_labels, correct_preds_dict, ver
 
     batch_labels_t = (batch_labels).clone().t().to(DEVICE)
     batch_labels_globals = batch_labels_t[0]
-    batch_labels_senses = batch_labels_t[1]
+    batch_labels_all_senses = batch_labels_t[1]
 
     # compute the loss for the batch
     loss_global = tfunc.nll_loss(predictions_globals, batch_labels_globals)
 
     model_forParameters = model.module if torch.cuda.device_count() > 1 and model.__class__.__name__=="DataParallel" else model
     if model_forParameters.predict_senses:
-        loss_sense = tfunc.nll_loss(predictions_senses, batch_labels_senses, ignore_index=-1)
+        loss_all_senses = tfunc.nll_loss(predictions_senses, batch_labels_all_senses, ignore_index=-1)
     else:
-        loss_sense = torch.tensor(0)
+        loss_all_senses = torch.tensor(0)
 
     # Added to measure the senses' task, given that we can not rely on the senses' PPL for SelectK
     update_predictions_history_dict(correct_preds_dict, predictions_globals, predictions_senses, batch_labels)
@@ -111,7 +110,7 @@ def compute_model_loss(model, batch_input, batch_labels, correct_preds_dict, ver
         logging.info("*******\ncompute_model_loss > verbose logging of batch")
         EP.log_batch(batch_labels, predictions_globals, predictions_senses, 5)
 
-    return loss_global, loss_sense
+    return loss_global, loss_all_senses
 
 
 ################
@@ -125,7 +124,8 @@ def training_setup(slc_or_text_corpus, include_globalnode_input, include_senseno
     vocab_h5 = pd.HDFStore(globals_vocabulary_fpath, mode='r')
     globals_vocabulary_df = pd.read_hdf(globals_vocabulary_fpath, mode='r')
 
-
+    if all([num_senses==-1 for num_senses in globals_vocabulary_df['num_senses'].tolist()]):
+        AD.compute_globals_numsenses(graph_dataobj, grapharea_matrix, grapharea_size)
 
     # The original GRU architecture has been updated into the GRUbase2 model in Senses - I just have to specify that predict_senses=False
     # torch.manual_seed(1) # for reproducibility while conducting mini-experiments
@@ -171,7 +171,7 @@ def training_setup(slc_or_text_corpus, include_globalnode_input, include_senseno
 
 
 ################
-def training_loop(model, learning_rate, train_dataloader, valid_dataloader, num_epochs=100):
+def training_loop(model, learning_rate, train_dataloader, valid_dataloader, num_epochs):
 
     Utils.init_logging('Training' + Utils.get_timestamp_month_to_min() + '.log', loglevel=logging.INFO)
 
@@ -255,7 +255,7 @@ def training_loop(model, learning_rate, train_dataloader, valid_dataloader, num_
 
             logging.info("Training - Correct predictions / Total predictions:")
             logging.info(correct_predictions_dict)
-            
+            continue # skipping Validation in mini-experiments
             # Time to check the validation loss
             logging.info("After training " + str(epoch) + " epochs, the validation losses are:")
             valid_loss_globals, valid_loss_senses = evaluation(valid_dataloader, valid_dataiter, model)

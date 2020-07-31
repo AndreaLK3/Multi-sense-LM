@@ -69,7 +69,7 @@ def get_vocabulary_df(senselabeled_or_text, corpus_txt_fpaths, out_vocabulary_h5
         logging.info("*** Creating vocabulary at " + out_vocabulary_h5_filepath)
         vocabulary_h5 = pd.HDFStore(out_vocabulary_h5_filepath, mode='w')
         vocab_h5_itemsizes = {'word': Utils.HDF5_BASE_SIZE_512 / 4, 'frequency': Utils.HDF5_BASE_SIZE_512 / 8,
-                              'lemmatized_form': Utils.HDF5_BASE_SIZE_512 / 4}
+                              'lemmatized_form': Utils.HDF5_BASE_SIZE_512 / 4, 'num_senses': Utils.HDF5_BASE_SIZE_512 / 8}
 
         if senselabeled_or_text:
             vocabulary_wordfreq_dict = build_vocabulary_dict_from_senselabeled(lowercase)
@@ -86,6 +86,7 @@ def get_vocabulary_df(senselabeled_or_text, corpus_txt_fpaths, out_vocabulary_h5
         lemmatizer = nltk.stem.WordNetLemmatizer()
         lemmatized_forms = [LN.lemmatize_term(word, lemmatizer) for word in vocab_wordls]
         vocab_df['lemmatized_form'] = lemmatized_forms
+        vocab_df['num_senses'] = [-1]* len(vocab_wordls) # this will be filled up later, when we have both WordNet data and the corpus
 
         vocabulary_h5.append(key='vocabulary', value=vocab_df, min_itemsize=vocab_h5_itemsizes)
         vocabulary_h5.close()
