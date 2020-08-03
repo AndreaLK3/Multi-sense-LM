@@ -91,8 +91,8 @@ def update_predictions_history_dict(correct_preds_dict, predictions_globals, pre
                 batch_counter_top_k_all_s = batch_counter_top_k_all_s + 1
             if label_multi_s in top_k_predictions_s[i]:
                 batch_counter_top_k_multi_s = batch_counter_top_k_multi_s + 1
-        correct_preds_dict['top_k_s'] = correct_preds_dict['top_k_s'] + batch_counter_top_k_all_s
-        correct_preds_dict['top_k_multi_s'] = correct_preds_dict['top_k_s'] + batch_counter_top_k_multi_s
+        correct_preds_dict['top_k_all_s'] = correct_preds_dict['top_k_all_s'] + batch_counter_top_k_all_s
+        correct_preds_dict['top_k_multi_s'] = correct_preds_dict['top_k_multi_s'] + batch_counter_top_k_multi_s
 
     logging.debug("updated_predictions_history_dict = " +str(correct_preds_dict))
     return
@@ -150,7 +150,7 @@ def training_setup(slc_or_text_corpus, include_globalnode_input, include_senseno
     # torch.manual_seed(1) # for reproducibility while conducting mini-experiments
     # if torch.cuda.is_available():
     #     torch.cuda.manual_seed_all(1)
-    model = RNNs.RNN("LSTM", graph_dataobj, grapharea_size, grapharea_matrix, globals_vocabulary_df,
+    model = RNNs.RNN("GRU", graph_dataobj, grapharea_size, grapharea_matrix, globals_vocabulary_df,
                       include_globalnode_input, include_sensenode_input, predict_senses,
                       batch_size=batch_size, n_layers=3, n_hid_units=1150)
     # model = SensesNets.SelectK(graph_dataobj, grapharea_size, grapharea_matrix, 10, globals_vocabulary_wordList,

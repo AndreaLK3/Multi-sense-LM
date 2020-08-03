@@ -22,7 +22,7 @@ class RNN(torch.nn.Module):
 
         # The embeddings matrix for: senses, globals, definitions, examples
         self.X = Parameter(data.x.clone().detach(), requires_grad=True)
-        self.select_first_indices = Parameter(torch.tensor(list(range(self.dim_embs))).to(torch.float32), requires_grad=False)
+        self.select_first_indices = Parameter(torch.tensor(list(range(n_hid_units))).to(torch.float32), requires_grad=False)
         self.embedding_zeros = Parameter(torch.zeros(size=(1, self.dim_embs)), requires_grad=False)
 
         # Input signals: current global’s word embedding (|| global's node state (|| sense’s node state) )
@@ -57,13 +57,13 @@ class RNN(torch.nn.Module):
                 self.rnn_senses = torch.nn.LSTM(input_size=self.concatenated_input_dim, hidden_size=n_hid_units, num_layers=n_layers - 1)
             else:  # GRU
                 self.rnn_senses = torch.nn.GRU(input_size=self.concatenated_input_dim,
-                                                hidden_size=n_hid_units, num_layers=n_layers - 1)
+                                                hidden_size=n_hid_units, num_layers=n_layers)
 
         # 2nd part of the network as before: 2 linear layers to the logits
         self.linear2global = torch.nn.Linear(in_features=400,
                                              out_features=self.last_idx_globals - self.last_idx_senses, bias=True)
         if predict_senses:
-            self.linear2senses = torch.nn.Linear(in_features=400,
+            self.linear2senses = torch.nn.Linear(in_features=1150, # temp, was 400
                                                  out_features=self.last_idx_senses, bias=True)
 
 
@@ -79,8 +79,8 @@ class RNN(torch.nn.Module):
                                                      (self.n_layers, distributed_batch_size, self.hidden_size)),
                                        requires_grad=False)
             self.memory_hn_senses = Parameter(
-                            torch.reshape(self.memory_hn_senses.flatten()[0:((self.n_layers-1) * distributed_batch_size * int(self.hidden_size))],
-                                          (self.n_layers-1, distributed_batch_size, int(self.hidden_size))),
+                            torch.reshape(self.memory_hn_senses.flatten()[0:((self.n_layers) * distributed_batch_size * int(self.hidden_size))],
+                                          (self.n_layers, distributed_batch_size, int(self.hidden_size))),
                             requires_grad=False)
             self.memory_cn_senses = Parameter(
                 torch.reshape(self.memory_hn_senses.flatten()[
@@ -229,8 +229,8 @@ class RNN(torch.nn.Module):
                 senses_rnn_out, hidden_s = self.rnn_senses(batch_input_signals, self.memory_hn_senses)
 
             self.memory_hn_senses.data.copy_(hidden_s.clone())  # store h in memory
-            senses_rnn_out = senses_rnn_out.reshape(distributed_batch_size * seq_len, senses_rnn_out.shape[2])
-            logits_sense = self.linear2senses(senses_rnn_out)
+            senses_rnn_output = senses_rnn_out.reshape(distributed_batch_size * seq_len, senses_rnn_out.shape[2])
+            logits_sense = self.linear2senses(senses_rnn_output)
 
             predictions_senses = tfunc.log_softmax(logits_sense, dim=1)
         else:
