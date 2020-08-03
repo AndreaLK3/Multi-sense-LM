@@ -46,11 +46,14 @@ def write_doc_logging(train_dataloader, model, model_forParameters, learning_rat
 ##########
 
 
-def update_predictions_history_dict(correct_preds_dict, predictions_globals, predictions_senses, batch_labels):
+
+
+def update_predictions_history_dict(correct_preds_dict, predictions_globals, predictions_senses, batch_labels_tpl):
 
     k = 10
-    batch_labels_globals = batch_labels[:,0]
-    batch_labels_senses = batch_labels[:,1]
+    batch_labels_globals = batch_labels_tpl[0]
+    batch_labels_all_senses = batch_labels_tpl[1]
+    batch_labels_multi_senses = batch_labels_tpl[2]
 
     (values_g, indices_g) = predictions_globals.sort(dim=1, descending=True)
 
@@ -69,29 +72,42 @@ def update_predictions_history_dict(correct_preds_dict, predictions_globals, pre
 
     if len(predictions_senses.shape) > 1:
         (values_s, indices_s) = predictions_senses.sort(dim=1, descending=True)
-        correct_preds_dict['correct_s'] = \
-            correct_preds_dict['correct_s'] + torch.sum(indices_s[:, 0] == batch_labels_senses).item()
-        correct_preds_dict['tot_s'] = correct_preds_dict['tot_s'] + \
-                                      (batch_labels.t()[1][batch_labels.t()[1] != -1].shape[0])
+        correct_preds_dict['correct_all_s'] = \
+            correct_preds_dict['correct_all_s'] + torch.sum(indices_s[:, 0] == batch_labels_all_senses).item()
+        correct_preds_dict['correct_multi_s'] = \
+            correct_preds_dict['correct_multi_s'] + torch.sum(indices_s[:, 0] == batch_labels_multi_senses).item()
+        correct_preds_dict['tot_all_s'] = correct_preds_dict['tot_all_s'] + \
+                                      (batch_labels_all_senses[batch_labels_all_senses != -1].shape[0])
+        correct_preds_dict['tot_multi_s'] = correct_preds_dict['tot_multi_s'] + \
+                                          (batch_labels_all_senses[batch_labels_multi_senses != -1].shape[0])
 
         top_k_predictions_s = indices_s[:, 0:k]
-        batch_counter_top_k_s = 0
-        for i in range(len(batch_labels_senses)):
-            label_s = batch_labels_senses[i]
-            if label_s in top_k_predictions_s[i]:
-                batch_counter_top_k_s = batch_counter_top_k_s + 1
-        correct_preds_dict['top_k_s'] = correct_preds_dict['top_k_s'] + batch_counter_top_k_s
+        batch_counter_top_k_all_s = 0
+        batch_counter_top_k_multi_s = 0
+        for i in range(len(batch_labels_all_senses)):
+            label_all_s = batch_labels_all_senses[i]
+            label_multi_s = batch_labels_multi_senses[i]
+            if label_all_s in top_k_predictions_s[i]:
+                batch_counter_top_k_all_s = batch_counter_top_k_all_s + 1
+            if label_multi_s in top_k_predictions_s[i]:
+                batch_counter_top_k_multi_s = batch_counter_top_k_multi_s + 1
+        correct_preds_dict['top_k_s'] = correct_preds_dict['top_k_s'] + batch_counter_top_k_all_s
+        correct_preds_dict['top_k_multi_s'] = correct_preds_dict['top_k_s'] + batch_counter_top_k_multi_s
 
     logging.debug("updated_predictions_history_dict = " +str(correct_preds_dict))
     return
 
 
-def compute_model_loss(model, batch_input, batch_labels, correct_preds_dict, verbose=False):
+def compute_model_loss(model, batch_input, batch_labels, correct_preds_dict, multisense_globals_ls, verbose=False):
     predictions_globals, predictions_senses = model(batch_input)
 
     batch_labels_t = (batch_labels).clone().t().to(DEVICE)
     batch_labels_globals = batch_labels_t[0]
     batch_labels_all_senses = batch_labels_t[1]
+    batch_labels_multi_senses_ls = list(map(
+        lambda i : batch_labels_all_senses[i] if batch_labels_globals[i] in multisense_globals_ls
+                                              else -1, range(len(batch_labels_all_senses))))
+    batch_labels_multi_senses = torch.tensor(batch_labels_multi_senses_ls)
 
     # compute the loss for the batch
     loss_global = tfunc.nll_loss(predictions_globals, batch_labels_globals)
@@ -99,11 +115,14 @@ def compute_model_loss(model, batch_input, batch_labels, correct_preds_dict, ver
     model_forParameters = model.module if torch.cuda.device_count() > 1 and model.__class__.__name__=="DataParallel" else model
     if model_forParameters.predict_senses:
         loss_all_senses = tfunc.nll_loss(predictions_senses, batch_labels_all_senses, ignore_index=-1)
+        loss_multi_senses = tfunc.nll_loss(predictions_senses, batch_labels_multi_senses, ignore_index=-1)
     else:
         loss_all_senses = torch.tensor(0)
+        loss_multi_senses = tfunc.nll_loss(predictions_senses, batch_labels_multi_senses, ignore_index=-1)
 
     # Added to measure the senses' task, given that we can not rely on the senses' PPL for SelectK
-    update_predictions_history_dict(correct_preds_dict, predictions_globals, predictions_senses, batch_labels)
+    batch_labels_tpl = (batch_labels_globals, batch_labels_all_senses, batch_labels_multi_senses)
+    update_predictions_history_dict(correct_preds_dict, predictions_globals, predictions_senses, batch_labels_tpl)
 
     # debug: check the solutions and predictions. Is there anything the model is unable to predict?
     if verbose:
@@ -180,6 +199,7 @@ def training_loop(model, learning_rate, train_dataloader, valid_dataloader, num_
     model.train()
     training_losses_lts = [] # mutated into a lts, with (global_loss, sense_loss)
     validation_losses_lts = []
+    multisense_globals_ls = AD.get_multisense_globals_indices()
 
     model_forParameters = model.module if torch.cuda.device_count() > 1 and model.__class__.__name__=="DataParallel" else model
     hyperparams_str = write_doc_logging(train_dataloader, model, model_forParameters, learning_rate, num_epochs)
@@ -206,9 +226,13 @@ def training_loop(model, learning_rate, train_dataloader, valid_dataloader, num_
             correct_predictions_dict = {'correct_g':0,
                                         'top_k_g':0,
                                         'tot_g':0,
-                                        'correct_s':0,
-                                        'top_k_s':0,
-                                        'tot_s':0}
+                                        'correct_all_s':0,
+                                        'top_k_all_s':0,
+                                        'tot_all_s':0,
+                                        'correct_multi_s':0,
+                                        'top_k_multi_s':0,
+                                        'tot_multi_s':0
+                                        }
             verbose = True if (epoch==num_epochs) or (epoch% 100==0) else False # - log prediction output
 
             flag_earlystop = False
@@ -223,7 +247,8 @@ def training_loop(model, learning_rate, train_dataloader, valid_dataloader, num_
                 optimizer.zero_grad()
 
                 # compute loss for the batch
-                loss_global, loss_sense = compute_model_loss(model, batch_input, batch_labels, correct_predictions_dict, verbose)
+                loss_global, loss_sense = compute_model_loss(model, batch_input, batch_labels, correct_predictions_dict,
+                                                             multisense_globals_ls, verbose)
                 #logging.info("Batch n.: " + str(b_idx) + " loss_global = " + str(loss_global.item()))
                 # running sum of the training loss in the log segment
                 sum_epoch_loss_global = sum_epoch_loss_global + loss_global.item()
@@ -295,16 +320,21 @@ def training_loop(model, learning_rate, train_dataloader, valid_dataloader, num_
 def evaluation(evaluation_dataloader, evaluation_dataiter, model):
     model_forParameters = model.module if torch.cuda.device_count() > 1 and model.__class__.__name__=="DataParallel" else model
     including_senses = model_forParameters.predict_senses
+    multisense_globals_ls = AD.get_multisense_globals_indices()
 
     model.eval()  # do not train the model now
     sum_eval_loss_globals = 0
     sum_eval_loss_sense = 0
-    eval_correct_predictions_dict ={'correct_g':0,
-                                    'top_k_g':0,
-                                    'tot_g':0,
-                                    'correct_s':0,
-                                    'top_k_s':0,
-                                    'tot_s':0}
+    eval_correct_predictions_dict = {'correct_g':0,
+                                        'top_k_g':0,
+                                        'tot_g':0,
+                                        'correct_all_s':0,
+                                        'top_k_all_s':0,
+                                        'tot_all_s':0,
+                                        'correct_multi_s':0,
+                                        'top_k_multi_s':0,
+                                        'tot_multi_s':0
+                                        }
 
     evaluation_step = 0
     evaluation_senselabeled_tokens = 0
@@ -315,7 +345,8 @@ def evaluation(evaluation_dataloader, evaluation_dataiter, model):
             batch_input, batch_labels = evaluation_dataiter.__next__()
             batch_input = batch_input.to(DEVICE)
             batch_labels = batch_labels.to(DEVICE)
-            loss_globals, loss_sense = compute_model_loss(model, batch_input, batch_labels, eval_correct_predictions_dict, verbose=False)
+            loss_globals, loss_sense = compute_model_loss(model, batch_input, batch_labels, eval_correct_predictions_dict,
+                                                          multisense_globals_ls, verbose=False)
             sum_eval_loss_globals = sum_eval_loss_globals + loss_globals.item()
 
             if including_senses:
