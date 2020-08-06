@@ -129,7 +129,13 @@ def compute_model_loss(model, batch_input, batch_labels, correct_preds_dict, mul
         logging.info("*******\ncompute_model_loss > verbose logging of batch")
         EP.log_batch(batch_labels, predictions_globals, predictions_senses, 5)
 
-    return loss_global, loss_all_senses
+    losses_tpl = loss_global, loss_all_senses, loss_multi_senses
+    senses_in_batch = len(batch_labels_all_senses[batch_labels_all_senses!=-1])
+    multisenses_in_batch = len(batch_labels_multi_senses[batch_labels_multi_senses != -1])
+    num_sense_instances_tpl = senses_in_batch, multisenses_in_batch
+
+    return (losses_tpl, num_sense_instances_tpl)
+
 
 
 ################
@@ -150,9 +156,9 @@ def training_setup(slc_or_text_corpus, include_globalnode_input, include_senseno
     # torch.manual_seed(1) # for reproducibility while conducting mini-experiments
     # if torch.cuda.is_available():
     #     torch.cuda.manual_seed_all(1)
-    model = RNNs.RNN("GRU", graph_dataobj, grapharea_size, grapharea_matrix, globals_vocabulary_df,
+    model = RNNs.RNN("LSTM", graph_dataobj, grapharea_size, grapharea_matrix, globals_vocabulary_df,
                       include_globalnode_input, include_sensenode_input, predict_senses,
-                      batch_size=batch_size, n_layers=3, n_hid_units=1150)
+                      batch_size=batch_size, n_layers=1, n_hid_units=1024, dropout_p=0.65)
     # model = SensesNets.SelectK(graph_dataobj, grapharea_size, grapharea_matrix, 10, globals_vocabulary_wordList,
     #                            include_globalnode_input, include_sensenode_input, predict_senses,
     #                            batch_size, n_layers=3, n_hid_units=1024)
@@ -221,6 +227,7 @@ def training_loop(model, learning_rate, train_dataloader, valid_dataloader, num_
 
             sum_epoch_loss_global = 0
             sum_epoch_loss_sense = 0
+            sum_epoch_loss_multisense = 0
             epoch_step = 0
             epoch_senselabeled_tokens = 0
             correct_predictions_dict = {'correct_g':0,
@@ -247,16 +254,19 @@ def training_loop(model, learning_rate, train_dataloader, valid_dataloader, num_
                 optimizer.zero_grad()
 
                 # compute loss for the batch
-                loss_global, loss_sense = compute_model_loss(model, batch_input, batch_labels, correct_predictions_dict,
+                (losses_tpl, num_sense_instances_tpl) = compute_model_loss(model, batch_input, batch_labels, correct_predictions_dict,
                                                              multisense_globals_ls, verbose)
-                #logging.info("Batch n.: " + str(b_idx) + " loss_global = " + str(loss_global.item()))
+                loss_globals, loss_sense, loss_multisense = losses_tpl
+                num_batch_sense_tokens, num_batch_multisense_tokens = num_sense_instances_tpl
+                sum_eval_loss_globals = sum_eval_loss_globals + loss_globals.item()
+
                 # running sum of the training loss in the log segment
                 sum_epoch_loss_global = sum_epoch_loss_global + loss_global.item()
                 if model_forParameters.predict_senses:
-                    # the senses are weighted depending on the number of sense labels, so they are not skewed from no-labels
-                    batch_sense_tokens = (batch_labels.t()[1][batch_labels.t()[1]!=-1].shape[0])
-                    sum_epoch_loss_sense = sum_epoch_loss_sense + loss_sense.item() * batch_sense_tokens
-                    epoch_senselabeled_tokens = epoch_senselabeled_tokens + batch_sense_tokens
+                    sum_eval_loss_sense = sum_eval_loss_sense + loss_sense.item() * num_batch_sense_tokens
+                    evaluation_senselabeled_tokens = evaluation_senselabeled_tokens + num_batch_sense_tokens
+                    sum_eval_loss_multisense = sum_eval_loss_multisense + loss_multisense.item() * num_batch_multisense_tokens
+                    evaluation_multisense_tokens = evaluation_multisense_tokens + num_batch_multisense_tokens
                     loss = loss_global + loss_sense
                 else:
                     loss = loss_global
@@ -275,7 +285,7 @@ def training_loop(model, learning_rate, train_dataloader, valid_dataloader, num_
 
             logging.info("-----\n Training, end of epoch " + str(epoch) + ". Global step n." + str(overall_step) +
                          ". Time = " + str(round(time() - starting_time, 2)) + ". The training losses are: ")
-            Utils.record_statistics(sum_epoch_loss_global, sum_epoch_loss_sense, epoch_step,
+            Utils.record_statistics(sum_epoch_loss_global, sum_epoch_loss_sense, sum_epoch_loss_multisense, epoch_step,
                                     max(1,epoch_senselabeled_tokens), training_losses_lts)
 
             logging.info("Training - Correct predictions / Total predictions:")
@@ -345,14 +355,17 @@ def evaluation(evaluation_dataloader, evaluation_dataiter, model):
             batch_input, batch_labels = evaluation_dataiter.__next__()
             batch_input = batch_input.to(DEVICE)
             batch_labels = batch_labels.to(DEVICE)
-            loss_globals, loss_sense = compute_model_loss(model, batch_input, batch_labels, eval_correct_predictions_dict,
+            (losses_tpl, num_sense_instances_tpl) = compute_model_loss(model, batch_input, batch_labels, eval_correct_predictions_dict,
                                                           multisense_globals_ls, verbose=False)
+            loss_globals, loss_sense, loss_multisense = losses_tpl
+            num_batch_sense_tokens, num_batch_multisense_tokens = num_sense_instances_tpl
             sum_eval_loss_globals = sum_eval_loss_globals + loss_globals.item()
 
             if including_senses:
-                num_batch_sense_tokens = batch_labels.t()[1][batch_labels.t()[1]!=-1].shape[0]
                 sum_eval_loss_sense = sum_eval_loss_sense + loss_sense.item() * num_batch_sense_tokens
                 evaluation_senselabeled_tokens = evaluation_senselabeled_tokens + num_batch_sense_tokens
+                sum_eval_loss_multisense = sum_eval_loss_multisense + loss_multisense.item() * num_batch_multisense_tokens
+                evaluation_multisense_tokens = evaluation_multisense_tokens + num_batch_multisense_tokens
 
 
             evaluation_step = evaluation_step + 1
@@ -363,15 +376,17 @@ def evaluation(evaluation_dataloader, evaluation_dataiter, model):
     globals_evaluation_loss = sum_eval_loss_globals / evaluation_step
     if including_senses:
         senses_evaluation_loss = sum_eval_loss_sense / evaluation_senselabeled_tokens
+        multisenses_evaluation_loss = sum_eval_loss_multisense / evaluation_multisense_tokens
     else:
         senses_evaluation_loss = 0
+        multisenses_evaluation_loss = 0
 
     logging.info("Validation - Correct predictions / Total predictions:")
     logging.info(eval_correct_predictions_dict)
 
     model.train()  # training can resume
 
-    return globals_evaluation_loss, senses_evaluation_loss
+    return globals_evaluation_loss, senses_evaluation_loss, multisenses_evaluation_loss
 
 
 
