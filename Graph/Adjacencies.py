@@ -1,6 +1,5 @@
 import torch
 import Graph.GraphArea as GA
-import Graph.DefineGraph as DG
 import Filesystem as F
 import numpy as np
 import logging

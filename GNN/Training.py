@@ -278,8 +278,9 @@ def training_loop(model, learning_rate, train_dataloader, valid_dataloader, num_
                     loss = loss_global
                 t3 = time()
 
-                # we can add gradient clipping here
                 loss.backward()
+                torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=0.1,
+                                              norm_type=2)  # we can add gradient clipping here
 
                 optimizer.step()
                 overall_step = overall_step + 1
@@ -302,7 +303,7 @@ def training_loop(model, learning_rate, train_dataloader, valid_dataloader, num_
 
             logging.info("Training - Correct predictions / Total predictions:")
             logging.info(correct_predictions_dict)
-            # continue # skipping Validation in mini-experiments
+            continue # skipping Validation in mini-experiments
             # Time to check the validation loss
             logging.info("After training " + str(epoch) + " epochs, the validation losses are:")
             valid_loss_globals, valid_loss_senses, multisenses_evaluation_loss = evaluation(valid_dataloader, valid_dataiter, model)
