@@ -257,6 +257,8 @@ class RNN(torch.nn.Module):
                 senses_rnn_output = self.dropout(senses_rnn_output)
                 input = senses_rnn_output
 
+            senses_rnn_output = senses_rnn_output.reshape(distributed_batch_size * seq_len, senses_rnn_output.shape[2])
+
             logits_sense = self.linear2senses(senses_rnn_output)
 
             predictions_senses = tfunc.log_softmax(logits_sense, dim=1)

@@ -98,20 +98,22 @@ def update_predictions_history_dict(correct_preds_dict, predictions_globals, pre
     return
 
 
-def compute_model_loss(model, batch_input, batch_labels, correct_preds_dict, multisense_globals_ls, verbose=False):
+def compute_model_loss(model, batch_input, batch_labels, correct_preds_dict, multisense_globals_set, verbose=False):
+    t0 = time()
     predictions_globals, predictions_senses = model(batch_input)
-
+    t1 = time()
     batch_labels_t = (batch_labels).clone().t().to(DEVICE)
     batch_labels_globals = batch_labels_t[0]
     batch_labels_all_senses = batch_labels_t[1]
     batch_labels_multi_senses_ls = list(map(
-        lambda i : batch_labels_all_senses[i] if batch_labels_globals[i] in multisense_globals_ls
+        lambda i : batch_labels_all_senses[i] if batch_labels_globals[i].item() in multisense_globals_set
                                               else -1, range(len(batch_labels_all_senses))))
-    batch_labels_multi_senses = torch.tensor(batch_labels_multi_senses_ls)
-
+    batch_labels_multi_senses =  torch.tensor(batch_labels_multi_senses_ls).to(DEVICE)
+    #torch.where(batch_labels_globals in multisense_globals_ls, batch_labels_globals, -1*torch.ones(size=(batch_labels_globals.shape,))).to(DEVICE)
+    t2 = time()
     # compute the loss for the batch
     loss_global = tfunc.nll_loss(predictions_globals, batch_labels_globals)
-
+    t3 = time()
     model_forParameters = model.module if torch.cuda.device_count() > 1 and model.__class__.__name__=="DataParallel" else model
     if model_forParameters.predict_senses:
         loss_all_senses = tfunc.nll_loss(predictions_senses, batch_labels_all_senses, ignore_index=-1)
@@ -119,7 +121,7 @@ def compute_model_loss(model, batch_input, batch_labels, correct_preds_dict, mul
     else:
         loss_all_senses = torch.tensor(0)
         loss_multi_senses = tfunc.nll_loss(predictions_senses, batch_labels_multi_senses, ignore_index=-1)
-
+    t4 = time()
     # Added to measure the senses' task, given that we can not rely on the senses' PPL for SelectK
     batch_labels_tpl = (batch_labels_globals, batch_labels_all_senses, batch_labels_multi_senses)
     update_predictions_history_dict(correct_preds_dict, predictions_globals, predictions_senses, batch_labels_tpl)
@@ -133,7 +135,9 @@ def compute_model_loss(model, batch_input, batch_labels, correct_preds_dict, mul
     senses_in_batch = len(batch_labels_all_senses[batch_labels_all_senses!=-1])
     multisenses_in_batch = len(batch_labels_multi_senses[batch_labels_multi_senses != -1])
     num_sense_instances_tpl = senses_in_batch, multisenses_in_batch
-
+    t5 = time()
+    # logging.info("compute_model_loss(), Time Analysis:")
+    # Utils.log_chronometer([t0,t1,t2,t3,t4,t5])
     return (losses_tpl, num_sense_instances_tpl)
 
 
@@ -200,12 +204,12 @@ def training_loop(model, learning_rate, train_dataloader, valid_dataloader, num_
 
     Utils.init_logging('Training' + Utils.get_timestamp_month_to_min() + '.log', loglevel=logging.INFO)
 
-    optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)  # weight_decay=0.0005
+    optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
 
     model.train()
     training_losses_lts = [] # mutated into a lts, with (global_loss, sense_loss)
     validation_losses_lts = []
-    multisense_globals_ls = AD.get_multisense_globals_indices()
+    multisense_globals_set = set(AD.get_multisense_globals_indices())
 
     model_forParameters = model.module if torch.cuda.device_count() > 1 and model.__class__.__name__=="DataParallel" else model
     hyperparams_str = write_doc_logging(train_dataloader, model, model_forParameters, learning_rate, num_epochs)
@@ -228,8 +232,11 @@ def training_loop(model, learning_rate, train_dataloader, valid_dataloader, num_
             sum_epoch_loss_global = 0
             sum_epoch_loss_sense = 0
             sum_epoch_loss_multisense = 0
+
             epoch_step = 0
             epoch_senselabeled_tokens = 0
+            epoch_multisense_tokens = 0
+
             correct_predictions_dict = {'correct_g':0,
                                         'top_k_g':0,
                                         'tot_g':0,
@@ -249,34 +256,37 @@ def training_loop(model, learning_rate, train_dataloader, valid_dataloader, num_
                 batch_input, batch_labels = train_dataiter.__next__()
                 batch_input = batch_input.to(DEVICE)
                 batch_labels = batch_labels.to(DEVICE)
-
+                t1 = time()
                 # starting operations on one batch
                 optimizer.zero_grad()
 
                 # compute loss for the batch
                 (losses_tpl, num_sense_instances_tpl) = compute_model_loss(model, batch_input, batch_labels, correct_predictions_dict,
-                                                             multisense_globals_ls, verbose)
-                loss_globals, loss_sense, loss_multisense = losses_tpl
+                                                             multisense_globals_set, verbose)
+                loss_global, loss_sense, loss_multisense = losses_tpl
                 num_batch_sense_tokens, num_batch_multisense_tokens = num_sense_instances_tpl
-                sum_eval_loss_globals = sum_eval_loss_globals + loss_globals.item()
-
+                t2 = time()
                 # running sum of the training loss in the log segment
                 sum_epoch_loss_global = sum_epoch_loss_global + loss_global.item()
                 if model_forParameters.predict_senses:
-                    sum_eval_loss_sense = sum_eval_loss_sense + loss_sense.item() * num_batch_sense_tokens
-                    evaluation_senselabeled_tokens = evaluation_senselabeled_tokens + num_batch_sense_tokens
-                    sum_eval_loss_multisense = sum_eval_loss_multisense + loss_multisense.item() * num_batch_multisense_tokens
-                    evaluation_multisense_tokens = evaluation_multisense_tokens + num_batch_multisense_tokens
+                    sum_epoch_loss_sense = sum_epoch_loss_sense + loss_sense.item() * num_batch_sense_tokens
+                    epoch_senselabeled_tokens = epoch_senselabeled_tokens + num_batch_sense_tokens
+                    sum_epoch_loss_multisense = sum_epoch_loss_multisense + loss_multisense.item() * num_batch_multisense_tokens
+                    epoch_multisense_tokens = epoch_multisense_tokens + num_batch_multisense_tokens
                     loss = loss_global + loss_sense
                 else:
                     loss = loss_global
+                t3 = time()
 
+                # we can add gradient clipping here
                 loss.backward()
 
                 optimizer.step()
                 overall_step = overall_step + 1
                 epoch_step = epoch_step + 1
-
+                t4 = time()
+                #logging.info("Iteration in training_loop(), time analysis:")
+                #Utils.log_chronometer([t0,t1,t2,t3,t4])
                 if overall_step % steps_logging == 0:
                     logging.info("Global step=" + str(overall_step) + "\t ; Iteration time=" + str(round(time()-t0,5)))
                     gc.collect()
@@ -285,17 +295,19 @@ def training_loop(model, learning_rate, train_dataloader, valid_dataloader, num_
 
             logging.info("-----\n Training, end of epoch " + str(epoch) + ". Global step n." + str(overall_step) +
                          ". Time = " + str(round(time() - starting_time, 2)) + ". The training losses are: ")
-            Utils.record_statistics(sum_epoch_loss_global, sum_epoch_loss_sense, sum_epoch_loss_multisense, epoch_step,
-                                    max(1,epoch_senselabeled_tokens), training_losses_lts)
+
+            epoch_sumlosses_tpl = sum_epoch_loss_global, sum_epoch_loss_sense, sum_epoch_loss_multisense
+            epoch_numsteps_tpl = epoch_step, epoch_senselabeled_tokens, epoch_senselabeled_tokens
+            Utils.record_statistics(epoch_sumlosses_tpl, epoch_numsteps_tpl, training_losses_lts)
 
             logging.info("Training - Correct predictions / Total predictions:")
             logging.info(correct_predictions_dict)
-            continue # skipping Validation in mini-experiments
+            # continue # skipping Validation in mini-experiments
             # Time to check the validation loss
             logging.info("After training " + str(epoch) + " epochs, the validation losses are:")
-            valid_loss_globals, valid_loss_senses = evaluation(valid_dataloader, valid_dataiter, model)
-            #validation_losses_lts.append((valid_loss_globals, valid_loss_senses))
-            Utils.record_statistics(valid_loss_globals, valid_loss_senses, 1, 1, losses_lts=validation_losses_lts)
+            valid_loss_globals, valid_loss_senses, multisenses_evaluation_loss = evaluation(valid_dataloader, valid_dataiter, model)
+            validation_sumlosses = valid_loss_globals, valid_loss_senses, multisenses_evaluation_loss
+            Utils.record_statistics(validation_sumlosses, (1,1,1), losses_lts=validation_losses_lts)
             epoch_valid_loss = valid_loss_globals + valid_loss_senses
 
             if epoch_valid_loss < previous_valid_loss:
@@ -330,11 +342,12 @@ def training_loop(model, learning_rate, train_dataloader, valid_dataloader, num_
 def evaluation(evaluation_dataloader, evaluation_dataiter, model):
     model_forParameters = model.module if torch.cuda.device_count() > 1 and model.__class__.__name__=="DataParallel" else model
     including_senses = model_forParameters.predict_senses
-    multisense_globals_ls = AD.get_multisense_globals_indices()
+    multisense_globals_set = set(AD.get_multisense_globals_indices())
 
     model.eval()  # do not train the model now
     sum_eval_loss_globals = 0
     sum_eval_loss_sense = 0
+    sum_eval_loss_multisense = 0
     eval_correct_predictions_dict = {'correct_g':0,
                                         'top_k_g':0,
                                         'tot_g':0,
@@ -348,6 +361,7 @@ def evaluation(evaluation_dataloader, evaluation_dataiter, model):
 
     evaluation_step = 0
     evaluation_senselabeled_tokens = 0
+    evaluation_multisense_tokens = 0
     logging_step = 500
 
     with torch.no_grad(): # Deactivates the autograd engine entirely to save some memory
@@ -356,7 +370,7 @@ def evaluation(evaluation_dataloader, evaluation_dataiter, model):
             batch_input = batch_input.to(DEVICE)
             batch_labels = batch_labels.to(DEVICE)
             (losses_tpl, num_sense_instances_tpl) = compute_model_loss(model, batch_input, batch_labels, eval_correct_predictions_dict,
-                                                          multisense_globals_ls, verbose=False)
+                                                          multisense_globals_set, verbose=False)
             loss_globals, loss_sense, loss_multisense = losses_tpl
             num_batch_sense_tokens, num_batch_multisense_tokens = num_sense_instances_tpl
             sum_eval_loss_globals = sum_eval_loss_globals + loss_globals.item()
