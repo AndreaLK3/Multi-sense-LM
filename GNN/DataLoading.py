@@ -97,6 +97,8 @@ class TextDataset(torch.utils.data.Dataset):
         self.vocab_h5 = vocab_h5
         self.nn_model = model
         self.counter = 0
+        self.last_sense_idx = senseindices_db_c.execute("SELECT COUNT(*) from indices_table").fetchone()[0]
+        self.first_idx_dummySenses = Utils.get_startpoint_dummySenses()
 
         self.grapharea_matrix = grapharea_matrix
         self.area_size = area_size
@@ -105,7 +107,7 @@ class TextDataset(torch.utils.data.Dataset):
 
     def __getitem__(self, index):
         self.current_token_tpl, self.next_token_tpl = NI.get_tokens_tpls(self.next_token_tpl, self.generator,
-                                                                         self.senseindices_db_c, self.vocab_h5)
+                                                                         self.senseindices_db_c, self.vocab_h5, self.grapharea_matrix, self.last_sense_idx, self.first_idx_dummySenses )
 
         global_idx, sense_idx = self.current_token_tpl
         #logging.info("TextDataset > global_idx, sense_idx =" + str((global_idx, sense_idx)))
