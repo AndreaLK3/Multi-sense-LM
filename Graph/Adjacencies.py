@@ -53,6 +53,7 @@ def compute_globals_numsenses(graph_dataobj, grapharea_matrix, grapharea_size):
                          'lemmatized_form': Utils.HDF5_BASE_SIZE_512 / 4, 'num_senses': Utils.HDF5_BASE_SIZE_512 / 8}
     vocabulary_h5_archive.append(key='vocabulary', value=new_vocabulary_df, min_itemsize=min_itemsize_dict)
     vocabulary_h5_archive.close()
+    return new_vocabulary_df
 
 
 def get_multisense_globals_indices():

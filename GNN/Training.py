@@ -120,7 +120,7 @@ def compute_model_loss(model, batch_input, batch_labels, correct_preds_dict, mul
         loss_multi_senses = tfunc.nll_loss(predictions_senses, batch_labels_multi_senses, ignore_index=-1)
     else:
         loss_all_senses = torch.tensor(0)
-        loss_multi_senses = tfunc.nll_loss(predictions_senses, batch_labels_multi_senses, ignore_index=-1)
+        loss_multi_senses = torch.tensor(0)
     t4 = time()
     # Added to measure the senses' task, given that we can not rely on the senses' PPL for SelectK
     batch_labels_tpl = (batch_labels_globals, batch_labels_all_senses, batch_labels_multi_senses)
@@ -150,11 +150,11 @@ def training_setup(slc_or_text_corpus, include_globalnode_input, include_senseno
     grapharea_matrix = AD.get_grapharea_matrix(graph_dataobj, grapharea_size, hops_in_area=1)
 
     globals_vocabulary_fpath = os.path.join(F.FOLDER_VOCABULARY, F.VOCABULARY_OF_GLOBALS_FILE)
-    vocab_h5 = pd.HDFStore(globals_vocabulary_fpath, mode='r')
     globals_vocabulary_df = pd.read_hdf(globals_vocabulary_fpath, mode='r')
-
-    if all([num_senses==-1 for num_senses in globals_vocabulary_df['num_senses'].tolist()]):
-        AD.compute_globals_numsenses(graph_dataobj, grapharea_matrix, grapharea_size)
+    if slc_or_text_corpus:
+        vocabulary_numSensesList = globals_vocabulary_df['num_senses'].to_list().copy()
+        if all([num_senses == -1 for num_senses in vocabulary_numSensesList]):
+            globals_vocabulary_df = AD.compute_globals_numsenses(graph_dataobj, grapharea_matrix, grapharea_size)
 
     # The original GRU architecture has been updated into the GRUbase2 model in Senses - I just have to specify that predict_senses=False
     # torch.manual_seed(1) # for reproducibility while conducting mini-experiments
@@ -162,7 +162,7 @@ def training_setup(slc_or_text_corpus, include_globalnode_input, include_senseno
     #     torch.cuda.manual_seed_all(1)
     model = RNNs.RNN("LSTM", graph_dataobj, grapharea_size, grapharea_matrix, globals_vocabulary_df,
                       include_globalnode_input, include_sensenode_input, predict_senses,
-                      batch_size=batch_size, n_layers=1, n_hid_units=1024, dropout_p=0.65)
+                      batch_size=batch_size, n_layers=3, n_hid_units=1150, dropout_p=0.1)
     # model = SensesNets.SelectK(graph_dataobj, grapharea_size, grapharea_matrix, 10, globals_vocabulary_wordList,
     #                            include_globalnode_input, include_sensenode_input, predict_senses,
     #                            batch_size, n_layers=3, n_hid_units=1024)
@@ -186,6 +186,7 @@ def training_setup(slc_or_text_corpus, include_globalnode_input, include_senseno
 
     bptt_collator = DL.BPTTBatchCollator(grapharea_size, sequence_length)
 
+    vocab_h5 = pd.HDFStore(globals_vocabulary_fpath, mode='r')
     train_dataset = DL.TextDataset(slc_or_text_corpus, Utils.TRAINING, senseindices_db_c, vocab_h5, model_forDataLoading,
                                    grapharea_matrix, grapharea_size, graph_dataobj)
     train_dataloader = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size * sequence_length,
@@ -248,6 +249,7 @@ def training_loop(model, learning_rate, train_dataloader, valid_dataloader, num_
                                         'tot_multi_s':0
                                         }
             verbose = True if (epoch==num_epochs) or (epoch% 100==0) else False # - log prediction output
+            #verbose_valid = True if (epoch == num_epochs) or (epoch % 10 == 0) else False  # - log prediction output
 
             flag_earlystop = False
 
@@ -279,8 +281,7 @@ def training_loop(model, learning_rate, train_dataloader, valid_dataloader, num_
                 t3 = time()
 
                 loss.backward()
-                torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=0.1,
-                                              norm_type=2)  # we can add gradient clipping here
+
 
                 optimizer.step()
                 overall_step = overall_step + 1
@@ -303,10 +304,10 @@ def training_loop(model, learning_rate, train_dataloader, valid_dataloader, num_
 
             logging.info("Training - Correct predictions / Total predictions:")
             logging.info(correct_predictions_dict)
-            continue # skipping Validation in mini-experiments
+            # continue # skipping Validation in mini-experiments
             # Time to check the validation loss
             logging.info("After training " + str(epoch) + " epochs, the validation losses are:")
-            valid_loss_globals, valid_loss_senses, multisenses_evaluation_loss = evaluation(valid_dataloader, valid_dataiter, model)
+            valid_loss_globals, valid_loss_senses, multisenses_evaluation_loss = evaluation(valid_dataloader, valid_dataiter, model, verbose)
             validation_sumlosses = valid_loss_globals, valid_loss_senses, multisenses_evaluation_loss
             Utils.record_statistics(validation_sumlosses, (1,1,1), losses_lts=validation_losses_lts)
             epoch_valid_loss = valid_loss_globals + valid_loss_senses
@@ -340,7 +341,7 @@ def training_loop(model, learning_rate, train_dataloader, valid_dataloader, num_
 
 ################
 
-def evaluation(evaluation_dataloader, evaluation_dataiter, model):
+def evaluation(evaluation_dataloader, evaluation_dataiter, model, verbose):
     model_forParameters = model.module if torch.cuda.device_count() > 1 and model.__class__.__name__=="DataParallel" else model
     including_senses = model_forParameters.predict_senses
     multisense_globals_set = set(AD.get_multisense_globals_indices())
@@ -371,7 +372,7 @@ def evaluation(evaluation_dataloader, evaluation_dataiter, model):
             batch_input = batch_input.to(DEVICE)
             batch_labels = batch_labels.to(DEVICE)
             (losses_tpl, num_sense_instances_tpl) = compute_model_loss(model, batch_input, batch_labels, eval_correct_predictions_dict,
-                                                          multisense_globals_set, verbose=False)
+                                                          multisense_globals_set, verbose=verbose)
             loss_globals, loss_sense, loss_multisense = losses_tpl
             num_batch_sense_tokens, num_batch_multisense_tokens = num_sense_instances_tpl
             sum_eval_loss_globals = sum_eval_loss_globals + loss_globals.item()

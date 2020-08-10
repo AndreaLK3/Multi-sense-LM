@@ -100,6 +100,8 @@ def get_timestamp_month_to_min():
 def record_statistics(epoch_sumlosses_tpl, epoch_numsteps_tpl, losses_lts):
     sum_epoch_loss_global,sum_epoch_loss_sense, sum_epoch_loss_multisense = epoch_sumlosses_tpl
     epoch_step, num_steps_withsense, num_steps_withmultisense = epoch_numsteps_tpl
+    if num_steps_withsense==0: num_steps_withsense=1 # adjusting for when we do only standard LM
+    if num_steps_withmultisense == 0:  num_steps_withmultisense = 1
 
     epoch_loss_globals = sum_epoch_loss_global / epoch_step
     epoch_loss_senses = sum_epoch_loss_sense / num_steps_withsense

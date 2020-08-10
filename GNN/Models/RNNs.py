@@ -97,7 +97,7 @@ class RNN(torch.nn.Module):
         # RNN for globals - standard Language Model
         self.main_rnn_ls = torch.nn.ModuleList(
             [getattr(torch.nn, self.model_type)(input_size=self.concatenated_input_dim if i == 0 else n_hid_units,
-                              hidden_size=n_hid_units if i == n_layers - 1 else n_hid_units, num_layers=1) for i in range(n_layers)])
+                              hidden_size=400 if i == n_layers - 1 else n_hid_units, num_layers=1) for i in range(n_layers)])
         # GAT for the node-states from the dictionary graph
         if self.include_globalnode_input:
             self.gat_globals = GATConv(in_channels=self.dim_embs, out_channels=int(self.dim_embs / 4), heads=4)#, node_dim=1)
@@ -108,13 +108,13 @@ class RNN(torch.nn.Module):
         if predict_senses:
             self.senses_rnn_ls = torch.nn.ModuleList(
             [getattr(torch.nn, self.model_type)(input_size=self.concatenated_input_dim if i == 0 else n_hid_units,
-                              hidden_size=n_hid_units if i == n_layers - 1 else n_hid_units, num_layers=1) for i in range(n_layers)])
+                              hidden_size=400 if i == n_layers - 1 else n_hid_units, num_layers=1) for i in range(n_layers)])
 
         # 2nd part of the network: 2 linear layers to the logits
-        self.linear2global = torch.nn.Linear(in_features=n_hid_units,
+        self.linear2global = torch.nn.Linear(in_features=400,
                                              out_features=self.last_idx_globals - self.last_idx_senses, bias=True)
         if predict_senses:
-            self.linear2senses = torch.nn.Linear(in_features=n_hid_units,
+            self.linear2senses = torch.nn.Linear(in_features=400,
                                                  out_features=self.last_idx_senses, bias=True)
 
 
@@ -181,23 +181,27 @@ class RNN(torch.nn.Module):
 
             # Input signal n.3: : the node-state of the current sense
             if self.include_sensenode_input:
-                # in development
-                pass
-                #
-                # t_senses_indices_ls = [t_input_lts[b][1][0] for b in range(len(t_input_lts))]
-                # logging.info("shapes in t_senses_indices_ls=" + str([t_senses.shape for t_senses in t_senses_indices_ls]))
-                # t_edgeindex_g_ls = [t_input_lts[b][1][1] for b in range(len(t_input_lts))]
-                #
-                #
-                # if len(t_senses_indices_ls[t_senses_indices_ls != 0] == 0):  # no sense was specified
-                #     currentsense_node_state = self.embedding_zeros
-                # else:  # sense was specified
-                #     pass
-                #     # x_s = self.X.index_select(dim=0, index=x_indices_s.squeeze())
-                #     # sense_attention_state = self.gat_senses(x_s, edge_index_s)
-                #     # currentsense_node_state = sense_attention_state.index_select(dim=0,
-                #     #                                                              index=self.select_first_indices[
-                #     #                                                                  0].to(torch.int64))
+                t_edgeindex_g_ls = [t_input_lts[b][0][1] for b in range(len(t_input_lts))]
+
+                for i_sample in range(batch_elems_at_t.shape[0]):
+                    sample_edge_index = t_edgeindex_g_ls[i_sample]
+                    x_indices, sample_edge_index = lemmatize_node(t_globals_indices_ls[i_sample], sample_edge_index,
+                                                                  self)
+                    sample_x = self.X.index_select(dim=0, index=x_indices.squeeze())
+
+                    currentword_location_in_batchX = rows_to_skip + current_location_in_batchX_ls[-1] \
+                        if len(current_location_in_batchX_ls) > 0 else 0
+                    rows_to_skip = sample_x.shape[0]
+                    current_location_in_batchX_ls.append(currentword_location_in_batchX)
+
+                    sample_graph = Data(x=sample_x, edge_index=sample_edge_index)
+                    graph_batch_ls.append(sample_graph)
+
+                batch_graph = Batch.from_data_list(graph_batch_ls)
+                x_attention_states = self.gat_globals(batch_graph.x, batch_graph.edge_index)
+                t_currentglobal_node_states = x_attention_states.index_select(dim=0, index=torch.tensor(
+                    current_location_in_batchX_ls).to(torch.int64).to(CURRENT_DEVICE))
+                currentglobal_nodestates_ls.append(t_currentglobal_node_states)
             else:
                 currentsense_node_state = None
 
