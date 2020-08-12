@@ -19,6 +19,7 @@ import GNN.Models.RNNs as RNNs
 import GNN.Models.Senses as SensesNets
 from itertools import cycle
 import gc
+from math import exp
 
 # This code should be *before* we import torch in order to work and limit correctly which devices we wish to use
 # import os
@@ -161,7 +162,7 @@ def training_setup(slc_or_text_corpus, include_globalnode_input, include_senseno
     #     torch.cuda.manual_seed_all(1)
     model = RNNs.RNN("LSTM", graph_dataobj, grapharea_size, grapharea_matrix, globals_vocabulary_df,
                       include_globalnode_input, include_sensenode_input, predict_senses,
-                      batch_size=batch_size, n_layers=2, n_hid_units=1024, dropout_p=0)
+                      batch_size=batch_size, n_layers=3, n_hid_units=800, dropout_p=0)
 
     logging.info("Graph-data object loaded, model initialized. Moving them to GPU device(s) if present.")
 
@@ -197,7 +198,7 @@ def training_setup(slc_or_text_corpus, include_globalnode_input, include_senseno
 
 
 ################
-def training_loop(model, learning_rate, train_dataloader, valid_dataloader, num_epochs):
+def training_loop(model, learning_rate, train_dataloader, valid_dataloader, num_epochs, with_freezing):
 
     Utils.init_logging('Training' + Utils.get_timestamp_month_to_min() + '.log', loglevel=logging.INFO)
 
@@ -215,7 +216,7 @@ def training_loop(model, learning_rate, train_dataloader, valid_dataloader, num_
     overall_step = 0
     starting_time = time()
     previous_valid_loss = inf
-    flag_firstvalidationhigher = False
+    must_freeze_standard_LM = False
 
     try: # to catch KeyboardInterrupt-s and still save the training & validation losses
         ########## The training loop ##########
@@ -308,15 +309,22 @@ def training_loop(model, learning_rate, train_dataloader, valid_dataloader, num_
             Utils.record_statistics(validation_sumlosses, (1,1,1), losses_lts=validation_losses_lts)
             epoch_valid_loss = valid_loss_globals + valid_loss_senses
 
-            if epoch_valid_loss < previous_valid_loss:
-                pass # we can save the model often here if we so wish
-            if epoch_valid_loss > previous_valid_loss + 10:
-                if not flag_firstvalidationhigher:
-                    flag_firstvalidationhigher = True
-                    logging.info("Validation loss worse than previous one. First occurrence.")
-                else: # previous best validation was better once already. Now we must early-stop
+            # if exp(epoch_valid_loss) > exp(previous_valid_loss) + 0.01: # if _new_ Valid PPL worse than _best_ by >0.01
+            if epoch == 150: # temp for mini-experiments & debug
+                if not with_freezing:
+                    # previous validation was better. Now we must early-stop
                     logging.info("Early stopping")
                     flag_earlystop = True
+                else:
+                    # we are predicting first the standard LM, and then the senses. Freeze (1), activate (2).
+                    logging.info("New validation worse than previous one. " +
+                                 "Freezing the weights in the standard LM, activating senses' prediction.")
+                                 # also recreating optimizer to eliminate momentum
+                    optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
+                    model_forParameters.predict_senses=True  # (2)
+                    for (p, name) in model_forParameters.named_parameters():    # (1)
+                        if "main_rnn" in name: p.requires_grad=False
+
             previous_valid_loss = epoch_valid_loss
 
             if flag_earlystop:
