@@ -156,16 +156,12 @@ def training_setup(slc_or_text_corpus, include_globalnode_input, include_senseno
         if all([num_senses == -1 for num_senses in vocabulary_numSensesList]):
             globals_vocabulary_df = AD.compute_globals_numsenses(graph_dataobj, grapharea_matrix, grapharea_size)
 
-    # The original GRU architecture has been updated into the GRUbase2 model in Senses - I just have to specify that predict_senses=False
     # torch.manual_seed(1) # for reproducibility while conducting mini-experiments
     # if torch.cuda.is_available():
     #     torch.cuda.manual_seed_all(1)
     model = RNNs.RNN("LSTM", graph_dataobj, grapharea_size, grapharea_matrix, globals_vocabulary_df,
                       include_globalnode_input, include_sensenode_input, predict_senses,
-                      batch_size=batch_size, n_layers=3, n_hid_units=1150, dropout_p=0.1)
-    # model = SensesNets.SelectK(graph_dataobj, grapharea_size, grapharea_matrix, 10, globals_vocabulary_wordList,
-    #                            include_globalnode_input, include_sensenode_input, predict_senses,
-    #                            batch_size, n_layers=3, n_hid_units=1024)
+                      batch_size=batch_size, n_layers=2, n_hid_units=1024, dropout_p=0)
 
     logging.info("Graph-data object loaded, model initialized. Moving them to GPU device(s) if present.")
 
@@ -253,8 +249,8 @@ def training_loop(model, learning_rate, train_dataloader, valid_dataloader, num_
 
             flag_earlystop = False
 
-            for b_idx in range(len(train_dataloader)):
-                t0=time()
+            for b_idx in range(len(train_dataloader)-1):
+                t0 = time()
                 batch_input, batch_labels = train_dataiter.__next__()
                 batch_input = batch_input.to(DEVICE)
                 batch_labels = batch_labels.to(DEVICE)
@@ -307,7 +303,7 @@ def training_loop(model, learning_rate, train_dataloader, valid_dataloader, num_
             # continue # skipping Validation in mini-experiments
             # Time to check the validation loss
             logging.info("After training " + str(epoch) + " epochs, the validation losses are:")
-            valid_loss_globals, valid_loss_senses, multisenses_evaluation_loss = evaluation(valid_dataloader, valid_dataiter, model, verbose)
+            valid_loss_globals, valid_loss_senses, multisenses_evaluation_loss = evaluation(valid_dataloader, valid_dataiter, model, verbose=False)
             validation_sumlosses = valid_loss_globals, valid_loss_senses, multisenses_evaluation_loss
             Utils.record_statistics(validation_sumlosses, (1,1,1), losses_lts=validation_losses_lts)
             epoch_valid_loss = valid_loss_globals + valid_loss_senses
@@ -382,7 +378,6 @@ def evaluation(evaluation_dataloader, evaluation_dataiter, model, verbose):
                 evaluation_senselabeled_tokens = evaluation_senselabeled_tokens + num_batch_sense_tokens
                 sum_eval_loss_multisense = sum_eval_loss_multisense + loss_multisense.item() * num_batch_multisense_tokens
                 evaluation_multisense_tokens = evaluation_multisense_tokens + num_batch_multisense_tokens
-
 
             evaluation_step = evaluation_step + 1
             if evaluation_step % logging_step == 0:

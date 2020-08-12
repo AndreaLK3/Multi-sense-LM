@@ -342,7 +342,7 @@ def create_graph(method, slc_corpus):
 
 
 # Entry point function: try to load the graph, else create it if it does not exist
-def get_graph_dataobject(new=False, method=Method.FASTTEXT, slc_corpus=False):
+def get_graph_dataobject(new, slc_corpus, method=Method.FASTTEXT):
     graph_fpath = os.path.join('GNN', F.KBGRAPH_FILE)
     if os.path.exists(graph_fpath) and not new:
         return torch.load(graph_fpath)
