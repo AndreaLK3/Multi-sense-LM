@@ -96,7 +96,7 @@ class RNN(torch.nn.Module):
         # RNN for globals - standard Language Model
         self.main_rnn_ls = torch.nn.ModuleList(
             [getattr(torch.nn, self.model_type)(input_size=self.concatenated_input_dim if i == 0 else n_hid_units,
-                              hidden_size=n_hid_units if i == n_layers - 1 else n_hid_units, num_layers=1) for i in range(n_layers)]) # 400
+                              hidden_size=512 if i == n_layers - 1 else n_hid_units, num_layers=1) for i in range(n_layers)]) # 400
         # GAT for the node-states from the dictionary graph
         if self.include_globalnode_input:
             self.gat_globals = GATConv(in_channels=self.dim_embs, out_channels=int(self.dim_embs / 4), heads=4)#, node_dim=1)
@@ -107,13 +107,13 @@ class RNN(torch.nn.Module):
         if predict_senses:
             self.senses_rnn_ls = torch.nn.ModuleList(
             [getattr(torch.nn, self.model_type)(input_size=self.concatenated_input_dim if i == 0 else n_hid_units,
-                              hidden_size=n_hid_units if i == n_layers - 1 else n_hid_units, num_layers=1) for i in range(n_layers)]) # 400
+                              hidden_size=512 if i == n_layers - 1 else n_hid_units, num_layers=1) for i in range(n_layers)]) # 400
 
         # 2nd part of the network: 2 linear layers to the logits
-        self.linear2global = torch.nn.Linear(in_features=n_hid_units, # 400
+        self.linear2global = torch.nn.Linear(in_features=512, # 400
                                              out_features=self.last_idx_globals - self.last_idx_senses, bias=True)
         if predict_senses:
-            self.linear2senses = torch.nn.Linear(in_features=n_hid_units, # 400
+            self.linear2senses = torch.nn.Linear(in_features=512, # 400
                                                  out_features=self.last_idx_senses, bias=True)
 
 
@@ -228,7 +228,6 @@ class RNN(torch.nn.Module):
                     layer_rnn(input,select_layer_memory(self, i, layer_rnn))
                 update_layer_memory(self, i, layer_rnn, hidden_i)
 
-            main_rnn_out = self.dropout(main_rnn_out)
             input = main_rnn_out
 
         main_rnn_out = main_rnn_out.permute(1, 0, 2)  # going to: (batch_size, seq_len, n_units)

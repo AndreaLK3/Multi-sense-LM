@@ -52,42 +52,42 @@ def convert_symbols(line_text):
 #             i = i + 1
 #     return modified_tokens
 #
-# ##### Step 5: There are word-tokens with non-Latin and non-Greek characters, such as: 匹, 枚, マギカ , etc.
-# ##### We replace those words with <unk>
-# def replace_nonLatinGreek_words(list_of_tokens):
-#     modified_tokens = []
-#     for tok in list_of_tokens:
-#         try:
-#             tok.encode('latin-1')
-#             modified_tokens.append(tok)
-#         except UnicodeEncodeError:
-#             try:
-#                 tok.encode('greek')
-#                 modified_tokens.append(tok)
-#             except UnicodeEncodeError:
-#                 modified_tokens.append(Utils.UNK_TOKEN)
-#     return modified_tokens
+##### Step 5: There are word-tokens with non-Latin and non-Greek characters, such as: 匹, 枚, マギカ , etc.
+##### We replace those words with <unk>
+def replace_nonLatinGreek_words(list_of_tokens):
+    modified_tokens = []
+    for tok in list_of_tokens:
+        try:
+            tok.encode('latin-1')
+            modified_tokens.append(tok)
+        except UnicodeEncodeError:
+            try:
+                tok.encode('greek')
+                modified_tokens.append(tok)
+            except UnicodeEncodeError:
+                modified_tokens.append(Utils.UNK_TOKEN)
+    return modified_tokens
 #
 #
-# ##### Step 6: Numbers. All decimals, together with all numbers that are not 1 digit (basic) or 4 digits (years),
-# ##### get replaced with <num>
-# def replace_numbers(list_of_tokens):
-#     modified_tokens = []
-#     nums_patterns = [re.compile('[0-9]+[.,][0-9]+'), re.compile('([0-9]){5,}'), re.compile('([0-9]){2,3}')]
-#     for tok in list_of_tokens:
-#         matches = [re.match(nums_pattern, tok) for nums_pattern in nums_patterns]
-#         if matches == [None, None, None]:
-#             modified_tokens.append(tok)
-#         else:
-#             valid_matches = list(filter(lambda m : m is not None , matches))
-#             matches_sorted_by_length = sorted(valid_matches, key= lambda m : len(m.group()), reverse=True)
-#             longest_match = matches_sorted_by_length[0].group()
-#             if len(longest_match) == len(tok): # replace with <NUM>
-#                 modified_tokens.append(Utils.NUM_TOKEN)
-#             else:  # the number is only a part of the token. as normal
-#                 modified_tokens.append(tok)
-#
-#     return modified_tokens
+##### Step 6: Numbers. All decimals, together with all numbers that are not 1 digit (basic) or 4 digits (years),
+##### get replaced with <num>
+def replace_numbers(list_of_tokens):
+    modified_tokens = []
+    nums_patterns = [re.compile('[0-9]+[.,][0-9]+'), re.compile('([0-9]){5,}'), re.compile('([0-9]){2,3}')]
+    for tok in list_of_tokens:
+        matches = [re.match(nums_pattern, tok) for nums_pattern in nums_patterns]
+        if matches == [None, None, None]:
+            modified_tokens.append(tok)
+        else:
+            valid_matches = list(filter(lambda m : m is not None , matches))
+            matches_sorted_by_length = sorted(valid_matches, key= lambda m : len(m.group()), reverse=True)
+            longest_match = matches_sorted_by_length[0].group()
+            if len(longest_match) == len(tok): # replace with <NUM>
+                modified_tokens.append(Utils.NUM_TOKEN)
+            else:  # the number is only a part of the token. as normal
+                modified_tokens.append(tok)
+
+    return modified_tokens
 #
 # ##### Process one line: tokenize, convert symbols like @-@, manage <unk>, replace numbers etc.
 #def process_line(line, tot_tokens=0):
@@ -113,15 +113,15 @@ def convert_symbols(line_text):
 
 def process_word_token(token_dict):
     token_text = html.unescape(str(token_dict['surface_form']))
-    # token_text = convert_symbols(token_text)
+    token_text = convert_symbols(token_text)
 
-    # if token_text == token_text.upper():  # if ALL CAPITALS -> must lowercase
-    #     token_text = token_text.lower() # we are not lowercasing anymore, otherwise 'USA'->'usa'
+    if token_text == token_text.upper():  # if ALL CAPITALS -> must lowercase
+         token_text = token_text.lower() # we are not lowercasing anymore, otherwise 'USA'->'usa'
 
-    # token_text = token_text.replace('_', ' ')  # we keep phrases, but we should write 'Mr. Barcus' not Mr._Barcus
+    token_text = token_text.replace('_', ' ')  # we keep phrases, but we should write 'Mr. Barcus' not Mr._Barcus
 
-    # token_latinorgreek = replace_nonLatinGreek_words([token_text])[0]
-    # token_final = replace_numbers([token_latinorgreek])[0]
+    token_latinorgreek = replace_nonLatinGreek_words([token_text])[0]
+    token_final = replace_numbers([token_latinorgreek])[0]
 
-    return token_text
+    return token_final
 

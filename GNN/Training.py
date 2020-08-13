@@ -162,7 +162,7 @@ def training_setup(slc_or_text_corpus, include_globalnode_input, include_senseno
     #     torch.cuda.manual_seed_all(1)
     model = RNNs.RNN("LSTM", graph_dataobj, grapharea_size, grapharea_matrix, globals_vocabulary_df,
                       include_globalnode_input, include_sensenode_input, predict_senses,
-                      batch_size=batch_size, n_layers=3, n_hid_units=800, dropout_p=0)
+                      batch_size=batch_size, n_layers=3, n_hid_units=1024, dropout_p=0)
 
     logging.info("Graph-data object loaded, model initialized. Moving them to GPU device(s) if present.")
 
@@ -202,7 +202,7 @@ def training_loop(model, learning_rate, train_dataloader, valid_dataloader, num_
 
     Utils.init_logging('Training' + Utils.get_timestamp_month_to_min() + '.log', loglevel=logging.INFO)
 
-    optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
+    optimizers = [torch.optim.Adam(model.parameters(), lr=learning_rate)]
 
     model.train()
     training_losses_lts = [] # mutated into a lts, with (global_loss, sense_loss)
@@ -216,13 +216,15 @@ def training_loop(model, learning_rate, train_dataloader, valid_dataloader, num_
     overall_step = 0
     starting_time = time()
     previous_valid_loss = inf
-    must_freeze_standard_LM = False
+    if with_freezing:
+        model_forParameters.predict_senses = False
 
     try: # to catch KeyboardInterrupt-s and still save the training & validation losses
         ########## The training loop ##########
         train_dataiter = iter(cycle(train_dataloader))
         valid_dataiter = iter(cycle(valid_dataloader))
         for epoch in range(1,num_epochs+1):
+            optimizer = optimizers[-1]
             logging.info("\nTraining epoch n."+str(epoch) + ":")
             if epoch == 300:
                 logging.info("debug of correct predictions")
@@ -309,8 +311,8 @@ def training_loop(model, learning_rate, train_dataloader, valid_dataloader, num_
             Utils.record_statistics(validation_sumlosses, (1,1,1), losses_lts=validation_losses_lts)
             epoch_valid_loss = valid_loss_globals + valid_loss_senses
 
-            # if exp(epoch_valid_loss) > exp(previous_valid_loss) + 0.01: # if _new_ Valid PPL worse than _best_ by >0.01
-            if epoch == 150: # temp for mini-experiments & debug
+            if False and exp(epoch_valid_loss) > exp(previous_valid_loss) + 0.01: # if _new_ Valid PPL worse than _best_ by >0.01
+            # if epoch == 3: # temp for mini-experiments & debug
                 if not with_freezing:
                     # previous validation was better. Now we must early-stop
                     logging.info("Early stopping")
@@ -320,12 +322,16 @@ def training_loop(model, learning_rate, train_dataloader, valid_dataloader, num_
                     logging.info("New validation worse than previous one. " +
                                  "Freezing the weights in the standard LM, activating senses' prediction.")
                                  # also recreating optimizer to eliminate momentum
-                    optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
+                    # optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
                     model_forParameters.predict_senses=True  # (2)
-                    for (p, name) in model_forParameters.named_parameters():    # (1)
-                        if "main_rnn" in name: p.requires_grad=False
+                    for (name, p) in model_forParameters.named_parameters():    # (1)
+                        if ("main_rnn" in name) or ("X" in name) or ("linear2global" in name):
+                            p.requires_grad=False
+                    optimizers.append(torch.optim.Adam([p for p in model.parameters() if p.requires_grad], lr=learning_rate))
 
             previous_valid_loss = epoch_valid_loss
+            if epoch == num_epochs:
+                write_doc_logging(train_dataloader, model, model_forParameters, learning_rate, num_epochs)
 
             if flag_earlystop:
                 break
