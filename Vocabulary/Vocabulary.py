@@ -55,6 +55,7 @@ def build_vocabulary_dict_from_senselabeled(lowercase=False):
                 except KeyError:
                     vocab_dict[token] = 1
         if Utils.UNK_TOKEN not in vocab_dict.keys():
+            logging.info("Adding manually UNK_TOKEN=" + str(Utils.UNK_TOKEN))
             vocab_dict[Utils.UNK_TOKEN] = 100 # add it manually
 
     return vocab_dict

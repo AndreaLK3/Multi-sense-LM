@@ -113,15 +113,15 @@ def replace_numbers(list_of_tokens):
 
 def process_word_token(token_dict):
     token_text = html.unescape(str(token_dict['surface_form']))
-    token_text = convert_symbols(token_text)
+    # token_text = convert_symbols(token_text)
+    #
+    # if token_text == token_text.upper():  # if ALL CAPITALS -> must lowercase
+    #      token_text = token_text.lower() # we are not lowercasing anymore, otherwise 'USA'->'usa'
+    #
+    # token_text = token_text.replace('_', ' ')  # we keep phrases, but we should write 'Mr. Barcus' not Mr._Barcus
+    #
+    # token_latinorgreek = replace_nonLatinGreek_words([token_text])[0]
+    # token_final = replace_numbers([token_latinorgreek])[0]
 
-    if token_text == token_text.upper():  # if ALL CAPITALS -> must lowercase
-         token_text = token_text.lower() # we are not lowercasing anymore, otherwise 'USA'->'usa'
-
-    token_text = token_text.replace('_', ' ')  # we keep phrases, but we should write 'Mr. Barcus' not Mr._Barcus
-
-    token_latinorgreek = replace_nonLatinGreek_words([token_text])[0]
-    token_final = replace_numbers([token_latinorgreek])[0]
-
-    return token_final
+    return token_text
 

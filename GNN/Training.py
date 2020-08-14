@@ -160,7 +160,7 @@ def training_setup(slc_or_text_corpus, include_globalnode_input, include_senseno
     # torch.manual_seed(1) # for reproducibility while conducting mini-experiments
     # if torch.cuda.is_available():
     #     torch.cuda.manual_seed_all(1)
-    model = RNNs.RNN("LSTM", graph_dataobj, grapharea_size, grapharea_matrix, globals_vocabulary_df,
+    model = RNNs.RNN("GRU", graph_dataobj, grapharea_size, grapharea_matrix, globals_vocabulary_df,
                       include_globalnode_input, include_sensenode_input, predict_senses,
                       batch_size=batch_size, n_layers=3, n_hid_units=1024, dropout_p=0)
 
@@ -216,6 +216,7 @@ def training_loop(model, learning_rate, train_dataloader, valid_dataloader, num_
     overall_step = 0
     starting_time = time()
     previous_valid_loss = inf
+    after_freezing_flag = False
     if with_freezing:
         model_forParameters.predict_senses = False
 
@@ -274,7 +275,10 @@ def training_loop(model, learning_rate, train_dataloader, valid_dataloader, num_
                     epoch_senselabeled_tokens = epoch_senselabeled_tokens + num_batch_sense_tokens
                     sum_epoch_loss_multisense = sum_epoch_loss_multisense + loss_multisense.item() * num_batch_multisense_tokens
                     epoch_multisense_tokens = epoch_multisense_tokens + num_batch_multisense_tokens
-                    loss = loss_global + loss_sense
+                    if not after_freezing_flag:
+                        loss = loss_global + loss_sense
+                    else:
+                        loss = loss_sense
                 else:
                     loss = loss_global
                 t3 = time()
@@ -311,8 +315,8 @@ def training_loop(model, learning_rate, train_dataloader, valid_dataloader, num_
             Utils.record_statistics(validation_sumlosses, (1,1,1), losses_lts=validation_losses_lts)
             epoch_valid_loss = valid_loss_globals + valid_loss_senses
 
-            if False and exp(epoch_valid_loss) > exp(previous_valid_loss) + 0.01: # if _new_ Valid PPL worse than _best_ by >0.01
-            # if epoch == 3: # temp for mini-experiments & debug
+            # if False and exp(epoch_valid_loss) > exp(previous_valid_loss) + 0.01: # if _new_ Valid PPL worse than _best_ by >0.01
+            if epoch == 3: # temp for mini-experiments & debug
                 if not with_freezing:
                     # previous validation was better. Now we must early-stop
                     logging.info("Early stopping")
@@ -321,13 +325,11 @@ def training_loop(model, learning_rate, train_dataloader, valid_dataloader, num_
                     # we are predicting first the standard LM, and then the senses. Freeze (1), activate (2).
                     logging.info("New validation worse than previous one. " +
                                  "Freezing the weights in the standard LM, activating senses' prediction.")
-                                 # also recreating optimizer to eliminate momentum
-                    # optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
-                    model_forParameters.predict_senses=True  # (2)
                     for (name, p) in model_forParameters.named_parameters():    # (1)
                         if ("main_rnn" in name) or ("X" in name) or ("linear2global" in name):
                             p.requires_grad=False
-                    optimizers.append(torch.optim.Adam([p for p in model.parameters() if p.requires_grad], lr=learning_rate))
+                    optimizers.append(torch.optim.Adam(model.parameters(), lr=learning_rate)) # [p for p in model.parameters() if p.requires_grad]
+                    model_forParameters.predict_senses = True  # (2)
 
             previous_valid_loss = epoch_valid_loss
             if epoch == num_epochs:
