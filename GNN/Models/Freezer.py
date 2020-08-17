@@ -24,10 +24,12 @@ class NN(torch.nn.Module):
         self.num_embs = data.x.shape[0]
         self.dim_embs = data.x.shape[1]
 
-        # the embeddings matrices, here we create 2 distinct ones at random
-        range_random_embs = 10
-        self.embs_A = (torch.rand((self.num_embs, self.dim_embs)) - 0.5) * range_random_embs
-        self.embs_B = (torch.rand((self.num_embs, self.dim_embs)) - 0.5) * range_random_embs
+        # # the embeddings matrices, here we create 2 distinct ones at random
+        # range_random_embs = 10
+        # self.embs_A = (torch.rand((self.num_embs, self.dim_embs)) - 0.5) * range_random_embs
+        # self.embs_B = (torch.rand((self.num_embs, self.dim_embs)) - 0.5) * range_random_embs
+        # The embeddings matrix
+        self.X = Parameter(data.x.clone().detach(), requires_grad=True)
 
         # utility tensor, used in index_select etc.
         self.select_first_indices = Parameter(torch.tensor(list(range(n_hid_units))).to(torch.float32),
@@ -64,7 +66,7 @@ class NN(torch.nn.Module):
                                              out_features=self.last_idx_globals - self.last_idx_senses, bias=True)
         if predict_senses:
 
-            self.linear2senses = torch.nn.Linear(in_features=512, # 
+            self.linear2senses = torch.nn.Linear(in_features=512, #
                                                  out_features=self.last_idx_senses, bias=True)
 
     # ------------
@@ -86,8 +88,7 @@ class NN(torch.nn.Module):
         else:
             time_instants = [batchinput_tensor]
 
-        word_embeddings_ls_1 = []
-        word_embeddings_ls_2 = []
+        word_embeddings_ls = []
         currentglobal_nodestates_ls = []
 
         for batch_elements_at_t in time_instants:
@@ -101,26 +102,24 @@ class NN(torch.nn.Module):
             # Input signal n.1: the embedding of the current (global) word
             t_current_globals_indices_ls = [x_indices[0] for x_indices in t_globals_indices_ls]
             t_current_globals_indices = torch.stack(t_current_globals_indices_ls, dim=0)
-            t_word_embeddings_1 = self.embs_A.index_select(dim=0, index=t_current_globals_indices)
-            t_word_embeddings_2 = self.embs_A.index_select(dim=0, index=t_current_globals_indices)
-            word_embeddings_ls_1.append(t_word_embeddings_1)
-            word_embeddings_ls_2.append(t_word_embeddings_2)
+            t_word_embeddings = self.X.index_select(dim=0, index=t_current_globals_indices)
+            word_embeddings_ls.append(t_word_embeddings)
 
-
-        word_embeddings_1 = torch.stack(word_embeddings_ls_1, dim=0)
-        word_embeddings_2 = torch.stack(word_embeddings_ls_2, dim=0)
+        word_embeddings = torch.stack(word_embeddings_ls, dim=0)
         global_nodestates = torch.stack(currentglobal_nodestates_ls, dim=0) if self.include_globalnode_input else None
 
-        batch_input_signals_1_ls = list(filter(lambda signal: signal is not None,
-                                             [word_embeddings_1, global_nodestates]))  # , currentsense_node_state]))
-        batch_input_signals_1 = torch.cat(batch_input_signals_1_ls, dim=2)
+        batch_input_signals_ls = list(filter(lambda signal: signal is not None,
+                                             [word_embeddings, global_nodestates]))  # , currentsense_node_state]))
+        batch_input_signals = torch.cat(batch_input_signals_ls, dim=2)
+        if self.predict_senses:
+            logging.info("batch_input_signals.requires_grad=" +str(batch_input_signals.requires_grad))
 
         # - input of shape(seq_len, batch_size, input_size): tensor containing the features of the input sequence.
         # task_1_out = None
-        task_1_out = rnn_loop(batch_input_signals_1, model=self)  # self.network_1_L1(input)
+        task_1_out = rnn_loop(batch_input_signals, model=self)  # self.network_1_L1(input)
 
         task_1_out = task_1_out.permute(1, 0, 2)  # going to: (batch_size, seq_len, n_units)
-        seq_len = batch_input_signals_1.shape[0]
+        seq_len = batch_input_signals.shape[0]
         task_1_out = task_1_out.reshape(distributed_batch_size * seq_len, task_1_out.shape[2])
 
         # 2nd part of the architecture: predictions
@@ -132,12 +131,7 @@ class NN(torch.nn.Module):
         # line 1: GRU for senses + linear FF-NN tos logits.
         if self.predict_senses:
             # task2_out = None
-            batch_input_signals_2_ls = list(filter(lambda signal: signal is not None,
-                                                   [word_embeddings_2,
-                                                    global_nodestates]))  # , currentsense_node_state]))
-            batch_input_signals_2 = torch.cat(batch_input_signals_2_ls, dim=2)
-
-            task_2_out = rnn_loop(batch_input_signals_2, model=self)
+            task_2_out = rnn_loop(batch_input_signals, model=self)
 
             task2_out = task_2_out.reshape(distributed_batch_size * seq_len, task_2_out.shape[2])
 
