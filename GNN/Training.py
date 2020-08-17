@@ -330,6 +330,7 @@ def training_loop(model, learning_rate, train_dataloader, valid_dataloader, num_
                             p.requires_grad=False
                     optimizers.append(torch.optim.Adam(model.parameters(), lr=learning_rate)) # [p for p in model.parameters() if p.requires_grad]
                     model_forParameters.predict_senses = True  # (2)
+                    after_freezing_flag = True
 
             previous_valid_loss = epoch_valid_loss
             if epoch == num_epochs:
