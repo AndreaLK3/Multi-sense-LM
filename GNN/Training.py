@@ -17,6 +17,7 @@ import GNN.DataLoading as DL
 import GNN.ExplorePredictions as EP
 import GNN.Models.RNNs as RNNs
 import GNN.Models.Senses as SensesNets
+import GNN.Models.Freezer as Freezer
 from itertools import cycle
 import gc
 from math import exp
@@ -130,7 +131,7 @@ def compute_model_loss(model, batch_input, batch_labels, correct_preds_dict, mul
     # debug: check the solutions and predictions. Is there anything the model is unable to predict?
     if verbose:
         logging.info("*******\ncompute_model_loss > verbose logging of batch")
-        EP.log_batch(batch_labels, predictions_globals, predictions_senses, 5)
+        EP.log_batch(batch_labels, predictions_globals, predictions_senses, 2)
 
     losses_tpl = loss_global, loss_all_senses, loss_multi_senses
     senses_in_batch = len(batch_labels_all_senses[batch_labels_all_senses!=-1])
@@ -160,7 +161,7 @@ def training_setup(slc_or_text_corpus, include_globalnode_input, include_senseno
     # torch.manual_seed(1) # for reproducibility while conducting mini-experiments
     # if torch.cuda.is_available():
     #     torch.cuda.manual_seed_all(1)
-    model = RNNs.RNN("GRU", graph_dataobj, grapharea_size, grapharea_matrix, globals_vocabulary_df,
+    model = Freezer.NN("GRU", graph_dataobj, grapharea_size, grapharea_matrix, globals_vocabulary_df,
                       include_globalnode_input, include_sensenode_input, predict_senses,
                       batch_size=batch_size, n_layers=3, n_hid_units=1024, dropout_p=0)
 
@@ -248,7 +249,7 @@ def training_loop(model, learning_rate, train_dataloader, valid_dataloader, num_
                                         'top_k_multi_s':0,
                                         'tot_multi_s':0
                                         }
-            verbose = True if (epoch==num_epochs) or (epoch% 100==0) else False # - log prediction output
+            verbose = False if (epoch==num_epochs) or (epoch% 100==0) else False # - log prediction output
             #verbose_valid = True if (epoch == num_epochs) or (epoch % 10 == 0) else False  # - log prediction output
 
             flag_earlystop = False
@@ -379,8 +380,8 @@ def evaluation(evaluation_dataloader, evaluation_dataiter, model, verbose):
     evaluation_multisense_tokens = 0
     logging_step = 500
 
-    with torch.no_grad(): # Deactivates the autograd engine entirely to save some memory
-        for b_idx in range(len(evaluation_dataloader)):
+    with torch.no_grad():  # Deactivates the autograd engine entirely to save some memory
+        for b_idx in range(len(evaluation_dataloader)-1):
             batch_input, batch_labels = evaluation_dataiter.__next__()
             batch_input = batch_input.to(DEVICE)
             batch_labels = batch_labels.to(DEVICE)
