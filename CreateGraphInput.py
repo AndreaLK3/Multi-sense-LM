@@ -65,7 +65,7 @@ def exe_from_input_to_vectors(do_reset, compute_single_prototype, sp_method, voc
     if vocabulary_from_senselabeled: SLC.organize_splits()
     vocabulary = V.get_vocabulary_df(senselabeled_or_text=vocabulary_from_senselabeled,
                                      corpus_txt_fpaths=[vocab_text_fpath],
-                                     out_vocabulary_h5_filepath=outvocab_filepath)
+                                     out_vocabulary_h5_filepath=outvocab_filepath, lowercase=True)
 
     if compute_single_prototype:
         reset_embeddings()

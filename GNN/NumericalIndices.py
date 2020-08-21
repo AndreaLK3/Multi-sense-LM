@@ -38,7 +38,7 @@ def get_missing_sense_label(global_absolute_index, grapharea_matrix, last_sense_
 
 ### Internal function to: translate the word (and if present, the sense) into numerical indices.
 # sense = [0,se) ; single prototype = [se,se+sp) ; definitions = [se+sp, se+sp+d) ; examples = [se+sp+d, e==num_nodes)
-def convert_tokendict_to_tpl(token_dict, senseindices_db_c, globals_vocabulary_h5, grapharea_matrix, last_sense_idx,first_idx_dummySenses ):
+def convert_tokendict_to_tpl(token_dict, senseindices_db_c, globals_vocabulary_h5, grapharea_matrix, last_sense_idx,first_idx_dummySenses):
 
     word = VocabUtils.process_word_token(token_dict)  # html.unescape
     try:

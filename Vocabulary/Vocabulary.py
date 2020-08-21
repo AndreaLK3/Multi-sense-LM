@@ -43,7 +43,7 @@ def build_vocabulary_dict_from_senselabeled(lowercase=False):
     tokens_toexclude = [Utils.EOS_TOKEN] # + list(string.punctuation)
     # Commas and punctuation signs are present in the Sense-Labeled Corpus as separate tokens.
     # Therefore, it makes sense to keep them in the vocabulary, and thus in the graph, as globals
-    slc_split_names = [Utils.TRAINING] # , Utils.VALIDATION, Utils.TEST
+    slc_split_names = [Utils.TRAINING, Utils.VALIDATION] # , , Utils.TEST
     for slc_split_name in slc_split_names:
         for token_dict in SLC.read_split(slc_split_name):
             token = VocabUtils.process_word_token(token_dict)
@@ -62,7 +62,7 @@ def build_vocabulary_dict_from_senselabeled(lowercase=False):
 
 
 # Entry function: if a vocabulary is already present in the specified path, load it. Otherwise, create it.
-def get_vocabulary_df(senselabeled_or_text, corpus_txt_fpaths, out_vocabulary_h5_filepath, min_count=2, lowercase=False):
+def get_vocabulary_df(senselabeled_or_text, corpus_txt_fpaths, out_vocabulary_h5_filepath, min_count=2, lowercase=True):
     if os.path.exists(out_vocabulary_h5_filepath):
         vocab_df = pd.read_hdf(out_vocabulary_h5_filepath, mode='r')
         logging.info("*** The vocabulary was loaded from the file " + out_vocabulary_h5_filepath)

@@ -12,12 +12,10 @@ import Graph.Adjacencies as AD
 import numpy as np
 from time import time
 from Utils import DEVICE
-import Graph.Adjacencies as AD
 import GNN.DataLoading as DL
 import GNN.ExplorePredictions as EP
-import GNN.Models.RNNs as RNNs
 import GNN.Models.Senses as SensesNets
-import GNN.Models.Freezer as Freezer
+import GNN.Models.RNNs as Freezer
 from itertools import cycle
 import gc
 from math import exp
@@ -101,21 +99,20 @@ def update_predictions_history_dict(correct_preds_dict, predictions_globals, pre
 
 
 def compute_model_loss(model, batch_input, batch_labels, correct_preds_dict, multisense_globals_set, verbose=False):
-    t0 = time()
+
     predictions_globals, predictions_senses = model(batch_input)
-    t1 = time()
+
     batch_labels_t = (batch_labels).clone().t().to(DEVICE)
     batch_labels_globals = batch_labels_t[0]
     batch_labels_all_senses = batch_labels_t[1]
     batch_labels_multi_senses_ls = list(map(
         lambda i : batch_labels_all_senses[i] if batch_labels_globals[i].item() in multisense_globals_set
                                               else -1, range(len(batch_labels_all_senses))))
-    batch_labels_multi_senses =  torch.tensor(batch_labels_multi_senses_ls).to(DEVICE)
-    #torch.where(batch_labels_globals in multisense_globals_ls, batch_labels_globals, -1*torch.ones(size=(batch_labels_globals.shape,))).to(DEVICE)
-    t2 = time()
+    batch_labels_multi_senses = torch.tensor(batch_labels_multi_senses_ls).to(DEVICE)
+
     # compute the loss for the batch
     loss_global = tfunc.nll_loss(predictions_globals, batch_labels_globals)
-    t3 = time()
+
     model_forParameters = model.module if torch.cuda.device_count() > 1 and model.__class__.__name__=="DataParallel" else model
     if model_forParameters.predict_senses:
         loss_all_senses = tfunc.nll_loss(predictions_senses, batch_labels_all_senses, ignore_index=-1)
@@ -123,7 +120,6 @@ def compute_model_loss(model, batch_input, batch_labels, correct_preds_dict, mul
     else:
         loss_all_senses = torch.tensor(0)
         loss_multi_senses = torch.tensor(0)
-    t4 = time()
     # Added to measure the senses' task, given that we can not rely on the senses' PPL for SelectK
     batch_labels_tpl = (batch_labels_globals, batch_labels_all_senses, batch_labels_multi_senses)
     update_predictions_history_dict(correct_preds_dict, predictions_globals, predictions_senses, batch_labels_tpl)
@@ -134,12 +130,10 @@ def compute_model_loss(model, batch_input, batch_labels, correct_preds_dict, mul
         EP.log_batch(batch_labels, predictions_globals, predictions_senses, 2)
 
     losses_tpl = loss_global, loss_all_senses, loss_multi_senses
-    senses_in_batch = len(batch_labels_all_senses[batch_labels_all_senses!=-1])
+    senses_in_batch = len(batch_labels_all_senses[batch_labels_all_senses != -1])
     multisenses_in_batch = len(batch_labels_multi_senses[batch_labels_multi_senses != -1])
     num_sense_instances_tpl = senses_in_batch, multisenses_in_batch
-    t5 = time()
-    # logging.info("compute_model_loss(), Time Analysis:")
-    # Utils.log_chronometer([t0,t1,t2,t3,t4,t5])
+
     return (losses_tpl, num_sense_instances_tpl)
 
 
@@ -161,9 +155,9 @@ def training_setup(slc_or_text_corpus, include_globalnode_input, include_senseno
     # torch.manual_seed(1) # for reproducibility while conducting mini-experiments
     # if torch.cuda.is_available():
     #     torch.cuda.manual_seed_all(1)
-    model = Freezer.NN("GRU", graph_dataobj, grapharea_size, grapharea_matrix, globals_vocabulary_df,
-                      include_globalnode_input, include_sensenode_input, predict_senses,
-                      batch_size=batch_size, n_layers=3, n_hid_units=1024, dropout_p=0)
+    model = Freezer.RNN("GRU", graph_dataobj, grapharea_size, grapharea_matrix, globals_vocabulary_df,
+                        include_globalnode_input, include_sensenode_input, predict_senses,
+                        batch_size=batch_size, n_layers=3, n_hid_units=1024, dropout_p=0)
 
     logging.info("Graph-data object loaded, model initialized. Moving them to GPU device(s) if present.")
 
@@ -303,7 +297,8 @@ def training_loop(model, learning_rate, train_dataloader, valid_dataloader, num_
                          ". Time = " + str(round(time() - starting_time, 2)) + ". The training losses are: ")
 
             epoch_sumlosses_tpl = sum_epoch_loss_global, sum_epoch_loss_sense, sum_epoch_loss_multisense
-            epoch_numsteps_tpl = epoch_step, epoch_senselabeled_tokens, epoch_senselabeled_tokens
+            logging.info("epoch_sumlosses_tpl=" + str(epoch_sumlosses_tpl))
+            epoch_numsteps_tpl = epoch_step, epoch_senselabeled_tokens, epoch_multisense_tokens
             Utils.record_statistics(epoch_sumlosses_tpl, epoch_numsteps_tpl, training_losses_lts)
 
             logging.info("Training - Correct predictions / Total predictions:")
@@ -316,8 +311,8 @@ def training_loop(model, learning_rate, train_dataloader, valid_dataloader, num_
             Utils.record_statistics(validation_sumlosses, (1,1,1), losses_lts=validation_losses_lts)
             epoch_valid_loss = valid_loss_globals + valid_loss_senses
 
-            # if False and exp(epoch_valid_loss) > exp(previous_valid_loss) + 0.01: # if _new_ Valid PPL worse than _best_ by >0.01
-            if epoch == 3: # temp for mini-experiments & debug
+            if False and exp(epoch_valid_loss) > exp(previous_valid_loss) + 0.01: # if _new_ Valid PPL worse than _best_ by >0.01
+            # if epoch == 3: # temp for mini-experiments & debug
                 if not with_freezing:
                     # previous validation was better. Now we must early-stop
                     logging.info("Early stopping")

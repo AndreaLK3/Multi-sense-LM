@@ -80,7 +80,7 @@ def organize_subcorpus(xml_fpath, train_fraction):
 
 def organize_splits():
     Utils.init_logging('SLC.log')
-    xml_fnames = ['semcor.xml', 'masc.xml', 'subset_omsti_aa.xml']#, 'raganato_ALL.xml', 'wngt.xml']
+    xml_fnames = ['semcor.xml', 'masc.xml']#, , 'subset_omsti_aa.xml']#, 'raganato_ALL.xml', 'wngt.xml']
     xml_fpaths = list(map(
         lambda fname: os.path.join(F.FOLDER_TEXT_CORPUSES, F.FOLDER_MYSLCCORPUS, fname), xml_fnames))
     split_directories_paths = list(map(lambda dirname: os.path.join(F.FOLDER_TEXT_CORPUSES, F.FOLDER_MYSLCCORPUS, dirname),
@@ -122,6 +122,7 @@ def readgenerator_senselabeled_corpuses(split_name):
         full_fpaths = list(map(lambda fname: os.path.join(test_subcorpuses_folder, fname),
                                [fname for fname in os.listdir(test_subcorpuses_folder) if 'xml' in fname]))
 
+    logging.info("full_fpaths=" + str(full_fpaths))
     for xml_fpath in full_fpaths: # n: when using the readgenerator, I have to invoke .__next__().__next__() ,
         try:                      # and catch a StopIteration exception
             yield dataset_generator(xml_fpath)
