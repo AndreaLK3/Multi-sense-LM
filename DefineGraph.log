@@ -1,3 +1,5 @@
+INFO : Note: NumExpr detected 20 cores but "NUMEXPR_MAX_THREADS" not set, so enforcing safe limit of 8.
+INFO : NumExpr defaulting to 8 threads.
 INFO : Constructing X, matrix of node features
 INFO : X_definitions.shape=torch.Size([35221, 300])
 INFO : X_examples.shape=torch.Size([30378, 300])
@@ -16,10 +18,7 @@ INFO : Max target node in edges-examples = 35220
 INFO : exs_edges_se.__len__()=30378
 INFO : Defining the edges: sc
 INFO : Reading the sense-labeled corpus, to create the connections between globals and the senses that belong to other words.
-INFO : Generator over subcorpus at TextCorpuses/My Sense-Labeled Corpus/Training/masc.xml
-INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='rock_'n'_roll.n.01' . Skipping sense
-INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='rock_'n'_roll.n.01' . Skipping sense
-INFO : Generator over subcorpus at TextCorpuses/My Sense-Labeled Corpus/Training/semcor.xml
+INFO : Generator over subcorpus at TextCorpuses/My Sense-Labeled Corpus/Training/semcormasc.xml
 INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='governor's_race.n.01' . Skipping sense
 INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='master's_degree.n.01' . Skipping sense
 INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='o'clock.r.01' . Skipping sense
@@ -88,23 +87,26 @@ INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_
 INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='batter's_box.n.01' . Skipping sense
 INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='batter's_box.n.01' . Skipping sense
 INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='batter's_box.n.01' . Skipping sense
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='rock_'n'_roll.n.01' . Skipping sense
+INFO : Error while attempting to execute query: SELECT vocab_index FROM indices_table WHERE word_sense='rock_'n'_roll.n.01' . Skipping sense
 INFO : Min source node in edges-get_additional_edges_sensechildren_from_slc = 50994
 INFO : Max source node in edges-get_additional_edges_sensechildren_from_slc = 81462
 INFO : Min target node in edges-get_additional_edges_sensechildren_from_slc = 4
 INFO : Max target node in edges-get_additional_edges_sensechildren_from_slc = 35218
-INFO : sc_edges_with_external.__len__()=8170
+INFO : sc_edges_with_external.__len__()=9946
 INFO : Min source node in edges-get_edges_sensechildren = 50993
 INFO : Max source node in edges-get_edges_sensechildren = 81556
 INFO : Min target node in edges-get_edges_sensechildren = 0
 INFO : Max target node in edges-get_edges_sensechildren = 50992
-INFO : sc_edges.__len__()=59163
+INFO : sc_edges.__len__()=60939
 INFO : get_edges_selfloops>max_sense=50992
 INFO : []
 INFO : len(edges_ls)==0
-INFO : sc_edges_with_selfloops.__len__()=59163
+INFO : sc_edges_with_selfloops.__len__()=60939
 INFO : Defining the edges: syn, ant
 INFO : Inserted 5000 synonyms edges
 INFO : Inserted 10000 synonyms edges
-INFO : syn_edges.__len__()=24224
-INFO : ant_edges.__len__()=4754
+INFO : Inserted 15000 synonyms edges
+INFO : syn_edges.__len__()=30288
+INFO : ant_edges.__len__()=4764
 INFO : Pre-computing and saving graphArea matrix, with area_size=32

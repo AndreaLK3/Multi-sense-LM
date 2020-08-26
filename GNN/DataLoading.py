@@ -118,7 +118,7 @@ class TextDataset(torch.utils.data.Dataset):
         return ((global_forwardinput_triple, sense_forwardinput_triple), self.next_token_tpl)
 
     def __len__(self):
-        logging.info("Requesting the length of the dataset for split:" + str(self.split_name))
+        logging.debug("Requesting the length of the dataset for split:" + str(self.split_name))
         if self.counter == 0:
             length_reader = standardtextcorpus_generator(self.split_name) \
                 if self.generator.__name__ == 'standardtextcorpus_generator' else SLC.read_split(self.split_name)

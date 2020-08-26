@@ -111,15 +111,17 @@ def replace_numbers(list_of_tokens):
 
 ######### When we build a vocabulary from the sense-labeled corpus(es), to transform a token:
 
-def process_word_token(token_dict):
+def process_word_token(token_dict, lowercasing):
     # ------- the only essential step
     token_text = html.unescape(str(token_dict['surface_form']))
     # ------- superfluous on not-WT2
     # token_text = convert_symbols(token_text)
 
-    # ------- we are already lowercasing on SemCor now
+    # ------- actually, in the current version we need to lowercase, because the vocabulary is lowercased
+    if lowercasing:
+        token_text = token_text.lower()
     # if token_text == token_text.upper():  # if ALL CAPITALS -> must lowercase
-    #      token_text = token_text.lower() # we are not lowercasing anymore, otherwise 'USA'->'usa'
+
     # ------- keeping _ in tokens processed as one makes no difference
     # token_text = token_text.replace('_', ' ')  # we keep phrases, but we should write 'Mr. Barcus' not Mr._Barcus
     #

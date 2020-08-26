@@ -210,7 +210,7 @@ def training_loop(model, learning_rate, train_dataloader, valid_dataloader, num_
     steps_logging = 100
     overall_step = 0
     starting_time = time()
-    previous_valid_loss = inf
+    best_valid_loss = inf
     after_freezing_flag = False
     if with_freezing:
         model_forParameters.predict_senses = False
@@ -243,7 +243,7 @@ def training_loop(model, learning_rate, train_dataloader, valid_dataloader, num_
                                         'top_k_multi_s':0,
                                         'tot_multi_s':0
                                         }
-            verbose = False if (epoch==num_epochs) or (epoch% 100==0) else False # - log prediction output
+            verbose = True if (epoch==num_epochs) or (epoch% 100==0) else False # - log prediction output
             #verbose_valid = True if (epoch == num_epochs) or (epoch % 10 == 0) else False  # - log prediction output
 
             flag_earlystop = False
@@ -253,7 +253,7 @@ def training_loop(model, learning_rate, train_dataloader, valid_dataloader, num_
                 batch_input, batch_labels = train_dataiter.__next__()
                 batch_input = batch_input.to(DEVICE)
                 batch_labels = batch_labels.to(DEVICE)
-                t1 = time()
+
                 # starting operations on one batch
                 optimizer.zero_grad()
 
@@ -262,7 +262,7 @@ def training_loop(model, learning_rate, train_dataloader, valid_dataloader, num_
                                                              multisense_globals_set, verbose)
                 loss_global, loss_sense, loss_multisense = losses_tpl
                 num_batch_sense_tokens, num_batch_multisense_tokens = num_sense_instances_tpl
-                t2 = time()
+
                 # running sum of the training loss in the log segment
                 sum_epoch_loss_global = sum_epoch_loss_global + loss_global.item()
                 if model_forParameters.predict_senses:
@@ -276,15 +276,13 @@ def training_loop(model, learning_rate, train_dataloader, valid_dataloader, num_
                         loss = loss_sense
                 else:
                     loss = loss_global
-                t3 = time()
 
                 loss.backward()
-
 
                 optimizer.step()
                 overall_step = overall_step + 1
                 epoch_step = epoch_step + 1
-                t4 = time()
+
                 #logging.info("Iteration in training_loop(), time analysis:")
                 #Utils.log_chronometer([t0,t1,t2,t3,t4])
                 if overall_step % steps_logging == 0:
@@ -297,7 +295,6 @@ def training_loop(model, learning_rate, train_dataloader, valid_dataloader, num_
                          ". Time = " + str(round(time() - starting_time, 2)) + ". The training losses are: ")
 
             epoch_sumlosses_tpl = sum_epoch_loss_global, sum_epoch_loss_sense, sum_epoch_loss_multisense
-            logging.info("epoch_sumlosses_tpl=" + str(epoch_sumlosses_tpl))
             epoch_numsteps_tpl = epoch_step, epoch_senselabeled_tokens, epoch_multisense_tokens
             Utils.record_statistics(epoch_sumlosses_tpl, epoch_numsteps_tpl, training_losses_lts)
 
@@ -311,24 +308,26 @@ def training_loop(model, learning_rate, train_dataloader, valid_dataloader, num_
             Utils.record_statistics(validation_sumlosses, (1,1,1), losses_lts=validation_losses_lts)
             epoch_valid_loss = valid_loss_globals + valid_loss_senses
 
-            if False and exp(epoch_valid_loss) > exp(previous_valid_loss) + 0.01: # if _new_ Valid PPL worse than _best_ by >0.01
-            # if epoch == 3: # temp for mini-experiments & debug
+            if exp(epoch_valid_loss) > exp(best_valid_loss) + 0.1: # if _new_ Valid PPL worse than _best_ by >0.1
+            # epoch_loss_globals = sum_epoch_loss_global / epoch_step #  for mini-experiments: globals' Train PPL computation
+            # if exp(epoch_loss_globals) < 3 : # for mini-experiments & debugging
                 if not with_freezing:
                     # previous validation was better. Now we must early-stop
                     logging.info("Early stopping")
                     flag_earlystop = True
                 else:
-                    # we are predicting first the standard LM, and then the senses. Freeze (1), activate (2).
-                    logging.info("New validation worse than previous one. " +
-                                 "Freezing the weights in the standard LM, activating senses' prediction.")
-                    for (name, p) in model_forParameters.named_parameters():    # (1)
-                        if ("main_rnn" in name) or ("X" in name) or ("linear2global" in name):
-                            p.requires_grad=False
-                    optimizers.append(torch.optim.Adam(model.parameters(), lr=learning_rate)) # [p for p in model.parameters() if p.requires_grad]
-                    model_forParameters.predict_senses = True  # (2)
-                    after_freezing_flag = True
+                    if not after_freezing_flag:
+                        # we are predicting first the standard LM, and then the senses. Freeze (1), activate (2).
+                        logging.info("New validation worse than previous one. " +
+                                     "Freezing the weights in the standard LM, activating senses' prediction.")
+                        for (name, p) in model_forParameters.named_parameters():    # (1)
+                            if ("main_rnn" in name) or ("X" in name) or ("linear2global" in name):
+                                p.requires_grad=False
+                        optimizers.append(torch.optim.Adam(model.parameters(), lr=learning_rate)) # [p for p in model.parameters() if p.requires_grad]
+                        model_forParameters.predict_senses = True  # (2)
+                        after_freezing_flag = True
 
-            previous_valid_loss = epoch_valid_loss
+            best_valid_loss = min(best_valid_loss, epoch_valid_loss)
             if epoch == num_epochs:
                 write_doc_logging(train_dataloader, model, model_forParameters, learning_rate, num_epochs)
 

@@ -46,8 +46,7 @@ def build_vocabulary_dict_from_senselabeled(lowercase=False):
     slc_split_names = [Utils.TRAINING, Utils.VALIDATION] # , , Utils.TEST
     for slc_split_name in slc_split_names:
         for token_dict in SLC.read_split(slc_split_name):
-            token = VocabUtils.process_word_token(token_dict)
-            token = token.lower() if lowercase else token
+            token = VocabUtils.process_word_token(token_dict, lowercase)
             if token not in tokens_toexclude:
                 try:
                     prev_freq = vocab_dict[token]

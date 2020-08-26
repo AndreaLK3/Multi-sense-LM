@@ -122,7 +122,7 @@ def readgenerator_senselabeled_corpuses(split_name):
         full_fpaths = list(map(lambda fname: os.path.join(test_subcorpuses_folder, fname),
                                [fname for fname in os.listdir(test_subcorpuses_folder) if 'xml' in fname]))
 
-    logging.info("full_fpaths=" + str(full_fpaths))
+    logging.debug("full_fpaths=" + str(full_fpaths))
     for xml_fpath in full_fpaths: # n: when using the readgenerator, I have to invoke .__next__().__next__() ,
         try:                      # and catch a StopIteration exception
             yield dataset_generator(xml_fpath)

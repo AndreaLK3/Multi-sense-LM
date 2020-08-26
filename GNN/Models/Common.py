@@ -7,6 +7,7 @@ from torch.nn.parameter import Parameter
 
 from Graph import Adjacencies as AD
 from Utils import DEVICE
+import Utils
 
 
 #############################
@@ -58,7 +59,7 @@ def unpack_input_tensor(in_tensor, grapharea_size):
 def lemmatize_node(x_indices, edge_index, edge_type, model):
     currentglobal_relative_X_idx = x_indices[0]
     currentglobal_absolute_vocab_idx = currentglobal_relative_X_idx - model.last_idx_senses
-    word = model.vocabulary_wordlist[currentglobal_absolute_vocab_idx]
+    word = model.vocabulary_wordList[currentglobal_absolute_vocab_idx]
     lemmatized_word = model.vocabulary_lemmatizedList[currentglobal_absolute_vocab_idx]
 
     logging.debug("***\nword=" + str(word) + " ; lemmatized_word= "+ str(lemmatized_word))
@@ -92,15 +93,21 @@ def init_model_parameters(model, graph_dataobj, grapharea_size, grapharea_matrix
                           include_globalnode_input, include_sensenode_input, predict_senses,
                           batch_size, n_layers, n_hid_units, dropout_p):
     model.grapharea_matrix = grapharea_matrix
+
     model.vocabulary_df = vocabulary_df
     model.vocabulary_wordList = vocabulary_df['word'].to_list().copy()
     model.vocabulary_lemmatizedList = vocabulary_df['lemmatized_form'].to_list().copy()
+
     model.include_globalnode_input = include_globalnode_input
     model.include_sensenode_input = include_sensenode_input
     model.predict_senses = predict_senses
+
+    model.first_idx_dummySenses = Utils.get_startpoint_dummySenses()
     model.last_idx_senses = graph_dataobj.node_types.tolist().index(1)
     model.last_idx_globals = graph_dataobj.node_types.tolist().index(2)
+
     model.grapharea_size = grapharea_size
+
     model.dim_embs = graph_dataobj.x.shape[1]
     model.batch_size = batch_size
     model.n_layers = n_layers

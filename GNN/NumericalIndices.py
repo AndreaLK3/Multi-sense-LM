@@ -40,7 +40,7 @@ def get_missing_sense_label(global_absolute_index, grapharea_matrix, last_sense_
 # sense = [0,se) ; single prototype = [se,se+sp) ; definitions = [se+sp, se+sp+d) ; examples = [se+sp+d, e==num_nodes)
 def convert_tokendict_to_tpl(token_dict, senseindices_db_c, globals_vocabulary_h5, grapharea_matrix, last_sense_idx,first_idx_dummySenses):
 
-    word = VocabUtils.process_word_token(token_dict)  # html.unescape
+    word = VocabUtils.process_word_token(token_dict, lowercasing=True)  # html.unescape + currently lowercasing
     try:
         global_absolute_index = Utils.select_from_hdf5(globals_vocabulary_h5, 'vocabulary', ['word'], [word]).index[0]
     except IndexError: # redirect onto <unk>
