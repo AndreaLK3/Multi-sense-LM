@@ -210,7 +210,7 @@ def training_loop(model, learning_rate, train_dataloader, valid_dataloader, num_
     steps_logging = 100
     overall_step = 0
     starting_time = time()
-    best_valid_loss = inf
+    best_valid_loss_globals = inf
     after_freezing_flag = False
     if with_freezing:
         model_forParameters.predict_senses = False
@@ -307,13 +307,15 @@ def training_loop(model, learning_rate, train_dataloader, valid_dataloader, num_
             validation_sumlosses = valid_loss_globals, valid_loss_senses, multisenses_evaluation_loss
             Utils.record_statistics(validation_sumlosses, (1,1,1), losses_lts=validation_losses_lts)
             epoch_valid_loss = valid_loss_globals + valid_loss_senses
+            logging.info("Debug: epoch_valid_loss="+str(round(epoch_valid_loss,2)) + " Debug: best_valid_loss_globals="+str(round(best_valid_loss_globals,2)))
 
-            if exp(epoch_valid_loss) > exp(best_valid_loss) + 0.1: # if _new_ Valid PPL worse than _best_ by >0.1
-            # epoch_loss_globals = sum_epoch_loss_global / epoch_step #  for mini-experiments: globals' Train PPL computation
-            # if exp(epoch_loss_globals) < 3 : # for mini-experiments & debugging
+            # if exp(valid_loss_globals) > exp(best_valid_loss_globals) + 0.1: # if _new_ Valid PPL worse than _best_ by >0.1
+            epoch_loss_globals = sum_epoch_loss_global / epoch_step #  for mini-experiments: globals' Train PPL computation
+            if exp(epoch_loss_globals) < 3 : # for mini-experiments & debugging
                 if not with_freezing:
                     # previous validation was better. Now we must early-stop
-                    logging.info("Early stopping")
+                    logging.info("Early stopping. Latest validation PPL=" + str(round(exp(epoch_valid_loss),2))
+                                 + " ; best validation PPL="+str(round(exp(best_valid_loss_globals),2)))
                     flag_earlystop = True
                 else:
                     if not after_freezing_flag:
@@ -327,7 +329,7 @@ def training_loop(model, learning_rate, train_dataloader, valid_dataloader, num_
                         model_forParameters.predict_senses = True  # (2)
                         after_freezing_flag = True
 
-            best_valid_loss = min(best_valid_loss, epoch_valid_loss)
+            best_valid_loss_globals = min(best_valid_loss_globals, epoch_valid_loss)
             if epoch == num_epochs:
                 write_doc_logging(train_dataloader, model, model_forParameters, learning_rate, num_epochs)
 

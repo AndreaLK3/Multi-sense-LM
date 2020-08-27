@@ -145,7 +145,7 @@ class RNN(torch.nn.Module):
                 t_s_nodestates = run_graphnet(t_input_lts, batch_elems_at_t, t_globals_indices_ls, CURRENT_DEVICE, self)
                 currentsense_nodestates_ls.append(t_s_nodestates) # must still be done in separate form
 
-
+            logging.info("t_current_globals_indices_ls=" + str(t_current_globals_indices_ls))
         word_embeddings = torch.stack(word_embeddings_ls, dim=0)
         global_nodestates = torch.stack(currentglobal_nodestates_ls, dim=0) if self.include_globalnode_input else None
 

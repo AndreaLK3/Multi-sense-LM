@@ -59,6 +59,8 @@ def exe_from_input_to_vectors(do_reset, compute_single_prototype, sp_method, voc
     if do_reset:
         reset()
 
+
+
     vocab_text_fname = os.listdir(os.path.join(F.FOLDER_TEXT_CORPUSES, F.FOLDER_MYTEXTCORPUS, F.FOLDER_TRAIN))[0]
     vocab_text_fpath = os.path.join(F.FOLDER_TEXT_CORPUSES, F.FOLDER_MYTEXTCORPUS, F.FOLDER_TRAIN, vocab_text_fname)
     outvocab_filepath = os.path.join(F.FOLDER_VOCABULARY, F.VOCABULARY_OF_GLOBALS_FILE)

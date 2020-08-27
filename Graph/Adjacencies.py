@@ -33,7 +33,7 @@ def compute_globals_numsenses(graph_dataobj, grapharea_matrix, grapharea_size):
         adjacent_nodes, edges, edge_type = get_node_data(grapharea_matrix, idx, grapharea_size, features_mask=(True, True, True))
 
         args_dict = {'first_idx_dummySenses': first_idx_dummySenses, 'last_idx_senses':last_idx_senses,
-                     'vocabulary_wordlist':vocabulary_wordList, 'vocabulary_lemmatizedList':vocabulary_lemmatizedWordsList,
+                     'vocabulary_wordList':vocabulary_wordList, 'vocabulary_lemmatizedList':vocabulary_lemmatizedWordsList,
                      'grapharea_matrix':grapharea_matrix, 'grapharea_size':grapharea_size}  # packing the parameters for the lemmatizer function
         args = SimpleNamespace(**args_dict)
         adjacent_nodes, edges, edge_type = lemmatize_node(adjacent_nodes, edges, edge_type, args)

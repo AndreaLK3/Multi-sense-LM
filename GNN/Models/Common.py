@@ -73,7 +73,7 @@ def lemmatize_node(x_indices, edge_index, edge_type, model):
     if lemmatized_word != word:  # if the lemmatized word is actually different from the original, get the data
         try:
             logging.debug("Getting the data for the lemmatized word")
-            lemmatized_word_absolute_idx = model.vocabulary_wordlist.index(lemmatized_word)
+            lemmatized_word_absolute_idx = model.vocabulary_wordList.index(lemmatized_word)
             lemmatized_word_relative_idx = lemmatized_word_absolute_idx + model.last_idx_senses
             (x_indices_lemmatized, edge_index_lemmatized, edge_type_lemmatized) = \
                 AD.get_node_data(model.grapharea_matrix, lemmatized_word_relative_idx, model.grapharea_size)
