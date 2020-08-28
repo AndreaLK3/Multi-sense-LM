@@ -182,7 +182,7 @@ def get_additional_edges_sensechildren_from_slc(globals_voc_df, globals_start_in
             else:
                 continue # there was no sense-key specified for this token
             # 2) Get the global word of this token
-            word = VocabUtils.process_word_token(token_dict, lowercasing=True)  # html.unescape
+            word = VocabUtils.process_word_token(token_dict, lowercasing=False)  # html.unescape
             lemmatized_word = lemmatize_term(word, lemmatizer)# since currently we always lemmatize in SelectK and other sense architectures
             if lemmatized_word not in wordnet_sense: # we are connecting all the "external" senses, e.g. say->state.v.01
                 try:
@@ -235,7 +235,7 @@ def get_edges_nyms(nyms_name, globals_voc_df, globals_start_index_toadd):
     for tpl in nyms_df.itertuples():
         word_sense = tpl.sense_wn_id
         word1 = Utils.get_word_from_sense(word_sense)
-        word1 = VocabUtils.process_word_token({'surface_form': word1}, lowercasing=True)
+        word1 = VocabUtils.process_word_token({'surface_form': word1}, lowercasing=False)
         try:
             global_raw_idx_1 = globals_voc_df.loc[globals_voc_df['word'] == word1].index[0]
         except IndexError:
@@ -244,7 +244,7 @@ def get_edges_nyms(nyms_name, globals_voc_df, globals_start_index_toadd):
         global_idx_1 = globals_start_index_toadd + global_raw_idx_1
 
         word2 = getattr(tpl, nyms_name)
-        word2 = VocabUtils.process_word_token({'surface_form': word2}, lowercasing=True)
+        word2 = VocabUtils.process_word_token({'surface_form': word2}, lowercasing=False)
         try:
             global_raw_idx_2 = globals_voc_df.loc[globals_voc_df['word'] == word2].index[0]
         except IndexError:

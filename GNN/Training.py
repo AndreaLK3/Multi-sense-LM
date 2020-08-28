@@ -14,8 +14,8 @@ from time import time
 from Utils import DEVICE
 import GNN.DataLoading as DL
 import GNN.ExplorePredictions as EP
-import GNN.Models.Senses as SensesNets
-import GNN.Models.RNNs as Freezer
+import GNN.Models.PreviousRNN as PrevRNN
+import GNN.Models.RNNs as RNNFreezer
 from itertools import cycle
 import gc
 from math import exp
@@ -147,6 +147,7 @@ def training_setup(slc_or_text_corpus, include_globalnode_input, include_senseno
 
     globals_vocabulary_fpath = os.path.join(F.FOLDER_VOCABULARY, F.VOCABULARY_OF_GLOBALS_FILE)
     globals_vocabulary_df = pd.read_hdf(globals_vocabulary_fpath, mode='r')
+    vocabulary_wordList = globals_vocabulary_df['word'].to_list().copy()
     if slc_or_text_corpus:
         vocabulary_numSensesList = globals_vocabulary_df['num_senses'].to_list().copy()
         if all([num_senses == -1 for num_senses in vocabulary_numSensesList]):
@@ -155,9 +156,13 @@ def training_setup(slc_or_text_corpus, include_globalnode_input, include_senseno
     # torch.manual_seed(1) # for reproducibility while conducting mini-experiments
     # if torch.cuda.is_available():
     #     torch.cuda.manual_seed_all(1)
-    model = Freezer.RNN("GRU", graph_dataobj, grapharea_size, grapharea_matrix, globals_vocabulary_df,
+    model = RNNFreezer.RNN("GRU", graph_dataobj, grapharea_size, grapharea_matrix, globals_vocabulary_df,
                         include_globalnode_input, include_sensenode_input, predict_senses,
                         batch_size=batch_size, n_layers=3, n_hid_units=1024, dropout_p=0)
+    # model = PrevRNN.RNN(model_type="GRU", data=graph_dataobj, grapharea_size=grapharea_size, grapharea_matrix=grapharea_matrix,
+    #                     vocabulary_wordlist=slc_or_text_corpus, include_globalnode_input=include_globalnode_input,
+    #                     include_sensenode_input=include_sensenode_input, predict_senses=predict_senses,
+    #              batch_size=batch_size, n_layers=3, n_hid_units=1024, dropout_p=0)
 
     logging.info("Graph-data object loaded, model initialized. Moving them to GPU device(s) if present.")
 
