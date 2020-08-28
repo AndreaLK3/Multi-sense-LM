@@ -43,14 +43,14 @@ def run_graphnet(t_input_lts, batch_elems_at_t,t_globals_indices_ls, CURRENT_DEV
 class RNN(torch.nn.Module):
 
     def __init__(self, model_type, data, grapharea_size, grapharea_matrix, vocabulary_df,
-                 include_globalnode_input, include_sensenode_input, predict_senses,
+                 include_globalnode_input, predict_senses,
                  batch_size, n_layers, n_hid_units, dropout_p):
 
         # -------------------- Initialization and parameters --------------------
         super(RNN, self).__init__()
         self.model_type = model_type  # can be "LSTM" or "GRU"
         init_model_parameters(self, data, grapharea_size, grapharea_matrix, vocabulary_df,
-                                   include_globalnode_input, include_sensenode_input, predict_senses,
+                                   include_globalnode_input, predict_senses,
                                    batch_size, n_layers, n_hid_units, dropout_p)
         # self.num_embs = data.x.shape[0]
         self.dim_embs = data.x.shape[1]
@@ -69,14 +69,12 @@ class RNN(torch.nn.Module):
         self.hidden_state_bsize_adjusted = False
 
         # -------------------- Input signals --------------------
-        self.concatenated_input_dim = self.dim_embs * (1 + int(include_globalnode_input) + int(include_sensenode_input))
+        self.concatenated_input_dim = self.dim_embs * (1 + int(include_globalnode_input))
         # GAT for the node-states from the dictionary graph
         if self.include_globalnode_input:
             self.gat_globals = GATConv(in_channels=self.dim_embs, out_channels=int(self.dim_embs / 2),
                                        heads=2)  # , node_dim=1)
             # lemmatize_term('init', self.lemmatizer)# to establish LazyCorpusLoader and prevent a multi-thread crash
-        if self.include_sensenode_input:
-            self.gat_senses = GATConv(in_channels=self.dim_embs, out_channels=int(self.dim_embs / 4), heads=4)
 
         # -------------------- The networks --------------------
         self.main_rnn_ls = torch.nn.ModuleList(
@@ -120,7 +118,6 @@ class RNN(torch.nn.Module):
 
         word_embeddings_ls = []
         currentglobal_nodestates_ls = []
-        currentsense_nodestates_ls = []
 
         for batch_elements_at_t in time_instants:
             batch_elems_at_t = batch_elements_at_t.squeeze(dim=1)
@@ -139,11 +136,6 @@ class RNN(torch.nn.Module):
             if self.include_globalnode_input:
                 t_g_nodestates = run_graphnet(t_input_lts, batch_elems_at_t,t_globals_indices_ls, CURRENT_DEVICE, self)
                 currentglobal_nodestates_ls.append(t_g_nodestates)
-            # Input signal n.3: the node-state of the current sense
-            if self.include_sensenode_input:
-                t_s_nodestates = run_graphnet(t_input_lts, batch_elems_at_t, t_globals_indices_ls, CURRENT_DEVICE, self)
-                currentsense_nodestates_ls.append(t_s_nodestates) # must still be done in separate form
-
 
         word_embeddings = torch.stack(word_embeddings_ls, dim=0)
         global_nodestates = torch.stack(currentglobal_nodestates_ls, dim=0) if self.include_globalnode_input else None

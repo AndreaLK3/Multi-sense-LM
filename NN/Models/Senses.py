@@ -32,11 +32,11 @@ def subtract_probability_mass_from_selected(softmax_selected_senses, delta_to_su
 # Add the [the probability distribution over those] to [the distribution over the whole senses' vocabulary]...
 
 class SelectK(torch.nn.Module):
-    def __init__(self, data, grapharea_size, grapharea_matrix, num_k_globals, vocabulary_wordlist, include_globalnode_input, include_sensenode_input, predict_senses,
+    def __init__(self, data, grapharea_size, grapharea_matrix, num_k_globals, vocabulary_wordlist, include_globalnode_input, predict_senses,
                  batch_size, n_layers, n_hid_units):
         super(SelectK, self).__init__()
         init_model_parameters(self, data, grapharea_size, grapharea_matrix, vocabulary_wordlist,
-                              include_globalnode_input, include_sensenode_input, predict_senses,
+                              include_globalnode_input, predict_senses,
                               batch_size, n_layers, n_hid_units, dropout_p=0)
         self.k=num_k_globals
 
@@ -46,7 +46,7 @@ class SelectK(torch.nn.Module):
         self.embedding_zeros = Parameter(torch.zeros(size=(1, self.dim_embs)), requires_grad=False)
 
         # Input signals: current global’s word embedding (|| global's node state (|| sense’s node state) )
-        self.concatenated_input_dim = self.dim_embs * (1 + int(include_globalnode_input) + int(include_sensenode_input))
+        self.concatenated_input_dim = self.dim_embs * (1 + int(include_globalnode_input))
 
         # This is overwritten at the 1st forward, when we know the distributed batch size
         self.memory_hn = Parameter(torch.zeros(size=(n_layers, batch_size, n_hid_units)), requires_grad=False)
@@ -62,8 +62,6 @@ class SelectK(torch.nn.Module):
         # GATs for the node-states
         if self.include_globalnode_input:
             self.gat_globals = GATConv(in_channels=self.dim_embs, out_channels=int(self.dim_embs / 4), heads=4)
-        if self.include_sensenode_input:
-            self.gat_senses = GATConv(in_channels=self.dim_embs, out_channels=int(self.dim_embs / 4), heads=4)
         # GRU for senses
         if predict_senses:
             self.gru_senses = torch.nn.GRU(input_size=self.concatenated_input_dim, hidden_size=int(self.hidden_size), num_layers=n_layers - 1)
@@ -143,18 +141,6 @@ class SelectK(torch.nn.Module):
                 else:
                     currentglobal_node_state = None
 
-                # Input signal n.3: the node-state of the current sense; + concatenating the input signals
-                if self.include_sensenode_input:
-                    if len(x_indices_s[x_indices_s != 0] == 0):  # no sense was specified
-                        currentsense_node_state = self.embedding_zeros
-                    else:  # sense was specified
-                        x_s = self.X.index_select(dim=0, index=x_indices_s.squeeze())
-                        sense_attention_state = self.gat_senses(x_s, edge_index_s)
-                        currentsense_node_state = sense_attention_state.index_select(dim=0,
-                                                                                     index=self.select_first_indices[
-                                                                                         0].to(torch.int64))
-                else:
-                    currentsense_node_state = None
                 input_ls = list(filter(lambda signal: signal is not None,
                                        [currentword_embedding, currentglobal_node_state, currentsense_node_state]))
                 input_signals = torch.cat(input_ls, dim=1)
