@@ -50,8 +50,6 @@ TRAINING = 'training'
 VALIDATION = 'validation'
 TEST = 'test'
 
-MAX_EDGES_PACKED=160 # used in the tensor packing&unpacking for the NN
-
 INDICES_TABLE_DB = 'indices_table.sql'
 
 UNK_TOKEN = '<unk>'
@@ -66,6 +64,8 @@ GLOBALS = 'globals'
 SENSES = 'senses'
 CORRECT_PREDICTIONS = 'correct_predictions'
 TOTAL = 'total'
+
+GRAPH_EMBEDDINGS_SIZE = 100
 
 ########## Logging and development ##########
 

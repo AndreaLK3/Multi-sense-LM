@@ -14,6 +14,8 @@ from NN.NumericalIndices import try_to_get_wordnet_sense
 from PrepareKBInput.LemmatizeNyms import lemmatize_term
 import nltk
 import re
+from sklearn.decomposition import PCA
+import WordEmbeddings.ComputeEmbeddings as CE
 
 def log_edges_minmax_nodes(edges_ls, name):
     if len(edges_ls) > 0:
@@ -25,14 +27,60 @@ def log_edges_minmax_nodes(edges_ls, name):
         logging.info("len(edges_ls)==0")
 
 
-def load_senses_elements(embeddings_method, elements_name):
-    senses_elems_fname = Utils.VECTORIZED + '_' + str(embeddings_method.value) + '_' + elements_name + '.npy'
-    senses_elems_fpath = os.path.join(F.FOLDER_INPUT, senses_elems_fname)
+def load_reduced_senses_elements(elements_name, embeddings_method=CE.Method.FASTTEXT):
+    # senses_elems_fname = Utils.VECTORIZED + '_' + str(embeddings_method.value) + '_' + elements_name + '.npy'
+    # senses_elems_fpath = os.path.join(F.FOLDER_INPUT, senses_elems_fname)
+    # we currently use the version reduced by PCA
+    senses_elems_fpath = os.path.join(F.FOLDER_INPUT, F.FOLDER_PCA, elements_name + '_' + str(embeddings_method.value) + '_' + '.npy')
     senses_elems_X = np.load(senses_elems_fpath)
     return torch.tensor(senses_elems_X).to(torch.float32)
 
 
-# ------ Auxiliary functions to initialize nodes / create edges
+# ------------ Auxiliary functions to initialize nodes ------------
+
+def initialize_globals(X_definitions, E_embeddings, globals_vocabulary_ls):
+
+    db_filepath = os.path.join(F.FOLDER_INPUT, Utils.INDICES_TABLE_DB)
+    indicesTable_db = sqlite3.connect(db_filepath)
+    indicesTable_db_c = indicesTable_db.cursor()
+    indicesTable_db_c.execute("SELECT * FROM indices_table")
+
+    pca = PCA(n_components=Utils.GRAPH_EMBEDDINGS_SIZE)
+    E_reduced_embeddings = pca.fit_transform(E_embeddings)
+
+    words_definitionvectors_dict = {}.fromkeys([word for word in globals_vocabulary_ls], None)
+
+    while (True):
+        db_row = indicesTable_db_c.fetchone()
+        if db_row is None:
+            break
+
+        word_sense = db_row[0]
+        word = Utils.get_word_from_sense(word_sense)
+        sense_start_defs = db_row[2]
+        sense_end_defs = db_row[3]
+        if sense_start_defs != sense_end_defs:
+            sense_def_vectors = X_definitions[sense_start_defs:sense_end_defs]
+            if words_definitionvectors_dict[word] is None:
+                words_definitionvectors_dict[word] = sense_def_vectors
+            else:
+                words_definitionvectors_dict[word] = np.concatenate([words_definitionvectors_dict[word], sense_def_vectors])
+        else: # a sense without definitions (e.g. a dummySense) get initialized with the PCA-reduced version of the word embedding
+            if words_definitionvectors_dict[word] is None:
+                logging.debug("word=" + str(word))
+                word_vocabulary_index = globals_vocabulary_ls.index(word)
+                words_definitionvectors_dict[word] = np.expand_dims(E_reduced_embeddings[word_vocabulary_index,:], axis=0)
+
+    X_globals_ls = []
+    for word in words_definitionvectors_dict.keys():
+        average_of_definitions = np.average(words_definitionvectors_dict[word], axis=0)
+        X_globals_ls.append(average_of_definitions)
+
+    X_globals = np.array(X_globals_ls)
+    return X_globals
+
+
+
 
 def initialize_senses(X_defs, X_examples, X_globals, vocabulary_ls, average_or_random_flag):
 
@@ -87,6 +135,7 @@ def initialize_senses(X_defs, X_examples, X_globals, vocabulary_ls, average_or_r
 
     return torch.tensor(X_senses), num_dummy_senses
 
+# ------------ Auxiliary functions to create edges ------------
 
 # definitions -> senses : [se+sp, se+sp+d) -> [0,se)
 # examples --> senses : [se+sp+d, e==num_nodes) -> [0,se)
@@ -277,28 +326,27 @@ def create_graph(method, slc_corpus):
     globals_vocabulary_df = pd.read_hdf(globals_vocabulary_fpath, mode='r')
     globals_vocabulary_ls = globals_vocabulary_df['word'].to_list().copy()
 
-    X_definitions = load_senses_elements(method, Utils.DEFINITIONS)
-    X_examples = load_senses_elements(method, Utils.EXAMPLES)
-    X_globals = torch.tensor(np.load(os.path.join(F.FOLDER_INPUT, single_prototypes_file))).to(torch.float32)
+    X_definitions = load_reduced_senses_elements(Utils.DEFINITIONS, method)
+    X_examples = load_reduced_senses_elements(Utils.EXAMPLES, method)
+    E_embeddings = torch.tensor(np.load(os.path.join(F.FOLDER_INPUT, single_prototypes_file))).to(torch.float32)
+    num_globals = E_embeddings.shape[0]
+    X_globals = torch.tensor(initialize_globals(X_definitions, E_embeddings, globals_vocabulary_ls)).to(torch.float32)
     X_senses, num_dummysenses = initialize_senses(X_definitions, X_examples, X_globals, globals_vocabulary_ls, average_or_random_flag=True)
+    num_senses = X_senses.shape[0]
 
-    logging.info("Constructing X, matrix of node features")
-    logging.info("X_definitions.shape=" + str(X_definitions.shape)) # X_definitions.shape=torch.Size([75718, 300])
-    logging.info("X_examples.shape=" + str(X_examples.shape)) # X_examples.shape=torch.Size([65964, 300])
-    logging.info("X_senses.shape=" + str(X_senses.shape)) # X_senses.shape=torch.Size([73706, 300])
-    logging.info("X_globals.shape=" + str(X_globals.shape)) # X_globals.shape=torch.Size([53139, 300])
+    logging.info("X_definitions.shape=" + str(X_definitions.shape))
+    logging.info("X_examples.shape=" + str(X_examples.shape))
+    logging.info("X_senses.shape=" + str(X_senses.shape))
+    logging.info("E_embeddings.shape=" + str(E_embeddings.shape))
 
-    # The order for the index of the nodes:
-    # sense=[0,se) ; single prototype=[se,se+sp) ; definitions=[se+sp, se+sp+d) ; examples=[se+sp+d, e==num_nodes)
-    X = torch.cat([X_senses, X_globals, X_definitions, X_examples])
-    # Currently, total number of nodes: 71882
+
 
     # edge_index (LongTensor, optional) – Graph connectivity in COO format with shape [2, num_edges].
     # We can operate with a list of S-D tuples, adding t().contiguous()
     logging.info("Defining the edges: def, exs")
-    def_edges_se = get_edges_elements(Utils.DEFINITIONS, X_senses.shape[0] + X_globals.shape[0])
+    def_edges_se = get_edges_elements(Utils.DEFINITIONS, num_senses + num_globals)
     logging.info("def_edges_se.__len__()=" + str(def_edges_se.__len__())) # def_edges_se.__len__()=25986
-    exs_edges_se = get_edges_elements(Utils.EXAMPLES, X_senses.shape[0] + X_globals.shape[0]+ X_definitions.shape[0])
+    exs_edges_se = get_edges_elements(Utils.EXAMPLES, num_senses + num_globals+ X_definitions.shape[0])
     logging.info("exs_edges_se.__len__()=" + str(exs_edges_se.__len__())) # exs_edges_se.__len__()=26003
 
     logging.info("Defining the edges: sc")
@@ -306,26 +354,34 @@ def create_graph(method, slc_corpus):
     # If operating on a sense-labeled corpus, we need to connect globals & their senses that do not belong to them
     if slc_corpus:
         sc_external_edges = get_additional_edges_sensechildren_from_slc(globals_vocabulary_df,
-                                                                        globals_start_index_toadd=X_senses.shape[0])
+                                                                        globals_start_index_toadd=num_senses)
         sc_edges.extend(sc_external_edges)
         logging.info("sc_edges_with_external.__len__()=" + str(sc_external_edges.__len__()))
     sc_edges.extend(get_edges_sensechildren(globals_vocabulary_df, X_senses.shape[0]))
-    logging.info("sc_edges.__len__()=" + str(sc_edges.__len__())) # sc_edges.__len__()=25986
+    logging.info("sc_edges.__len__()=" + str(sc_edges.__len__()))  # sc_edges.__len__()=25986
     # We add self-loops to all globals without a sense.
-    edges_selfloops = get_edges_selfloops(sc_edges, num_globals=X_globals.shape[0], num_dummysenses=num_dummysenses)
+    edges_selfloops = get_edges_selfloops(sc_edges, num_globals=num_globals, num_dummysenses=num_dummysenses)
     sc_edges.extend(edges_selfloops)
     logging.info("sc_edges_with_selfloops.__len__()=" + str(sc_edges.__len__()))
 
+
+
+    # The order for the index of the nodes:
+    # sense=[0,se) ; single prototype=[se,se+sp) ; definitions=[se+sp, se+sp+d) ; examples=[se+sp+d, e==num_nodes)
+    X = torch.cat([X_senses, X_globals, X_definitions, X_examples])
+    # Currently, total number of nodes: 71882
+
+
     logging.info("Defining the edges: syn, ant")
-    syn_edges = get_edges_nyms(Utils.SYNONYMS, globals_vocabulary_df, X_senses.shape[0])
+    syn_edges = get_edges_nyms(Utils.SYNONYMS, globals_vocabulary_df, num_senses)
     logging.info("syn_edges.__len__()=" + str(syn_edges.__len__()))
-    ant_edges = get_edges_nyms(Utils.ANTONYMS, globals_vocabulary_df, X_senses.shape[0])
+    ant_edges = get_edges_nyms(Utils.ANTONYMS, globals_vocabulary_df, num_senses)
     logging.info("ant_edges.__len__()=" + str(ant_edges.__len__()))
 
     edges_lts = torch.tensor(def_edges_se + exs_edges_se + sc_edges + syn_edges + ant_edges)
     edge_types = torch.tensor([0] * len(def_edges_se) + [1] * len(exs_edges_se) + [2] * len(sc_edges) +
                               [3] * len(syn_edges) + [4] * len(ant_edges))
-    node_types = torch.tensor([0] * X_senses.shape[0] + [1] * X_globals.shape[0] +
+    node_types = torch.tensor([0] * X_senses.shape[0] + [1] * num_globals +
                               [2] * X_definitions.shape[0] + [3] * X_examples.shape[0])
     all_edges = edges_lts.t().contiguous()
 

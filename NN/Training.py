@@ -52,7 +52,7 @@ def setup_train(slc_or_text_corpus, include_globalnode_input, load_saved_model,
     else:
         model = RNNFreezer.RNN("GRU", graph_dataobj, grapharea_size, grapharea_matrix, globals_vocabulary_df,
                             include_globalnode_input,
-                            batch_size=batch_size, n_layers=3, n_hid_units=1024, dropout_p=0)
+                            batch_size=batch_size, n_layers=3, n_hid_units=800, dropout_p=0)
         # model = PrevRNN.RNN(model_type="GRU", data=graph_dataobj, grapharea_size=grapharea_size, grapharea_matrix=grapharea_matrix,
         #                     vocabulary_wordlist=slc_or_text_corpus, include_globalnode_input=include_globalnode_input,
         #                     include_sensenode_input=include_sensenode_input, predict_senses=predict_senses,

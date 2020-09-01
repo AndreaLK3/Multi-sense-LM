@@ -1,6 +1,7 @@
 import os
 
 FOLDER_INPUT = 'InputData'
+FOLDER_PCA = 'PCA' # subfolder of InputData
 FOLDER_WORD_EMBEDDINGS = 'WordEmbeddings'
 FOLDER_VOCABULARY = 'Vocabulary'
 
@@ -18,7 +19,6 @@ FOLDER_NN = 'NN'
 BN_WORD_INTROS = 'BabelNet_word_intros'
 BN_SYNSET_DATA = 'BabelNet_synset_data'
 BN_SYNSET_EDGES = 'BabelNet_synset_edges'
-
 
 
 WT_TRAIN_FILE = 'wiki.train.tokens'

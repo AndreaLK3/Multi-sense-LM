@@ -53,7 +53,8 @@ class RNN(torch.nn.Module):
                                    batch_size, n_layers, n_hid_units, dropout_p)
         # self.num_embs = data.x.shape[0]
         self.dim_embs = data.x.shape[1]
-        self.X = Parameter(data.x.clone().detach(), requires_grad=True) # The embeddings matrix
+        self.E = Parameter(data.x.clone().detach(), requires_grad=True) # The embeddings matrix
+        self.X = Parameter(torch.rand(size=(self.E.shape[0], 100)))
 
         # -------------------- Utilities --------------------
         # utility tensors, used in index_select etc.
@@ -71,25 +72,25 @@ class RNN(torch.nn.Module):
         self.concatenated_input_dim = self.dim_embs * (1 + int(include_globalnode_input))
         # GAT for the node-states from the dictionary graph
         if self.include_globalnode_input:
-            self.gat_globals = GATConv(in_channels=self.dim_embs, out_channels=int(self.dim_embs / 2),
+            self.gat_globals = GATConv(in_channels=100, out_channels=int(100 / 2),
                                        heads=2)  # , node_dim=1)
             # lemmatize_term('init', self.lemmatizer)# to establish LazyCorpusLoader and prevent a multi-thread crash
 
         # -------------------- The networks --------------------
         self.main_rnn_ls = torch.nn.ModuleList(
-            [getattr(torch.nn, self.model_type)(input_size=self.concatenated_input_dim if i == 0 else n_hid_units,
-                                                hidden_size=512 if i == n_layers - 1 else n_hid_units, num_layers=1) for
+            [getattr(torch.nn, self.model_type)(input_size=self.dim_embs + 100 if i == 0 else n_hid_units,
+                                                hidden_size=450 if i == n_layers - 1 else n_hid_units, num_layers=1) for
              i in range(n_layers)])
 
         self.senses_rnn_ls = torch.nn.ModuleList(
-            [getattr(torch.nn, self.model_type)(input_size=self.concatenated_input_dim if i == 0 else n_hid_units,
-                                                hidden_size=512 if i == n_layers - 1 else n_hid_units, num_layers=1)
+            [getattr(torch.nn, self.model_type)(input_size=self.dim_embs + 100 if i == 0 else n_hid_units,
+                                                hidden_size=450 if i == n_layers - 1 else n_hid_units, num_layers=1)
              for i in range(n_layers)])
 
         # 2nd part of the network: 2 linear layers to the logits
-        self.linear2global = torch.nn.Linear(in_features=512,  #
+        self.linear2global = torch.nn.Linear(in_features=450,  #
                                              out_features=self.last_idx_globals - self.last_idx_senses, bias=True)
-        self.linear2senses = torch.nn.Linear(in_features=512,  #
+        self.linear2senses = torch.nn.Linear(in_features=450,  #
                                                  out_features=self.last_idx_senses, bias=True)
 
     # ---------------------------------------- Forward call ----------------------------------------
@@ -127,7 +128,7 @@ class RNN(torch.nn.Module):
             # Input signal n.1: the embedding of the current (global) word
             t_current_globals_indices_ls = [x_indices[0] for x_indices in t_globals_indices_ls]
             t_current_globals_indices = torch.stack(t_current_globals_indices_ls, dim=0)
-            t_word_embeddings = self.X.index_select(dim=0, index=t_current_globals_indices)
+            t_word_embeddings = self.E.index_select(dim=0, index=t_current_globals_indices)
             word_embeddings_ls.append(t_word_embeddings)
             # Input signal n.2: the node-state of the current global word - now with graph batching
             if self.include_globalnode_input:

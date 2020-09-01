@@ -1,16 +1,15 @@
 import Filesystem
 import PrepareKBInput.RemoveQuasiDuplicates as RQD
 import PrepareKBInput.LemmatizeNyms as LN
-import pandas as pd
 import WordEmbeddings.ComputeEmbeddings as CE
-import Vocabulary.Vocabulary as V
 import os
 import Utils
 import pandas as pd
 import logging
 import sqlite3
-import re
 import Filesystem as F
+import numpy as np
+from sklearn.decomposition import PCA
 
 # Phase 1 - Preprocessing: eliminating quasi-duplicate definitions and examples, and lemmatizing synonyms & antonyms
 def preprocess(vocabulary_ls):
@@ -121,6 +120,24 @@ def create_senses_indices_table():
     out_indicesTable_db.commit()
     out_indicesTable_db.close()
 
+# Phase 4 - PCA dimensionality reduction, for definitions and examples. Writing to files in subfolder.
+# PCA: Linear dimensionality reduction, using Singular Value Decomposition of the data to project
+# it to a lower dimensional space. The input data is centered but not scaled for each feature before applying SVD.
+def apply_PCA_to_defs_examples(embeddings_method=CE.Method.FASTTEXT):
+    elements_ls = [Utils.DEFINITIONS, Utils.EXAMPLES]
+    for elements_name in elements_ls:
+        elems_fname = Utils.VECTORIZED + '_' + str(embeddings_method.value) + '_' + elements_name + '.npy'
+        elems_fpath = os.path.join(F.FOLDER_INPUT, elems_fname)
+        elems_E1 = np.load(elems_fpath)
+
+        pca = PCA(n_components=Utils.GRAPH_EMBEDDINGS_SIZE)
+        elems_E2 = pca.fit_transform(elems_E1)
+
+        output_fpath = os.path.join(F.FOLDER_INPUT, F.FOLDER_PCA, elements_name + '_' + str(embeddings_method.value) + '_'  +'.npy')
+        np.save(output_fpath, elems_E2)
+    return
+
+
 
 # ['move', 'light']
 def prepare(vocabulary_ls, embeddings_method): #vocabulary = ['move', 'light', 'for', 'sea']
@@ -135,3 +152,6 @@ def prepare(vocabulary_ls, embeddings_method): #vocabulary = ['move', 'light', '
     # Phase 3 - get the sentence embeddings for definitions and examples, using BERT or FasText, and store them
     CE.compute_elements_embeddings(Utils.DEFINITIONS, embeddings_method)
     CE.compute_elements_embeddings(Utils.EXAMPLES, embeddings_method)
+
+    # Phase 4 - use PCA dimensionality reduction for definitions and examples, for future graph processing
+    apply_PCA_to_defs_examples(embeddings_method)
