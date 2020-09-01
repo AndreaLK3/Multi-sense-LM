@@ -10,7 +10,7 @@ from math import inf
 import Graph.Adjacencies as AD
 import numpy as np
 from time import time
-
+from WordEmbeddings.ComputeEmbeddings import Method
 from NN.Loss import write_doc_logging, compute_model_loss
 from Utils import DEVICE
 import NN.DataLoading as DL
@@ -35,6 +35,9 @@ def setup_train(slc_or_text_corpus, include_globalnode_input, load_saved_model,
     graph_dataobj = DG.get_graph_dataobject(new=False, method=method, slc_corpus=slc_or_text_corpus).to(DEVICE)
     grapharea_matrix = AD.get_grapharea_matrix(graph_dataobj, grapharea_size, hops_in_area=1)
 
+    single_prototypes_file = F.SPVs_FASTTEXT_FILE if method == Method.FASTTEXT else F.SPVs_DISTILBERT_FILE
+    embeddings_matrix = torch.tensor(np.load(os.path.join(F.FOLDER_INPUT, single_prototypes_file))).to(torch.float32)
+
     globals_vocabulary_fpath = os.path.join(F.FOLDER_VOCABULARY, F.VOCABULARY_OF_GLOBALS_FILE)
     globals_vocabulary_df = pd.read_hdf(globals_vocabulary_fpath, mode='r')
     # vocabulary_wordList = globals_vocabulary_df['word'].to_list().copy()
@@ -51,7 +54,7 @@ def setup_train(slc_or_text_corpus, include_globalnode_input, load_saved_model,
         model = load_model_from_file()
     else:
         model = RNNFreezer.RNN("GRU", graph_dataobj, grapharea_size, grapharea_matrix, globals_vocabulary_df,
-                            include_globalnode_input,
+                            embeddings_matrix, include_globalnode_input,
                             batch_size=batch_size, n_layers=3, n_hid_units=800, dropout_p=0)
         # model = PrevRNN.RNN(model_type="GRU", data=graph_dataobj, grapharea_size=grapharea_size, grapharea_matrix=grapharea_matrix,
         #                     vocabulary_wordlist=slc_or_text_corpus, include_globalnode_input=include_globalnode_input,

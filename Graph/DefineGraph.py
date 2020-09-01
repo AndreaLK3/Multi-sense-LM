@@ -31,7 +31,7 @@ def load_reduced_senses_elements(elements_name, embeddings_method=CE.Method.FAST
     # senses_elems_fname = Utils.VECTORIZED + '_' + str(embeddings_method.value) + '_' + elements_name + '.npy'
     # senses_elems_fpath = os.path.join(F.FOLDER_INPUT, senses_elems_fname)
     # we currently use the version reduced by PCA
-    senses_elems_fpath = os.path.join(F.FOLDER_INPUT, F.FOLDER_PCA, elements_name + '_' + str(embeddings_method.value) + '_' + '.npy')
+    senses_elems_fpath = os.path.join(F.FOLDER_INPUT, F.FOLDER_PCA, elements_name + '_' + str(embeddings_method.value) + '.npy')
     senses_elems_X = np.load(senses_elems_fpath)
     return torch.tensor(senses_elems_X).to(torch.float32)
 
@@ -45,7 +45,7 @@ def initialize_globals(X_definitions, E_embeddings, globals_vocabulary_ls):
     indicesTable_db_c = indicesTable_db.cursor()
     indicesTable_db_c.execute("SELECT * FROM indices_table")
 
-    pca = PCA(n_components=Utils.GRAPH_EMBEDDINGS_SIZE)
+    pca = PCA(n_components=Utils.GRAPH_EMBEDDINGS_DIM)
     E_reduced_embeddings = pca.fit_transform(E_embeddings)
 
     words_definitionvectors_dict = {}.fromkeys([word for word in globals_vocabulary_ls], None)
@@ -322,7 +322,7 @@ def create_graph(method, slc_corpus):
 
     Utils.init_logging('DefineGraph.log')
 
-    globals_vocabulary_fpath = os.path.join(F.FOLDER_VOCABULARY, F.VOCABULARY_OF_GLOBALS_FILE )
+    globals_vocabulary_fpath = os.path.join(F.FOLDER_VOCABULARY, F.VOCABULARY_OF_GLOBALS_FILE)
     globals_vocabulary_df = pd.read_hdf(globals_vocabulary_fpath, mode='r')
     globals_vocabulary_ls = globals_vocabulary_df['word'].to_list().copy()
 
@@ -334,12 +334,15 @@ def create_graph(method, slc_corpus):
     X_senses, num_dummysenses = initialize_senses(X_definitions, X_examples, X_globals, globals_vocabulary_ls, average_or_random_flag=True)
     num_senses = X_senses.shape[0]
 
+    logging.info("X_senses.shape=" + str(X_senses.shape))
     logging.info("X_definitions.shape=" + str(X_definitions.shape))
     logging.info("X_examples.shape=" + str(X_examples.shape))
-    logging.info("X_senses.shape=" + str(X_senses.shape))
+    logging.info("X_globals.shape=" + str(X_globals.shape))
     logging.info("E_embeddings.shape=" + str(E_embeddings.shape))
 
-
+    # The order for the index of the nodes:
+    # sense=[0,se) ; single prototype=[se,se+sp) ; definitions=[se+sp, se+sp+d) ; examples=[se+sp+d, e==num_nodes)
+    X = torch.cat([X_senses, X_globals, X_definitions, X_examples])
 
     # edge_index (LongTensor, optional) – Graph connectivity in COO format with shape [2, num_edges].
     # We can operate with a list of S-D tuples, adding t().contiguous()
@@ -363,14 +366,6 @@ def create_graph(method, slc_corpus):
     edges_selfloops = get_edges_selfloops(sc_edges, num_globals=num_globals, num_dummysenses=num_dummysenses)
     sc_edges.extend(edges_selfloops)
     logging.info("sc_edges_with_selfloops.__len__()=" + str(sc_edges.__len__()))
-
-
-
-    # The order for the index of the nodes:
-    # sense=[0,se) ; single prototype=[se,se+sp) ; definitions=[se+sp, se+sp+d) ; examples=[se+sp+d, e==num_nodes)
-    X = torch.cat([X_senses, X_globals, X_definitions, X_examples])
-    # Currently, total number of nodes: 71882
-
 
     logging.info("Defining the edges: syn, ant")
     syn_edges = get_edges_nyms(Utils.SYNONYMS, globals_vocabulary_df, num_senses)

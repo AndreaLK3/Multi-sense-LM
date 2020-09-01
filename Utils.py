@@ -65,7 +65,7 @@ SENSES = 'senses'
 CORRECT_PREDICTIONS = 'correct_predictions'
 TOTAL = 'total'
 
-GRAPH_EMBEDDINGS_SIZE = 100
+GRAPH_EMBEDDINGS_DIM = 100
 
 ########## Logging and development ##########
 

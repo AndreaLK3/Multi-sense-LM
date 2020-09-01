@@ -130,10 +130,10 @@ def apply_PCA_to_defs_examples(embeddings_method=CE.Method.FASTTEXT):
         elems_fpath = os.path.join(F.FOLDER_INPUT, elems_fname)
         elems_E1 = np.load(elems_fpath)
 
-        pca = PCA(n_components=Utils.GRAPH_EMBEDDINGS_SIZE)
+        pca = PCA(n_components=Utils.GRAPH_EMBEDDINGS_DIM)
         elems_E2 = pca.fit_transform(elems_E1)
 
-        output_fpath = os.path.join(F.FOLDER_INPUT, F.FOLDER_PCA, elements_name + '_' + str(embeddings_method.value) + '_'  +'.npy')
+        output_fpath = os.path.join(F.FOLDER_INPUT, F.FOLDER_PCA, elements_name + '_' + str(embeddings_method.value) +'.npy')
         np.save(output_fpath, elems_E2)
     return
 

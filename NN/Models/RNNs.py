@@ -6,8 +6,7 @@ import torch.nn.functional as tfunc
 from NN.Models.Common import unpack_input_tensor, init_model_parameters, lemmatize_node
 from NN.Models.Steps_RNN import rnn_loop
 from torch.nn.parameter import Parameter
-import logging
-import nltk
+import Utils
 from PrepareKBInput.LemmatizeNyms import lemmatize_term
 from NN.Models.Steps_RNN import reshape_memories, select_layer_memory, update_layer_memory
 
@@ -42,7 +41,7 @@ def run_graphnet(t_input_lts, batch_elems_at_t,t_globals_indices_ls, CURRENT_DEV
 
 class RNN(torch.nn.Module):
 
-    def __init__(self, model_type, data, grapharea_size, grapharea_matrix, vocabulary_df,
+    def __init__(self, model_type, data, grapharea_size, grapharea_matrix, vocabulary_df, embeddings_matrix,
                  include_globalnode_input,
                  batch_size, n_layers, n_hid_units, dropout_p):
 
@@ -51,10 +50,11 @@ class RNN(torch.nn.Module):
         self.model_type = model_type  # can be "LSTM" or "GRU"
         init_model_parameters(self, data, grapharea_size, grapharea_matrix, vocabulary_df, include_globalnode_input,
                                    batch_size, n_layers, n_hid_units, dropout_p)
-        # self.num_embs = data.x.shape[0]
-        self.dim_embs = data.x.shape[1]
-        self.E = Parameter(data.x.clone().detach(), requires_grad=True) # The embeddings matrix
-        self.X = Parameter(torch.rand(size=(self.E.shape[0], 100)))
+
+
+        self.E = Parameter(embeddings_matrix.clone().detach(), requires_grad=True) # The matrix of embeddings
+        self.dim_embs = self.E.shape[1]
+        self.X = Parameter(data.x.clone().detach(), requires_grad=True)  # The matrix of global-nodestates
 
         # -------------------- Utilities --------------------
         # utility tensors, used in index_select etc.
@@ -69,21 +69,21 @@ class RNN(torch.nn.Module):
         self.hidden_state_bsize_adjusted = False
 
         # -------------------- Input signals --------------------
-        self.concatenated_input_dim = self.dim_embs * (1 + int(include_globalnode_input))
+        self.concatenated_input_dim = self.dim_embs + int(include_globalnode_input) * Utils.GRAPH_EMBEDDINGS_DIM
         # GAT for the node-states from the dictionary graph
         if self.include_globalnode_input:
-            self.gat_globals = GATConv(in_channels=100, out_channels=int(100 / 2),
+            self.gat_globals = GATConv(in_channels=Utils.GRAPH_EMBEDDINGS_DIM, out_channels=int(Utils.GRAPH_EMBEDDINGS_DIM / 2),
                                        heads=2)  # , node_dim=1)
             # lemmatize_term('init', self.lemmatizer)# to establish LazyCorpusLoader and prevent a multi-thread crash
 
         # -------------------- The networks --------------------
         self.main_rnn_ls = torch.nn.ModuleList(
-            [getattr(torch.nn, self.model_type)(input_size=self.dim_embs + 100 if i == 0 else n_hid_units,
+            [getattr(torch.nn, self.model_type)(input_size=self.concatenated_input_dim if i == 0 else n_hid_units,
                                                 hidden_size=450 if i == n_layers - 1 else n_hid_units, num_layers=1) for
              i in range(n_layers)])
 
         self.senses_rnn_ls = torch.nn.ModuleList(
-            [getattr(torch.nn, self.model_type)(input_size=self.dim_embs + 100 if i == 0 else n_hid_units,
+            [getattr(torch.nn, self.model_type)(input_size=self.concatenated_input_dim if i == 0 else n_hid_units,
                                                 hidden_size=450 if i == n_layers - 1 else n_hid_units, num_layers=1)
              for i in range(n_layers)])
 
@@ -126,7 +126,7 @@ class RNN(torch.nn.Module):
 
             # -------------------- Input --------------------
             # Input signal n.1: the embedding of the current (global) word
-            t_current_globals_indices_ls = [x_indices[0] for x_indices in t_globals_indices_ls]
+            t_current_globals_indices_ls = [x_indices[0]-self.last_idx_senses for x_indices in t_globals_indices_ls]
             t_current_globals_indices = torch.stack(t_current_globals_indices_ls, dim=0)
             t_word_embeddings = self.E.index_select(dim=0, index=t_current_globals_indices)
             word_embeddings_ls.append(t_word_embeddings)
