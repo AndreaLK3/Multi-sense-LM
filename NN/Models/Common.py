@@ -90,7 +90,7 @@ def lemmatize_node(x_indices, edge_index, edge_type, model):
 #############################################
 
 def init_model_parameters(model, graph_dataobj, grapharea_size, grapharea_matrix, vocabulary_df,
-                          include_globalnode_input, predict_senses,
+                          include_globalnode_input,
                           batch_size, n_layers, n_hid_units, dropout_p):
     model.grapharea_matrix = grapharea_matrix
 
@@ -99,7 +99,7 @@ def init_model_parameters(model, graph_dataobj, grapharea_size, grapharea_matrix
     model.vocabulary_lemmatizedList = vocabulary_df['lemmatized_form'].to_list().copy()
 
     model.include_globalnode_input = include_globalnode_input
-    model.predict_senses = predict_senses
+    model.predict_senses = False # it can be set to True when starting a training loop
 
     model.first_idx_dummySenses = Utils.get_startpoint_dummySenses()
     model.last_idx_senses = graph_dataobj.node_types.tolist().index(1)

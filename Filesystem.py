@@ -13,7 +13,7 @@ FOLDER_WT103 = 'WikiText-103'
 FOLDER_WT2 = 'wikitext-2'
 
 FOLDER_GRAPH = "Graph"
-FOLDER_GNN = 'GNN'
+FOLDER_NN = 'NN'
 
 BN_WORD_INTROS = 'BabelNet_word_intros'
 BN_SYNSET_DATA = 'BabelNet_synset_data'
@@ -51,3 +51,5 @@ LOSSES_FILEEND = 'losses.npy'
 PERPLEXITY_FILEEND = 'perplexity.npy'
 
 GRAPHAREA_FILE = 'graphArea_matrix.npz'
+
+SAVED_MODEL_NAME = 'pretrained_model.pt'

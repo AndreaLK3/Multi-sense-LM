@@ -50,7 +50,7 @@ TRAINING = 'training'
 VALIDATION = 'validation'
 TEST = 'test'
 
-MAX_EDGES_PACKED=160 # used in the tensor packing&unpacking for the GNN
+MAX_EDGES_PACKED=160 # used in the tensor packing&unpacking for the NN
 
 INDICES_TABLE_DB = 'indices_table.sql'
 
@@ -176,7 +176,7 @@ def check_language(text, lang_id):
     return possible_match
 
 
-### When we encounter UNK, reading in text for the GNN, we skip it
+### When we encounter UNK, reading in text for the NN, we skip it
 class MustSkipUNK_Exception(Exception):
     def __init__(self):
         super().__init__()

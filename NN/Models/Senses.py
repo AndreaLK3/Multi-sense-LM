@@ -2,12 +2,12 @@ import torch
 from torch_geometric.nn import GATConv
 import torch.nn.functional as tfunc
 import Graph.Adjacencies as AD
-from GNN.Models.Common import unpack_input_tensor
-from GNN.Models.Common import init_model_parameters
+from NN.Models.Common import unpack_input_tensor
+from NN.Models.Common import init_model_parameters
 from Utils import DEVICE
 from torch.nn.parameter import Parameter
 import logging
-import GNN.ExplorePredictions as EP
+import NN.ExplorePredictions as EP
 import Utils
 import nltk
 from PrepareKBInput.LemmatizeNyms import lemmatize_term

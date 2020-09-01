@@ -10,7 +10,7 @@ import logging
 import torch_geometric
 import Vocabulary.Vocabulary_Utilities as VocabUtils
 import SenseLabeledCorpus as SLC
-from GNN.NumericalIndices import try_to_get_wordnet_sense
+from NN.NumericalIndices import try_to_get_wordnet_sense
 from PrepareKBInput.LemmatizeNyms import lemmatize_term
 import nltk
 import re
@@ -335,7 +335,7 @@ def create_graph(method, slc_corpus):
                                       node_types=node_types,
                                       num_relations=5)
 
-    torch.save(graph, os.path.join('GNN', F.KBGRAPH_FILE))
+    torch.save(graph, os.path.join('NN', F.KBGRAPH_FILE))
 
     return graph
 
@@ -343,7 +343,7 @@ def create_graph(method, slc_corpus):
 
 # Entry point function: try to load the graph, else create it if it does not exist
 def get_graph_dataobject(new, slc_corpus, method=Method.FASTTEXT):
-    graph_fpath = os.path.join('GNN', F.KBGRAPH_FILE)
+    graph_fpath = os.path.join('NN', F.KBGRAPH_FILE)
     if os.path.exists(graph_fpath) and not new:
         return torch.load(graph_fpath)
     else:

@@ -15,7 +15,7 @@ import nltk
 # allowing for use of tools in the parent folder
 sys.path.append(os.path.join(os.getcwd(), '..', ''))
 from PrepareKBInput.LemmatizeNyms import lemmatize_term
-from GNN.Models.Common import lemmatize_node
+from NN.Models.Common import lemmatize_node
 from Graph.Adjacencies import get_node_data
 
 # Idea: Using 2 models in parallel:

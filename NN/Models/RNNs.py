@@ -3,13 +3,13 @@ from torch_geometric.nn import GATConv
 from torch_geometric.data.batch import Batch
 from torch_geometric.data import Data
 import torch.nn.functional as tfunc
-from GNN.Models.Common import unpack_input_tensor, init_model_parameters, lemmatize_node
-from GNN.Models.Steps_RNN import rnn_loop
+from NN.Models.Common import unpack_input_tensor, init_model_parameters, lemmatize_node
+from NN.Models.Steps_RNN import rnn_loop
 from torch.nn.parameter import Parameter
 import logging
 import nltk
 from PrepareKBInput.LemmatizeNyms import lemmatize_term
-from GNN.Models.Steps_RNN import reshape_memories, select_layer_memory, update_layer_memory
+from NN.Models.Steps_RNN import reshape_memories, select_layer_memory, update_layer_memory
 
 def run_graphnet(t_input_lts, batch_elems_at_t,t_globals_indices_ls, CURRENT_DEVICE, model):
     graph_batch_ls = []
@@ -43,14 +43,13 @@ def run_graphnet(t_input_lts, batch_elems_at_t,t_globals_indices_ls, CURRENT_DEV
 class RNN(torch.nn.Module):
 
     def __init__(self, model_type, data, grapharea_size, grapharea_matrix, vocabulary_df,
-                 include_globalnode_input, predict_senses,
+                 include_globalnode_input,
                  batch_size, n_layers, n_hid_units, dropout_p):
 
         # -------------------- Initialization and parameters --------------------
         super(RNN, self).__init__()
         self.model_type = model_type  # can be "LSTM" or "GRU"
-        init_model_parameters(self, data, grapharea_size, grapharea_matrix, vocabulary_df,
-                                   include_globalnode_input, predict_senses,
+        init_model_parameters(self, data, grapharea_size, grapharea_matrix, vocabulary_df, include_globalnode_input,
                                    batch_size, n_layers, n_hid_units, dropout_p)
         # self.num_embs = data.x.shape[0]
         self.dim_embs = data.x.shape[1]
@@ -82,17 +81,15 @@ class RNN(torch.nn.Module):
                                                 hidden_size=512 if i == n_layers - 1 else n_hid_units, num_layers=1) for
              i in range(n_layers)])
 
-        if predict_senses:
-            self.senses_rnn_ls = torch.nn.ModuleList(
-                [getattr(torch.nn, self.model_type)(input_size=self.concatenated_input_dim if i == 0 else n_hid_units,
-                                                    hidden_size=512 if i == n_layers - 1 else n_hid_units, num_layers=1)
-                 for i in range(n_layers)])
+        self.senses_rnn_ls = torch.nn.ModuleList(
+            [getattr(torch.nn, self.model_type)(input_size=self.concatenated_input_dim if i == 0 else n_hid_units,
+                                                hidden_size=512 if i == n_layers - 1 else n_hid_units, num_layers=1)
+             for i in range(n_layers)])
 
         # 2nd part of the network: 2 linear layers to the logits
         self.linear2global = torch.nn.Linear(in_features=512,  #
                                              out_features=self.last_idx_globals - self.last_idx_senses, bias=True)
-        if predict_senses:
-            self.linear2senses = torch.nn.Linear(in_features=512,  #
+        self.linear2senses = torch.nn.Linear(in_features=512,  #
                                                  out_features=self.last_idx_senses, bias=True)
 
     # ---------------------------------------- Forward call ----------------------------------------

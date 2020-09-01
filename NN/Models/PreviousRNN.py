@@ -3,7 +3,7 @@ from torch_geometric.nn import GATConv
 from torch_geometric.data.batch import Batch
 from torch_geometric.data import Data
 import torch.nn.functional as tfunc
-from GNN.Models.Common import unpack_input_tensor, init_model_parameters, lemmatize_node
+from NN.Models.Common import unpack_input_tensor, init_model_parameters, lemmatize_node
 from torch.nn.parameter import Parameter
 import logging
 import nltk

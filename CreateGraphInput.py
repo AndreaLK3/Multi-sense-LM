@@ -27,7 +27,7 @@ def reset():
     db_filepaths = [os.path.join(F.FOLDER_INPUT, Utils.INDICES_TABLE_DB)]
 
     # reset the graph object file, and the area_matrices
-    graph_filepaths = [os.path.join(F.FOLDER_GNN, F.KBGRAPH_FILE)] + \
+    graph_filepaths = [os.path.join(F.FOLDER_NN, F.KBGRAPH_FILE)] + \
                       [os.path.join(F.FOLDER_GRAPH, fname) for fname in os.listdir(F.FOLDER_GRAPH) if '.npz' in fname]
 
     for fpath in archives_filepaths:

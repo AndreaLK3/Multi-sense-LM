@@ -7,7 +7,7 @@ import Utils
 import os
 from scipy import sparse
 import pandas as pd
-from GNN.Models.Common import lemmatize_node
+from NN.Models.Common import lemmatize_node
 from types import SimpleNamespace
 
 
