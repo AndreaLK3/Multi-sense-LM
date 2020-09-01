@@ -10,6 +10,7 @@
 *rgcn_model
 *.rgcnmodel
 *.torchobj
+*.model
 *.WT2
 WikiText-103/
 runs/
