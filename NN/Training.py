@@ -127,6 +127,9 @@ def run_train(model, learning_rate, train_dataloader, valid_dataloader, num_epoc
     if with_freezing:
         model_forParameters.predict_senses = False
 
+    # debug
+    # torch.autograd.set_detect_anomaly(True)
+
     # -------------------- The training loop --------------------
     try: # to catch KeyboardInterrupt-s and still save the training & validation losses
 
@@ -162,48 +165,49 @@ def run_train(model, learning_rate, train_dataloader, valid_dataloader, num_epoc
             flag_earlystop = False
 
             # -------------------- Running on the validation set --------------------
-            logging.info("After training " + str(epoch-1) + " epochs, validation:")
-            valid_loss_globals, valid_loss_senses, multisenses_evaluation_loss = evaluation(valid_dataloader,
-                                                                                            valid_dataiter,
-                                                                                            model, verbose=False)
-            validation_sumlosses = valid_loss_globals, valid_loss_senses, multisenses_evaluation_loss
-            Utils.record_statistics(validation_sumlosses, (1, 1, 1), losses_lts=validation_losses_lts)
+            if epoch>1: # moved to epochs 1 and onwards for debug purposes
+                logging.info("After training " + str(epoch-1) + " epochs, validation:")
+                valid_loss_globals, valid_loss_senses, multisenses_evaluation_loss = evaluation(valid_dataloader,
+                                                                                                valid_dataiter,
+                                                                                                model, verbose=False)
+                validation_sumlosses = valid_loss_globals, valid_loss_senses, multisenses_evaluation_loss
+                Utils.record_statistics(validation_sumlosses, (1, 1, 1), losses_lts=validation_losses_lts)
 
-            # -------------------- Check the validation loss & the need for freezing / early stopping --------------------
-            if exp(valid_loss_globals) > exp(best_valid_loss_globals) + 0.1 and (epoch > 5): # 'and' condition is for mini-experiments
-                torch.save(model, os.path.join(F.FOLDER_NN, hyperparams_str + '_earlystop_on_globals.model'))
-                if not with_freezing:
-                    # previous validation was better. Now we must early-stop
-                    logging.info("Early stopping. Latest validation PPL=" + str(round(exp(valid_loss_globals), 2))
-                                 + " ; best validation PPL=" + str(round(exp(best_valid_loss_globals), 2)))
-                    flag_earlystop = True
-                else:
-                    if not after_freezing_flag:
-                        # we are predicting first the standard LM, and then the senses. Freeze (1), activate (2).
-                        logging.info("New validation worse than previous one. " +
-                                     "Freezing the weights in the standard LM, activating senses' prediction.")
-                        for (name, p) in model_forParameters.named_parameters():  # (1)
-                            if ("main_rnn" in name) or ("X" in name) or ("linear2global" in name):
-                                p.requires_grad = False
-                        optimizers.append(torch.optim.Adam(model.parameters(),
-                                                           lr=learning_rate))  # [p for p in model.parameters() if p.requires_grad]
-                        model_forParameters.predict_senses = True  # (2)
-                        after_freezing_flag = True
-                        freezing_epoch = epoch
-            if after_freezing_flag:
-                if (exp(valid_loss_senses) > exp(previous_valid_loss_senses) + 1) and epoch > freezing_epoch + 3:
-                    logging.info("Early stopping on senses.")
-                    flag_earlystop = True
+                # -------------------- Check the validation loss & the need for freezing / early stopping --------------------
+                if exp(valid_loss_globals) > exp(best_valid_loss_globals) + 0.1 and (epoch > 5): # 'and' condition is for mini-experiments
+                    torch.save(model, os.path.join(F.FOLDER_NN, hyperparams_str + '_earlystop_on_globals.model'))
+                    if not with_freezing:
+                        # previous validation was better. Now we must early-stop
+                        logging.info("Early stopping. Latest validation PPL=" + str(round(exp(valid_loss_globals), 2))
+                                     + " ; best validation PPL=" + str(round(exp(best_valid_loss_globals), 2)))
+                        flag_earlystop = True
+                    else:
+                        if not after_freezing_flag:
+                            # we are predicting first the standard LM, and then the senses. Freeze (1), activate (2).
+                            logging.info("New validation worse than previous one. " +
+                                         "Freezing the weights in the standard LM, activating senses' prediction.")
+                            for (name, p) in model_forParameters.named_parameters():  # (1)
+                                if ("main_rnn" in name) or ("X" in name) or ("linear2global" in name):
+                                    p.requires_grad = False
+                            optimizers.append(torch.optim.Adam(model.parameters(),
+                                                               lr=learning_rate))  # [p for p in model.parameters() if p.requires_grad]
+                            model_forParameters.predict_senses = True  # (2)
+                            after_freezing_flag = True
+                            freezing_epoch = epoch
+                if after_freezing_flag:
+                    if (exp(valid_loss_senses) > exp(previous_valid_loss_senses) + 1) and epoch > freezing_epoch + 3:
+                        logging.info("Early stopping on senses.")
+                        flag_earlystop = True
 
-            best_valid_loss_globals = min(best_valid_loss_globals, valid_loss_globals)
-            previous_valid_loss_senses = valid_loss_senses
-            best_valid_loss_senses = min(best_valid_loss_senses, valid_loss_senses)
+                best_valid_loss_globals = min(best_valid_loss_globals, valid_loss_globals)
+                previous_valid_loss_senses = valid_loss_senses
+                best_valid_loss_senses = min(best_valid_loss_senses, valid_loss_senses)
 
-            if epoch == num_epochs:
-                write_doc_logging(train_dataloader, model, model_forParameters, learning_rate, num_epochs)
+                if epoch == num_epochs:
+                    write_doc_logging(train_dataloader, model, model_forParameters, learning_rate, num_epochs)
 
-            if flag_earlystop:
-                break
+                if flag_earlystop:
+                    break
 
             # -------------------- The training loop over the batches --------------------
             logging.info("\nEpoch n." + str(epoch) + ":")

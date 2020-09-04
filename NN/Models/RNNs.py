@@ -7,35 +7,43 @@ from NN.Models.Common import unpack_input_tensor, init_model_parameters, lemmati
 from NN.Models.Steps_RNN import rnn_loop
 from torch.nn.parameter import Parameter
 import Utils
-from PrepareKBInput.LemmatizeNyms import lemmatize_term
+import math
+import logging
 from NN.Models.Steps_RNN import reshape_memories, select_layer_memory, update_layer_memory
 
 def run_graphnet(t_input_lts, batch_elems_at_t,t_globals_indices_ls, CURRENT_DEVICE, model):
-    graph_batch_ls = []
-    current_location_in_batchX_ls = []
-    rows_to_skip = 0
+
+    # graph_batch_ls = []
+    # current_location_in_batchX_ls = []
+    # rows_to_skip = 0
+    currentglobal_nodestates_ls = []
     if model.include_globalnode_input:
         t_edgeindex_g_ls = [t_input_lts[b][0][1] for b in range(len(t_input_lts))]
         t_edgetype_g_ls = [t_input_lts[b][0][2] for b in range(len(t_input_lts))]
-
         for i_sample in range(batch_elems_at_t.shape[0]):
             sample_edge_index = t_edgeindex_g_ls[i_sample]
             sample_edge_type = t_edgetype_g_ls[i_sample]
             x_indices, edge_index, edge_type = lemmatize_node(t_globals_indices_ls[i_sample], sample_edge_index, sample_edge_type, model=model)
             sample_x = model.X.index_select(dim=0, index=x_indices.squeeze())
+            x_attention_states = model.gat_globals(sample_x, edge_index)
+            currentglobal_node_state = x_attention_states.index_select(dim=0, index=model.select_first_indices[0].to(
+                torch.int64))
+            currentglobal_nodestates_ls.append(currentglobal_node_state)
+            #currentword_location_in_batchX = rows_to_skip + current_location_in_batchX_ls[-1] \
+            #    if len(current_location_in_batchX_ls) > 0 else 0
+            #rows_to_skip = sample_x.shape[0]
+            #current_location_in_batchX_ls.append(currentword_location_in_batchX)
 
-            currentword_location_in_batchX = rows_to_skip + current_location_in_batchX_ls[-1] \
-                if len(current_location_in_batchX_ls) > 0 else 0
-            rows_to_skip = sample_x.shape[0]
-            current_location_in_batchX_ls.append(currentword_location_in_batchX)
+            # sample_graph = Data(x=sample_x, edge_index=sample_edge_index)
+            # graph_batch_ls.append(sample_graph)
 
-            sample_graph = Data(x=sample_x, edge_index=sample_edge_index)
-            graph_batch_ls.append(sample_graph)
-
-        batch_graph = Batch.from_data_list(graph_batch_ls)
-        x_attention_states = model.gat_globals(batch_graph.x, batch_graph.edge_index)
-        t_currentglobal_node_states = x_attention_states.index_select(dim=0, index=torch.tensor(
-            current_location_in_batchX_ls).to(torch.int64).to(CURRENT_DEVICE))
+        # batch_graph = Batch.from_data_list(graph_batch_ls)
+        #logging.info("after run: model.gat_globals.weight[0][0:5]=" + str(model.gat_globals.weight[0][0:5]))
+        if math.isnan(model.gat_globals.weight[0][0].item()):
+            logging.info(">>>> Problem located. Time to debug now. <<<<")
+        #t_currentglobal_node_states = x_attention_states.index_select(dim=0, index=torch.tensor(
+        #    current_location_in_batchX_ls).to(torch.int64).to(CURRENT_DEVICE))
+        t_currentglobal_node_states = torch.stack(currentglobal_nodestates_ls, dim=0).squeeze(dim=1)
         return t_currentglobal_node_states
 
 

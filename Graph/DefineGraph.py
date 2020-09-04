@@ -102,7 +102,7 @@ def initialize_senses(X_defs, X_examples, X_globals, vocabulary_ls, average_or_r
         if average_or_random_flag:
             wn_id = db_row[0]
 
-            pt = r'\.([^.])+\.'
+            pt = r'\.([^.])+\.(?=([0-9])+)'
             logging.debug("wn_id=" + str(wn_id))
             mtc = re.search(pt, db_row[0])
             pos = mtc.group(0)[1:-1]
