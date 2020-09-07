@@ -13,9 +13,6 @@ from NN.Models.Steps_RNN import reshape_memories, select_layer_memory, update_la
 
 def run_graphnet(t_input_lts, batch_elems_at_t,t_globals_indices_ls, CURRENT_DEVICE, model):
 
-    # graph_batch_ls = []
-    # current_location_in_batchX_ls = []
-    # rows_to_skip = 0
     currentglobal_nodestates_ls = []
     if model.include_globalnode_input:
         t_edgeindex_g_ls = [t_input_lts[b][0][1] for b in range(len(t_input_lts))]
@@ -29,20 +26,7 @@ def run_graphnet(t_input_lts, batch_elems_at_t,t_globals_indices_ls, CURRENT_DEV
             currentglobal_node_state = x_attention_states.index_select(dim=0, index=model.select_first_indices[0].to(
                 torch.int64))
             currentglobal_nodestates_ls.append(currentglobal_node_state)
-            #currentword_location_in_batchX = rows_to_skip + current_location_in_batchX_ls[-1] \
-            #    if len(current_location_in_batchX_ls) > 0 else 0
-            #rows_to_skip = sample_x.shape[0]
-            #current_location_in_batchX_ls.append(currentword_location_in_batchX)
 
-            # sample_graph = Data(x=sample_x, edge_index=sample_edge_index)
-            # graph_batch_ls.append(sample_graph)
-
-        # batch_graph = Batch.from_data_list(graph_batch_ls)
-        #logging.info("after run: model.gat_globals.weight[0][0:5]=" + str(model.gat_globals.weight[0][0:5]))
-        if math.isnan(model.gat_globals.weight[0][0].item()):
-            logging.info(">>>> Problem located. Time to debug now. <<<<")
-        #t_currentglobal_node_states = x_attention_states.index_select(dim=0, index=torch.tensor(
-        #    current_location_in_batchX_ls).to(torch.int64).to(CURRENT_DEVICE))
         t_currentglobal_node_states = torch.stack(currentglobal_nodestates_ls, dim=0).squeeze(dim=1)
         return t_currentglobal_node_states
 
@@ -62,7 +46,8 @@ class RNN(torch.nn.Module):
 
         self.E = Parameter(embeddings_matrix.clone().detach(), requires_grad=True) # The matrix of embeddings
         self.dim_embs = self.E.shape[1]
-        self.X = Parameter(data.x.clone().detach(), requires_grad=True)  # The matrix of global-nodestates
+        if include_globalnode_input:
+            self.X = Parameter(data.x.clone().detach(), requires_grad=True)  # The matrix of global-nodestates
 
         # -------------------- Utilities --------------------
         # utility tensors, used in index_select etc.
@@ -87,18 +72,18 @@ class RNN(torch.nn.Module):
         # -------------------- The networks --------------------
         self.main_rnn_ls = torch.nn.ModuleList(
             [getattr(torch.nn, self.model_type)(input_size=self.concatenated_input_dim if i == 0 else n_hid_units,
-                                                hidden_size=450 if i == n_layers - 1 else n_hid_units, num_layers=1) for
+                                                hidden_size=512 if i == n_layers - 1 else n_hid_units, num_layers=1) for
              i in range(n_layers)])
 
         self.senses_rnn_ls = torch.nn.ModuleList(
             [getattr(torch.nn, self.model_type)(input_size=self.concatenated_input_dim if i == 0 else n_hid_units,
-                                                hidden_size=450 if i == n_layers - 1 else n_hid_units, num_layers=1)
+                                                hidden_size=512 if i == n_layers - 1 else n_hid_units, num_layers=1)
              for i in range(n_layers)])
 
         # 2nd part of the network: 2 linear layers to the logits
-        self.linear2global = torch.nn.Linear(in_features=450,  #
+        self.linear2global = torch.nn.Linear(in_features=512,  #
                                              out_features=self.last_idx_globals - self.last_idx_senses, bias=True)
-        self.linear2senses = torch.nn.Linear(in_features=450,  #
+        self.linear2senses = torch.nn.Linear(in_features=512,  #
                                                  out_features=self.last_idx_senses, bias=True)
 
     # ---------------------------------------- Forward call ----------------------------------------
@@ -152,7 +137,7 @@ class RNN(torch.nn.Module):
 
         # ------------------- Globals -------------------
         # - input of shape(seq_len, batch_size, input_size): tensor containing the features of the input sequence.
-        task_1_out = rnn_loop(batch_input_signals, model=self)  # self.network_1_L1(input)
+        task_1_out = rnn_loop(batch_input_signals, model=self, rnn_ls=self.main_rnn_ls)  # self.network_1_L1(input)
         task_1_out = task_1_out.permute(1, 0, 2)  # going to: (batch_size, seq_len, n_units)
 
         seq_len = batch_input_signals.shape[0]
@@ -162,9 +147,9 @@ class RNN(torch.nn.Module):
         predictions_globals = tfunc.log_softmax(logits_global, dim=1)
 
         # ------------------- Senses -------------------
-        # line 1: GRU for senses + linear FF-NN tos logits.
+        # line 1: GRU for senses + linear FF-NN to logits.
         if self.predict_senses:
-            task_2_out = rnn_loop(batch_input_signals, model=self)
+            task_2_out = rnn_loop(batch_input_signals, model=self, rnn_ls=self.senses_rnn_ls)
             task2_out = task_2_out.reshape(distributed_batch_size * seq_len, task_2_out.shape[2])
 
             logits_sense = self.linear2senses(task2_out)

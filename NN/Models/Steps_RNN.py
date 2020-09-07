@@ -6,24 +6,24 @@ from torch.nn import Parameter, functional as tfunc
 #############################
 
 # The loop over the layers of a RNN
-def rnn_loop(batch_input_signals, model):
-    main_rnn_out = None
+def rnn_loop(batch_input_signals, model, rnn_ls):
+    rnn_out = None
     input = batch_input_signals
     for i in range(model.n_layers):
-        layer_rnn = model.main_rnn_ls[i]
+        layer_rnn = rnn_ls[i] # model.main_rnn_ls[i] I always took it from here. That was a mistake.
         layer_rnn.flatten_parameters()
         if model.model_type.upper() == "LSTM":
-            main_rnn_out, (hidden_i, cells_i) = \
+            rnn_out, (hidden_i, cells_i) = \
                 layer_rnn(input, select_layer_memory(model, i, layer_rnn))
             update_layer_memory(model, i, layer_rnn, hidden_i, cells_i)
         else: # GRU
-            main_rnn_out, hidden_i = \
+            rnn_out, hidden_i = \
                 layer_rnn(input, select_layer_memory(model, i, layer_rnn))
             update_layer_memory(model, i, layer_rnn, hidden_i)
 
-        input = main_rnn_out
+        input = rnn_out
 
-    return main_rnn_out
+    return rnn_out
 
 
 # Reshaping the hidden state memories when we know the batch size allocated on the current GPU
