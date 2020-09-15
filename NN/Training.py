@@ -14,7 +14,8 @@ from WordEmbeddings.ComputeEmbeddings import Method
 from NN.Loss import write_doc_logging, compute_model_loss
 from Utils import DEVICE
 import NN.DataLoading as DL
-import NN.Models.RNNs as RNNFreezer
+import NN.Models.RNNs as RNNs
+import NN.Models.Senses as Senses
 from itertools import cycle
 import gc
 from math import exp
@@ -24,7 +25,6 @@ def load_model_from_file():
     model = torch.load(saved_model_path).module
     logging.info("Loading the model found at: " + str(saved_model_path))
     return model
-
 
 ################
 
@@ -47,19 +47,17 @@ def setup_train(slc_or_text_corpus, include_globalnode_input, load_saved_model,
             globals_vocabulary_df = AD.compute_globals_numsenses(graph_dataobj, grapharea_matrix, grapharea_size)
 
     # -------------------- Loading / creating the model --------------------
-    # torch.manual_seed(1) # for reproducibility while conducting mini-experiments
-    # if torch.cuda.is_available():
-    #     torch.cuda.manual_seed_all(1)
+    torch.manual_seed(1) # for reproducibility while conducting mini-experiments
+    if torch.cuda.is_available():
+         torch.cuda.manual_seed_all(1)
     if load_saved_model:
         model = load_model_from_file()
     else:
-        model = RNNFreezer.RNN("GRU", graph_dataobj, grapharea_size, grapharea_matrix, globals_vocabulary_df,
-                            embeddings_matrix, include_globalnode_input,
-                            batch_size=batch_size, n_layers=3, n_hid_units=1024, dropout_p=0)
-        # model = PrevRNN.RNN(model_type="GRU", data=graph_dataobj, grapharea_size=grapharea_size, grapharea_matrix=grapharea_matrix,
-        #                     vocabulary_wordlist=slc_or_text_corpus, include_globalnode_input=include_globalnode_input,
-        #                     include_sensenode_input=include_sensenode_input, predict_senses=predict_senses,
-        #              batch_size=batch_size, n_layers=3, n_hid_units=1024, dropout_p=0)
+        # model = RNNs.RNN("GRU", graph_dataobj, grapharea_size, grapharea_matrix, globals_vocabulary_df,
+        #                  embeddings_matrix, include_globalnode_input,
+        #                  batch_size=batch_size, n_layers=3, n_hid_units=800, dropout_p=0)
+        model = Senses.SelectK("GRU", graph_dataobj, grapharea_size, grapharea_matrix, globals_vocabulary_df, embeddings_matrix,
+                 include_globalnode_input, batch_size=batch_size, n_layers=3, n_hid_units=1024, dropout_p=0, k=10)
 
     # -------------------- Moving objects on GPU --------------------
     logging.info("Graph-data object loaded, model initialized. Moving them to GPU device(s) if present.")
@@ -130,11 +128,11 @@ def run_train(model, learning_rate, train_dataloader, valid_dataloader, num_epoc
     # debug
     # torch.autograd.set_detect_anomaly(True)
 
+    train_dataiter = iter(cycle(train_dataloader))
+    valid_dataiter = iter(cycle(valid_dataloader))
+
     # -------------------- The training loop --------------------
     try: # to catch KeyboardInterrupt-s and still save the training & validation losses
-
-        train_dataiter = iter(cycle(train_dataloader))
-        valid_dataiter = iter(cycle(valid_dataloader))
 
         for epoch in range(1,num_epochs+1):
 
@@ -159,8 +157,8 @@ def run_train(model, learning_rate, train_dataloader, valid_dataloader, num_epoc
                                         'top_k_multi_s':0,
                                         'tot_multi_s':0
                                         }
-            verbose = True if (epoch==num_epochs) or (epoch% 100==0) else False # - log prediction output
-            # verbose_valid = True if (epoch == num_epochs) or (epoch % 10 == 0) else False  # - log prediction output
+            verbose = True if (epoch==num_epochs) or (epoch% 200==0) else False # - log prediction output
+            # verbose_valid = True if (epoch == num_epochs) or (epoch in []) else False  # - log prediction output
 
             flag_earlystop = False
 
@@ -195,7 +193,7 @@ def run_train(model, learning_rate, train_dataloader, valid_dataloader, num_epoc
                             after_freezing_flag = True
                             freezing_epoch = epoch
                 if after_freezing_flag:
-                    if (exp(valid_loss_senses) > exp(previous_valid_loss_senses) + 1) and epoch > freezing_epoch + 3:
+                    if (exp(valid_loss_senses) > exp(previous_valid_loss_senses) + 1) and epoch > freezing_epoch + 5:
                         logging.info("Early stopping on senses.")
                         flag_earlystop = True
 
@@ -268,6 +266,9 @@ def run_train(model, learning_rate, train_dataloader, valid_dataloader, num_epoc
     torch.save(model, os.path.join(F.FOLDER_NN, hyperparams_str + '_end.model'))
     np.save(hyperparams_str + '_' + Utils.TRAINING + '_' + F.LOSSES_FILEEND, np.array(training_losses_lts))
     np.save(hyperparams_str + '_' + Utils.VALIDATION + '_' + F.LOSSES_FILEEND, np.array(validation_losses_lts))
+
+    # --------------------- Printing validation predictions & errors ---------------------
+    evaluation(valid_dataloader, valid_dataiter, model, verbose=True)
 
 
 

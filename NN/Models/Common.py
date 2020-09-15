@@ -202,3 +202,22 @@ class ForwardWithDrop(object):
 
         return self.original_module_forward(*args, **kwargs)
 
+
+def run_graphnet(t_input_lts, batch_elems_at_t,t_globals_indices_ls, CURRENT_DEVICE, model):
+
+    currentglobal_nodestates_ls = []
+    if model.include_globalnode_input:
+        t_edgeindex_g_ls = [t_input_lts[b][0][1] for b in range(len(t_input_lts))]
+        t_edgetype_g_ls = [t_input_lts[b][0][2] for b in range(len(t_input_lts))]
+        for i_sample in range(batch_elems_at_t.shape[0]):
+            sample_edge_index = t_edgeindex_g_ls[i_sample]
+            sample_edge_type = t_edgetype_g_ls[i_sample]
+            x_indices, edge_index, edge_type = lemmatize_node(t_globals_indices_ls[i_sample], sample_edge_index, sample_edge_type, model=model)
+            sample_x = model.X.index_select(dim=0, index=x_indices.squeeze())
+            x_attention_states = model.gat_globals(sample_x, edge_index)
+            currentglobal_node_state = x_attention_states.index_select(dim=0, index=model.select_first_indices[0].to(
+                torch.int64))
+            currentglobal_nodestates_ls.append(currentglobal_node_state)
+
+        t_currentglobal_node_states = torch.stack(currentglobal_nodestates_ls, dim=0).squeeze(dim=1)
+        return t_currentglobal_node_states

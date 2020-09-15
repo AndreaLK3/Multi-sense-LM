@@ -267,7 +267,7 @@ def train():
             loss = loss + a_mean*tar_contribution_model_base + (1-a_mean)*tar_contribution_model_modified
         loss.backward()
 
-        # `clip_grad_norm` helps prevent the exploding gradient problem in RNNs / LSTMs.
+        # `clip_grad_norm` helps prevent the exploding gradient problem in RNNs.py / LSTMs.
         if args.clip: torch.nn.utils.clip_grad_norm_(params, args.clip)
         optimizer.step()
 

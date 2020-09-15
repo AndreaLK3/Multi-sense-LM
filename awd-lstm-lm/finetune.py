@@ -152,7 +152,7 @@ def train():
         loss = loss + sum(args.beta * (rnn_h[1:] - rnn_h[:-1]).pow(2).mean() for rnn_h in rnn_hs[-1:])
         loss.backward()
 
-        # `clip_grad_norm` helps prevent the exploding gradient problem in RNNs / LSTMs.
+        # `clip_grad_norm` helps prevent the exploding gradient problem in RNNs.py / LSTMs.
         torch.nn.utils.clip_grad_norm(model_base.parameters(), args.clip)
         optimizer.step()
 

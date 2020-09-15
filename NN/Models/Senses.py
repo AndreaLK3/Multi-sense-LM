@@ -2,7 +2,7 @@ import torch
 from torch_geometric.nn import GATConv
 import torch.nn.functional as tfunc
 import Graph.Adjacencies as AD
-from NN.Models.Common import unpack_input_tensor, init_model_parameters, lemmatize_node
+from NN.Models.Common import unpack_input_tensor, init_model_parameters, lemmatize_node, run_graphnet
 from NN.Models.Steps_RNN import rnn_loop, reshape_memories
 from Utils import DEVICE
 from torch.nn.parameter import Parameter
@@ -28,41 +28,21 @@ def subtract_probability_mass_from_selected(softmax_selected_senses, delta_to_su
 
 # *****************************
 
-# Choose among the senses of the most likely 5 globals.
+# Choose among the senses of the most likely k=,1,5,10... globals.
 # Add the [the probability distribution over those] to [the distribution over the whole senses' vocabulary]...
-
-
-def run_graphnet(t_input_lts, batch_elems_at_t, t_globals_indices_ls, CURRENT_DEVICE, model):
-
-    currentglobal_nodestates_ls = []
-    if model.include_globalnode_input:
-        t_edgeindex_g_ls = [t_input_lts[b][0][1] for b in range(len(t_input_lts))]
-        t_edgetype_g_ls = [t_input_lts[b][0][2] for b in range(len(t_input_lts))]
-        for i_sample in range(batch_elems_at_t.shape[0]):
-            sample_edge_index = t_edgeindex_g_ls[i_sample]
-            sample_edge_type = t_edgetype_g_ls[i_sample]
-            x_indices, edge_index, edge_type = lemmatize_node(t_globals_indices_ls[i_sample], sample_edge_index, sample_edge_type, model=model)
-            sample_x = model.X.index_select(dim=0, index=x_indices.squeeze())
-            x_attention_states = model.gat_globals(sample_x, edge_index)
-            currentglobal_node_state = x_attention_states.index_select(dim=0, index=model.select_first_indices[0].to(
-                torch.int64))
-            currentglobal_nodestates_ls.append(currentglobal_node_state)
-
-        t_currentglobal_node_states = torch.stack(currentglobal_nodestates_ls, dim=0).squeeze(dim=1)
-        return t_currentglobal_node_states
-
 
 class SelectK(torch.nn.Module):
 
     def __init__(self, model_type, data, grapharea_size, grapharea_matrix, vocabulary_df, embeddings_matrix,
                  include_globalnode_input,
-                 batch_size, n_layers, n_hid_units, dropout_p):
+                 batch_size, n_layers, n_hid_units, dropout_p, k):
 
         # -------------------- Initialization and parameters --------------------
         super(SelectK, self).__init__()
         self.model_type = model_type  # can be "LSTM" or "GRU"
         init_model_parameters(self, data, grapharea_size, grapharea_matrix, vocabulary_df, include_globalnode_input,
                                    batch_size, n_layers, n_hid_units, dropout_p)
+        self.K = k
 
 
         self.E = Parameter(embeddings_matrix.clone().detach(), requires_grad=True) # The matrix of embeddings
@@ -88,7 +68,6 @@ class SelectK(torch.nn.Module):
         if self.include_globalnode_input:
             self.gat_globals = GATConv(in_channels=Utils.GRAPH_EMBEDDINGS_DIM, out_channels=int(Utils.GRAPH_EMBEDDINGS_DIM / 2),
                                        heads=2)  # , node_dim=1)
-            lemmatize_term('init', self.lemmatizer)# to establish LazyCorpusLoader and prevent a multi-thread crash
 
         # -------------------- The networks --------------------
         self.main_rnn_ls = torch.nn.ModuleList(
@@ -177,7 +156,7 @@ class SelectK(torch.nn.Module):
             # predictions_senses = tfunc.log_softmax(logits_sense, dim=1)
 
             # line 2: select senses of the k most likely globals
-            k_globals_indices = logits_global.sort(descending=True).indices[:, 0:self.k]
+            k_globals_indices = logits_global.sort(descending=True).indices[:, 0:self.K]
 
             senses_softmax = torch.ones((distributed_batch_size * seq_len, self.last_idx_senses)).to(CURRENT_DEVICE)
             epsilon = 10 ** (-8)
@@ -188,16 +167,14 @@ class SelectK(torch.nn.Module):
 
             for s in range(distributed_batch_size * seq_len):
                 k_globals_vocab_indices = sample_k_indices_in_vocab_lls[s]
-                k_globals_words = [self.vocabulary_wordlist[global_idx_in_vocab] for global_idx_in_vocab in
-                                   k_globals_vocab_indices]
-                k_globals_lemmatized = [lemmatize_term(word, self.lemmatizer) for word in k_globals_words]
-                lemmatized_indices = [
-                    Utils.word_to_vocab_index(lemmatized_word, self.vocabulary_wordlist) + self.last_idx_senses for
+                k_globals_lemmatized = [self.vocabulary_lemmatizedList[idx] for idx in k_globals_vocab_indices]
+                lemmatized_indices_in_X = [
+                    Utils.word_to_vocab_index(lemmatized_word, self.vocabulary_wordList) + self.last_idx_senses for
                     lemmatized_word in k_globals_lemmatized]
-                sense_neighbours_t = get_senseneighbours_of_k_globals(self, lemmatized_indices)
-                if sense_neighbours_t.shape[0] == 0:  # no senses found, even lemmatizing. Ignore current entry
-                    senses_softmax[s] = torch.tensor(1 / self.last_idx_senses).to(CURRENT_DEVICE)
-                    continue
+                sense_neighbours_t = get_senseneighbours_of_k_globals(self, lemmatized_indices_in_X)
+                # if sense_neighbours_t.shape[0] == 0:  # no senses found, even lemmatizing. Ignore current entry
+                #     senses_softmax[s] = torch.tensor(1 / self.last_idx_senses).to(CURRENT_DEVICE)
+                #     continue
 
                 # standard procedure: get the logits of the senses of the most likely globals,
                 # apply a softmax only over them, and then assign an epsilon probability to the other senses

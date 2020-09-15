@@ -1,41 +1,17 @@
 import torch
 from torch_geometric.nn import GATConv
-from torch_geometric.data.batch import Batch
-from torch_geometric.data import Data
 import torch.nn.functional as tfunc
-from NN.Models.Common import unpack_input_tensor, init_model_parameters, lemmatize_node
+from NN.Models.Common import unpack_input_tensor, init_model_parameters, run_graphnet
 from NN.Models.Steps_RNN import rnn_loop
 from torch.nn.parameter import Parameter
 import Utils
-import math
-import logging
-from NN.Models.Steps_RNN import reshape_memories, select_layer_memory, update_layer_memory
-
-def run_graphnet(t_input_lts, batch_elems_at_t,t_globals_indices_ls, CURRENT_DEVICE, model):
-
-    currentglobal_nodestates_ls = []
-    if model.include_globalnode_input:
-        t_edgeindex_g_ls = [t_input_lts[b][0][1] for b in range(len(t_input_lts))]
-        t_edgetype_g_ls = [t_input_lts[b][0][2] for b in range(len(t_input_lts))]
-        for i_sample in range(batch_elems_at_t.shape[0]):
-            sample_edge_index = t_edgeindex_g_ls[i_sample]
-            sample_edge_type = t_edgetype_g_ls[i_sample]
-            x_indices, edge_index, edge_type = lemmatize_node(t_globals_indices_ls[i_sample], sample_edge_index, sample_edge_type, model=model)
-            sample_x = model.X.index_select(dim=0, index=x_indices.squeeze())
-            x_attention_states = model.gat_globals(sample_x, edge_index)
-            currentglobal_node_state = x_attention_states.index_select(dim=0, index=model.select_first_indices[0].to(
-                torch.int64))
-            currentglobal_nodestates_ls.append(currentglobal_node_state)
-
-        t_currentglobal_node_states = torch.stack(currentglobal_nodestates_ls, dim=0).squeeze(dim=1)
-        return t_currentglobal_node_states
+from NN.Models.Steps_RNN import reshape_memories
 
 
 class RNN(torch.nn.Module):
 
     def __init__(self, model_type, data, grapharea_size, grapharea_matrix, vocabulary_df, embeddings_matrix,
-                 include_globalnode_input,
-                 batch_size, n_layers, n_hid_units, dropout_p):
+                 include_globalnode_input, batch_size, n_layers, n_hid_units, dropout_p, k):
 
         # -------------------- Initialization and parameters --------------------
         super(RNN, self).__init__()
@@ -67,23 +43,22 @@ class RNN(torch.nn.Module):
         if self.include_globalnode_input:
             self.gat_globals = GATConv(in_channels=Utils.GRAPH_EMBEDDINGS_DIM, out_channels=int(Utils.GRAPH_EMBEDDINGS_DIM / 2),
                                        heads=2)  # , node_dim=1)
-            # lemmatize_term('init', self.lemmatizer)# to establish LazyCorpusLoader and prevent a multi-thread crash
 
         # -------------------- The networks --------------------
         self.main_rnn_ls = torch.nn.ModuleList(
             [getattr(torch.nn, self.model_type)(input_size=self.concatenated_input_dim if i == 0 else n_hid_units,
-                                                hidden_size=512 if i == n_layers - 1 else n_hid_units, num_layers=1) for
+                                                hidden_size=450 if i == n_layers - 1 else n_hid_units, num_layers=1) for
              i in range(n_layers)])
 
         self.senses_rnn_ls = torch.nn.ModuleList(
             [getattr(torch.nn, self.model_type)(input_size=self.concatenated_input_dim if i == 0 else n_hid_units,
-                                                hidden_size=512 if i == n_layers - 1 else n_hid_units, num_layers=1)
+                                                hidden_size=450 if i == n_layers - 1 else n_hid_units, num_layers=1)
              for i in range(n_layers)])
 
         # 2nd part of the network: 2 linear layers to the logits
-        self.linear2global = torch.nn.Linear(in_features=512,  #
+        self.linear2global = torch.nn.Linear(in_features=450,  #
                                              out_features=self.last_idx_globals - self.last_idx_senses, bias=True)
-        self.linear2senses = torch.nn.Linear(in_features=512,  #
+        self.linear2senses = torch.nn.Linear(in_features=450,  #
                                                  out_features=self.last_idx_senses, bias=True)
 
     # ---------------------------------------- Forward call ----------------------------------------
@@ -125,7 +100,7 @@ class RNN(torch.nn.Module):
             word_embeddings_ls.append(t_word_embeddings)
             # Input signal n.2: the node-state of the current global word - now with graph batching
             if self.include_globalnode_input:
-                t_g_nodestates = run_graphnet(t_input_lts, batch_elems_at_t,t_globals_indices_ls, CURRENT_DEVICE, self)
+                t_g_nodestates = run_graphnet(t_input_lts, batch_elems_at_t, t_globals_indices_ls, CURRENT_DEVICE, self)
                 currentglobal_nodestates_ls.append(t_g_nodestates)
 
         word_embeddings = torch.stack(word_embeddings_ls, dim=0)

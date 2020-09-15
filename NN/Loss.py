@@ -105,26 +105,11 @@ def compute_model_loss(model, batch_input, batch_labels, correct_preds_dict, mul
     # debug: check the solutions and predictions. Is there anything the model is unable to predict?
     if verbose:
         logging.info("*******\ncompute_model_loss > verbose logging of batch")
-        EP.log_batch(batch_labels, predictions_globals, predictions_senses, 2)
+        EP.log_batch(batch_labels, predictions_globals, predictions_senses, 10)
 
     losses_tpl = loss_global, loss_all_senses, loss_multi_senses
     senses_in_batch = len(batch_labels_all_senses[batch_labels_all_senses != -1])
     multisenses_in_batch = len(batch_labels_multi_senses[batch_labels_multi_senses != -1])
     num_sense_instances_tpl = senses_in_batch, multisenses_in_batch
-
-    # Temp: debugging the GAT
-    # logging.info("min & max (predictions_senses) = " + str(((torch.min(predictions_senses, dim=1)[0],
-    #                                                             torch.max(predictions_senses, dim=1)[0]))))
-    # logging.info("loss_global, loss_all_senses, loss_multi_senses= " + str((round(loss_global.item(),2),
-    #                                                                         round(loss_all_senses.item(),2),
-    #                                                                         round(loss_multi_senses.item(),2))))
-    # logging.info("senses_in_batch, multisenses_in_batch= "+str((senses_in_batch, multisenses_in_batch)))
-    # logging.info("Parameter | isfinite.all() | isnan.any()  | gradient.isfinite.all() | gradient.isnan.any()")
-    # parameters_list = [(name, param.shape, param.dtype, torch.isfinite(param.data).all(), torch.isnan(param.data).any()) for (name, param) in
-    #                   model.named_parameters()]
-    # X_isnan = torch.isnan(model.X.data)
-    # X_isinf = torch.isinf(model.X.data)
-    # isnan_rows = [i for i in range(X_isnan.shape[0]) if True in X_isnan[i]]
-    # logging.info('\n'.join([str(p) for p in parameters_list]))
 
     return (losses_tpl, num_sense_instances_tpl)
