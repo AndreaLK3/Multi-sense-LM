@@ -33,19 +33,16 @@ def subtract_probability_mass_from_selected(softmax_selected_senses, delta_to_su
 
 class SelectK(torch.nn.Module):
 
-    def __init__(self, model_type, data, grapharea_size, grapharea_matrix, vocabulary_df, embeddings_matrix,
-                 include_globalnode_input,
-                 batch_size, n_layers, n_hid_units, dropout_p, k):
+    def __init__(self, data, grapharea_size, grapharea_matrix, vocabulary_df, embeddings_matrix,
+                 include_globalnode_input, batch_size, n_layers, n_hid_units, dropout_p, k):
 
         # -------------------- Initialization and parameters --------------------
         super(SelectK, self).__init__()
-        self.model_type = model_type  # can be "LSTM" or "GRU"
         init_model_parameters(self, data, grapharea_size, grapharea_matrix, vocabulary_df, include_globalnode_input,
-                                   batch_size, n_layers, n_hid_units, dropout_p)
+                              batch_size, n_layers, n_hid_units, dropout_p)
         self.K = k
 
-
-        self.E = Parameter(embeddings_matrix.clone().detach(), requires_grad=True) # The matrix of embeddings
+        self.E = Parameter(embeddings_matrix.clone().detach(), requires_grad=True)  # The matrix of embeddings
         self.dim_embs = self.E.shape[1]
         if include_globalnode_input:
             self.X = Parameter(data.x.clone().detach(), requires_grad=True)  # The matrix of global-nodestates
@@ -57,9 +54,8 @@ class SelectK(torch.nn.Module):
 
         # Memories of the hidden states; overwritten at the 1st forward, when we know the distributed batch size
         self.memory_hn = Parameter(torch.zeros(size=(n_layers, batch_size, n_hid_units)), requires_grad=False)
-        self.memory_cn = Parameter(torch.zeros(size=(n_layers, batch_size, n_hid_units)), requires_grad=False)
         self.memory_hn_senses = Parameter(torch.zeros(size=(n_layers, batch_size, int(n_hid_units))), requires_grad=False)
-        self.memory_cn_senses = Parameter(torch.zeros(size=(n_layers, batch_size, int(n_hid_units))), requires_grad=False)
+
         self.hidden_state_bsize_adjusted = False
 
         # -------------------- Input signals --------------------
@@ -71,12 +67,12 @@ class SelectK(torch.nn.Module):
 
         # -------------------- The networks --------------------
         self.main_rnn_ls = torch.nn.ModuleList(
-            [getattr(torch.nn, self.model_type)(input_size=self.concatenated_input_dim if i == 0 else n_hid_units,
+            [torch.nn.GRU(input_size=self.concatenated_input_dim if i == 0 else n_hid_units,
                                                 hidden_size=512 if i == n_layers - 1 else n_hid_units, num_layers=1) for
              i in range(n_layers)])
 
         self.senses_rnn_ls = torch.nn.ModuleList(
-            [getattr(torch.nn, self.model_type)(input_size=self.concatenated_input_dim if i == 0 else n_hid_units,
+            [torch.nn.GRU(input_size=self.concatenated_input_dim if i == 0 else n_hid_units,
                                                 hidden_size=512 if i == n_layers - 1 else n_hid_units, num_layers=1)
              for i in range(n_layers)])
 
@@ -98,9 +94,7 @@ class SelectK(torch.nn.Module):
 
         # T-BPTT: at the start of each batch, we detach_() the hidden state from the graph&history that created it
         self.memory_hn.detach_()
-        self.memory_cn.detach_()
         self.memory_hn_senses.detach_()
-        self.memory_cn_senses.detach_()
 
         if batchinput_tensor.shape[1] > 1:
             time_instants = torch.chunk(batchinput_tensor, chunks=batchinput_tensor.shape[1], dim=1)
@@ -137,7 +131,7 @@ class SelectK(torch.nn.Module):
 
         # ------------------- Globals -------------------
         # - input of shape(seq_len, batch_size, input_size): tensor containing the features of the input sequence.
-        task_1_out = rnn_loop(batch_input_signals, model=self, rnn_ls=self.main_rnn_ls)  # self.network_1_L1(input)
+        task_1_out = rnn_loop(batch_input_signals, model=self, globals_or_senses_rnn=True)  # self.network_1_L1(input)
         task_1_out = task_1_out.permute(1, 0, 2)  # going to: (batch_size, seq_len, n_units)
 
         seq_len = batch_input_signals.shape[0]
@@ -149,7 +143,7 @@ class SelectK(torch.nn.Module):
         # ------------------- Senses -------------------
         # line 1: GRU for senses + linear FF-NN to logits.
         if self.predict_senses:
-            task_2_out = rnn_loop(batch_input_signals, model=self, rnn_ls=self.senses_rnn_ls)
+            task_2_out = rnn_loop(batch_input_signals, model=self, globals_or_senses_rnn=False)
             task2_out = task_2_out.reshape(distributed_batch_size * seq_len, task_2_out.shape[2])
 
             logits_sense = self.linear2senses(task2_out)

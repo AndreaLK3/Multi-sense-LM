@@ -6,20 +6,20 @@ from torch.nn import Parameter, functional as tfunc
 #############################
 
 # The loop over the layers of a RNN
-def rnn_loop(batch_input_signals, model, rnn_ls):
+def rnn_loop(batch_input_signals, model, globals_or_senses_rnn):
+    if globals_or_senses_rnn:
+        rnn_ls = model.main_rnn_ls
+    else:
+        rnn_ls = model.senses_rnn_ls
     rnn_out = None
     input = batch_input_signals
     for i in range(model.n_layers):
-        layer_rnn = rnn_ls[i] # model.main_rnn_ls[i] I always took it from here. That was a mistake.
+        layer_rnn = rnn_ls[i]
         layer_rnn.flatten_parameters()
-        if model.model_type.upper() == "LSTM":
-            rnn_out, (hidden_i, cells_i) = \
-                layer_rnn(input, select_layer_memory(model, i, layer_rnn))
-            update_layer_memory(model, i, layer_rnn, hidden_i, cells_i)
-        else: # GRU
-            rnn_out, hidden_i = \
-                layer_rnn(input, select_layer_memory(model, i, layer_rnn))
-            update_layer_memory(model, i, layer_rnn, hidden_i)
+        # GRU
+        rnn_out, hidden_i = \
+            layer_rnn(input, select_layer_memory(model, i, layer_rnn, globals_or_senses_rnn))
+        update_layer_memory(model, i, layer_rnn, hidden_i, globals_or_senses_rnn)
 
         input = rnn_out
 
@@ -33,48 +33,27 @@ def reshape_memories(distributed_batch_size, model):
     model.memory_hn = Parameter(torch.reshape(model.memory_hn.flatten()[0:new_num_hidden_state_elems],
                                               (model.n_layers, distributed_batch_size, model.hidden_size)),
                                 requires_grad=False)
-    model.memory_cn = Parameter(torch.reshape(model.memory_cn.flatten()[0:new_num_hidden_state_elems],
-                                              (model.n_layers, distributed_batch_size, model.hidden_size)),
-                                requires_grad=False)
     model.memory_hn_senses = Parameter(
         torch.reshape(
             model.memory_hn_senses.flatten()[0:((model.n_layers) * distributed_batch_size * int(model.hidden_size))],
             (model.n_layers, distributed_batch_size, int(model.hidden_size))),
         requires_grad=False)
-    model.memory_cn_senses = Parameter(
-        torch.reshape(model.memory_hn_senses.flatten()[
-                      0:((model.n_layers - 1) * distributed_batch_size * int(model.hidden_size))],
-                      (model.n_layers - 1, distributed_batch_size, int(model.hidden_size))),
-        requires_grad=False)
     model.hidden_state_bsize_adjusted = True
 
 # Selecting the portion of memory tensor (determined by the layer size) that is used in the RNN iteration
-def select_layer_memory(model, i, layer_rnn):
-    if model.model_type.upper() == "LSTM":
-        return (model.memory_hn.index_select(dim=0, index=model.select_first_indices[i].to(torch.int64)).
-            index_select(dim=2, index=model.select_first_indices[0:layer_rnn.hidden_size].to(torch.int64)),
-            model.memory_cn.index_select(dim=0, index=model.select_first_indices[i].to(torch.int64)).
-            index_select(dim=2, index=model.select_first_indices[0:layer_rnn.hidden_size].to(torch.int64)))
-    else: # GRU
-        return  model.memory_hn.index_select(dim=0, index=model.select_first_indices[i].to(torch.int64)).\
+def select_layer_memory(model, i, layer_rnn, globals_or_senses_rnn):
+    memory = model.memory_hn if globals_or_senses_rnn else model.memory_hn_senses
+    # GRU
+    return  memory.index_select(dim=0, index=model.select_first_indices[i].to(torch.int64)).\
             index_select(dim=2,index=model.select_first_indices[0:layer_rnn.hidden_size].to(torch.int64))
 
 # After execution of a RNN layer, save the new hidden state in the proper storage.
-# May be only 'hidden' (if GRU) or also 'cells' (if LSTM)
-def update_layer_memory(model, i, layer_rnn, hidden_i, cells_i=None):
+def update_layer_memory(model, i, layer_rnn, hidden_i, globals_or_senses_rnn):
+    memory = model.memory_hn if globals_or_senses_rnn else model.memory_hn_senses
     hidden_i_forcopy = hidden_i.index_select(dim=2,
                                              index=model.select_first_indices[0:layer_rnn.hidden_size].to(
                                                  torch.int64))
     hidden_i_forcopy = tfunc.pad(hidden_i_forcopy,
-                                 pad=[0, (model.memory_hn.shape[2] - layer_rnn.hidden_size)]).squeeze()
-    model.memory_hn[i].data.copy_(hidden_i_forcopy.clone())  # store h in memory
-    if cells_i is not None:
-        cells_i_forcopy = cells_i.index_select(dim=2,
-                                               index=model.select_first_indices[0:layer_rnn.hidden_size].to(
-                                                   torch.int64))
-        cells_i_forcopy = tfunc.pad(cells_i_forcopy,
-                                    pad=[0, model.memory_hn.shape[2] - layer_rnn.hidden_size]).squeeze()
-        model.memory_cn[i].data.copy_(cells_i_forcopy.clone())
-        return (hidden_i, cells_i)
-    else:
-        return hidden_i
+                                 pad=[0, (memory.shape[2] - layer_rnn.hidden_size)]).squeeze()
+    memory[i].data.copy_(hidden_i_forcopy.clone())  # store h in memory
+    return hidden_i
