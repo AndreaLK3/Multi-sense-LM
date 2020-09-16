@@ -124,8 +124,11 @@ def run_train(model, learning_rate, train_dataloader, valid_dataloader, num_epoc
     after_freezing_flag = False
     if with_freezing:
         model_forParameters.predict_senses = False
+    weights_before_freezing_check_ls = [] # ToDo: Temp
+    weights_previous_epoch_check_ls = []
+    parameters_to_check_names_ls = []
 
-    # debug
+    # debugb
     # torch.autograd.set_detect_anomaly(True)
 
     train_dataiter = iter(cycle(train_dataloader))
@@ -172,7 +175,8 @@ def run_train(model, learning_rate, train_dataloader, valid_dataloader, num_epoc
                 Utils.record_statistics(validation_sumlosses, (1, 1, 1), losses_lts=validation_losses_lts)
 
                 # -------------------- Check the validation loss & the need for freezing / early stopping --------------------
-                if exp(valid_loss_globals) > exp(best_valid_loss_globals) + 0.1 and (epoch > 5): # 'and' condition is for mini-experiments
+                # if exp(valid_loss_globals) > exp(best_valid_loss_globals) + 0.1 and (epoch > 5): # 'and' condition is for mini-experiments. TODO: re-set this condition for standard experiments
+                if epoch==4:
                     torch.save(model, os.path.join(F.FOLDER_NN, hyperparams_str + '_earlystop_on_globals.model'))
                     if not with_freezing:
                         # previous validation was better. Now we must early-stop
@@ -185,15 +189,34 @@ def run_train(model, learning_rate, train_dataloader, valid_dataloader, num_epoc
                             logging.info("New validation worse than previous one. " +
                                          "Freezing the weights in the standard LM, activating senses' prediction.")
                             for (name, p) in model_forParameters.named_parameters():  # (1)
-                                if ("main_rnn" in name) or ("X" in name) or ("linear2global" in name):
+                                parameters_to_check_names_ls.append(name)
+                                weights_before_freezing_check_ls.append(p.clone().detach())
+
+                                if ("main_rnn" in name) or ("E" in name) or ("X" in name) or ("linear2global" in name):
+                                    logging.info(name)
                                     p.requires_grad = False
+                                    p.grad = p.grad * 0
                             optimizers.append(torch.optim.Adam(model.parameters(),
                                                                lr=learning_rate))  # [p for p in model.parameters() if p.requires_grad]
                             model_forParameters.predict_senses = True  # (2)
                             after_freezing_flag = True
                             freezing_epoch = epoch
                 if after_freezing_flag:
-                    if (exp(valid_loss_senses) > exp(previous_valid_loss_senses) + 1) and epoch > freezing_epoch + 5:
+                    # if (exp(valid_loss_senses) > exp(previous_valid_loss_senses) + 1) and epoch > freezing_epoch + 5: TODO: re-set this condition for standard experiments
+                    logging.info("Checking whether parameters are frozen")
+                    i = 0
+                    for (name, p) in model_forParameters.named_parameters():
+                        if epoch > freezing_epoch:
+                            p_previous = weights_previous_epoch_check_ls[i]
+                            logging.info(name + ", p(previous) - p(current)=" + str(torch.norm(p_previous - p).item()))
+                        p_frozen = weights_before_freezing_check_ls[i]
+                        logging.info(name + ", p(frozen) - p(current)=" + str(torch.norm(p_frozen - p).item()))
+                        try:
+                            weights_previous_epoch_check_ls[i] = p.clone().detach()
+                        except IndexError:
+                            weights_previous_epoch_check_ls.append(p.clone().detach())
+                        i = i +1
+                    if epoch > freezing_epoch+4:
                         logging.info("Early stopping on senses.")
                         flag_earlystop = True
 
