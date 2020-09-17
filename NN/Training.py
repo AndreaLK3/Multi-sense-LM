@@ -124,11 +124,10 @@ def run_train(model, learning_rate, train_dataloader, valid_dataloader, num_epoc
     after_freezing_flag = False
     if with_freezing:
         model_forParameters.predict_senses = False
-    weights_before_freezing_check_ls = [] # ToDo: Temp
-    weights_previous_epoch_check_ls = []
+    weights_before_freezing_check_ls = []
     parameters_to_check_names_ls = []
 
-    # debugb
+    # debug
     # torch.autograd.set_detect_anomaly(True)
 
     train_dataiter = iter(cycle(train_dataloader))

@@ -27,11 +27,16 @@ def log_edges_minmax_nodes(edges_ls, name):
         logging.info("len(edges_ls)==0")
 
 
-def load_reduced_senses_elements(elements_name, embeddings_method=CE.Method.FASTTEXT):
-    # senses_elems_fname = Utils.VECTORIZED + '_' + str(embeddings_method.value) + '_' + elements_name + '.npy'
-    # senses_elems_fpath = os.path.join(F.FOLDER_INPUT, senses_elems_fname)
-    # we currently use the version reduced by PCA
-    senses_elems_fpath = os.path.join(F.FOLDER_INPUT, F.FOLDER_PCA, elements_name + '_' + str(embeddings_method.value) + '.npy')
+def load_senses_elements(elements_name, embeddings_method, use_PCA):
+    if use_PCA:
+        # the version reduced by PCA
+        senses_elems_fpath = os.path.join(F.FOLDER_INPUT, F.FOLDER_PCA,
+                                          elements_name + '_' + str(embeddings_method.value) + '.npy')
+
+    else:
+        senses_elems_fname = Utils.VECTORIZED + '_' + str(embeddings_method.value) + '_' + elements_name + '.npy'
+        senses_elems_fpath = os.path.join(F.FOLDER_INPUT, senses_elems_fname)
+
     senses_elems_X = np.load(senses_elems_fpath)
     return torch.tensor(senses_elems_X).to(torch.float32)
 
@@ -326,10 +331,16 @@ def create_graph(method, slc_corpus):
     globals_vocabulary_df = pd.read_hdf(globals_vocabulary_fpath, mode='r')
     globals_vocabulary_ls = globals_vocabulary_df['word'].to_list().copy()
 
-    X_definitions = load_reduced_senses_elements(Utils.DEFINITIONS, method)
-    X_examples = load_reduced_senses_elements(Utils.EXAMPLES, method)
     E_embeddings = torch.tensor(np.load(os.path.join(F.FOLDER_INPUT, single_prototypes_file))).to(torch.float32)
+    logging.info("E_embeddings.shape=" + str(E_embeddings.shape))
     num_globals = E_embeddings.shape[0]
+    embeddings_size = E_embeddings.shape[1]
+
+    use_PCA = Utils.GRAPH_EMBEDDINGS_DIM < embeddings_size
+
+    X_definitions = load_senses_elements(Utils.DEFINITIONS, method, use_PCA)
+    X_examples = load_senses_elements(Utils.EXAMPLES, method, use_PCA)
+
     X_globals = torch.tensor(initialize_globals(X_definitions, E_embeddings, globals_vocabulary_ls)).to(torch.float32)
     X_senses, num_dummysenses = initialize_senses(X_definitions, X_examples, X_globals, globals_vocabulary_ls, average_or_random_flag=True)
     num_senses = X_senses.shape[0]
@@ -338,7 +349,6 @@ def create_graph(method, slc_corpus):
     logging.info("X_definitions.shape=" + str(X_definitions.shape))
     logging.info("X_examples.shape=" + str(X_examples.shape))
     logging.info("X_globals.shape=" + str(X_globals.shape))
-    logging.info("E_embeddings.shape=" + str(E_embeddings.shape))
 
     # The order for the index of the nodes:
     # sense=[0,se) ; single prototype=[se,se+sp) ; definitions=[se+sp, se+sp+d) ; examples=[se+sp+d, e==num_nodes)
