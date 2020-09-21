@@ -65,8 +65,7 @@ def exe_from_input_to_vectors(do_reset, compute_single_prototype, sp_method, voc
     if vocabulary_from_senselabeled: SLC.organize_splits()
     vocabulary = V.get_vocabulary_df(senselabeled_or_text=vocabulary_from_senselabeled,
                                      corpus_txt_fpaths=[vocab_text_fpath],
-                                     out_vocabulary_h5_filepath=outvocab_filepath, min_count=1, lowercase=False) # currently on WT-2 with no lowercasing.
-
+                                     out_vocabulary_h5_filepath=outvocab_filepath, min_count=2, lowercase=True)
     if compute_single_prototype:
         reset_embeddings()
         single_prototypes_file = F.SPVs_FASTTEXT_FILE if sp_method==CE.Method.FASTTEXT else F.SPVs_DISTILBERT_FILE

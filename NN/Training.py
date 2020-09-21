@@ -53,11 +53,13 @@ def setup_train(slc_or_text_corpus, include_globalnode_input, load_saved_model,
     if load_saved_model:
         model = load_model_from_file()
     else:
-        model = RNNs.RNN(graph_dataobj, grapharea_size, grapharea_matrix, globals_vocabulary_df,
-                          embeddings_matrix, include_globalnode_input,
-                          batch_size=batch_size, n_layers=3, n_hid_units=1024, dropout_p=0)
-        # model = Senses.SelectK(graph_dataobj, grapharea_size, grapharea_matrix, globals_vocabulary_df, embeddings_matrix,
-        #          include_globalnode_input, batch_size=batch_size, n_layers=3, n_hid_units=1024, dropout_p=0, k=10)
+        # model = RNNs.RNN(graph_dataobj, grapharea_size, grapharea_matrix, globals_vocabulary_df,
+        #                   embeddings_matrix, include_globalnode_input,
+        #                   batch_size=batch_size, n_layers=3, n_hid_units=1024, dropout_p=0)
+        # model = RNNs.RNN_on_GAT(graph_dataobj, grapharea_size, grapharea_matrix, globals_vocabulary_df,
+        #                  batch_size=batch_size, n_layers=3, n_hid_units=700, concat_input_dim=300, num_heads=2, dropout_p=0)
+        model = Senses.SelectK(graph_dataobj, grapharea_size, grapharea_matrix, globals_vocabulary_df, embeddings_matrix,
+                 include_globalnode_input, batch_size=batch_size, n_layers=3, n_hid_units=1024, dropout_p=0, k=10)
 
     # -------------------- Moving objects on GPU --------------------
     logging.info("Graph-data object loaded, model initialized. Moving them to GPU device(s) if present.")
@@ -174,7 +176,8 @@ def run_train(model, learning_rate, train_dataloader, valid_dataloader, num_epoc
                 Utils.record_statistics(validation_sumlosses, (1, 1, 1), losses_lts=validation_losses_lts)
 
                 # -------------------- Check the validation loss & the need for freezing / early stopping --------------------
-                if exp(valid_loss_globals) > exp(best_valid_loss_globals) + 0.1 and (epoch > 5): # sometimes_to_do: re-set this condition for mini/standard experiments
+                if exp(valid_loss_globals) > exp(best_valid_loss_globals) + 0.1 and (epoch > 5): # sometimes to_do: re-set this condition for mini/standard experiments
+                # if epoch > 5:
                     torch.save(model, os.path.join(F.FOLDER_NN, hyperparams_str + '_earlystop_on_globals.model'))
                     if not with_freezing:
                         # previous validation was better. Now we must early-stop
@@ -201,18 +204,7 @@ def run_train(model, learning_rate, train_dataloader, valid_dataloader, num_epoc
                             after_freezing_flag = True
                             freezing_epoch = epoch
                 if after_freezing_flag:
-                    if (exp(valid_loss_senses) > exp(previous_valid_loss_senses) + 1) and epoch > freezing_epoch + 5: # sometimes_to_do: re-set this condition for mini/standard experiments
-                    # logging.info("Checking whether parameters are frozen")
-                    # i = 0
-                    # for (name, p) in model_forParameters.named_parameters():
-                    #     if epoch > freezing_epoch:
-                    #         p_previous = weights_previous_epoch_check_ls[i]
-                    #         logging.info(name + ", p(previous) - p(current)=" + str(torch.norm(p_previous - p).item()))
-                    #     try:
-                    #         weights_previous_epoch_check_ls[i] = p.clone().detach()
-                    #     except IndexError:
-                    #         weights_previous_epoch_check_ls.append(p.clone().detach())
-                    #     i = i + 1
+                    if (exp(valid_loss_senses) > exp(previous_valid_loss_senses) + 1) and epoch > freezing_epoch + 5: # sometimes to_do: re-set this condition for mini/standard experiments
                         logging.info("Early stopping on senses.")
                         flag_earlystop = True
 

@@ -20,11 +20,9 @@ BN_WORD_INTROS = 'BabelNet_word_intros'
 BN_SYNSET_DATA = 'BabelNet_synset_data'
 BN_SYNSET_EDGES = 'BabelNet_synset_edges'
 
-
 WT_TRAIN_FILE = 'wiki.train.tokens'
 WT_VALID_FILE = 'wiki.valid.tokens'
 WT_TEST_FILE = 'wiki.test.tokens'
-
 
 PHRASES_MODEL_FILE = 'phrases_model.pickle'
 PHRASED_TRAINING_CORPUS = 'phrased_training_corpus.txt'

@@ -85,8 +85,6 @@ def initialize_globals(X_definitions, E_embeddings, globals_vocabulary_ls):
     return X_globals
 
 
-
-
 def initialize_senses(X_defs, X_examples, X_globals, vocabulary_ls, average_or_random_flag):
 
     db_filepath = os.path.join(F.FOLDER_INPUT, Utils.INDICES_TABLE_DB)

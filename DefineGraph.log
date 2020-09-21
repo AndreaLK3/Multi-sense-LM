@@ -1,2 +1,2 @@
-INFO : Start debug
-INFO : Start debug
+INFO : NumExpr defaulting to 8 threads.
+INFO : E_embeddings.shape=torch.Size([22782, 300])
