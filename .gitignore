@@ -12,6 +12,7 @@
 *.torchobj
 *.model
 *.WT2
+pretrained*
 WikiText-103/
 runs/
 GraphNN/pyGAT
