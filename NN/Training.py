@@ -116,7 +116,7 @@ def run_train(model, learning_rate, train_dataloader, valid_dataloader, num_epoc
     model_forParameters.predict_senses = predict_senses
     hyperparams_str = write_doc_logging(train_dataloader, model, model_forParameters, learning_rate, num_epochs)
 
-    steps_logging = 100
+    steps_logging = 50
     overall_step = 0
     starting_time = time()
     best_valid_loss_globals = inf
@@ -177,7 +177,7 @@ def run_train(model, learning_rate, train_dataloader, valid_dataloader, num_epoc
 
                 # -------------------- Check the validation loss & the need for freezing / early stopping --------------------
                 if exp(valid_loss_globals) > exp(best_valid_loss_globals) + 0.1 and (epoch > 5): # sometimes to_do: re-set this condition for mini/standard experiments
-                # if epoch > 5:
+                #if epoch > 2:
                     torch.save(model, os.path.join(F.FOLDER_NN, hyperparams_str + '_earlystop_on_globals.model'))
                     if not with_freezing:
                         # previous validation was better. Now we must early-stop
@@ -204,7 +204,7 @@ def run_train(model, learning_rate, train_dataloader, valid_dataloader, num_epoc
                             after_freezing_flag = True
                             freezing_epoch = epoch
                 if after_freezing_flag:
-                    if (exp(valid_loss_senses) > exp(previous_valid_loss_senses) + 1) and epoch > freezing_epoch + 5: # sometimes to_do: re-set this condition for mini/standard experiments
+                    if (exp(valid_loss_senses) > exp(previous_valid_loss_senses) + 1) and epoch > freezing_epoch + 3: # sometimes to_do: re-set this condition for mini/standard experiments
                         logging.info("Early stopping on senses.")
                         flag_earlystop = True
 

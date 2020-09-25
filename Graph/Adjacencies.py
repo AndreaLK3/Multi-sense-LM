@@ -66,7 +66,6 @@ def get_multisense_globals_indices():
     return multisense_globals_indices
 
 
-
 ### Getter function, to extract node area data from a row in the matrix
 def get_node_data(grapharea_matrix, i, grapharea_size, features_mask=(True,True,True)):
     CURRENT_DEVICE = 'cpu' if not (torch.cuda.is_available()) else 'cuda:' + str(torch.cuda.current_device())

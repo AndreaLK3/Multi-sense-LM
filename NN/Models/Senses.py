@@ -7,18 +7,20 @@ from NN.Models.Steps_RNN import rnn_loop, reshape_memories
 from Utils import DEVICE
 from torch.nn.parameter import Parameter
 import logging
+from time import time
 import NN.ExplorePredictions as EP
 import Utils
 import nltk
 from PrepareKBInput.LemmatizeNyms import lemmatize_term
+import torch.sparse
 
 # ****** Auxiliary functions *******
 def get_senseneighbours_of_k_globals(model, sample_k_indices):
-    neighbours_of_k = torch.cat(
-                    [AD.get_node_data(model.grapharea_matrix, i, model.grapharea_size, features_mask=(True,False,False))[0]
-                     for i in sample_k_indices], dim=0)
-    sense_neighbours_of_k = neighbours_of_k[neighbours_of_k < model.last_idx_senses]
-    return sense_neighbours_of_k
+
+    sample_neighbours_section = (model.grapharea_matrix[sample_k_indices.cpu(), 0:32].todense()) -1
+    sample_neighbours = sample_neighbours_section[sample_neighbours_section > 0]
+    sense_neighbours = sample_neighbours[sample_neighbours < model.last_idx_senses]
+    return sense_neighbours
 
 def subtract_probability_mass_from_selected(softmax_selected_senses, delta_to_subtract):
     max_index_t = torch.argmax(softmax_selected_senses)
@@ -49,7 +51,7 @@ class SelectK(torch.nn.Module):
 
         # -------------------- Utilities --------------------
         # utility tensors, used in index_select etc.
-        self.select_first_indices = Parameter(torch.tensor(list(range(n_hid_units))).to(torch.float32),requires_grad=False)
+        self.select_first_indices = Parameter(torch.tensor(list(range(2048))).to(torch.float32),requires_grad=False)
         self.embedding_zeros = Parameter(torch.zeros(size=(1, self.dim_embs)), requires_grad=False)
 
         # Memories of the hidden states; overwritten at the 1st forward, when we know the distributed batch size
@@ -160,15 +162,16 @@ class SelectK(torch.nn.Module):
             sample_k_indices_in_vocab_lls = k_globals_indices.tolist()
 
             for s in range(distributed_batch_size * seq_len):
+
                 k_globals_vocab_indices = sample_k_indices_in_vocab_lls[s]
                 k_globals_lemmatized = [self.vocabulary_lemmatizedList[idx] for idx in k_globals_vocab_indices]
-                lemmatized_indices_in_X = [
+                sample_k_indices_lemmatized_ls = [
                     Utils.word_to_vocab_index(lemmatized_word, self.vocabulary_wordList) + self.last_idx_senses for
                     lemmatized_word in k_globals_lemmatized]
-                sense_neighbours_t = get_senseneighbours_of_k_globals(self, lemmatized_indices_in_X)
-                # if sense_neighbours_t.shape[0] == 0:  # no senses found, even lemmatizing. Ignore current entry
-                #     senses_softmax[s] = torch.tensor(1 / self.last_idx_senses).to(CURRENT_DEVICE)
-                #     continue
+                sample_k_indices_lemmatized = torch.tensor(sample_k_indices_lemmatized_ls).to(CURRENT_DEVICE).squeeze(dim=0)
+
+                sense_neighbours_t = torch.tensor(get_senseneighbours_of_k_globals(self, sample_k_indices_lemmatized))\
+                    .squeeze(dim=0).to(torch.int64).to(CURRENT_DEVICE)
 
                 # standard procedure: get the logits of the senses of the most likely globals,
                 # apply a softmax only over them, and then assign an epsilon probability to the other senses
