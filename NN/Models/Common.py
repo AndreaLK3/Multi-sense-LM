@@ -91,7 +91,7 @@ def lemmatize_node(x_indices, edge_index, edge_type, model):
 
 def init_model_parameters(model, graph_dataobj, grapharea_size, grapharea_matrix, vocabulary_df,
                           include_globalnode_input,
-                          batch_size, n_layers, n_hid_units, dropout_p):
+                          batch_size, n_layers, n_hid_units):
     model.grapharea_matrix = grapharea_matrix
 
     model.vocabulary_df = vocabulary_df
@@ -111,7 +111,7 @@ def init_model_parameters(model, graph_dataobj, grapharea_size, grapharea_matrix
     model.batch_size = batch_size
     model.n_layers = n_layers
     model.hidden_size = n_hid_units
-    model.dropout = torch.nn.Dropout(p=dropout_p)
+
     return
 
 

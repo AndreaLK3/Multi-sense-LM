@@ -16,7 +16,7 @@ class RNN(torch.nn.Module):
         # -------------------- Initialization and parameters --------------------
         super(RNN, self).__init__()
         init_model_parameters(self, data, grapharea_size, grapharea_matrix, vocabulary_df, include_globalnode_input,
-                                   batch_size, n_layers, n_hid_units, dropout_p)
+                                   batch_size, n_layers, n_hid_units)
 
         self.E = Parameter(embeddings_matrix.clone().detach(), requires_grad=True) # The matrix of embeddings
         self.dim_embs = self.E.shape[1]
