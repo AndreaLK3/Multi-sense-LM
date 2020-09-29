@@ -50,6 +50,26 @@ def unpack_input_tensor(in_tensor, grapharea_size):
     (x_indices_s, edge_index_s, edge_type_s) = unpack_to_input_tpl(in_tensor_senses, grapharea_size, max_edges)
     return ((x_indices_g, edge_index_g, edge_type_g), (x_indices_s, edge_index_s, edge_type_s))
 
+# Graph Neural Networks for globals
+def run_graphnet(t_input_lts, batch_elems_at_t,t_globals_indices_ls, CURRENT_DEVICE, model):
+
+    currentglobal_nodestates_ls = []
+    if model.include_globalnode_input:
+        t_edgeindex_g_ls = [t_input_lts[b][0][1] for b in range(len(t_input_lts))]
+        t_edgetype_g_ls = [t_input_lts[b][0][2] for b in range(len(t_input_lts))]
+        for i_sample in range(batch_elems_at_t.shape[0]):
+            sample_edge_index = t_edgeindex_g_ls[i_sample]
+            sample_edge_type = t_edgetype_g_ls[i_sample]
+            x_indices, edge_index, edge_type = lemmatize_node(t_globals_indices_ls[i_sample], sample_edge_index, sample_edge_type, model=model)
+            sample_x = model.X.index_select(dim=0, index=x_indices.squeeze())
+            x_attention_states = model.gat_globals(sample_x, edge_index)
+            currentglobal_node_state = x_attention_states.index_select(dim=0, index=model.select_first_indices[0].to(
+                torch.int64))
+            currentglobal_nodestates_ls.append(currentglobal_node_state)
+
+        t_currentglobal_node_states = torch.stack(currentglobal_nodestates_ls, dim=0).squeeze(dim=1)
+        return t_currentglobal_node_states
+
 
 ################################
 ### 1: Lemmatize global node ###
@@ -168,56 +188,3 @@ class SelfAttention(torch.nn.Module):
 
         return torch.cat(results_of_heads, dim=0)
 
-
-######################
-### 4: DropConnect ###
-######################
-
-
-# dropout_module = torch.nn.Dropout(p=0.5, inplace=False); dropout_module(some_input):
-# During training, randomly zeroes some of the elements of the input tensor with probability p (Bernoulli distribution).
-# This function is an alternative version of: torchnlp.nn.weight_drop._weight_drop(...)
-def weight_drop(module, weights_names_ls, dropout_p):
-
-    original_module_forward = module.forward
-    forward_with_drop = ForwardWithDrop(weights_names_ls, module, dropout_p, original_module_forward)
-    setattr(module, 'forward', forward_with_drop)
-    return module
-
-# Functions are only pickle-able if they are defined at the top-level of a module,
-# so we create a class that is first initialized and then called as the forward()
-class ForwardWithDrop(object):
-    def __init__(self,weights_names_ls, module, dropout_p, original_module_forward):
-        self.weights_names_ls = weights_names_ls
-        self.module = module
-        self.dropout_p = dropout_p
-        self.original_module_forward = original_module_forward
-
-    def __call__(self, *args, **kwargs): # the function formerly known as "forward_new"
-        for name_param in self.weights_names_ls:
-            param = self.module._parameters.get(name_param)
-            param_with_droput = Parameter(torch.nn.functional.dropout(param, p=self.dropout_p, training=self.module.training),
-                                          requires_grad=param.requires_grad)
-            self.module._parameters.__setitem__(name_param, param_with_droput)
-
-        return self.original_module_forward(*args, **kwargs)
-
-
-def run_graphnet(t_input_lts, batch_elems_at_t,t_globals_indices_ls, CURRENT_DEVICE, model):
-
-    currentglobal_nodestates_ls = []
-    if model.include_globalnode_input:
-        t_edgeindex_g_ls = [t_input_lts[b][0][1] for b in range(len(t_input_lts))]
-        t_edgetype_g_ls = [t_input_lts[b][0][2] for b in range(len(t_input_lts))]
-        for i_sample in range(batch_elems_at_t.shape[0]):
-            sample_edge_index = t_edgeindex_g_ls[i_sample]
-            sample_edge_type = t_edgetype_g_ls[i_sample]
-            x_indices, edge_index, edge_type = lemmatize_node(t_globals_indices_ls[i_sample], sample_edge_index, sample_edge_type, model=model)
-            sample_x = model.X.index_select(dim=0, index=x_indices.squeeze())
-            x_attention_states = model.gat_globals(sample_x, edge_index)
-            currentglobal_node_state = x_attention_states.index_select(dim=0, index=model.select_first_indices[0].to(
-                torch.int64))
-            currentglobal_nodestates_ls.append(currentglobal_node_state)
-
-        t_currentglobal_node_states = torch.stack(currentglobal_nodestates_ls, dim=0).squeeze(dim=1)
-        return t_currentglobal_node_states

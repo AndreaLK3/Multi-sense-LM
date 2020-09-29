@@ -149,7 +149,7 @@ class SelectK(torch.nn.Module):
             task2_out = task_2_out.reshape(distributed_batch_size * seq_len, task_2_out.shape[2])
 
             logits_sense = self.linear2senses(task2_out)
-            # predictions_senses = tfunc.log_softmax(logits_sense, dim=1)
+
 
             # line 2: select senses of the k most likely globals
             k_globals_indices = logits_global.sort(descending=True).indices[:, 0:self.K]
@@ -217,7 +217,7 @@ def compute_query(method, model):
 class SelfAttentionK(torch.nn.Module):
 
     def __init__(self, data, grapharea_size, grapharea_matrix, vocabulary_df, embeddings_matrix,
-                 include_globalnode_input, batch_size, n_layers, n_hid_units, k):
+                 include_globalnode_input, batch_size, n_layers, n_hid_units, k, method):
 
         # -------------------- Initialization and parameters --------------------
         super(SelfAttentionK, self).__init__()
@@ -370,5 +370,148 @@ class SelfAttentionK(torch.nn.Module):
             predictions_senses = torch.log(senses_softmax)
         else:
             predictions_senses = torch.tensor([0] * self.batch_size * seq_len).to(CURRENT_DEVICE)
+
+        return predictions_globals, predictions_senses
+
+
+# Simpler method: after selecting the senses of the most likely K globals,
+# rank them based on their cosine similarity to the average of the last C words of the context.
+class ContextSim(torch.nn.Module):
+
+    def __init__(self, data, grapharea_size, grapharea_matrix, vocabulary_df, embeddings_matrix, batch_size, seq_len, n_layers, n_hid_units, k, c):
+
+        # -------------------- Initialization and parameters --------------------
+        super(ContextSim, self).__init__()
+        init_model_parameters(self, data, grapharea_size, grapharea_matrix, vocabulary_df,
+                          include_globalnode_input=False,
+                          batch_size=batch_size, n_layers=n_layers, n_hid_units=n_hid_units)
+        self.K = k
+        self.C = c
+        self.maxnum_senses_selected = k*10
+        self.seq_len = seq_len
+
+        self.E = Parameter(embeddings_matrix.clone().detach(), requires_grad=True)  # The matrix of embeddings
+        self.X = Parameter(data.x.clone().detach(), requires_grad=True)# The graph matrix (senses, globals, defs, exs)
+        self.dim_embs = self.E.shape[1]
+
+        # -------------------- Utilities --------------------
+        # utility tensors, used in index_select etc.
+        self.select_first_indices = Parameter(torch.tensor(list(range(2048))).to(torch.float32),requires_grad=False)
+        self.embedding_zeros = Parameter(torch.zeros(size=(1, self.dim_embs)), requires_grad=False)
+
+        # Memories of the hidden states; overwritten at the 1st forward, when we know the distributed batch size
+        self.memory_hn = Parameter(torch.zeros(size=(n_layers, batch_size, n_hid_units)), requires_grad=False)
+        self.memory_hn_senses = Parameter(torch.zeros(size=(n_layers, batch_size, int(n_hid_units))),
+                                          requires_grad=False)
+        self.hidden_state_bsize_adjusted = False
+
+        # -------------------- The network --------------------
+        self.main_rnn_ls = torch.nn.ModuleList(
+            [torch.nn.GRU(input_size=self.dim_embs if i == 0 else n_hid_units,
+                                                hidden_size=512 if i == n_layers - 1 else n_hid_units, num_layers=1) for
+             i in range(n_layers)])
+
+        # Tensor to hold the running average of the last C global word embeddings we encountered
+        self.context_embs_avg = Parameter(torch.zeros(size=(batch_size, self.seq_len, self.dim_embs)).to(torch.float32),requires_grad=False)
+        self.cosine_sim = torch.nn.CosineSimilarity(dim=1)
+        # 2nd part of the network: 2 linear layers to the logits
+        self.linear2global = torch.nn.Linear(in_features=512,
+                                             out_features=self.last_idx_globals - self.last_idx_senses, bias=True)
+
+    # ---------------------------------------- Forward call ----------------------------------------
+
+    def forward(self, batchinput_tensor):  # given the batches, the current node is at index 0
+        CURRENT_DEVICE = 'cpu' if not (torch.cuda.is_available()) else 'cuda:' + str(torch.cuda.current_device())
+
+        # -------------------- Init --------------------
+        distributed_batch_size = batchinput_tensor.shape[0]
+        if not (distributed_batch_size == self.batch_size) and not self.hidden_state_bsize_adjusted:
+            reshape_memories(distributed_batch_size, self)
+            new_num_contextavg_elems = distributed_batch_size * self.seq_len * self.dim_embs
+            self.context_embs_avg = Parameter(torch.reshape(self.context_embs_avg.flatten()[0:new_num_contextavg_elems],
+                                              (distributed_batch_size, self.seq_len, self.dim_embs)),
+                                requires_grad=False)
+
+        # T-BPTT: at the start of each batch, we detach_() the hidden state from the graph&history that created it
+        self.memory_hn.detach_()
+
+        if batchinput_tensor.shape[1] > 1:
+            time_instants = torch.chunk(batchinput_tensor, chunks=batchinput_tensor.shape[1], dim=1)
+        else:
+            time_instants = [batchinput_tensor]
+
+        word_embeddings_ls = []
+
+        for i in range(len(time_instants)):
+            batch_elements_at_t = time_instants[i]
+            batch_elems_at_t = batch_elements_at_t.squeeze(dim=1)
+            elems_at_t_ls = batch_elements_at_t.chunk(chunks=batch_elems_at_t.shape[0], dim=0)
+
+            t_input_lts = [unpack_input_tensor(sample_tensor, self.grapharea_size) for sample_tensor in elems_at_t_ls]
+            t_globals_indices_ls = [t_input_lts[b][0][0] for b in range(len(t_input_lts))]
+
+            # -------------------- Input --------------------
+            # Input signal n.1: the embedding of the current (global) word
+            t_current_globals_indices_ls = [x_indices[0]-self.last_idx_senses for x_indices in t_globals_indices_ls]
+            t_current_globals_indices = torch.stack(t_current_globals_indices_ls, dim=0)
+            t_word_embeddings = self.E.index_select(dim=0, index=t_current_globals_indices)
+            word_embeddings_ls.append(t_word_embeddings)
+            self.context_embs_avg[:, i, :] = self.context_embs_avg[:, i, :]+(t_word_embeddings.clone())/self.C
+
+        word_embeddings = torch.stack(word_embeddings_ls, dim=0)
+        batch_input_signals = word_embeddings
+
+        # ------------------- Globals -------------------
+        # - input of shape(seq_len, batch_size, input_size): tensor containing the features of the input sequence.
+        task_1_out = rnn_loop(batch_input_signals, model=self, globals_or_senses_rnn=True)  # self.network_1_L1(input)
+        task_1_out = task_1_out.permute(1, 0, 2)  # going to: (batch_size, seq_len, n_units)
+
+        task_1_out = task_1_out.reshape(distributed_batch_size * self.seq_len, task_1_out.shape[2])
+
+        logits_global = self.linear2global(task_1_out)  # shape=torch.Size([5])
+        predictions_globals = tfunc.log_softmax(logits_global, dim=1)
+
+        # ------------------- Senses -------------------
+        if self.predict_senses:
+
+            k_globals_indices = logits_global.sort(descending=True).indices[:, 0:self.K]
+
+            senses_softmax = torch.ones((distributed_batch_size * self.seq_len, self.last_idx_senses)).to(CURRENT_DEVICE)
+            epsilon = 10 ** (-8)
+            senses_softmax = epsilon * senses_softmax  # base probability value for non-selected senses
+            i_senseneighbours_mask = torch.zeros(size=(distributed_batch_size * self.seq_len, self.last_idx_senses)).to(
+                torch.bool).to(CURRENT_DEVICE)
+
+            sample_k_indices_in_vocab_lls = k_globals_indices.tolist()
+            quantity_to_subtract_from_selected = epsilon * (self.last_idx_senses - 1) # with 1 sense, it never changes
+            softmax_selected_sense = torch.tensor(1 - quantity_to_subtract_from_selected).to(CURRENT_DEVICE)
+
+            for b in range(distributed_batch_size):
+                for l in range(self.seq_len):
+                    s = b*l + l
+
+                    k_globals_vocab_indices = sample_k_indices_in_vocab_lls[s]
+                    k_globals_lemmatized = [self.vocabulary_lemmatizedList[idx] for idx in k_globals_vocab_indices]
+                    sample_k_indices_lemmatized_ls = [
+                        Utils.word_to_vocab_index(lemmatized_word, self.vocabulary_wordList) + self.last_idx_senses for
+                        lemmatized_word in k_globals_lemmatized]
+                    sample_k_indices_lemmatized = torch.tensor(sample_k_indices_lemmatized_ls).to(CURRENT_DEVICE).squeeze(dim=0)
+
+                    sense_neighbours_t = torch.tensor(get_senseneighbours_of_k_globals(self, sample_k_indices_lemmatized))\
+                        .squeeze(dim=0).to(torch.int64).to(CURRENT_DEVICE)
+
+                    t_sense_embeddings = self.X.index_select(dim=0, index=sense_neighbours_t)
+                    cosine_sim_scores = self.cosine_sim(self.context_embs_avg[b,l,:].unsqueeze(dim=0), t_sense_embeddings)
+                    closest_sense_i = torch.max(cosine_sim_scores, dim=0).indices
+                    closest_sense_index = sense_neighbours_t[closest_sense_i]
+
+                    i_senseneighbours_mask[s, closest_sense_index] = True
+
+                    senses_softmax[s].masked_scatter_(mask=i_senseneighbours_mask[s].data.clone(),
+                                                      source=softmax_selected_sense)
+
+            predictions_senses = torch.log(senses_softmax)
+        else:
+            predictions_senses = torch.tensor([0] * self.batch_size * self.seq_len).to(CURRENT_DEVICE)
 
         return predictions_globals, predictions_senses

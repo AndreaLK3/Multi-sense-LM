@@ -39,12 +39,12 @@ def setup_train(slc_or_text_corpus, include_globalnode_input, load_saved_model,
     embeddings_matrix = torch.tensor(np.load(os.path.join(F.FOLDER_INPUT, single_prototypes_file))).to(torch.float32)
 
     globals_vocabulary_fpath = os.path.join(F.FOLDER_VOCABULARY, F.VOCABULARY_OF_GLOBALS_FILE)
-    globals_vocabulary_df = pd.read_hdf(globals_vocabulary_fpath, mode='r')
-    # vocabulary_wordList = globals_vocabulary_df['word'].to_list().copy()
+    vocabulary_df = pd.read_hdf(globals_vocabulary_fpath, mode='r')
+    # vocabulary_wordList = vocabulary_df['word'].to_list().copy()
     if slc_or_text_corpus:
-        vocabulary_numSensesList = globals_vocabulary_df['num_senses'].to_list().copy()
+        vocabulary_numSensesList = vocabulary_df['num_senses'].to_list().copy()
         if all([num_senses == -1 for num_senses in vocabulary_numSensesList]):
-            globals_vocabulary_df = AD.compute_globals_numsenses(graph_dataobj, grapharea_matrix, grapharea_size)
+            vocabulary_df = AD.compute_globals_numsenses(graph_dataobj, grapharea_matrix, grapharea_size)
 
     # -------------------- Loading / creating the model --------------------
     torch.manual_seed(1) # for reproducibility while conducting mini-experiments
@@ -53,13 +53,13 @@ def setup_train(slc_or_text_corpus, include_globalnode_input, load_saved_model,
     if load_saved_model:
         model = load_model_from_file()
     else:
-        # model = RNNs.RNN(graph_dataobj, grapharea_size, grapharea_matrix, globals_vocabulary_df,
+        # model = RNNs.RNN(graph_dataobj, grapharea_size, grapharea_matrix, vocabulary_df,
         #                   embeddings_matrix, include_globalnode_input,
         #                   batch_size=batch_size, n_layers=3, n_hid_units=1024, dropout_p=0)
-        # model = RNNs.RNN_on_GAT(graph_dataobj, grapharea_size, grapharea_matrix, globals_vocabulary_df,
-        #                  batch_size=batch_size, n_layers=3, n_hid_units=700, concat_input_dim=300, num_heads=2, dropout_p=0)
-        model = Senses.SelectK(graph_dataobj, grapharea_size, grapharea_matrix, globals_vocabulary_df, embeddings_matrix,
+        model = Senses.SelectK(graph_dataobj, grapharea_size, grapharea_matrix, vocabulary_df, embeddings_matrix,
                  include_globalnode_input, batch_size=batch_size, n_layers=3, n_hid_units=1024, k=10)
+        model = Senses.ContextSim(graph_dataobj, grapharea_size, grapharea_matrix, vocabulary_df, embeddings_matrix,
+                                   batch_size, seq_len=sequence_length, n_layers=3, n_hid_units=1024, k=1, c=10)
 
     # -------------------- Moving objects on GPU --------------------
     logging.info("Graph-data object loaded, model initialized. Moving them to GPU device(s) if present.")
@@ -167,7 +167,7 @@ def run_train(model, learning_rate, train_dataloader, valid_dataloader, num_epoc
             flag_earlystop = False
 
             # -------------------- Running on the validation set --------------------
-            if epoch>1: # moved to epochs 1 and onwards for debug purposes
+            if epoch>1000: # moved to epochs 1 and onwards for debug purposes
                 logging.info("After training " + str(epoch-1) + " epochs, validation:")
                 valid_loss_globals, valid_loss_senses, multisenses_evaluation_loss = evaluation(valid_dataloader,
                                                                                                 valid_dataiter,
@@ -177,7 +177,7 @@ def run_train(model, learning_rate, train_dataloader, valid_dataloader, num_epoc
 
                 # -------------------- Check the validation loss & the need for freezing / early stopping --------------------
                 if exp(valid_loss_globals) > exp(best_valid_loss_globals) + 0.1 and (epoch > 5): # sometimes to_do: re-set this condition for mini/standard experiments
-                #if epoch > 2:
+
                     torch.save(model, os.path.join(F.FOLDER_NN, hyperparams_str + '_earlystop_on_globals.model'))
                     if not with_freezing:
                         # previous validation was better. Now we must early-stop

@@ -21,7 +21,7 @@ class RNN(torch.nn.Module):
         self.E = Parameter(embeddings_matrix.clone().detach(), requires_grad=True) # The matrix of embeddings
         self.dim_embs = self.E.shape[1]
         if include_globalnode_input:
-            self.X = Parameter(data.x.clone().detach(), requires_grad=True)  # The matrix of global-nodestates
+            self.X = Parameter(data.x.clone().detach(), requires_grad=True)  # The graph matrix
 
         # -------------------- Utilities --------------------
         # utility tensors, used in index_select etc.
