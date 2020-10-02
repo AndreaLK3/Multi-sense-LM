@@ -59,7 +59,7 @@ def setup_train(slc_or_text_corpus, include_globalnode_input, load_saved_model,
         model = Senses.SelectK(graph_dataobj, grapharea_size, grapharea_matrix, vocabulary_df, embeddings_matrix,
                  include_globalnode_input, batch_size=batch_size, n_layers=3, n_hid_units=1024, k=10)
         model = Senses.ContextSim(graph_dataobj, grapharea_size, grapharea_matrix, vocabulary_df, embeddings_matrix,
-                                   batch_size, seq_len=sequence_length, n_layers=3, n_hid_units=1024, k=1, c=10)
+                                   batch_size, seq_len=sequence_length, n_layers=3, n_hid_units=1024, k=10, c=10)
 
     # -------------------- Moving objects on GPU --------------------
     logging.info("Graph-data object loaded, model initialized. Moving them to GPU device(s) if present.")
@@ -130,7 +130,7 @@ def run_train(model, learning_rate, train_dataloader, valid_dataloader, num_epoc
     parameters_to_check_names_ls = []
 
     # debug
-    # torch.autograd.set_detect_anomaly(True)
+    torch.autograd.set_detect_anomaly(True)
 
     train_dataiter = iter(cycle(train_dataloader))
     valid_dataiter = iter(cycle(valid_dataloader))

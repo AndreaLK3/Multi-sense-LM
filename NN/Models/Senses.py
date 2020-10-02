@@ -387,11 +387,11 @@ class ContextSim(torch.nn.Module):
                           batch_size=batch_size, n_layers=n_layers, n_hid_units=n_hid_units)
         self.K = k
         self.C = c
-        self.maxnum_senses_selected = k*10
+        self.maxnum_senses_selected = k * 10
         self.seq_len = seq_len
 
         self.E = Parameter(embeddings_matrix.clone().detach(), requires_grad=True)  # The matrix of embeddings
-        self.X = Parameter(data.x.clone().detach(), requires_grad=True)# The graph matrix (senses, globals, defs, exs)
+        self.X = Parameter(data.x.clone().detach(), requires_grad=True) # The graph matrix (senses, globals, defs, exs)
         self.dim_embs = self.E.shape[1]
 
         # -------------------- Utilities --------------------
@@ -402,7 +402,7 @@ class ContextSim(torch.nn.Module):
         # Memories of the hidden states; overwritten at the 1st forward, when we know the distributed batch size
         self.memory_hn = Parameter(torch.zeros(size=(n_layers, batch_size, n_hid_units)), requires_grad=False)
         self.memory_hn_senses = Parameter(torch.zeros(size=(n_layers, batch_size, int(n_hid_units))),
-                                          requires_grad=False)
+                                          requires_grad=False) # unused here, kept for compatibility with Common functions
         self.hidden_state_bsize_adjusted = False
 
         # -------------------- The network --------------------
@@ -412,7 +412,7 @@ class ContextSim(torch.nn.Module):
              i in range(n_layers)])
 
         # Tensor to hold the running average of the last C global word embeddings we encountered
-        self.context_embs_avg = Parameter(torch.zeros(size=(batch_size, self.seq_len, self.dim_embs)).to(torch.float32),requires_grad=False)
+        self.context_running_embeddings = Parameter(torch.zeros(size=(batch_size, self.seq_len, self.C, self.dim_embs)).to(torch.float32), requires_grad=False)
         self.cosine_sim = torch.nn.CosineSimilarity(dim=1)
         # 2nd part of the network: 2 linear layers to the logits
         self.linear2global = torch.nn.Linear(in_features=512,
@@ -427,10 +427,10 @@ class ContextSim(torch.nn.Module):
         distributed_batch_size = batchinput_tensor.shape[0]
         if not (distributed_batch_size == self.batch_size) and not self.hidden_state_bsize_adjusted:
             reshape_memories(distributed_batch_size, self)
-            new_num_contextavg_elems = distributed_batch_size * self.seq_len * self.dim_embs
-            self.context_embs_avg = Parameter(torch.reshape(self.context_embs_avg.flatten()[0:new_num_contextavg_elems],
-                                              (distributed_batch_size, self.seq_len, self.dim_embs)),
-                                requires_grad=False)
+            new_num_contextavg_elems = distributed_batch_size * self.seq_len * self.C * self.dim_embs
+            self.context_running_embeddings = Parameter(torch.reshape(self.context_running_embeddings.flatten()[0:new_num_contextavg_elems],
+                                                                      (distributed_batch_size, self.seq_len, self.C, self.dim_embs)),
+                                                        requires_grad=False)
 
         # T-BPTT: at the start of each batch, we detach_() the hidden state from the graph&history that created it
         self.memory_hn.detach_()
@@ -456,7 +456,8 @@ class ContextSim(torch.nn.Module):
             t_current_globals_indices = torch.stack(t_current_globals_indices_ls, dim=0)
             t_word_embeddings = self.E.index_select(dim=0, index=t_current_globals_indices)
             word_embeddings_ls.append(t_word_embeddings)
-            self.context_embs_avg[:, i, :] = self.context_embs_avg[:, i, :]+(t_word_embeddings.clone())/self.C
+            self.context_running_embeddings[:, i, :, :] = \
+                torch.cat((self.context_running_embeddings[:, i, 1:, :], t_word_embeddings.unsqueeze(dim=1).clone().detach()), dim=1)
 
         word_embeddings = torch.stack(word_embeddings_ls, dim=0)
         batch_input_signals = word_embeddings
@@ -501,7 +502,8 @@ class ContextSim(torch.nn.Module):
                         .squeeze(dim=0).to(torch.int64).to(CURRENT_DEVICE)
 
                     t_sense_embeddings = self.X.index_select(dim=0, index=sense_neighbours_t)
-                    cosine_sim_scores = self.cosine_sim(self.context_embs_avg[b,l,:].unsqueeze(dim=0), t_sense_embeddings)
+                    cosine_sim_scores = self.cosine_sim(torch.mean(self.context_running_embeddings, dim=2)[b,l].unsqueeze(dim=0), # running average
+                                                        t_sense_embeddings)
                     closest_sense_i = torch.max(cosine_sim_scores, dim=0).indices
                     closest_sense_index = sense_neighbours_t[closest_sense_i]
 
