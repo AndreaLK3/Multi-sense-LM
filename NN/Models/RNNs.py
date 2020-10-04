@@ -11,7 +11,7 @@ from NN.Models.Steps_RNN import reshape_memories
 class RNN(torch.nn.Module):
 
     def __init__(self, data, grapharea_size, grapharea_matrix, vocabulary_df, embeddings_matrix,
-                 include_globalnode_input, batch_size, n_layers, n_hid_units, dropout_p):
+                 include_globalnode_input, batch_size, n_layers, n_hid_units):
 
         # -------------------- Initialization and parameters --------------------
         super(RNN, self).__init__()

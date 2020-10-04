@@ -454,7 +454,10 @@ class ContextSim(torch.nn.Module):
             # Input signal n.1: the embedding of the current (global) word
             t_current_globals_indices_ls = [x_indices[0]-self.last_idx_senses for x_indices in t_globals_indices_ls]
             t_current_globals_indices = torch.stack(t_current_globals_indices_ls, dim=0)
+            logging.info("time_instant=" + str(i) + "  - device: "+str(CURRENT_DEVICE))
+            logging.info("t_current_globals_indices" + str(t_current_globals_indices) + "  - device: "+str(CURRENT_DEVICE))
             t_word_embeddings = self.E.index_select(dim=0, index=t_current_globals_indices)
+            logging.info("t_word_embeddings[:, 0:5]=" + str(t_word_embeddings[:, 0:5]) + "  - device: "+str(CURRENT_DEVICE))
             word_embeddings_ls.append(t_word_embeddings)
             self.context_running_embeddings[:, i, :, :] = \
                 torch.cat((self.context_running_embeddings[:, i, 1:, :], t_word_embeddings.unsqueeze(dim=1).clone().detach()), dim=1)
