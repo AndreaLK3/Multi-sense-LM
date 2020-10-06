@@ -3,11 +3,14 @@ import os
 FOLDER_INPUT = 'InputData'
 FOLDER_PCA = 'PCA' # subfolder of InputData
 FOLDER_WORD_EMBEDDINGS = 'WordEmbeddings'
+
 FOLDER_VOCABULARY = 'Vocabulary'
+VOCABULARY_OF_GLOBALS_FILENAME = 'vocabulary_of_globals.h5'
 
 FOLDER_TEXT_CORPUSES = 'TextCorpuses'
-FOLDER_MYSLCCORPUS = "My Sense-Labeled Corpus"
-FOLDER_MYTEXTCORPUS ="My Text Corpus"
+FOLDER_SENSELABELED = "SenseLabeled"
+FOLDER_STANDARDTEXT = "StandardText"
+FOLDER_MINICORPUSES = 'MiniCorpuses'
 
 FOLDER_UFSAC = 'ufsac-public-2.1'
 FOLDER_WT103 = 'WikiText-103'
@@ -24,12 +27,7 @@ WT_TRAIN_FILE = 'wiki.train.tokens'
 WT_VALID_FILE = 'wiki.valid.tokens'
 WT_TEST_FILE = 'wiki.test.tokens'
 
-PHRASES_MODEL_FILE = 'phrases_model.pickle'
-PHRASED_TRAINING_CORPUS = 'phrased_training_corpus.txt'
-TEMPORARY_PHRASED_CORPUS = 'temp_phrased_training_corpus.txt'
 
-VOCABULARY_OF_GLOBALS_FILE = 'vocabulary_of_globals.h5'
-VOCAB_PHRASED = 'vocabulary_phrased.h5'
 
 VOCAB_CURRENT_INDEX_FILE = 'vocabulary_currentIndex.txt' # used for BabelNet requests over several days
 

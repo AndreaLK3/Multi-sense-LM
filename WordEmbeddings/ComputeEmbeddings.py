@@ -6,7 +6,7 @@ import WordEmbeddings.EmbedWithFastText as EFT
 import pandas as pd
 import os
 import numpy as np
-import Filesystem as F
+
 import logging
 import Utils
 from enum import Enum
@@ -25,14 +25,13 @@ class Method(Enum):
 # and use either DistilBERT or FastText to compute d=768 or d=300 single-prototype word embeddings.
 def compute_single_prototype_embeddings(vocabulary_df, spvs_out_fpath, method):
 
-    if method == Method.DISTILBERT:
+    if method == Method.DISTILBERT: # currently not in use
         distilBERT_model = transformers.DistilBertModel.from_pretrained('distilbert-base-uncased',
                                                                     output_hidden_states=True)
         distilBERT_tokenizer = transformers.DistilBertTokenizer.from_pretrained('distilbert-base-uncased')
     else:  # i.e. elif method == Method_for_SPV.FASTTEXT:
         fasttext_vectors = EFT.load_fasttext_vectors()
 
-    i = 0
     word_vectors_lls = []
 
     for idx_word_freq_tpl in vocabulary_df.itertuples():
@@ -44,7 +43,6 @@ def compute_single_prototype_embeddings(vocabulary_df, spvs_out_fpath, method):
             word_vector = fasttext_vectors[word]
 
         word_vectors_lls.append(word_vector)
-        i = i+1
 
     embds_nparray = np.array(word_vectors_lls)
     np.save(spvs_out_fpath, embds_nparray)
@@ -54,7 +52,7 @@ def compute_single_prototype_embeddings(vocabulary_df, spvs_out_fpath, method):
 
 # In the previous step, we stored the start-and-end indices of elements in a Sqlite3 database.
 # It is necessary to write the embeddings in the .npy file with the correct ordering.
-def compute_elements_embeddings(elements_name, method):
+def compute_elements_embeddings(elements_name, method, inputdata_folder):
 
     if method == Method.DISTILBERT:
         distilBERT_model = transformers.DistilBertModel.from_pretrained('distilbert-base-uncased',
@@ -63,19 +61,19 @@ def compute_elements_embeddings(elements_name, method):
     else:  # i.e. elif method == Method.FASTTEXT:
         fasttext_vectors = EFT.load_fasttext_vectors()
 
-    input_filepath = os.path.join(Filesystem.FOLDER_INPUT, Utils.PROCESSED + '_' + elements_name + ".h5")
-    output_filepath = os.path.join(Filesystem.FOLDER_INPUT, Utils.VECTORIZED + '_' + str(method.value) + '_'
+    input_filepath = os.path.join(inputdata_folder, Utils.PROCESSED + '_' + elements_name + ".h5")
+    output_filepath = os.path.join(inputdata_folder, Utils.VECTORIZED + '_' + str(method.value) + '_'
                                    + elements_name) # + ".npy"
-    vocabTable_db_filepath = os.path.join(Filesystem.FOLDER_INPUT, Utils.INDICES_TABLE_DB)
+    indicesTable_db_filepath = os.path.join(inputdata_folder, Utils.INDICES_TABLE_DB)
 
     input_db = pd.HDFStore(input_filepath, mode='r')
-    vocabTable_db = sqlite3.connect(vocabTable_db_filepath)
-    vocabTable_db_c = vocabTable_db.cursor()
+    indices_table = sqlite3.connect(indicesTable_db_filepath)
+    indicesTable_db_c = indices_table.cursor()
 
     matrix_of_sentence_embeddings = []
-    vocabTable_db_c.execute("SELECT * FROM indices_table")
+    indicesTable_db_c.execute("SELECT * FROM indices_table")
 
-    for row in vocabTable_db_c: # consuming the cursor iterator. Tuple returned: ('wide.a.1', 2, 4,5, 16,18)
+    for row in indicesTable_db_c: # consuming the cursor iterator. Tuple returned: ('wide.a.1', 2, 4,5, 16,18)
 
         pt = r'\.([^.])+\.'
         mtc = re.search(pt, row[0])

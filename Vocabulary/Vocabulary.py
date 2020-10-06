@@ -6,6 +6,7 @@ import logging
 import Vocabulary.Vocabulary_Utilities as VocabUtils
 import PrepareKBInput.LemmatizeNyms as LN
 import nltk
+import Filesystem as F
 
 def build_vocabulary_dict_fromtext(corpus_txt_fpaths):
     vocab_dict = {}
@@ -37,22 +38,33 @@ def build_vocabulary_dict_fromtext(corpus_txt_fpaths):
     return vocab_dict
 
 
-def build_vocabulary_dict_from_senselabeled(lowercase=False):
+def build_vocabulary_dict_from_senselabeled(lowercase):
     vocab_dict = {}
 
     tokens_toexclude = [Utils.EOS_TOKEN] # + list(string.punctuation)
     # Commas and punctuation signs are present in the Sense-Labeled Corpus as separate tokens.
     # Therefore, it makes sense to keep them in the vocabulary, and thus in the graph, as globals
     slc_split_names = [Utils.TRAINING, Utils.VALIDATION] # , , Utils.TEST
+    lemmatizer = nltk.stem.WordNetLemmatizer()
+
     for slc_split_name in slc_split_names:
         for token_dict in SLC.read_split(slc_split_name):
             token = VocabUtils.process_word_token(token_dict, lowercase)
+
+            lemmatized_token = LN.lemmatize_term(token, lemmatizer)
             if token not in tokens_toexclude:
                 try:
                     prev_freq = vocab_dict[token]
                     vocab_dict[token] = prev_freq + 1
                 except KeyError:
                     vocab_dict[token] = 1
+
+                if lemmatized_token != token: # also adding the lemmatized token to the vocabulary. 'spring'(s), etc.
+                    try:
+                        prev_freq = vocab_dict[lemmatized_token]
+                        vocab_dict[lemmatized_token] = prev_freq + 1
+                    except KeyError:
+                        vocab_dict[lemmatized_token] = 1
         if Utils.UNK_TOKEN not in vocab_dict.keys():
             logging.info("Adding manually UNK_TOKEN=" + str(Utils.UNK_TOKEN))
             vocab_dict[Utils.UNK_TOKEN] = 100 # add it manually
@@ -61,20 +73,21 @@ def build_vocabulary_dict_from_senselabeled(lowercase=False):
 
 
 # Entry function: if a vocabulary is already present in the specified path, load it. Otherwise, create it.
-def get_vocabulary_df(senselabeled_or_text, corpus_txt_fpaths, out_vocabulary_h5_filepath, min_count, lowercase):
-    if os.path.exists(out_vocabulary_h5_filepath):
-        vocab_df = pd.read_hdf(out_vocabulary_h5_filepath, mode='r')
-        logging.info("*** The vocabulary was loaded from the file " + out_vocabulary_h5_filepath)
+def get_vocabulary_df(senselabeled_or_text, vocabulary_h5_filepath, textcorpus_fpaths, min_count, lowercase):
+
+    if os.path.exists(vocabulary_h5_filepath):
+        vocab_df = pd.read_hdf(vocabulary_h5_filepath, mode='r')
+        logging.info("*** The vocabulary was loaded from the file " + vocabulary_h5_filepath)
     else:
-        logging.info("*** Creating vocabulary at " + out_vocabulary_h5_filepath)
-        vocabulary_h5 = pd.HDFStore(out_vocabulary_h5_filepath, mode='w')
+        logging.info("*** Creating vocabulary at " + vocabulary_h5_filepath)
+        vocabulary_h5 = pd.HDFStore(vocabulary_h5_filepath, mode='w')
         vocab_h5_itemsizes = {'word': Utils.HDF5_BASE_SIZE_512 / 4, 'frequency': Utils.HDF5_BASE_SIZE_512 / 8,
                               'lemmatized_form': Utils.HDF5_BASE_SIZE_512 / 4, 'num_senses': Utils.HDF5_BASE_SIZE_512 / 8}
 
         if senselabeled_or_text:
             vocabulary_wordfreq_dict = build_vocabulary_dict_from_senselabeled(lowercase)
         else:
-            vocabulary_wordfreq_dict = build_vocabulary_dict_fromtext(corpus_txt_fpaths)
+            vocabulary_wordfreq_dict = build_vocabulary_dict_fromtext(textcorpus_fpaths)
 
         if min_count>1:
             VocabUtils.eliminate_rare_words(vocabulary_wordfreq_dict, min_count)

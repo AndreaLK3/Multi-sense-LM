@@ -38,7 +38,7 @@ def setup_train(slc_or_text_corpus, include_globalnode_input, load_saved_model,
     single_prototypes_file = F.SPVs_FASTTEXT_FILE if method == Method.FASTTEXT else F.SPVs_DISTILBERT_FILE
     embeddings_matrix = torch.tensor(np.load(os.path.join(F.FOLDER_INPUT, single_prototypes_file))).to(torch.float32)
 
-    globals_vocabulary_fpath = os.path.join(F.FOLDER_VOCABULARY, F.VOCABULARY_OF_GLOBALS_FILE)
+    globals_vocabulary_fpath = os.path.join(F.FOLDER_VOCABULARY, F.VOCABULARY_OF_GLOBALS_FILENAME)
     vocabulary_df = pd.read_hdf(globals_vocabulary_fpath, mode='r')
     # vocabulary_wordList = vocabulary_df['word'].to_list().copy()
     if slc_or_text_corpus:

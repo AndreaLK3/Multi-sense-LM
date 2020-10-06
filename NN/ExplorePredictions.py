@@ -15,7 +15,7 @@ from math import exp
 
 ### Given the numerical index of a global, return the corresponding word/token
 def get_globalword_fromindex_df(global_index):
-    globals_vocabulary_fpath = os.path.join(F.FOLDER_VOCABULARY, F.VOCABULARY_OF_GLOBALS_FILE)
+    globals_vocabulary_fpath = os.path.join(F.FOLDER_VOCABULARY, F.VOCABULARY_OF_GLOBALS_FILENAME)
     globals_vocabulary_df = pd.read_hdf(globals_vocabulary_fpath, mode='r')
 
     word = globals_vocabulary_df.iloc[global_index]['word']

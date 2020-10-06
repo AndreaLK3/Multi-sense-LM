@@ -157,7 +157,7 @@ model_base = model.AWD(args.model, ntokens, args.emsize, args.nhid,
 os.chdir('..')
 graph_dataobj = DG.get_graph_dataobject(new=False, method=CE.Method.FASTTEXT, slc_corpus=False).to(device)
 grapharea_matrix = AD.get_grapharea_matrix(graph_dataobj, area_size=32, hops_in_area=1)
-globals_vocabulary_fpath = os.path.join(F.FOLDER_VOCABULARY, F.VOCABULARY_OF_GLOBALS_FILE)
+globals_vocabulary_fpath = os.path.join(F.FOLDER_VOCABULARY, F.VOCABULARY_OF_GLOBALS_FILENAME)
 vocab_h5 = pd.HDFStore(globals_vocabulary_fpath, mode='r')
 globals_vocabulary_df = pd.read_hdf(globals_vocabulary_fpath, mode='r')
 globals_vocabulary_wordList = globals_vocabulary_df['word'].to_list().copy()

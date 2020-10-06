@@ -31,6 +31,9 @@ DEVICE = torch.device('cuda' if torch.cuda.is_available() else 'cpu') # torch.de
 
 # Lexicon
 
+STANDARDTEXT = 'StandardText'
+SENSELABELED = 'SenseLabeled'
+
 DEFINITIONS = 'definitions'
 EXAMPLES = 'examples'
 SYNONYMS = 'synonyms'

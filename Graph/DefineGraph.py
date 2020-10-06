@@ -325,7 +325,7 @@ def create_graph(method, slc_corpus):
 
     Utils.init_logging('DefineGraph.log')
 
-    globals_vocabulary_fpath = os.path.join(F.FOLDER_VOCABULARY, F.VOCABULARY_OF_GLOBALS_FILE)
+    globals_vocabulary_fpath = os.path.join(F.FOLDER_VOCABULARY, F.VOCABULARY_OF_GLOBALS_FILENAME)
     globals_vocabulary_df = pd.read_hdf(globals_vocabulary_fpath, mode='r')
     globals_vocabulary_ls = globals_vocabulary_df['word'].to_list().copy()
 

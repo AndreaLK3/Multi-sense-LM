@@ -10,14 +10,15 @@ import sqlite3
 import Filesystem as F
 import numpy as np
 from sklearn.decomposition import PCA
+import nltk
 
 # Phase 1 - Preprocessing: eliminating quasi-duplicate definitions and examples, and lemmatizing synonyms & antonyms
-def preprocess(vocabulary_ls):
+def preprocess(vocabulary_ls, inputdata_folder):
     #Utils.init_logging(os.path.join('PrepareKBInput','PreprocessInput.log'), logging.INFO)
 
     # categories= [d., e., s., a.]
-    hdf5_input_filepaths = [os.path.join(Filesystem.FOLDER_INPUT, categ + ".h5") for categ in Utils.CATEGORIES]
-    hdf5_output_filepaths = [os.path.join(Filesystem.FOLDER_INPUT, Utils.PROCESSED + '_' + categ + ".h5")
+    hdf5_input_filepaths = [os.path.join(inputdata_folder, categ + ".h5") for categ in Utils.CATEGORIES]
+    hdf5_output_filepaths = [os.path.join(inputdata_folder, Utils.PROCESSED + '_' + categ + ".h5")
                              for categ in Utils.CATEGORIES]
 
     input_dbs = [pd.HDFStore(input_filepath, mode='r') for input_filepath in hdf5_input_filepaths]
@@ -38,19 +39,21 @@ def preprocess(vocabulary_ls):
 # Phase 2 - Considering the wordSenses in the vocabulary, located in the archive of processed definitions,
 # establish a correspondence with an integer index.
 # Moreover, counting the number of defs and examples, define start&end indices for the matrix of word embeddings.
-def create_senses_indices_table():
+def create_senses_indices_table(input_folder_fpath, vocabulary_folder):
     Utils.init_logging('CreateSensesVocabularyTable.log', logging.INFO)
 
-    vocab_fpath = os.path.join(F.FOLDER_VOCABULARY, F.VOCABULARY_OF_GLOBALS_FILE)
+    # ------- Setting filepaths --------
+    vocab_fpath = os.path.join(vocabulary_folder, F.VOCABULARY_OF_GLOBALS_FILENAME)
     vocabulary_df = pd.read_hdf(vocab_fpath)
     vocabulary_words_ls = vocabulary_df['word'].to_list().copy()
 
-    defs_input_filepath = os.path.join(Filesystem.FOLDER_INPUT, Utils.PROCESSED + '_' + Utils.DEFINITIONS + ".h5")
-    examples_input_filepath = os.path.join(Filesystem.FOLDER_INPUT, Utils.PROCESSED + '_' + Utils.EXAMPLES + ".h5")
+    defs_input_filepath = os.path.join(input_folder_fpath, Utils.PROCESSED + '_' + Utils.DEFINITIONS + ".h5")
+    examples_input_filepath = os.path.join(input_folder_fpath, Utils.PROCESSED + '_' + Utils.EXAMPLES + ".h5")
     defs_input_db = pd.HDFStore(defs_input_filepath, mode='r')
     examples_input_db = pd.HDFStore(examples_input_filepath, mode='r')
 
-    output_filepath = os.path.join(Filesystem.FOLDER_INPUT, Utils.INDICES_TABLE_DB)
+    # ------- Creating the table --------
+    output_filepath = os.path.join(input_folder_fpath, Utils.INDICES_TABLE_DB)
     out_indicesTable_db = sqlite3.connect(output_filepath)
     out_indicesTable_db_c = out_indicesTable_db.cursor()
     out_indicesTable_db_c.execute('''CREATE TABLE IF NOT EXISTS
@@ -67,7 +70,7 @@ def create_senses_indices_table():
 
     logging.debug("vocabulary_words_ls=" + str(vocabulary_words_ls))
 
-    # Process the wn_ids as previously > words_without_sense_set > add to the table with type=n and only vocab_index+1
+    # ------- Inserting the words from the vocabulary that have sense/WordNet data, in the standard way --------
     word_senses_series_from_defs = defs_input_db[Utils.DEFINITIONS][Utils.SENSE_WN_ID]
     word_senses_ls = [sense_str for sense_str in word_senses_series_from_defs if
                              Utils.get_word_from_sense(sense_str) in vocabulary_words_ls]
@@ -99,7 +102,20 @@ def create_senses_indices_table():
     words_without_senses_set = set(vocabulary_words_ls).difference(words_with_senses_set)
     logging.info("words_without_senses_set=" + str(words_without_senses_set))
 
-    for word in words_without_senses_set:
+    # ------- Remove w from the words needing a dummySense if the lemmatized form of w has senses  --------
+    words_without_senses_ls = list(words_without_senses_set)
+    words_needing_dummySense_ls = []
+    lemmatizer = nltk.stem.WordNetLemmatizer()
+    for word in words_without_senses_ls:
+        lemmatized_form = LN.lemmatize_term(word, lemmatizer)
+        if lemmatized_form in words_with_senses_set:
+            continue
+        else:
+            words_needing_dummySense_ls.append(word)
+    words_needing_dummySense_set = set(words_needing_dummySense_ls)
+
+    # ------- Creating and inserting the dummySenses --------
+    for word in words_needing_dummySense_set:
         # no definitions nor examples to add here. We will add the global vector as the vector of the dummy-sense.
         dummy_wn_id = word + '.' + 'dummySense' + '.01'
         logging.debug("dummy_wn_id=" + str(dummy_wn_id))
@@ -123,35 +139,33 @@ def create_senses_indices_table():
 # Phase 4 - PCA dimensionality reduction, for definitions and examples. Writing to files in subfolder.
 # PCA: Linear dimensionality reduction, using Singular Value Decomposition of the data to project
 # it to a lower dimensional space. The input data is centered but not scaled for each feature before applying SVD.
-def apply_PCA_to_defs_examples(embeddings_method=CE.Method.FASTTEXT):
+def apply_PCA_to_defs_examples(embeddings_method, inputdata_folder):
     elements_ls = [Utils.DEFINITIONS, Utils.EXAMPLES]
     for elements_name in elements_ls:
         elems_fname = Utils.VECTORIZED + '_' + str(embeddings_method.value) + '_' + elements_name + '.npy'
-        elems_fpath = os.path.join(F.FOLDER_INPUT, elems_fname)
+        elems_fpath = os.path.join(inputdata_folder, elems_fname)
         elems_E1 = np.load(elems_fpath)
 
         pca = PCA(n_components=Utils.GRAPH_EMBEDDINGS_DIM)
         elems_E2 = pca.fit_transform(elems_E1)
 
-        output_fpath = os.path.join(F.FOLDER_INPUT, F.FOLDER_PCA, elements_name + '_' + str(embeddings_method.value) + '.npy')
+        output_fpath = os.path.join(inputdata_folder, F.FOLDER_PCA, elements_name + '_' + str(embeddings_method.value) + '.npy')
         np.save(output_fpath, elems_E2)
     return
 
 
-
-# ['move', 'light']
-def prepare(vocabulary_ls, embeddings_method): #vocabulary = ['move', 'light', 'for', 'sea']
+def prepare(vocabulary_ls, inputdata_folder, vocabulary_folder, embeddings_method):
     #Utils.init_logging(os.path.join("PrepareKBInput", "PrepareKBInput.log"))
 
     # Phase 1 - Preprocessing: eliminating quasi-duplicate definitions and examples, and lemmatizing synonyms & antonyms
-    preprocess(vocabulary_ls)
+    preprocess(vocabulary_ls, inputdata_folder)
 
     # Phase 2 - Create the Vocabulary table with the correspondences (wordSense, integer index).
-    create_senses_indices_table()
+    create_senses_indices_table(inputdata_folder, vocabulary_folder)
 
     # Phase 3 - get the sentence embeddings for definitions and examples, using BERT or FasText, and store them
-    CE.compute_elements_embeddings(Utils.DEFINITIONS, embeddings_method)
-    CE.compute_elements_embeddings(Utils.EXAMPLES, embeddings_method)
+    CE.compute_elements_embeddings(Utils.DEFINITIONS, embeddings_method, inputdata_folder)
+    CE.compute_elements_embeddings(Utils.EXAMPLES, embeddings_method, inputdata_folder)
 
     # Phase 4 - use PCA dimensionality reduction for definitions and examples, for future graph processing
-    apply_PCA_to_defs_examples(embeddings_method)
+    apply_PCA_to_defs_examples(embeddings_method, inputdata_folder)

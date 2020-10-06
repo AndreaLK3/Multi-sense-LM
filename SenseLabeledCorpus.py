@@ -78,12 +78,11 @@ def organize_subcorpus(xml_fpath, train_fraction):
 
 ##########
 
-def organize_splits():
+def organize_splits(xml_fnames):
     Utils.init_logging('SLC.log')
-    xml_fnames = ['semcor.xml']#, , 'subset_omsti_aa.xml']#, 'raganato_ALL.xml', 'wngt.xml']
     xml_fpaths = list(map(
-        lambda fname: os.path.join(F.FOLDER_TEXT_CORPUSES, F.FOLDER_MYSLCCORPUS, fname), xml_fnames))
-    split_directories_paths = list(map(lambda dirname: os.path.join(F.FOLDER_TEXT_CORPUSES, F.FOLDER_MYSLCCORPUS, dirname),
+        lambda fname: os.path.join(F.FOLDER_TEXT_CORPUSES, F.FOLDER_SENSELABELED, fname), xml_fnames))
+    split_directories_paths = list(map(lambda dirname: os.path.join(F.FOLDER_TEXT_CORPUSES, F.FOLDER_SENSELABELED, dirname),
                                        [F.FOLDER_TRAIN, F.FOLDER_VALIDATION, F.FOLDER_TEST]))
     for dirpath in split_directories_paths:
         if not os.path.exists(dirpath):
@@ -110,15 +109,15 @@ def dataset_generator(xml_fpath):
 
 def readgenerator_senselabeled_corpuses(split_name):
     if split_name.lower() == Utils.TRAINING:
-        training_subcorpuses_folder = os.path.join(F.FOLDER_TEXT_CORPUSES, F.FOLDER_MYSLCCORPUS, F.FOLDER_TRAIN)
+        training_subcorpuses_folder = os.path.join(F.FOLDER_TEXT_CORPUSES, F.FOLDER_SENSELABELED, F.FOLDER_TRAIN)
         full_fpaths = list(map(lambda fname: os.path.join(training_subcorpuses_folder, fname),
                                [fname for fname in os.listdir(training_subcorpuses_folder) if 'xml' in fname]))
     elif split_name.lower() == Utils.VALIDATION:
-        validation_subcorpuses_folder = os.path.join(F.FOLDER_TEXT_CORPUSES, F.FOLDER_MYSLCCORPUS, F.FOLDER_VALIDATION)
+        validation_subcorpuses_folder = os.path.join(F.FOLDER_TEXT_CORPUSES, F.FOLDER_SENSELABELED, F.FOLDER_VALIDATION)
         full_fpaths = list(map(lambda fname: os.path.join(validation_subcorpuses_folder, fname),
                                [fname for fname in os.listdir(validation_subcorpuses_folder) if 'xml' in fname]))
     else: # elif dataset_split.lower() == Utils.TEST:
-        test_subcorpuses_folder = os.path.join(F.FOLDER_TEXT_CORPUSES, F.FOLDER_MYSLCCORPUS, F.FOLDER_TEST)
+        test_subcorpuses_folder = os.path.join(F.FOLDER_TEXT_CORPUSES, F.FOLDER_SENSELABELED, F.FOLDER_TEST)
         full_fpaths = list(map(lambda fname: os.path.join(test_subcorpuses_folder, fname),
                                [fname for fname in os.listdir(test_subcorpuses_folder) if 'xml' in fname]))
 
