@@ -33,12 +33,20 @@ def setup_train(slc_or_text_corpus, include_globalnode_input, load_saved_model,
 
     # -------------------- Setting up the graph, grapharea_matrix and vocabulary --------------------
     graph_dataobj = DG.get_graph_dataobject(new=False, method=method, slc_corpus=slc_or_text_corpus).to(DEVICE)
-    grapharea_matrix = AD.get_grapharea_matrix(graph_dataobj, grapharea_size, hops_in_area=1)
+    if slc_or_text_corpus:
+        graph_folder = os.path.join(F.FOLDER_GRAPH, F.FOLDER_SENSELABELED)
+        inputdata_folder = os.path.join(F.FOLDER_INPUT, F.FOLDER_SENSELABELED)
+        vocabulary_folder = os.path.join(F.FOLDER_VOCABULARY, F.FOLDER_SENSELABELED)
+    else:
+        graph_folder = os.path.join(F.FOLDER_GRAPH, F.FOLDER_STANDARDTEXT)
+        inputdata_folder = os.path.join(F.FOLDER_INPUT, F.FOLDER_STANDARDTEXT)
+        vocabulary_folder = os.path.join(F.FOLDER_VOCABULARY, F.FOLDER_STANDARDTEXT)
+    grapharea_matrix = AD.get_grapharea_matrix(graph_dataobj, grapharea_size, hops_in_area=1, graph_folder=graph_folder)
 
     single_prototypes_file = F.SPVs_FASTTEXT_FILE if method == Method.FASTTEXT else F.SPVs_DISTILBERT_FILE
-    embeddings_matrix = torch.tensor(np.load(os.path.join(F.FOLDER_INPUT, single_prototypes_file))).to(torch.float32)
+    embeddings_matrix = torch.tensor(np.load(os.path.join(inputdata_folder, single_prototypes_file))).to(torch.float32)
 
-    globals_vocabulary_fpath = os.path.join(F.FOLDER_VOCABULARY, F.VOCABULARY_OF_GLOBALS_FILENAME)
+    globals_vocabulary_fpath = os.path.join(vocabulary_folder, F.VOCABULARY_OF_GLOBALS_FILENAME)
     vocabulary_df = pd.read_hdf(globals_vocabulary_fpath, mode='r')
     # vocabulary_wordList = vocabulary_df['word'].to_list().copy()
     if slc_or_text_corpus:
@@ -76,7 +84,7 @@ def setup_train(slc_or_text_corpus, include_globalnode_input, load_saved_model,
     model.to(DEVICE)
 
     # -------------------- Creating the DataLoaders for training and validation dataset --------------------
-    senseindices_db_filepath = os.path.join(F.FOLDER_INPUT, Utils.INDICES_TABLE_DB)
+    senseindices_db_filepath = os.path.join(inputdata_folder, Utils.INDICES_TABLE_DB)
     senseindices_db = sqlite3.connect(senseindices_db_filepath)
     senseindices_db_c = senseindices_db.cursor()
 

@@ -2,15 +2,12 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="d35dca92-959c-489d-8a61-f337e4cce7fa" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/CreateGraphInput.py" beforeDir="false" afterPath="$PROJECT_DIR$/CreateGraphInput.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Graph/Adjacencies.py" beforeDir="false" afterPath="$PROJECT_DIR$/Graph/Adjacencies.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Graph/DefineGraph.py" beforeDir="false" afterPath="$PROJECT_DIR$/Graph/DefineGraph.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Graph/nodes_32_areahops_1_graphArea_matrix.npz" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/Media/Task1_DeveloperDiary_7.docx" beforeDir="false" afterPath="$PROJECT_DIR$/Media/Task1_DeveloperDiary_7.docx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PrepareKBInput/PrepareKBInput.py" beforeDir="false" afterPath="$PROJECT_DIR$/PrepareKBInput/PrepareKBInput.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SenseLabeledCorpus.py" beforeDir="false" afterPath="$PROJECT_DIR$/SenseLabeledCorpus.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Vocabulary/Vocabulary_Utilities.py" beforeDir="false" afterPath="$PROJECT_DIR$/Vocabulary/Vocabulary_Utilities.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WordEmbeddings/EmbedWithFastText.py" beforeDir="false" afterPath="$PROJECT_DIR$/WordEmbeddings/EmbedWithFastText.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/NN/Training.py" beforeDir="false" afterPath="$PROJECT_DIR$/NN/Training.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/trainmodel_script.py" beforeDir="false" afterPath="$PROJECT_DIR$/trainmodel_script.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -23,11 +20,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/CreateGraphInput.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="541">
-              <caret line="103" column="39" lean-forward="true" selection-start-line="103" selection-start-column="39" selection-end-line="103" selection-end-column="39" />
+            <state relative-caret-position="279">
+              <caret line="73" column="8" selection-start-line="73" selection-start-column="8" selection-end-line="73" selection-end-column="8" />
               <folding>
                 <element signature="e#0#22#0" expanded="true" />
               </folding>
@@ -39,7 +36,7 @@
         <entry file="file://$PROJECT_DIR$/WordEmbeddings/ComputeEmbeddings.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="37">
-              <caret line="25" column="16" lean-forward="true" selection-start-line="25" selection-start-column="16" selection-end-line="25" selection-end-column="16" />
+              <caret line="25" column="16" selection-start-line="25" selection-start-column="16" selection-end-line="25" selection-end-column="16" />
               <folding>
                 <element signature="e#0#14#0" expanded="true" />
               </folding>
@@ -59,25 +56,49 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/PrepareKBInput/PrepareKBInput.py">
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/Graph/DefineGraph.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2130">
-              <caret line="154" column="6" selection-start-line="154" selection-start-column="6" selection-end-line="154" selection-end-column="6" />
+            <state relative-caret-position="375">
+              <caret line="25" column="9" lean-forward="true" selection-start-line="25" selection-start-column="9" selection-end-line="25" selection-end-column="9" />
               <folding>
-                <element signature="e#0#17#0" expanded="true" />
+                <element signature="e#0#19#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Graph/DefineGraph.py">
+        <entry file="file://$PROJECT_DIR$/trainmodel_script.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="105">
+              <caret line="7" column="51" selection-start-line="7" selection-start-column="51" selection-end-line="7" selection-end-column="51" />
+              <folding>
+                <element signature="e#0#46#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/NN/Training.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-10">
+              <caret line="28" column="16" lean-forward="true" selection-start-line="28" selection-start-column="16" selection-end-line="28" selection-end-column="16" />
+              <folding>
+                <element signature="e#0#12#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/NN/DataLoading.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="387">
-              <caret line="420" column="39" selection-start-line="420" selection-start-column="39" selection-end-line="420" selection-end-column="39" />
+              <caret line="142" column="25" lean-forward="true" selection-start-line="142" selection-start-column="25" selection-end-line="142" selection-end-column="25" />
               <folding>
-                <element signature="e#0#19#0" expanded="true" />
+                <element signature="e#0#12#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -87,7 +108,7 @@
         <entry file="file://$PROJECT_DIR$/Filesystem.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="303">
-              <caret line="34" column="15" lean-forward="true" selection-start-line="34" selection-start-column="15" selection-end-line="34" selection-end-column="15" />
+              <caret line="34" column="15" selection-start-line="34" selection-start-column="15" selection-end-line="34" selection-end-column="15" />
             </state>
           </provider>
         </entry>
@@ -96,19 +117,7 @@
         <entry file="file://$PROJECT_DIR$/Utils.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="142">
-              <caret line="33" column="4" lean-forward="true" selection-start-line="33" selection-start-column="4" selection-end-line="33" selection-end-column="4" />
-              <folding>
-                <element signature="e#0#14#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Graph/GraphArea.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="870">
-              <caret line="63" column="30" selection-start-line="63" selection-start-column="30" selection-end-line="63" selection-end-column="30" />
+              <caret line="33" column="4" selection-start-line="33" selection-start-column="4" selection-end-line="33" selection-end-column="4" />
               <folding>
                 <element signature="e#0#14#0" expanded="true" />
               </folding>
@@ -119,22 +128,10 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Graph/Adjacencies.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="720">
-              <caret line="58" column="12" selection-start-line="58" selection-start-column="12" selection-end-line="58" selection-end-column="12" />
+            <state relative-caret-position="192">
+              <caret line="136" column="21" lean-forward="true" selection-start-line="136" selection-start-column="21" selection-end-line="136" selection-end-column="21" />
               <folding>
                 <element signature="e#0#12#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Vocabulary/Vocabulary_Utilities.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1605">
-              <caret line="113" column="13" selection-start-line="113" selection-start-column="13" selection-end-line="113" selection-end-column="13" />
-              <folding>
-                <element signature="e#0#11#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -151,13 +148,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>Utils</find>
-      <find>min_count</find>
-      <find>VALIDATION</find>
-      <find>TRAINING</find>
-      <find>1024</find>
-      <find>750</find>
-      <find>top_k</find>
       <find>numpy()</find>
       <find>k=1</find>
       <find>Method</find>
@@ -181,6 +171,13 @@
       <find>lowerc</find>
       <find>dummy</find>
       <find>SinglePro</find>
+      <find>said</find>
+      <find>get_edges</find>
+      <find>get_edges_elements</find>
+      <find>get_edges_se</find>
+      <find>inputdata</find>
+      <find>FOLDER_INPUT</find>
+      <find>F.FOLDER_VOCABULARY</find>
     </findStrings>
     <replaceStrings>
       <replace>F</replace>
@@ -210,6 +207,7 @@
       <replace>450</replace>
       <replace>512</replace>
       <replace>inputdata_folder</replace>
+      <replace>vocabulary_folder</replace>
     </replaceStrings>
     <dirStrings>
       <dir>$PROJECT_DIR$</dir>
@@ -253,29 +251,29 @@
         <option value="$PROJECT_DIR$/GNN/Loss.py" />
         <option value="$PROJECT_DIR$/GNN/Training.py" />
         <option value="$PROJECT_DIR$/NN/Loss.py" />
-        <option value="$PROJECT_DIR$/Graph/Adjacencies.py" />
         <option value="$PROJECT_DIR$/NN/Models/Common.py" />
         <option value="$PROJECT_DIR$/NN/Models/Steps_RNN.py" />
         <option value="$PROJECT_DIR$/NN/Models/Senses.py" />
         <option value="$PROJECT_DIR$/NN/NumericalIndices.py" />
         <option value="$PROJECT_DIR$/NN/Models/RNNs.py" />
-        <option value="$PROJECT_DIR$/NN/Training.py" />
         <option value="$PROJECT_DIR$/Utils.py" />
         <option value="$PROJECT_DIR$/Vocabulary/Vocabulary.py" />
         <option value="$PROJECT_DIR$/GetKBInputData/RetrieveInputData.py" />
         <option value="$PROJECT_DIR$/WordEmbeddings/ComputeEmbeddings.py" />
         <option value="$PROJECT_DIR$/Filesystem.py" />
-        <option value="$PROJECT_DIR$/trainmodel_script.py" />
         <option value="$PROJECT_DIR$/PrepareKBInput/PrepareKBInput.py" />
         <option value="$PROJECT_DIR$/WordEmbeddings/EmbedWithFastText.py" />
         <option value="$PROJECT_DIR$/SenseLabeledCorpus.py" />
-        <option value="$PROJECT_DIR$/CreateGraphInput.py" />
         <option value="$PROJECT_DIR$/Vocabulary/Vocabulary_Utilities.py" />
         <option value="$PROJECT_DIR$/Graph/DefineGraph.py" />
+        <option value="$PROJECT_DIR$/trainmodel_script.py" />
+        <option value="$PROJECT_DIR$/Graph/Adjacencies.py" />
+        <option value="$PROJECT_DIR$/CreateGraphInput.py" />
+        <option value="$PROJECT_DIR$/NN/Training.py" />
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds">
+  <component name="ProjectFrameBounds" extendedState="6">
     <option name="y" value="23" />
     <option name="width" value="1135" />
     <option name="height" value="971" />
@@ -397,9 +395,10 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="23" width="1135" height="971" extended-state="0" />
+    <frame x="0" y="23" width="1920" height="972" extended-state="6" />
+    <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.486166" visible="true" weight="0.22506861" />
+      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.486166" visible="true" weight="0.20074548" />
       <window_info id="Structure" order="1" sideWeight="0.513834" side_tool="true" weight="0.27110156" />
       <window_info id="Favorites" order="2" sideWeight="0.5059761" side_tool="true" weight="0.18025751" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -413,7 +412,7 @@
       <window_info anchor="bottom" id="Terminal" order="8" weight="0.325" />
       <window_info anchor="bottom" id="Event Log" order="9" sideWeight="0.5111821" side_tool="true" weight="0.40269965" />
       <window_info anchor="bottom" id="Inspection Results" order="10" weight="0.3284091" />
-      <window_info active="true" anchor="bottom" id="Python Console" order="11" sideWeight="0.4888179" visible="true" weight="0.2480091" />
+      <window_info active="true" anchor="bottom" id="Python Console" order="11" sideWeight="0.4888179" visible="true" weight="0.24772727" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
@@ -455,6 +454,11 @@
           <url>file://$PROJECT_DIR$/GetKBInputData/WordNet.py</url>
           <line>37</line>
           <option name="timeStamp" value="2" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/Graph/DefineGraph.py</url>
+          <line>331</line>
+          <option name="timeStamp" value="11" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
@@ -537,47 +541,47 @@
     </expressions>
     <expressions id="evaluateExpression">
       <expression>
-        <expression-string>t_word_embeddings[:, 0:5]</expression-string>
+        <expression-string>torch.stack(X_globals_ls, dim=0)</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>t_word_embeddings</expression-string>
+        <expression-string>torch.stack(X_globals_ls[0], dim=0)</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>t_sense_embeddings</expression-string>
+        <expression-string>X_globals_ls[0]</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>torch.mean(self.context_running_embeddings, dim=2)[b,l].unsqueeze(dim=0)</expression-string>
+        <expression-string>X_globals_ls</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>torch.mean(self.context_running_embeddings, dim=2)[b,l]</expression-string>
+        <expression-string>np.array(X_globals_ls)</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>torch.mean(self.context_running_embeddings, dim=2)</expression-string>
+        <expression-string>words_definitionvectors_dict['said']</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>torch.avg(self.context_running_embeddings, dim=2)</expression-string>
+        <expression-string>np.expand_dims(E_reduced_embeddings[1,:], axis=0)</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>torch.average(self.context_running_embeddings, dim=2)</expression-string>
+        <expression-string>globals_vocabulary_ls.index('said')</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>self.context_running_embeddings</expression-string>
+        <expression-string>globals_vocabulary_ls.index('the')</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
@@ -841,42 +845,12 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/NN/DataLoading.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="383">
-          <caret line="108" column="61" selection-start-line="108" selection-start-column="61" selection-end-line="108" selection-end-column="61" />
-          <folding>
-            <element signature="e#0#12#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/NN/Training.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1777">
-          <caret line="207" column="65" selection-start-line="207" selection-start-column="65" selection-end-line="207" selection-end-column="65" />
-          <folding>
-            <element signature="e#0#12#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Vocabulary/Vocabulary.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="175">
           <caret line="66" column="40" selection-start-line="66" selection-start-column="40" selection-end-line="66" selection-end-column="40" />
           <folding>
             <element signature="e#0#12#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/trainmodel_script.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="180">
-          <caret line="12" selection-start-line="12" selection-end-line="12" />
-          <folding>
-            <element signature="e#0#46#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -921,16 +895,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Graph/Adjacencies.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="720">
-          <caret line="58" column="12" selection-start-line="58" selection-start-column="12" selection-end-line="58" selection-end-column="12" />
-          <folding>
-            <element signature="e#0#12#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Vocabulary/Vocabulary_Utilities.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1605">
@@ -944,19 +908,9 @@
     <entry file="file://$PROJECT_DIR$/Utils.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="142">
-          <caret line="33" column="4" lean-forward="true" selection-start-line="33" selection-start-column="4" selection-end-line="33" selection-end-column="4" />
+          <caret line="33" column="4" selection-start-line="33" selection-start-column="4" selection-end-line="33" selection-end-column="4" />
           <folding>
             <element signature="e#0#14#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Graph/DefineGraph.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="387">
-          <caret line="420" column="39" selection-start-line="420" selection-start-column="39" selection-end-line="420" selection-end-column="39" />
-          <folding>
-            <element signature="e#0#19#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -964,7 +918,7 @@
     <entry file="file://$PROJECT_DIR$/Filesystem.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="303">
-          <caret line="34" column="15" lean-forward="true" selection-start-line="34" selection-start-column="15" selection-end-line="34" selection-end-column="15" />
+          <caret line="34" column="15" selection-start-line="34" selection-start-column="15" selection-end-line="34" selection-end-column="15" />
         </state>
       </provider>
     </entry>
@@ -981,19 +935,69 @@
     <entry file="file://$PROJECT_DIR$/WordEmbeddings/ComputeEmbeddings.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="37">
-          <caret line="25" column="16" lean-forward="true" selection-start-line="25" selection-start-column="16" selection-end-line="25" selection-end-column="16" />
+          <caret line="25" column="16" selection-start-line="25" selection-start-column="16" selection-end-line="25" selection-end-column="16" />
           <folding>
             <element signature="e#0#14#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/trainmodel_script.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="105">
+          <caret line="7" column="51" selection-start-line="7" selection-start-column="51" selection-end-line="7" selection-end-column="51" />
+          <folding>
+            <element signature="e#0#46#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Graph/Adjacencies.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="192">
+          <caret line="136" column="21" lean-forward="true" selection-start-line="136" selection-start-column="21" selection-end-line="136" selection-end-column="21" />
+          <folding>
+            <element signature="e#0#12#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/CreateGraphInput.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="541">
-          <caret line="103" column="39" lean-forward="true" selection-start-line="103" selection-start-column="39" selection-end-line="103" selection-end-column="39" />
+        <state relative-caret-position="279">
+          <caret line="73" column="8" selection-start-line="73" selection-start-column="8" selection-end-line="73" selection-end-column="8" />
           <folding>
             <element signature="e#0#22#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/NN/DataLoading.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="387">
+          <caret line="142" column="25" lean-forward="true" selection-start-line="142" selection-start-column="25" selection-end-line="142" selection-end-column="25" />
+          <folding>
+            <element signature="e#0#12#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/NN/Training.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-10">
+          <caret line="28" column="16" lean-forward="true" selection-start-line="28" selection-start-column="16" selection-end-line="28" selection-end-column="16" />
+          <folding>
+            <element signature="e#0#12#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Graph/DefineGraph.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="375">
+          <caret line="25" column="9" lean-forward="true" selection-start-line="25" selection-start-column="9" selection-end-line="25" selection-end-column="9" />
+          <folding>
+            <element signature="e#0#19#0" expanded="true" />
           </folding>
         </state>
       </provider>

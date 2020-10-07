@@ -71,17 +71,14 @@ def exe_from_input_to_vectors(do_reset, compute_single_prototype, senselabeled_o
         xml_fnames = ['semcor.xml']  # , , 'subset_omsti_aa.xml']#, 'raganato_ALL.xml', 'wngt.xml']
         SLC.organize_splits(xml_fnames)
         min_freq_vocab = 2
-        vocabulary_h5 = os.path.join(F.FOLDER_VOCABULARY, F.FOLDER_SENSELABELED,
-                                                  F.VOCABULARY_OF_GLOBALS_FILENAME)
         lowercasing = True
     else:
         inputdata_folder = os.path.join(F.FOLDER_INPUT, F.FOLDER_STANDARDTEXT)
         vocabulary_folder = os.path.join(F.FOLDER_VOCABULARY, F.FOLDER_STANDARDTEXT)
-        vocabulary_h5 = os.path.join(F.FOLDER_VOCABULARY, F.FOLDER_STANDARDTEXT,
-                                          F.VOCABULARY_OF_GLOBALS_FILENAME)
         min_freq_vocab = 1
         lowercasing = False
 
+    vocabulary_h5 = os.path.join(vocabulary_folder, F.VOCABULARY_OF_GLOBALS_FILENAME)
 
     textcorpus_fpaths = os.path.join(F.FOLDER_TEXT_CORPUSES, F.FOLDER_STANDARDTEXT,
                                      F.FOLDER_TRAIN, F.WT_TRAIN_FILE) # used when processing WikiText-2 / standard text

@@ -134,21 +134,21 @@ def create_adjacencies_matrix_numpy(graph_dataobj, area_size, hops_in_area):
     return nodes_arraytable
 
 ### Entry point function. Temporarily modified. Numpy version.
-def get_grapharea_matrix(graphdata_obj, area_size, hops_in_area):
+def get_grapharea_matrix(graphdata_obj, area_size, hops_in_area, graph_folder):
 
-    candidate_fnames = [fname for fname in os.listdir(F.FOLDER_GRAPH)
+    candidate_fnames = [fname for fname in os.listdir(graph_folder)
                         if ((fname.endswith(F.GRAPHAREA_FILE)) and ('nodes_' + str(area_size) + '_areahops_' + str(hops_in_area) + '_' in fname))]
     if len(candidate_fnames) == 0:
         logging.info("Pre-computing and saving graphArea matrix, with area_size=" + str(area_size))
         grapharea_matrix = create_adjacencies_matrix_numpy(graphdata_obj, area_size, hops_in_area)
-        out_fpath = os.path.join(F.FOLDER_GRAPH,
+        out_fpath = os.path.join(graph_folder,
                                  'nodes_' + str(area_size) + '_areahops_' + str(hops_in_area) + '_' + F.GRAPHAREA_FILE)
         grapharea_matrix = grapharea_matrix + 1 # shift the matrix of +1, storage default element will be 0 and not -1
         coo_mat = sparse.coo_matrix(grapharea_matrix)
         csr_mat = coo_mat.tocsr()
         sparse.save_npz(out_fpath, csr_mat)
     else:
-        fpath = os.path.join(F.FOLDER_GRAPH, candidate_fnames[0]) # we expect to find only one
+        fpath = os.path.join(graph_folder, candidate_fnames[0]) # we expect to find only one
         logging.info("Loading graphArea matrix, with area_size=" + str(area_size) + " from: " + str(fpath))
         csr_mat = sparse.load_npz(fpath)
 

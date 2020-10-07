@@ -43,45 +43,21 @@ def load_senses_elements(elements_name, embeddings_method, use_PCA, inputdata_fo
 
 # ------------ Auxiliary functions to initialize nodes ------------
 
-def initialize_globals(X_definitions, E_embeddings, globals_vocabulary_ls, inputdata_folder):
+def initialize_globals(E_embeddings, globals_vocabulary_ls, use_pca):
 
-    db_filepath = os.path.join(inputdata_folder, Utils.INDICES_TABLE_DB)
-    indicesTable_db = sqlite3.connect(db_filepath)
-    indicesTable_db_c = indicesTable_db.cursor()
-    indicesTable_db_c.execute("SELECT * FROM indices_table")
-
-    pca = PCA(n_components=Utils.GRAPH_EMBEDDINGS_DIM)
-    E_reduced_embeddings = pca.fit_transform(E_embeddings)
-
-    words_definitionvectors_dict = {}.fromkeys([word for word in globals_vocabulary_ls], None)
-
-    while (True):
-        db_row = indicesTable_db_c.fetchone()
-        if db_row is None:
-            break
-
-        word_sense = db_row[0]
-        word = Utils.get_word_from_sense(word_sense)
-        sense_start_defs = db_row[2]
-        sense_end_defs = db_row[3]
-        if sense_start_defs != sense_end_defs:
-            sense_def_vectors = X_definitions[sense_start_defs:sense_end_defs]
-            if words_definitionvectors_dict[word] is None:
-                words_definitionvectors_dict[word] = sense_def_vectors
-            else:
-                words_definitionvectors_dict[word] = np.concatenate([words_definitionvectors_dict[word], sense_def_vectors])
-        else: # if there are no definitions, use the (PCA-reduced) version of the word embedding
-            if words_definitionvectors_dict[word] is None:
-                logging.debug("word=" + str(word))
-                word_vocabulary_index = globals_vocabulary_ls.index(word)
-                words_definitionvectors_dict[word] = np.expand_dims(E_reduced_embeddings[word_vocabulary_index,:], axis=0)
+    if use_pca:
+        pca = PCA(n_components=Utils.GRAPH_EMBEDDINGS_DIM)
+        E_reduced_embeddings = pca.fit_transform(E_embeddings)
+    else:
+        E_reduced_embeddings = E_embeddings
 
     X_globals_ls = []
-    for word in words_definitionvectors_dict.keys():
-        average_of_definitions = np.average(words_definitionvectors_dict[word], axis=0)
-        X_globals_ls.append(average_of_definitions)
 
-    X_globals = np.array(X_globals_ls)
+    for i in range(len(globals_vocabulary_ls)):
+        # word = globals_vocabulary_ls[i]
+        X_globals_ls.append(E_reduced_embeddings[i])
+
+    X_globals = torch.stack(X_globals_ls, dim=0).to(torch.float32)
     return X_globals
 
 
@@ -96,7 +72,7 @@ def initialize_senses(X_defs, X_examples, X_globals, vocabulary_ls, average_or_r
     X_senses_ls = []
     num_dummy_senses = 0
 
-    while (True):
+    while True:
         db_row = indicesTable_db_c.fetchone()
         if db_row is None:
             break
@@ -131,8 +107,8 @@ def initialize_senses(X_defs, X_examples, X_globals, vocabulary_ls, average_or_r
 
     if average_or_random_flag:
         X_senses = np.array(X_senses_ls)
-    else: # if average_or_random == False:
-        X_senses_random_ndarray = np.random.rand(current_row_idx, X_defs.shape[1]) # uniform distribution over [0, 1)
+    else:  # if average_or_random == False:
+        X_senses_random_ndarray = np.random.rand(current_row_idx, X_defs.shape[1])  # uniform distribution over [0, 1)
         X_senses_random = torch.from_numpy(X_senses_random_ndarray)
         X_senses = X_senses_random
 
@@ -353,8 +329,9 @@ def create_graph(method, slc_corpus):
     X_definitions = load_senses_elements(Utils.DEFINITIONS, method, use_PCA, inputdata_folder)
     X_examples = load_senses_elements(Utils.EXAMPLES, method, use_PCA, inputdata_folder)
 
-    X_globals = torch.tensor(initialize_globals(X_definitions, E_embeddings, globals_vocabulary_ls)).to(torch.float32)
-    X_senses, num_dummysenses = initialize_senses(X_definitions, X_examples, X_globals, globals_vocabulary_ls, average_or_random_flag=True)
+    X_globals = initialize_globals(E_embeddings, globals_vocabulary_ls, use_PCA)
+    X_senses, num_dummysenses = initialize_senses(X_definitions, X_examples, X_globals, globals_vocabulary_ls,
+                                                  average_or_random_flag=True, inputdata_folder=inputdata_folder)
     num_senses = X_senses.shape[0]
 
     logging.info("X_senses.shape=" + str(X_senses.shape))
@@ -369,9 +346,9 @@ def create_graph(method, slc_corpus):
     # edge_index (LongTensor, optional) – Graph connectivity in COO format with shape [2, num_edges].
     # We can operate with a list of S-D tuples, adding t().contiguous()
     logging.info("Defining the edges: def, exs")
-    def_edges_se = get_edges_elements(Utils.DEFINITIONS, num_senses + num_globals)
+    def_edges_se = get_edges_elements(Utils.DEFINITIONS, num_senses + num_globals, inputdata_folder)
     logging.info("def_edges_se.__len__()=" + str(def_edges_se.__len__())) # def_edges_se.__len__()=25986
-    exs_edges_se = get_edges_elements(Utils.EXAMPLES, num_senses + num_globals+ X_definitions.shape[0])
+    exs_edges_se = get_edges_elements(Utils.EXAMPLES, num_senses + num_globals+ X_definitions.shape[0], inputdata_folder)
     logging.info("exs_edges_se.__len__()=" + str(exs_edges_se.__len__())) # exs_edges_se.__len__()=26003
 
     logging.info("Defining the edges: sc")
@@ -383,7 +360,7 @@ def create_graph(method, slc_corpus):
                                                                         inputdata_folder=inputdata_folder)
         sc_edges.extend(sc_external_edges)
         logging.info("sc_edges_with_external.__len__()=" + str(sc_external_edges.__len__()))
-    sc_edges.extend(get_edges_sensechildren(globals_vocabulary_df, X_senses.shape[0]))
+    sc_edges.extend(get_edges_sensechildren(globals_vocabulary_df, X_senses.shape[0], inputdata_folder))
     logging.info("sc_edges.__len__()=" + str(sc_edges.__len__()))  # sc_edges.__len__()=25986
     # We add self-loops to all globals without a sense.
     edges_selfloops = get_edges_selfloops(sc_edges, num_globals=num_globals, num_dummysenses=num_dummysenses)
