@@ -14,7 +14,6 @@ import nltk
 
 # Phase 1 - Preprocessing: eliminating quasi-duplicate definitions and examples, and lemmatizing synonyms & antonyms
 def preprocess(vocabulary_ls, inputdata_folder):
-    #Utils.init_logging(os.path.join('PrepareKBInput','PreprocessInput.log'), logging.INFO)
 
     # categories= [d., e., s., a.]
     hdf5_input_filepaths = [os.path.join(inputdata_folder, categ + ".h5") for categ in Utils.CATEGORIES]
@@ -40,7 +39,6 @@ def preprocess(vocabulary_ls, inputdata_folder):
 # establish a correspondence with an integer index.
 # Moreover, counting the number of defs and examples, define start&end indices for the matrix of word embeddings.
 def create_senses_indices_table(input_folder_fpath, vocabulary_folder):
-    Utils.init_logging('CreateSensesVocabularyTable.log', logging.INFO)
 
     # ------- Setting filepaths --------
     vocab_fpath = os.path.join(vocabulary_folder, F.VOCABULARY_OF_GLOBALS_FILENAME)
@@ -155,7 +153,6 @@ def apply_PCA_to_defs_examples(embeddings_method, inputdata_folder):
 
 
 def prepare(vocabulary_ls, inputdata_folder, vocabulary_folder, embeddings_method):
-    #Utils.init_logging(os.path.join("PrepareKBInput", "PrepareKBInput.log"))
 
     # Phase 1 - Preprocessing: eliminating quasi-duplicate definitions and examples, and lemmatizing synonyms & antonyms
     preprocess(vocabulary_ls, inputdata_folder)

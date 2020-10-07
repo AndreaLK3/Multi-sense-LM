@@ -25,7 +25,7 @@ def get_sentence_avg_vector(sentence_str, fasttext_vectors):
 
 
 def load_fasttext_vectors():
-    #Utils.init_logging(os.path.join(F.FOLDER_WORD_EMBEDDINGS, "EmbedWithFastText.log"))
+
     fasttext_fpath = os.path.join(F.FOLDER_WORD_EMBEDDINGS, F.FASTTEXT_PRETRAINED_EMBEDDINGS_FILE)
     fasttext_vectors = gensim.models.fasttext.load_facebook_vectors(fasttext_fpath)
 

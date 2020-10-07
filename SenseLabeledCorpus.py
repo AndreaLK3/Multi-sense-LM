@@ -79,7 +79,6 @@ def organize_subcorpus(xml_fpath, train_fraction):
 ##########
 
 def organize_splits(xml_fnames):
-    Utils.init_logging('SLC.log')
     xml_fpaths = list(map(
         lambda fname: os.path.join(F.FOLDER_TEXT_CORPUSES, F.FOLDER_SENSELABELED, fname), xml_fnames))
     split_directories_paths = list(map(lambda dirname: os.path.join(F.FOLDER_TEXT_CORPUSES, F.FOLDER_SENSELABELED, dirname),

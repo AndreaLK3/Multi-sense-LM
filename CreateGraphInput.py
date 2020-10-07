@@ -61,7 +61,7 @@ def reset_embeddings(senselabeled_or_text):
 
 
 def exe_from_input_to_vectors(do_reset, compute_single_prototype, senselabeled_or_text, sp_method=CE.Method.FASTTEXT):
-    Utils.init_logging('Pipeline_CGI.log')
+    Utils.init_logging('Pipeline_SLC'+ str(senselabeled_or_text)+'.log')
     if do_reset:
         reset(senselabeled_or_text)
 
@@ -100,5 +100,5 @@ def exe_from_input_to_vectors(do_reset, compute_single_prototype, senselabeled_o
     vocabulary_ls = RID.retrieve_data_WordNet(vocabulary_df, inputdata_folder, vocabulary_folder)
     logging.info("CreateGraphInput.exe() > "
                  + " number of ords included in the vocabulary chunk, to be prepared: " + str(len(vocabulary_ls)))
-    PI.prepare(vocabulary_ls, senselabeled_or_text, sp_method)
+    PI.prepare(vocabulary_ls, inputdata_folder, vocabulary_folder, embeddings_method=sp_method)
     tables.file._open_files.close_all()

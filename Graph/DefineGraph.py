@@ -27,15 +27,15 @@ def log_edges_minmax_nodes(edges_ls, name):
         logging.info("len(edges_ls)==0")
 
 
-def load_senses_elements(elements_name, embeddings_method, use_PCA):
+def load_senses_elements(elements_name, embeddings_method, use_PCA, inputdata_folder):
     if use_PCA:
         # the version reduced by PCA
-        senses_elems_fpath = os.path.join(F.FOLDER_INPUT, F.FOLDER_PCA,
+        senses_elems_fpath = os.path.join(inputdata_folder, F.FOLDER_PCA,
                                           elements_name + '_' + str(embeddings_method.value) + '.npy')
 
     else:
         senses_elems_fname = Utils.VECTORIZED + '_' + str(embeddings_method.value) + '_' + elements_name + '.npy'
-        senses_elems_fpath = os.path.join(F.FOLDER_INPUT, senses_elems_fname)
+        senses_elems_fpath = os.path.join(inputdata_folder, senses_elems_fname)
 
     senses_elems_X = np.load(senses_elems_fpath)
     return torch.tensor(senses_elems_X).to(torch.float32)
@@ -43,9 +43,9 @@ def load_senses_elements(elements_name, embeddings_method, use_PCA):
 
 # ------------ Auxiliary functions to initialize nodes ------------
 
-def initialize_globals(X_definitions, E_embeddings, globals_vocabulary_ls):
+def initialize_globals(X_definitions, E_embeddings, globals_vocabulary_ls, inputdata_folder):
 
-    db_filepath = os.path.join(F.FOLDER_INPUT, Utils.INDICES_TABLE_DB)
+    db_filepath = os.path.join(inputdata_folder, Utils.INDICES_TABLE_DB)
     indicesTable_db = sqlite3.connect(db_filepath)
     indicesTable_db_c = indicesTable_db.cursor()
     indicesTable_db_c.execute("SELECT * FROM indices_table")
@@ -70,7 +70,7 @@ def initialize_globals(X_definitions, E_embeddings, globals_vocabulary_ls):
                 words_definitionvectors_dict[word] = sense_def_vectors
             else:
                 words_definitionvectors_dict[word] = np.concatenate([words_definitionvectors_dict[word], sense_def_vectors])
-        else: # a sense without definitions (e.g. a dummySense) get initialized with the PCA-reduced version of the word embedding
+        else: # if there are no definitions, use the (PCA-reduced) version of the word embedding
             if words_definitionvectors_dict[word] is None:
                 logging.debug("word=" + str(word))
                 word_vocabulary_index = globals_vocabulary_ls.index(word)
@@ -85,9 +85,9 @@ def initialize_globals(X_definitions, E_embeddings, globals_vocabulary_ls):
     return X_globals
 
 
-def initialize_senses(X_defs, X_examples, X_globals, vocabulary_ls, average_or_random_flag):
+def initialize_senses(X_defs, X_examples, X_globals, vocabulary_ls, average_or_random_flag, inputdata_folder):
 
-    db_filepath = os.path.join(F.FOLDER_INPUT, Utils.INDICES_TABLE_DB)
+    db_filepath = os.path.join(inputdata_folder, Utils.INDICES_TABLE_DB)
     indicesTable_db = sqlite3.connect(db_filepath)
     indicesTable_db_c = indicesTable_db.cursor()
 
@@ -142,8 +142,8 @@ def initialize_senses(X_defs, X_examples, X_globals, vocabulary_ls, average_or_r
 
 # definitions -> senses : [se+sp, se+sp+d) -> [0,se)
 # examples --> senses : [se+sp+d, e==num_nodes) -> [0,se)
-def get_edges_elements(elements_name, elements_start_index_toadd):
-    db_filepath = os.path.join(F.FOLDER_INPUT, Utils.INDICES_TABLE_DB)
+def get_edges_elements(elements_name, elements_start_index_toadd, inputdata_folder):
+    db_filepath = os.path.join(inputdata_folder, Utils.INDICES_TABLE_DB)
     indicesTable_db = sqlite3.connect(db_filepath)
     indicesTable_db_c = indicesTable_db.cursor()
 
@@ -171,9 +171,9 @@ def get_edges_elements(elements_name, elements_start_index_toadd):
 
 
 # global -> senses : [se,se+sp) -> [0,se)
-def get_edges_sensechildren(globals_voc_df, globals_start_index_toadd):
+def get_edges_sensechildren(globals_voc_df, globals_start_index_toadd, inputdata_folder):
 
-    db_filepath = os.path.join(F.FOLDER_INPUT, Utils.INDICES_TABLE_DB)
+    db_filepath = os.path.join(inputdata_folder, Utils.INDICES_TABLE_DB)
     indicesTable_db = sqlite3.connect(db_filepath)
     indicesTable_db_c = indicesTable_db.cursor()
     indicesTable_db_c.execute("SELECT * FROM indices_table")
@@ -199,16 +199,17 @@ def get_edges_sensechildren(globals_voc_df, globals_start_index_toadd):
     return edges_ls
 
 
-def get_additional_edges_sensechildren_from_slc(globals_voc_df, globals_start_index_toadd):
+def get_additional_edges_sensechildren_from_slc(globals_voc_df, globals_start_index_toadd, inputdata_folder):
     logging.info("Reading the sense-labeled corpus, to create the connections between globals"
                  " and the senses that belong to other words.")
 
     slc_train_corpus_gen = SLC.read_split(Utils.TRAINING)
-    senseindices_db = sqlite3.connect(os.path.join(F.FOLDER_INPUT, Utils.INDICES_TABLE_DB))
+    senseindices_db = sqlite3.connect(os.path.join(inputdata_folder, Utils.INDICES_TABLE_DB))
     senseindices_db_c = senseindices_db.cursor()
     lemmatizer = nltk.stem.WordNetLemmatizer()
     edges_to_add_ls = []
-    #words_and_senses_ls = [] # for debug purposes
+
+    on_senselabeled = F.FOLDER_SENSELABELED in inputdata_folder  # to decide lowercasing
 
     try:
         while True:
@@ -234,7 +235,7 @@ def get_additional_edges_sensechildren_from_slc(globals_voc_df, globals_start_in
             else:
                 continue # there was no sense-key specified for this token
             # 2) Get the global word of this token
-            word = VocabUtils.process_word_token(token_dict, lowercasing=True)  # html.unescape
+            word = VocabUtils.process_word_token(token_dict, lowercasing=on_senselabeled)  # html.unescape
             lemmatized_word = lemmatize_term(word, lemmatizer)# since currently we always lemmatize in SelectK and other sense architectures
             if lemmatized_word not in wordnet_sense: # we are connecting all the "external" senses, e.g. say->state.v.01
                 try:
@@ -264,9 +265,9 @@ def get_edges_selfloops(sc_edges, num_globals, num_dummysenses):
     all_globals_indices = list(range(max_sense+1,max_sense+num_globals+1))
     globals_needing_selfloop = [g_idx for g_idx in all_globals_indices if g_idx not in globals_sources]
     globals_edges_selfloops = [(g_idx, g_idx) for g_idx in globals_needing_selfloop]
-    logging.info(globals_needing_selfloop)
+    logging.info("globals_needing_selfloop=" + str(globals_needing_selfloop))
     # The dummy senses should already be connected to the globals they belong to
-    # And therefore, this shoudl m
+    # And therefore, this should yield no new edges
     # dummysenses_indices = list(range(max_sense-num_dummysenses,max_sense+1))
     # dummysenses_edges_selfloops = [(s_idx, s_idx) for s_idx in dummysenses_indices]
 
@@ -276,18 +277,20 @@ def get_edges_selfloops(sc_edges, num_globals, num_dummysenses):
 
 # Synonyms and antonyms: global -> global : [se,se+sp) -> [se,se+sp).
 # Bidirectional (which means 2 connections, (a,b) and (b,a)
-def get_edges_nyms(nyms_name, globals_voc_df, globals_start_index_toadd):
+def get_edges_nyms(nyms_name, globals_voc_df, globals_start_index_toadd, inputdata_folder):
     nyms_archive_fname = Utils.PROCESSED + '_' + nyms_name + '.h5'
-    nyms_archive_fpath = os.path.join(F.FOLDER_INPUT, nyms_archive_fname)
+    nyms_archive_fpath = os.path.join(inputdata_folder, nyms_archive_fname)
 
     nyms_df = pd.read_hdf(nyms_archive_fpath, key=nyms_name, mode="r")
     edges_ls = []
+    on_senselabeled = F.FOLDER_SENSELABELED in inputdata_folder # to decide lowercasing
+    logging.info("on_senselabeled=" + str(on_senselabeled))
 
     counter = 0
     for tpl in nyms_df.itertuples():
         word_sense = tpl.sense_wn_id
         word1 = Utils.get_word_from_sense(word_sense)
-        word1 = VocabUtils.process_word_token({'surface_form': word1}, lowercasing=True)
+        word1 = VocabUtils.process_word_token({'surface_form': word1}, lowercasing=on_senselabeled)
         try:
             global_raw_idx_1 = globals_voc_df.loc[globals_voc_df['word'] == word1].index[0]
         except IndexError:
@@ -296,7 +299,9 @@ def get_edges_nyms(nyms_name, globals_voc_df, globals_start_index_toadd):
         global_idx_1 = globals_start_index_toadd + global_raw_idx_1
 
         word2 = getattr(tpl, nyms_name)
-        word2 = VocabUtils.process_word_token({'surface_form': word2}, lowercasing=True)
+        word2 = VocabUtils.process_word_token({'surface_form': word2}, lowercasing=on_senselabeled)
+        if word1 == word2:
+            continue # e.g. to avoid "friday" --> "Friday"
         try:
             global_raw_idx_2 = globals_voc_df.loc[globals_voc_df['word'] == word2].index[0]
         except IndexError:
@@ -323,21 +328,30 @@ def create_graph(method, slc_corpus):
         logging.error("Method not implemented")
         raise AssertionError
 
-    Utils.init_logging('DefineGraph.log')
+    Utils.init_logging('DefineGraph_SLC'+ str(slc_corpus)+'.log')
 
-    globals_vocabulary_fpath = os.path.join(F.FOLDER_VOCABULARY, F.VOCABULARY_OF_GLOBALS_FILENAME)
+    if slc_corpus:
+        inputdata_folder = os.path.join(F.FOLDER_INPUT, F.FOLDER_SENSELABELED)
+        vocabulary_folder = os.path.join(F.FOLDER_VOCABULARY, F.FOLDER_SENSELABELED)
+        graph_folder = os.path.join(F.FOLDER_GRAPH, F.FOLDER_SENSELABELED)
+    else:
+        inputdata_folder = os.path.join(F.FOLDER_INPUT, F.FOLDER_STANDARDTEXT)
+        vocabulary_folder = os.path.join(F.FOLDER_VOCABULARY, F.FOLDER_STANDARDTEXT)
+        graph_folder = os.path.join(F.FOLDER_GRAPH, F.FOLDER_STANDARDTEXT)
+
+    globals_vocabulary_fpath = os.path.join(vocabulary_folder, F.VOCABULARY_OF_GLOBALS_FILENAME)
     globals_vocabulary_df = pd.read_hdf(globals_vocabulary_fpath, mode='r')
     globals_vocabulary_ls = globals_vocabulary_df['word'].to_list().copy()
 
-    E_embeddings = torch.tensor(np.load(os.path.join(F.FOLDER_INPUT, single_prototypes_file))).to(torch.float32)
+    E_embeddings = torch.tensor(np.load(os.path.join(inputdata_folder, single_prototypes_file))).to(torch.float32)
     logging.info("E_embeddings.shape=" + str(E_embeddings.shape))
     num_globals = E_embeddings.shape[0]
     embeddings_size = E_embeddings.shape[1]
 
     use_PCA = Utils.GRAPH_EMBEDDINGS_DIM < embeddings_size
 
-    X_definitions = load_senses_elements(Utils.DEFINITIONS, method, use_PCA)
-    X_examples = load_senses_elements(Utils.EXAMPLES, method, use_PCA)
+    X_definitions = load_senses_elements(Utils.DEFINITIONS, method, use_PCA, inputdata_folder)
+    X_examples = load_senses_elements(Utils.EXAMPLES, method, use_PCA, inputdata_folder)
 
     X_globals = torch.tensor(initialize_globals(X_definitions, E_embeddings, globals_vocabulary_ls)).to(torch.float32)
     X_senses, num_dummysenses = initialize_senses(X_definitions, X_examples, X_globals, globals_vocabulary_ls, average_or_random_flag=True)
@@ -365,7 +379,8 @@ def create_graph(method, slc_corpus):
     # If operating on a sense-labeled corpus, we need to connect globals & their senses that do not belong to them
     if slc_corpus:
         sc_external_edges = get_additional_edges_sensechildren_from_slc(globals_vocabulary_df,
-                                                                        globals_start_index_toadd=num_senses)
+                                                                        globals_start_index_toadd=num_senses,
+                                                                        inputdata_folder=inputdata_folder)
         sc_edges.extend(sc_external_edges)
         logging.info("sc_edges_with_external.__len__()=" + str(sc_external_edges.__len__()))
     sc_edges.extend(get_edges_sensechildren(globals_vocabulary_df, X_senses.shape[0]))
@@ -376,9 +391,9 @@ def create_graph(method, slc_corpus):
     logging.info("sc_edges_with_selfloops.__len__()=" + str(sc_edges.__len__()))
 
     logging.info("Defining the edges: syn, ant")
-    syn_edges = get_edges_nyms(Utils.SYNONYMS, globals_vocabulary_df, num_senses)
+    syn_edges = get_edges_nyms(Utils.SYNONYMS, globals_vocabulary_df, num_senses, inputdata_folder)
     logging.info("syn_edges.__len__()=" + str(syn_edges.__len__()))
-    ant_edges = get_edges_nyms(Utils.ANTONYMS, globals_vocabulary_df, num_senses)
+    ant_edges = get_edges_nyms(Utils.ANTONYMS, globals_vocabulary_df, num_senses, inputdata_folder)
     logging.info("ant_edges.__len__()=" + str(ant_edges.__len__()))
 
     edges_lts = torch.tensor(def_edges_se + exs_edges_se + sc_edges + syn_edges + ant_edges)
@@ -394,7 +409,7 @@ def create_graph(method, slc_corpus):
                                       node_types=node_types,
                                       num_relations=5)
 
-    torch.save(graph, os.path.join('NN', F.KBGRAPH_FILE))
+    torch.save(graph, os.path.join(graph_folder, F.KBGRAPH_FILE))
 
     return graph
 
@@ -402,7 +417,10 @@ def create_graph(method, slc_corpus):
 
 # Entry point function: try to load the graph, else create it if it does not exist
 def get_graph_dataobject(new, slc_corpus, method=Method.FASTTEXT):
-    graph_fpath = os.path.join('NN', F.KBGRAPH_FILE)
+    if slc_corpus:
+        graph_fpath = os.path.join(F.FOLDER_GRAPH, F.FOLDER_SENSELABELED, F.KBGRAPH_FILE)
+    else:
+        graph_fpath = os.path.join(F.FOLDER_GRAPH, F.FOLDER_STANDARDTEXT, F.KBGRAPH_FILE)
     if os.path.exists(graph_fpath) and not new:
         return torch.load(graph_fpath)
     else:
