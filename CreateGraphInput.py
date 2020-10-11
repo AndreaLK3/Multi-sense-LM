@@ -1,11 +1,11 @@
 import Filesystem as F
 import GetKBInputData.RetrieveInputData as RID
-import PrepareKBInput.PrepareKBInput as PI
+import GetKBInputData.PrepareKBInput as PI
 import Utils
 import os
 import pandas as pd
-import Vocabulary.Vocabulary as V
-import WordEmbeddings.ComputeEmbeddings as CE
+import VocabularyAndEmbeddings.Vocabulary as V
+import VocabularyAndEmbeddings.ComputeEmbeddings as CE
 import tables
 import logging
 import SenseLabeledCorpus as SLC

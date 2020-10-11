@@ -10,12 +10,11 @@ from math import inf
 import Graph.Adjacencies as AD
 import numpy as np
 from time import time
-from WordEmbeddings.ComputeEmbeddings import Method
+from VocabularyAndEmbeddings.ComputeEmbeddings import Method
 from NN.Loss import write_doc_logging, compute_model_loss
 from Utils import DEVICE
 import NN.DataLoading as DL
 import NN.Models.RNNs as RNNs
-import NN.Models.Senses as Senses
 from itertools import cycle
 import gc
 from math import exp

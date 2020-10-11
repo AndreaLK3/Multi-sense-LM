@@ -2,8 +2,7 @@ import Utils
 import logging
 import GetKBInputData.WordNet as WordNet
 import pandas as pd
-import os
-from itertools import cycle
+
 
 def unpack_ls_in_tpls(lts):
     unpacked_lts = []

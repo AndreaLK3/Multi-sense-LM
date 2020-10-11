@@ -3,7 +3,7 @@ import sqlite3
 from nltk.corpus import wordnet as wn
 from nltk.corpus.reader import WordNetError
 import Utils
-from Vocabulary import Vocabulary_Utilities as VocabUtils
+from VocabularyAndEmbeddings import Vocabulary_Utilities as VocabUtils
 from time import time
 import Graph.Adjacencies as AD
 

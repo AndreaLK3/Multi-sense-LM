@@ -7,7 +7,7 @@ from NN.Models.Common import unpack_input_tensor, init_model_parameters, lemmati
 from torch.nn.parameter import Parameter
 import logging
 import nltk
-from PrepareKBInput.LemmatizeNyms import lemmatize_term
+from GetKBInputData.LemmatizeNyms import lemmatize_term
 
 
 # Auxiliary functions:

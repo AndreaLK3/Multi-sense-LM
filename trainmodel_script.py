@@ -1,4 +1,4 @@
-import WordEmbeddings.ComputeEmbeddings as CE;import CreateGraphInput as CGI;import Graph.DefineGraph as DG
+import VocabularyAndEmbeddings.ComputeEmbeddings as CE;import CreateGraphInput as CGI;import Graph.DefineGraph as DG
 import NN.Training as T;
 
 CGI.exe_from_input_to_vectors(do_reset=True, compute_single_prototype=True, senselabeled_or_text=True)

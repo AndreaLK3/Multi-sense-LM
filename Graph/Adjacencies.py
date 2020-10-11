@@ -20,7 +20,7 @@ def compute_globals_numsenses(graph_dataobj, grapharea_matrix, grapharea_size):
     first_idx_dummySenses = Utils.get_startpoint_dummySenses()
     logging.info("Examining the graph + corpus, to determine which globals have multiple senses...")
 
-    vocab_fpath = os.path.join("Vocabulary", "vocabulary_of_globals.h5");
+    vocab_fpath = os.path.join("VocabularyAndEmbeddings", "vocabulary_of_globals.h5");
     vocabulary_df = pd.read_hdf(vocab_fpath)
     vocabulary_wordList = vocabulary_df['word'].to_list().copy()
     vocabulary_lemmatizedWordsList = vocabulary_df['lemmatized_form'].to_list().copy()
@@ -57,7 +57,7 @@ def compute_globals_numsenses(graph_dataobj, grapharea_matrix, grapharea_size):
 
 
 def get_multisense_globals_indices():
-    vocab_fpath = os.path.join("Vocabulary", "vocabulary_of_globals.h5");
+    vocab_fpath = os.path.join("VocabularyAndEmbeddings", "vocabulary_of_globals.h5");
     vocabulary_df = pd.read_hdf(vocab_fpath)
     vocabulary_num_senses_ls = vocabulary_df['num_senses'].to_list().copy()
 

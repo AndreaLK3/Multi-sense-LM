@@ -11,7 +11,7 @@ from time import time
 import NN.ExplorePredictions as EP
 import Utils
 import nltk
-from PrepareKBInput.LemmatizeNyms import lemmatize_term
+from GetKBInputData.LemmatizeNyms import lemmatize_term
 from enum import Enum
 
 # ****** Auxiliary functions *******

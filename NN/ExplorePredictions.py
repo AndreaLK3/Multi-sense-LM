@@ -14,8 +14,9 @@ from math import exp
 
 
 ### Given the numerical index of a global, return the corresponding word/token
-def get_globalword_fromindex_df(global_index):
-    globals_vocabulary_fpath = os.path.join(F.FOLDER_VOCABULARY, F.VOCABULARY_OF_GLOBALS_FILENAME)
+def get_globalword_fromindex_df(global_index, vocabulary_folder):
+
+    globals_vocabulary_fpath = os.path.join(vocabulary_folder, F.VOCABULARY_OF_GLOBALS_FILENAME)
     globals_vocabulary_df = pd.read_hdf(globals_vocabulary_fpath, mode='r')
 
     word = globals_vocabulary_df.iloc[global_index]['word']
@@ -23,8 +24,9 @@ def get_globalword_fromindex_df(global_index):
 
 
 ### Given the numerical index of a sense, return the corresponding sense definition
-def get_sense_fromindex(sense_index):
-    senseindices_db = sqlite3.connect(os.path.join(F.FOLDER_INPUT, Utils.INDICES_TABLE_DB))
+def get_sense_fromindex(sense_index, inputdata_folder):
+
+    senseindices_db = sqlite3.connect(os.path.join(inputdata_folder, Utils.INDICES_TABLE_DB))
     senseindices_db_c = senseindices_db.cursor()
 
     senseindices_db_c.execute("SELECT word_sense FROM indices_table WHERE vocab_index="+ str(sense_index))

@@ -4,7 +4,7 @@ import NN.NumericalIndices as NI
 import logging
 from Utils import DEVICE
 import Graph.Adjacencies as AD
-import Vocabulary.Vocabulary_Utilities as VU
+import VocabularyAndEmbeddings.Vocabulary_Utilities as VU
 import os
 import Filesystem as F
 import Utils
