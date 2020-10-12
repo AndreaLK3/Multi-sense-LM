@@ -92,6 +92,7 @@ class TextDataset(torch.utils.data.Dataset):
     def __init__(self, sensecorpus_or_text, split_name, senseindices_db_c, vocab_h5, model,
                        grapharea_matrix, area_size, graph_dataobj):
         self.split_name = split_name
+        self.sensecorpus_or_text = sensecorpus_or_text
         self.generator = SLC.read_split(split_name) if sensecorpus_or_text else standardtextcorpus_generator(split_name)
         self.senseindices_db_c = senseindices_db_c
         self.vocab_h5 = vocab_h5

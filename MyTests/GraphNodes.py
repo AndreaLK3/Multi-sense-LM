@@ -25,14 +25,9 @@ def log_node(n, last_indices_tpl, inputdata_folder, vocabulary_folder, definitio
         logging.info("example: n=" + str(n) + str((examples_df.iloc[idx].sense_wn_id, examples_df.iloc[idx].examples)))
 
 
-def test(slc_or_text):
-    Utils.init_logging("Test-GraphNodes.log")
-
-    logging.info("Graph test. On: SenseLabeled corpus")
-    graph_dataobj = DG.get_graph_dataobject(new=False, slc_corpus=slc_or_text)
-
+def initialize_archives(slc_or_text):
     subfolder = F.FOLDER_SENSELABELED if slc_or_text else F.FOLDER_STANDARDTEXT
-    graph_folder_slc = os.path.join(F.FOLDER_GRAPH, subfolder)
+    graph_folder = os.path.join(F.FOLDER_GRAPH, subfolder)
     vocabulary_folder = os.path.join(F.FOLDER_VOCABULARY, subfolder)
     inputdata_folder = os.path.join(F.FOLDER_INPUT, subfolder)
 
@@ -41,7 +36,18 @@ def test(slc_or_text):
     examples_h5 = os.path.join(inputdata_folder, Utils.PROCESSED + '_' + Utils.EXAMPLES + ".h5")
     examples_df = pd.read_hdf(examples_h5, key=Utils.EXAMPLES, mode="r")
 
-    grapharea_matrix = AD.get_grapharea_matrix(graph_dataobj, area_size=32, hops_in_area=1, graph_folder=graph_folder_slc)
+    return inputdata_folder, vocabulary_folder, definitions_df, examples_df, graph_folder
+
+
+def test(slc_or_text):
+    Utils.init_logging("Test-GraphNodes-Slc"+str(slc_or_text)+".log")
+
+    logging.info("Graph test. On: SenseLabeled corpus")
+    graph_dataobj = DG.get_graph_dataobject(new=False, slc_corpus=slc_or_text)
+
+    inputdata_folder, vocabulary_folder, definitions_df, examples_df, graph_folder = initialize_archives(slc_or_text)
+
+    grapharea_matrix = AD.get_grapharea_matrix(graph_dataobj, area_size=32, hops_in_area=1, graph_folder=graph_folder)
 
     last_idx_senses = graph_dataobj.node_types.tolist().index(1)
     last_idx_globals = graph_dataobj.node_types.tolist().index(2)
@@ -49,7 +55,8 @@ def test(slc_or_text):
     num_nodes = len(graph_dataobj.node_types.tolist())
     last_indices_tpl = (last_idx_senses , last_idx_globals, last_idx_definitions)
 
-    random_nodes = [random.randint(0, last_idx_senses) for _i in range(10)] + \
+    random_nodes = [82224, 48694, 40096] + \
+                   [random.randint(0, last_idx_senses) for _i in range(10)] + \
                    [random.randint(last_idx_senses, last_idx_globals) for _i in range(10)] + \
                    [random.randint(last_idx_globals, last_idx_definitions) for _i in range(5)] + \
                    [random.randint(last_idx_definitions, num_nodes) for _i in range(5)]

@@ -63,12 +63,16 @@ def log_predicted_senses(predictions_senses, k=5):
 
 
 ### logs the solution and prediction for 1 sample
-def log_solution_and_predictions(label_tpl, predictions_globals, predictions_senses, k):
+def log_solution_and_predictions(label_tpl, predictions_globals, predictions_senses, k, slc_or_text):
     solution_global_idx = label_tpl[0].item()
     solution_sense_idx = label_tpl[1].item()
 
-    nextglobal = get_globalword_fromindex_df(solution_global_idx)
-    nextsense = get_sense_fromindex(solution_sense_idx)
+    subfolder = F.FOLDER_SENSELABELED if slc_or_text else F.FOLDER_STANDARDTEXT
+    inputdata_folder = os.path.join(F.FOLDER_INPUT, subfolder)
+    vocabulary_folder = os.path.join(F.FOLDER_VOCABULARY, subfolder)
+
+    nextglobal = get_globalword_fromindex_df(solution_global_idx, vocabulary_folder)
+    nextsense = get_sense_fromindex(solution_sense_idx, inputdata_folder)
     logging.info("\nLabel: the next global is: " + str(nextglobal) + "(from " + str(solution_global_idx) + ")")
     logging.info("Label: the next sense is: " + str(nextsense)  + "(from " + str(solution_sense_idx) + ")")
 
@@ -78,7 +82,7 @@ def log_solution_and_predictions(label_tpl, predictions_globals, predictions_sen
 
 
 # Entry function, to invoke from RGCN. Batch level
-def log_batch(labels_t, predictions_globals_t, predictions_senses_t, k):
+def log_batch(labels_t, predictions_globals_t, predictions_senses_t, k, slc_or_text):
     batch_size = predictions_globals_t.shape[0]
     logging.info("log_batch:")
     logging.info("predictions_senses_t.shape=" + str(predictions_senses_t.shape))
@@ -86,4 +90,4 @@ def log_batch(labels_t, predictions_globals_t, predictions_senses_t, k):
         sample_labels = labels_t[i]
         sample_predglobals = predictions_globals_t[i]
         sample_predsenses = predictions_senses_t[i]
-        log_solution_and_predictions(sample_labels, sample_predglobals, sample_predsenses, k)
+        log_solution_and_predictions(sample_labels, sample_predglobals, sample_predsenses, k, slc_or_text)

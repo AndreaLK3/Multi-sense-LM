@@ -22,7 +22,8 @@ def log_edges_minmax_nodes(edges_ls, name):
     else:
         logging.info("len(edges_ls)==0")
 
-
+# definitions -> senses : [se+sp, se+sp+d) -> [0,se)
+# examples --> senses : [se+sp+d, e==num_nodes) -> [0,se)
 def get_edges_elements(elements_name, elements_start_index_toadd, inputdata_folder):
     db_filepath = os.path.join(inputdata_folder, Utils.INDICES_TABLE_DB)
     indicesTable_db = sqlite3.connect(db_filepath)
@@ -43,15 +44,17 @@ def get_edges_elements(elements_name, elements_start_index_toadd, inputdata_fold
             start_sources = db_row[4] + elements_start_index_toadd
             end_sources = db_row[5] + elements_start_index_toadd
         edges_toadd_counter = edges_toadd_counter + (end_sources-start_sources)
-        for source in range(start_sources, end_sources):
-            edges_ls.append((source, target_idx))
-            edges_ls.append((target_idx, source))
+        if edges_toadd_counter > 0:
+            for source in range(start_sources, end_sources):
+                edges_ls.append((source, target_idx))
+                edges_ls.append((target_idx, source))
 
     indicesTable_db.close()
     log_edges_minmax_nodes(edges_ls, elements_name)
     return edges_ls
 
 
+# global -> senses : [se,se+sp) -> [0,se)
 def get_edges_sensechildren(globals_voc_df, globals_start_index_toadd, inputdata_folder):
 
     db_filepath = os.path.join(inputdata_folder, Utils.INDICES_TABLE_DB)
@@ -143,7 +146,9 @@ def get_edges_lemmatized(globals_vocabulary_df, globals_vocabulary_ls, last_sens
         if word == lemmatized_form:
             continue
         word_idx = globals_vocabulary_ls.index(word) + last_sense_idx
-        lemmatized_idx = globals_vocabulary_ls.index(word) + last_sense_idx
+        lemmatized_idx = globals_vocabulary_ls.index(lemmatized_form) + last_sense_idx
+        logging.info("Adding a Lemma edge between " + str(word_idx)+ "=" + word +
+                     " and " + str(lemmatized_idx) + "=" + lemmatized_form)
         edges_lemma_ls.append((word_idx, lemmatized_idx))
         edges_lemma_ls.append((lemmatized_idx, word_idx))
     return edges_lemma_ls
@@ -168,6 +173,8 @@ def get_edges_selfloops(sc_edges, lemma_edges, num_globals, num_senses):
     return globals_edges_selfloops
 
 
+# Synonyms and antonyms: global -> global : [se,se+sp) -> [se,se+sp).
+# Bidirectional (which means 2 connections, (a,b) and (b,a)
 def get_edges_nyms(nyms_name, globals_voc_df, globals_start_index_toadd, inputdata_folder):
     nyms_archive_fname = Utils.PROCESSED + '_' + nyms_name + '.h5'
     nyms_archive_fpath = os.path.join(inputdata_folder, nyms_archive_fname)

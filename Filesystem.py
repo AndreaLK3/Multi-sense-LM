@@ -2,7 +2,6 @@ import os
 
 FOLDER_INPUT = 'InputData'
 FOLDER_PCA = 'PCA' # subfolder of InputData
-FOLDER_WORD_EMBEDDINGS = 'WordEmbeddings'
 
 FOLDER_VOCABULARY = 'VocabularyAndEmbeddings'
 VOCABULARY_OF_GLOBALS_FILENAME = 'vocabulary_of_globals.h5'

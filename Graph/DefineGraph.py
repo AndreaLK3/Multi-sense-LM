@@ -100,21 +100,6 @@ def initialize_senses(X_defs, X_examples, X_globals, vocabulary_ls, average_or_r
 
     return torch.tensor(X_senses), num_dummy_senses
 
-# ------------ Auxiliary functions to create edges ------------
-
-# definitions -> senses : [se+sp, se+sp+d) -> [0,se)
-# examples --> senses : [se+sp+d, e==num_nodes) -> [0,se)
-
-
-# global -> senses : [se,se+sp) -> [0,se)
-
-
-# Since GATs and other Graph Neural Networks do not allow for nodes without edges, we add self-loops to all
-# stopwords like for, of, etc. And to the dummy senses, too. They are ignored by the message-passing framework
-
-
-# Synonyms and antonyms: global -> global : [se,se+sp) -> [se,se+sp).
-# Bidirectional (which means 2 connections, (a,b) and (b,a)
 
 # ----------------------------------------
 

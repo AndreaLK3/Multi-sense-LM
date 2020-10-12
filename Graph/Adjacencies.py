@@ -134,11 +134,11 @@ def create_adjacencies_matrix_numpy(graph_dataobj, area_size, hops_in_area):
     return nodes_arraytable
 
 ### Entry point function. Temporarily modified. Numpy version.
-def get_grapharea_matrix(graphdata_obj, area_size, hops_in_area, graph_folder):
+def get_grapharea_matrix(graphdata_obj, area_size, hops_in_area, graph_folder, new=False):
 
     candidate_fnames = [fname for fname in os.listdir(graph_folder)
                         if ((fname.endswith(F.GRAPHAREA_FILE)) and ('nodes_' + str(area_size) + '_areahops_' + str(hops_in_area) + '_' in fname))]
-    if len(candidate_fnames) == 0:
+    if len(candidate_fnames) == 0 or new:
         logging.info("Pre-computing and saving graphArea matrix, with area_size=" + str(area_size))
         grapharea_matrix = create_adjacencies_matrix_numpy(graphdata_obj, area_size, hops_in_area)
         out_fpath = os.path.join(graph_folder,

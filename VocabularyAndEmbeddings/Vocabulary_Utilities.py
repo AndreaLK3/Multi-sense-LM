@@ -16,7 +16,7 @@ def eliminate_rare_words(vocabulary_dict, min_count):
     logging.info('Removing from the vocabulary words with frequency < ' + str(min_count))
     all_words = list(vocabulary_dict.keys()) # if we operate directly on keys(), we get: RuntimeError: dictionary changed size during iteration
     for key in all_words:
-        if vocabulary_dict[key] < min_count:
+        if vocabulary_dict[key][0] < min_count:
             vocabulary_dict.pop(key)
 
 # ######### When we build a vocabulary from text, to transform the text of a line:

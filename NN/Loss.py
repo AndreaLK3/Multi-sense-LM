@@ -76,7 +76,7 @@ def update_predictions_history_dict(correct_preds_dict, predictions_globals, pre
     return
 
 
-def compute_model_loss(model, batch_input, batch_labels, correct_preds_dict, multisense_globals_set, verbose=False):
+def compute_model_loss(model, batch_input, batch_labels, correct_preds_dict, multisense_globals_set, slc_or_text, verbose=False):
 
     predictions_globals, predictions_senses = model(batch_input)
 
@@ -105,7 +105,7 @@ def compute_model_loss(model, batch_input, batch_labels, correct_preds_dict, mul
     # debug: check the solutions and predictions. Is there anything the model is unable to predict?
     if verbose:
         logging.info("*******\ncompute_model_loss > verbose logging of batch")
-        EP.log_batch(batch_labels, predictions_globals, predictions_senses, 10)
+        EP.log_batch(batch_labels, predictions_globals, predictions_senses, 10, slc_or_text)
 
     losses_tpl = loss_global, loss_all_senses, loss_multi_senses
     senses_in_batch = len(batch_labels_all_senses[batch_labels_all_senses != -1])

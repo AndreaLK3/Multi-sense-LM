@@ -80,10 +80,8 @@ def exe_from_input_to_vectors(do_reset, compute_single_prototype, senselabeled_o
 
     vocabulary_h5 = os.path.join(vocabulary_folder, F.VOCABULARY_OF_GLOBALS_FILENAME)
 
-    textcorpus_fpaths = os.path.join(F.FOLDER_TEXT_CORPUSES, F.FOLDER_STANDARDTEXT,
-                                     F.FOLDER_TRAIN, F.WT_TRAIN_FILE) # used when processing WikiText-2 / standard text
-    vocabulary_df = V.get_vocabulary_df(senselabeled_or_text=senselabeled_or_text, textcorpus_fpaths=[textcorpus_fpaths],
-                                     vocabulary_h5_filepath=vocabulary_h5, min_count=min_freq_vocab, lowercase=lowercasing)
+    textcorpus_fpaths = os.path.join(F.FOLDER_TEXT_CORPUSES, F.FOLDER_STANDARDTEXT, F.FOLDER_TRAIN, F.WT_TRAIN_FILE) # used when processing WikiText-2 / standard text
+    vocabulary_df = V.get_vocabulary_df(senselabeled_or_text=senselabeled_or_text, textcorpus_fpaths=[textcorpus_fpaths],vocabulary_h5_filepath=vocabulary_h5, min_count=min_freq_vocab, lowercase=lowercasing)
 
     if compute_single_prototype:
         reset_embeddings(senselabeled_or_text)

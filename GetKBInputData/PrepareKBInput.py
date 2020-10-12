@@ -43,6 +43,7 @@ def create_senses_indices_table(input_folder_fpath, vocabulary_folder):
     vocab_fpath = os.path.join(vocabulary_folder, F.VOCABULARY_OF_GLOBALS_FILENAME)
     vocabulary_df = pd.read_hdf(vocab_fpath)
     vocabulary_words_ls = vocabulary_df['word'].to_list().copy()
+    vocabulary_lemmatizedforms_ls = vocabulary_df['lemmatized_form'].to_list().copy()
 
     defs_input_filepath = os.path.join(input_folder_fpath, Utils.PROCESSED + '_' + Utils.DEFINITIONS + ".h5")
     examples_input_filepath = os.path.join(input_folder_fpath, Utils.PROCESSED + '_' + Utils.EXAMPLES + ".h5")
@@ -85,10 +86,6 @@ def create_senses_indices_table(input_folder_fpath, vocabulary_folder):
                                                                             start_defs_count, end_defs_count,
                                                                             start_examples_count, end_examples_count))
 
-        logging.debug("VocabularyAndEmbeddings index of the sense " + wn_id + " = " + str(my_vocabulary_index))
-        logging.debug("start_defs_count=" + str(start_defs_count) + " ; end_defs_count=" + str(end_defs_count) +
-                     " ; start_examples_count=" + str(start_examples_count) + " ; end_examples_count=" + str(end_examples_count))
-
         # update counters
         my_vocabulary_index = my_vocabulary_index + 1
         start_defs_count = end_defs_count
@@ -102,14 +99,19 @@ def create_senses_indices_table(input_folder_fpath, vocabulary_folder):
     # ------- Remove w from the words needing a dummySense if the lemmatized form of w has senses  --------
     words_without_senses_ls = list(words_without_senses_set)
     words_needing_dummySense_ls = []
-    lemmatizer = nltk.stem.WordNetLemmatizer()
     for word in words_without_senses_ls:
-        lemmatized_form = LN.lemmatize_term(word, lemmatizer)
+        word_index = vocabulary_words_ls.index(word)
+        lemmatized_form = vocabulary_lemmatizedforms_ls[word_index]
         if lemmatized_form in words_with_senses_set:
+            logging.info("'"+word + "' does not need a dummySense, because '" + lemmatized_form + "' is its lemmatized parent"
+                         + " and has senses already.")
             continue
         else:
+            logging.info(word + " needs a dummySense, the lemmatized form '" + str(lemmatized_form)+"' has none")
             words_needing_dummySense_ls.append(word)
     words_needing_dummySense_set = set(words_needing_dummySense_ls)
+
+    logging.info("words_needing_dummySense_set=" + str(words_needing_dummySense_set))
 
     # ------- Creating and inserting the dummySenses --------
     for word in words_needing_dummySense_set:

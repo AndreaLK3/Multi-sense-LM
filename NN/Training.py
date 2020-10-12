@@ -111,6 +111,7 @@ def run_train(model, learning_rate, train_dataloader, valid_dataloader, num_epoc
 
     # -------------------- Setup; parameters and utilities --------------------
     Utils.init_logging('Training' + Utils.get_timestamp_month_to_min() + '.log', loglevel=logging.INFO)
+    slc_or_text = train_dataloader.dataset.sensecorpus_or_text
 
     optimizers = [torch.optim.Adam(model.parameters(), lr=learning_rate)]
 
@@ -178,7 +179,8 @@ def run_train(model, learning_rate, train_dataloader, valid_dataloader, num_epoc
                 logging.info("After training " + str(epoch-1) + " epochs, validation:")
                 valid_loss_globals, valid_loss_senses, multisenses_evaluation_loss = evaluation(valid_dataloader,
                                                                                                 valid_dataiter,
-                                                                                                model, verbose=False)
+                                                                                                model, slc_or_text,
+                                                                                                verbose=False)
                 validation_sumlosses = valid_loss_globals, valid_loss_senses, multisenses_evaluation_loss
                 Utils.record_statistics(validation_sumlosses, (1, 1, 1), losses_lts=validation_losses_lts)
 
@@ -238,7 +240,7 @@ def run_train(model, learning_rate, train_dataloader, valid_dataloader, num_epoc
 
                 # compute loss for the batch
                 (losses_tpl, num_sense_instances_tpl) = compute_model_loss(model, batch_input, batch_labels, correct_predictions_dict,
-                                                                           multisense_globals_set, verbose)
+                                                                           multisense_globals_set,slc_or_text, verbose)
                 loss_global, loss_sense, loss_multisense = losses_tpl
                 num_batch_sense_tokens, num_batch_multisense_tokens = num_sense_instances_tpl
 
@@ -293,7 +295,7 @@ def run_train(model, learning_rate, train_dataloader, valid_dataloader, num_epoc
 
 ################
 
-def evaluation(evaluation_dataloader, evaluation_dataiter, model, verbose):
+def evaluation(evaluation_dataloader, evaluation_dataiter, model, slc_or_text, verbose):
     model_forParameters = model.module if torch.cuda.device_count() > 1 and model.__class__.__name__=="DataParallel" else model
     including_senses = model_forParameters.predict_senses
     multisense_globals_set = set(AD.get_multisense_globals_indices())
@@ -324,7 +326,7 @@ def evaluation(evaluation_dataloader, evaluation_dataiter, model, verbose):
             batch_input = batch_input.to(DEVICE)
             batch_labels = batch_labels.to(DEVICE)
             (losses_tpl, num_sense_instances_tpl) = compute_model_loss(model, batch_input, batch_labels, eval_correct_predictions_dict,
-                                                                       multisense_globals_set, verbose=verbose)
+                                                                       multisense_globals_set, slc_or_text, verbose=verbose)
             loss_globals, loss_sense, loss_multisense = losses_tpl
             num_batch_sense_tokens, num_batch_multisense_tokens = num_sense_instances_tpl
             sum_eval_loss_globals = sum_eval_loss_globals + loss_globals.item()

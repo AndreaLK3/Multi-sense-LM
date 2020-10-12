@@ -10,8 +10,9 @@ import Filesystem as F
 
 def build_vocabulary_dict_fromtext(corpus_txt_fpaths):
     vocab_dict = {}
+    lemmatized_forms_ls = []
     lines_logpoint = 1000
-
+    lemmatizer = nltk.stem.WordNetLemmatizer()
     for corpus_txt_fpath in corpus_txt_fpaths:
         # from the method of vocabulary creation used in AWD-LSTM. We do not process or modify the lines&tokens
 
@@ -26,20 +27,34 @@ def build_vocabulary_dict_fromtext(corpus_txt_fpaths):
                 # preprocessing is actually unnecessary since FastText has vectors for @-@, @.@ etc.
                 tot_tokens += len(words)
                 for word in words:
+                    lemmatized_word = LN.lemmatize_term(word, lemmatizer)
                     try:
                         prev_freq = vocab_dict[word]
                         vocab_dict[word] = prev_freq + 1
                     except KeyError:
                         vocab_dict[word] = 1
+                        lemmatized_forms_ls.append(lemmatized_word)
+
+                    if lemmatized_word != word:  # also adding the lemmatized token to the vocabulary. 'spring'(s), etc.
+                        try:
+                            prev_freq = vocab_dict[lemmatized_word]
+                            vocab_dict[lemmatized_word] = prev_freq + 1
+                        except KeyError:
+                            logging.info(
+                                "Adding lemmatized word '" + lemmatized_word + "' in addition to '" + word + "'")
+                            vocab_dict[lemmatized_word] = 1
+                            lemmatized_forms_ls.append(lemmatized_word) # the lemmatized form of a lemmatized form is itself
+
                 if i - 1 % lines_logpoint == 0:
                     logging.info("Reading in text corpus to create vocabulary. Line n. "+ str(i+1))
 
             logging.info("VocabularyAndEmbeddings created from " + str(corpus_txt_fpath) + " after processing " + str(tot_tokens) + ' tokens')
-    return vocab_dict
+    return vocab_dict, lemmatized_forms_ls
 
 
 def build_vocabulary_dict_from_senselabeled(lowercase):
     vocab_dict = {}
+    lemmatized_forms_ls = []
 
     tokens_toexclude = [Utils.EOS_TOKEN] # + list(string.punctuation)
     # Commas and punctuation signs are present in the Sense-Labeled Corpus as separate tokens.
@@ -58,6 +73,7 @@ def build_vocabulary_dict_from_senselabeled(lowercase):
                     vocab_dict[token] = prev_freq + 1
                 except KeyError:
                     vocab_dict[token] = 1
+                    lemmatized_forms_ls.append(lemmatized_token)
 
                 if lemmatized_token != token: # also adding the lemmatized token to the vocabulary. 'spring'(s), etc.
                     try:
@@ -65,11 +81,15 @@ def build_vocabulary_dict_from_senselabeled(lowercase):
                         vocab_dict[lemmatized_token] = prev_freq + 1
                     except KeyError:
                         vocab_dict[lemmatized_token] = 1
+                        lemmatized_forms_ls.append(lemmatized_token)  # the lemmatized form of a lemmatized form is itself
         if Utils.UNK_TOKEN not in vocab_dict.keys():
             logging.info("Adding manually UNK_TOKEN=" + str(Utils.UNK_TOKEN))
             vocab_dict[Utils.UNK_TOKEN] = 100 # add it manually
+            lemmatized_forms_ls.append(Utils.UNK_TOKEN)
 
-    return vocab_dict
+    logging.info("len(vocab_dict.keys())=" + str(len(vocab_dict.keys())))
+    logging.info("len(lemmatized_forms_ls)=" + str(len(lemmatized_forms_ls)))
+    return vocab_dict, lemmatized_forms_ls
 
 
 # Entry function: if a vocabulary is already present in the specified path, load it. Otherwise, create it.
@@ -85,20 +105,27 @@ def get_vocabulary_df(senselabeled_or_text, vocabulary_h5_filepath, textcorpus_f
                               'lemmatized_form': Utils.HDF5_BASE_SIZE_512 / 4, 'num_senses': Utils.HDF5_BASE_SIZE_512 / 8}
 
         if senselabeled_or_text:
-            vocabulary_wordfreq_dict = build_vocabulary_dict_from_senselabeled(lowercase)
+            vocabulary_wordfreq_dict, lemmatized_forms_ls = build_vocabulary_dict_from_senselabeled(lowercase)
         else:
-            vocabulary_wordfreq_dict = build_vocabulary_dict_fromtext(textcorpus_fpaths)
+            vocabulary_wordfreq_dict, lemmatized_forms_ls = build_vocabulary_dict_fromtext(textcorpus_fpaths)
+
+        # including lemmatized forms into the dictionary
+        i = 0
+        for key in vocabulary_wordfreq_dict.keys():
+            lemmatized_form = lemmatized_forms_ls[i]
+            vocabulary_wordfreq_dict[key] = (vocabulary_wordfreq_dict[key], lemmatized_form)
+            i = i +1
 
         if min_count>1:
             VocabUtils.eliminate_rare_words(vocabulary_wordfreq_dict, min_count)
 
-        vocab_df = pd.DataFrame(data=zip(vocabulary_wordfreq_dict.keys(), vocabulary_wordfreq_dict.values()), columns=['word', 'frequency'])
+        frequencies = list(map(lambda tpl: tpl[0], vocabulary_wordfreq_dict.values()))
+        lemma_forms = list(map(lambda tpl: tpl[1], vocabulary_wordfreq_dict.values()))
+
+        vocab_df = pd.DataFrame(data=zip(vocabulary_wordfreq_dict.keys(), frequencies, lemma_forms), columns=['word', 'frequency', 'lemmatized_form'])
         logging.info("*** The vocabulary was created. Number of words= " + str(len(vocab_df)) + "***")
 
         vocab_wordls = vocab_df['word'].to_list().copy()
-        lemmatizer = nltk.stem.WordNetLemmatizer()
-        lemmatized_forms = [LN.lemmatize_term(word, lemmatizer) for word in vocab_wordls]
-        vocab_df['lemmatized_form'] = lemmatized_forms
         vocab_df['num_senses'] = [-1]* len(vocab_wordls) # this will be filled up later, when we have both WordNet data and the corpus
 
         vocabulary_h5.append(key='vocabulary', value=vocab_df, min_itemsize=vocab_h5_itemsizes)
