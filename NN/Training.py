@@ -18,6 +18,7 @@ import NN.Models.RNNs as RNNs
 from itertools import cycle
 import gc
 from math import exp
+import VocabularyAndEmbeddings.ComputeEmbeddings as CE
 
 def load_model_from_file():
     saved_model_path = os.path.join(F.FOLDER_NN, F.SAVED_MODEL_NAME)
@@ -27,19 +28,15 @@ def load_model_from_file():
 
 ################
 
-def setup_train(slc_or_text_corpus, include_globalnode_input, load_saved_model,
-                method, grapharea_size, batch_size, sequence_length, allow_dataparallel=True):
+def setup_train(slc_or_text_corpus, include_globalnode_input, load_saved_model, grapharea_size, batch_size, sequence_length,method=CE.Method.FASTTEXT, allow_dataparallel=True):
 
     # -------------------- Setting up the graph, grapharea_matrix and vocabulary --------------------
     graph_dataobj = DG.get_graph_dataobject(new=False, method=method, slc_corpus=slc_or_text_corpus).to(DEVICE)
-    if slc_or_text_corpus:
-        graph_folder = os.path.join(F.FOLDER_GRAPH, F.FOLDER_SENSELABELED)
-        inputdata_folder = os.path.join(F.FOLDER_INPUT, F.FOLDER_SENSELABELED)
-        vocabulary_folder = os.path.join(F.FOLDER_VOCABULARY, F.FOLDER_SENSELABELED)
-    else:
-        graph_folder = os.path.join(F.FOLDER_GRAPH, F.FOLDER_STANDARDTEXT)
-        inputdata_folder = os.path.join(F.FOLDER_INPUT, F.FOLDER_STANDARDTEXT)
-        vocabulary_folder = os.path.join(F.FOLDER_VOCABULARY, F.FOLDER_STANDARDTEXT)
+
+    subfolder = F.FOLDER_SENSELABELED if slc_or_text_corpus else F.FOLDER_STANDARDTEXT
+    graph_folder = os.path.join(F.FOLDER_GRAPH, subfolder)
+    inputdata_folder = os.path.join(F.FOLDER_INPUT, subfolder)
+    vocabulary_folder = os.path.join(F.FOLDER_VOCABULARY, subfolder)
     grapharea_matrix = AD.get_grapharea_matrix(graph_dataobj, grapharea_size, hops_in_area=1, graph_folder=graph_folder)
 
     single_prototypes_file = F.SPVs_FASTTEXT_FILE if method == Method.FASTTEXT else F.SPVs_DISTILBERT_FILE
@@ -48,10 +45,10 @@ def setup_train(slc_or_text_corpus, include_globalnode_input, load_saved_model,
     globals_vocabulary_fpath = os.path.join(vocabulary_folder, F.VOCABULARY_OF_GLOBALS_FILENAME)
     vocabulary_df = pd.read_hdf(globals_vocabulary_fpath, mode='r')
     # vocabulary_wordList = vocabulary_df['word'].to_list().copy()
-    if slc_or_text_corpus:
-        vocabulary_numSensesList = vocabulary_df['num_senses'].to_list().copy()
-        if all([num_senses == -1 for num_senses in vocabulary_numSensesList]):
-            vocabulary_df = AD.compute_globals_numsenses(graph_dataobj, grapharea_matrix, grapharea_size)
+
+    vocabulary_numSensesList = vocabulary_df['num_senses'].to_list().copy()
+    if all([num_senses == -1 for num_senses in vocabulary_numSensesList]):
+        vocabulary_df = AD.compute_globals_numsenses(graph_dataobj, grapharea_matrix, grapharea_size, slc_or_text_corpus)
 
     # -------------------- Loading / creating the model --------------------
     torch.manual_seed(1) # for reproducibility while conducting mini-experiments
@@ -90,12 +87,14 @@ def setup_train(slc_or_text_corpus, include_globalnode_input, load_saved_model,
     bptt_collator = DL.BPTTBatchCollator(grapharea_size, sequence_length)
 
     vocab_h5 = pd.HDFStore(globals_vocabulary_fpath, mode='r')
-    train_dataset = DL.TextDataset(slc_or_text_corpus, Utils.TRAINING, senseindices_db_c, vocab_h5, model_forDataLoading,
+    train_corpus_fpath = os.path.join(F.FOLDER_TEXT_CORPUSES, subfolder, F.FOLDER_TRAIN)
+    valid_corpus_fpath = os.path.join(F.FOLDER_TEXT_CORPUSES, subfolder, F.FOLDER_VALIDATION)
+    train_dataset = DL.TextDataset(slc_or_text_corpus, train_corpus_fpath, senseindices_db_c, vocab_h5, model_forDataLoading,
                                    grapharea_matrix, grapharea_size, graph_dataobj)
     train_dataloader = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size * sequence_length,
                                                    num_workers=0, collate_fn=bptt_collator)
 
-    valid_dataset = DL.TextDataset(slc_or_text_corpus, Utils.VALIDATION, senseindices_db_c, vocab_h5, model_forDataLoading,
+    valid_dataset = DL.TextDataset(slc_or_text_corpus, valid_corpus_fpath, senseindices_db_c, vocab_h5, model_forDataLoading,
                                    grapharea_matrix, grapharea_size, graph_dataobj)
     valid_dataloader = torch.utils.data.DataLoader(valid_dataset, batch_size=batch_size * sequence_length,
                                                    num_workers=0, collate_fn=bptt_collator)
@@ -118,7 +117,7 @@ def run_train(model, learning_rate, train_dataloader, valid_dataloader, num_epoc
     model.train()
     training_losses_lts = []
     validation_losses_lts = []
-    multisense_globals_set = set(AD.get_multisense_globals_indices())
+    multisense_globals_set = set(AD.get_multisense_globals_indices(slc_or_text))
 
     model_forParameters = model.module if torch.cuda.device_count() > 1 and model.__class__.__name__=="DataParallel" else model
     model_forParameters.predict_senses = predict_senses
@@ -298,7 +297,7 @@ def run_train(model, learning_rate, train_dataloader, valid_dataloader, num_epoc
 def evaluation(evaluation_dataloader, evaluation_dataiter, model, slc_or_text, verbose):
     model_forParameters = model.module if torch.cuda.device_count() > 1 and model.__class__.__name__=="DataParallel" else model
     including_senses = model_forParameters.predict_senses
-    multisense_globals_set = set(AD.get_multisense_globals_indices())
+    multisense_globals_set = set(AD.get_multisense_globals_indices(slc_or_text))
 
     model.eval()  # do not train the model now
     sum_eval_loss_globals = 0

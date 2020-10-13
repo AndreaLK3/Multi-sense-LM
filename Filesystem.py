@@ -27,7 +27,6 @@ WT_VALID_FILE = 'wiki.valid.tokens'
 WT_TEST_FILE = 'wiki.test.tokens'
 
 
-
 VOCAB_CURRENT_INDEX_FILE = 'vocabulary_currentIndex.txt' # used for BabelNet requests over several days
 
 FASTTEXT_PRETRAINED_EMBEDDINGS_FILE = 'cc.en.300.bin'

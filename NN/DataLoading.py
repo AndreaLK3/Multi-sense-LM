@@ -66,15 +66,9 @@ class BPTTBatchCollator():
 
 ##### Auxiliary function: reading a standard text corpus into the dataset,
 ##### without the need to use the SLC facility to process a sense-labeled XML
-def standardtextcorpus_generator(split_name):
-    if split_name==Utils.TRAINING:
-        folder = F.FOLDER_TRAIN
-    elif split_name==Utils.VALIDATION:
-        folder = F.FOLDER_VALIDATION
-    else: # Utils.TEST
-        folder = F.FOLDER_TEST
+def standardtextcorpus_generator(in_folder_path):
 
-    in_folder_path = os.path.join(F.FOLDER_TEXT_CORPUSES, F.FOLDER_STANDARDTEXT, folder)
+    # in_folder_path = os.path.join(F.FOLDER_TEXT_CORPUSES, F.FOLDER_STANDARDTEXT, folder)
     logging.info("setting up standardtextcorpus_generator on path: " + str(in_folder_path))
     textfiles_fnames = os.listdir(in_folder_path)
     with [io.open(os.path.join(in_folder_path, fname),'r') for fname in textfiles_fnames][0] as text_file:
@@ -89,17 +83,17 @@ def standardtextcorpus_generator(split_name):
 
 ##### The Dataset
 class TextDataset(torch.utils.data.Dataset):
-    def __init__(self, sensecorpus_or_text, split_name, senseindices_db_c, vocab_h5, model,
+    def __init__(self, sensecorpus_or_text, textcorpus_path, senseindices_db_c, vocab_h5, model,
                        grapharea_matrix, area_size, graph_dataobj):
-        self.split_name = split_name
+        self.textcorpus_path = textcorpus_path
         self.sensecorpus_or_text = sensecorpus_or_text
-        self.generator = SLC.read_split(split_name) if sensecorpus_or_text else standardtextcorpus_generator(split_name)
+        self.generator = SLC.read_split(textcorpus_path) if sensecorpus_or_text else standardtextcorpus_generator(textcorpus_path)
         self.senseindices_db_c = senseindices_db_c
         self.vocab_h5 = vocab_h5
         self.nn_model = model
         self.counter = 0
         self.last_sense_idx = senseindices_db_c.execute("SELECT COUNT(*) from indices_table").fetchone()[0]
-        self.first_idx_dummySenses = Utils.get_startpoint_dummySenses()
+        self.first_idx_dummySenses = Utils.get_startpoint_dummySenses(sensecorpus_or_text)
 
         self.grapharea_matrix = grapharea_matrix
         self.area_size = area_size
@@ -108,7 +102,7 @@ class TextDataset(torch.utils.data.Dataset):
 
     def __getitem__(self, index):
         self.current_token_tpl, self.next_token_tpl = NI.get_tokens_tpls(self.next_token_tpl, self.generator,
-                                                                         self.senseindices_db_c, self.vocab_h5, self.grapharea_matrix, self.last_sense_idx, self.first_idx_dummySenses )
+                                                                         self.senseindices_db_c, self.vocab_h5, self.grapharea_matrix, self.last_sense_idx, self.first_idx_dummySenses)
 
         global_idx, sense_idx = self.current_token_tpl
         #logging.info("TextDataset > global_idx, sense_idx =" + str((global_idx, sense_idx)))
@@ -119,10 +113,10 @@ class TextDataset(torch.utils.data.Dataset):
         return ((global_forwardinput_triple, sense_forwardinput_triple), self.next_token_tpl)
 
     def __len__(self):
-        logging.debug("Requesting the length of the dataset for split:" + str(self.split_name))
+        logging.debug("Requesting the length of the dataset")
         if self.counter == 0:
-            length_reader = standardtextcorpus_generator(self.split_name) \
-                if self.generator.__name__ == 'standardtextcorpus_generator' else SLC.read_split(self.split_name)
+            length_reader = standardtextcorpus_generator(self.textcorpus_path) \
+                if self.generator.__name__ == 'standardtextcorpus_generator' else SLC.read_split(self.textcorpus_path)
             logging.info("Preliminary: reading the dataset to determine the number of samples")
             try:
                 while True:

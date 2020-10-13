@@ -289,8 +289,10 @@ def get_gpu_memory_map():
 
 
 # Read the indices_table.sql, in order to determine the start of the dummmySenses.
-def get_startpoint_dummySenses():
-    indicesTable_db = sqlite3.connect(os.path.join(F.FOLDER_INPUT, INDICES_TABLE_DB))
+def get_startpoint_dummySenses(slc_or_text):
+    inputdata_folder = os.path.join(F.FOLDER_INPUT, F.FOLDER_SENSELABELED) if slc_or_text \
+        else os.path.join(F.FOLDER_INPUT, F.FOLDER_STANDARDTEXT)
+    indicesTable_db = sqlite3.connect(os.path.join(inputdata_folder, INDICES_TABLE_DB))
     indicesTable_db_c = indicesTable_db.cursor()
     counter = 1
 

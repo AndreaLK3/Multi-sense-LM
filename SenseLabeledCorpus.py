@@ -106,19 +106,9 @@ def dataset_generator(xml_fpath):
             yield(elem.attrib)
 
 
-def readgenerator_senselabeled_corpuses(split_name):
-    if split_name.lower() == Utils.TRAINING:
-        training_subcorpuses_folder = os.path.join(F.FOLDER_TEXT_CORPUSES, F.FOLDER_SENSELABELED, F.FOLDER_TRAIN)
-        full_fpaths = list(map(lambda fname: os.path.join(training_subcorpuses_folder, fname),
-                               [fname for fname in os.listdir(training_subcorpuses_folder) if 'xml' in fname]))
-    elif split_name.lower() == Utils.VALIDATION:
-        validation_subcorpuses_folder = os.path.join(F.FOLDER_TEXT_CORPUSES, F.FOLDER_SENSELABELED, F.FOLDER_VALIDATION)
-        full_fpaths = list(map(lambda fname: os.path.join(validation_subcorpuses_folder, fname),
-                               [fname for fname in os.listdir(validation_subcorpuses_folder) if 'xml' in fname]))
-    else: # elif dataset_split.lower() == Utils.TEST:
-        test_subcorpuses_folder = os.path.join(F.FOLDER_TEXT_CORPUSES, F.FOLDER_SENSELABELED, F.FOLDER_TEST)
-        full_fpaths = list(map(lambda fname: os.path.join(test_subcorpuses_folder, fname),
-                               [fname for fname in os.listdir(test_subcorpuses_folder) if 'xml' in fname]))
+def readgenerator_senselabeled_corpuses(corpus_fpath):
+    full_fpaths = list(map(lambda fname: corpus_fpath,
+                           [fname for fname in os.listdir(corpus_fpath) if 'xml' in fname]))
 
     logging.debug("full_fpaths=" + str(full_fpaths))
     for xml_fpath in full_fpaths: # n: when using the readgenerator, I have to invoke .__next__().__next__() ,
@@ -130,8 +120,8 @@ def readgenerator_senselabeled_corpuses(split_name):
 
 
 
-def read_split(split_name):
-    gen_over_split = readgenerator_senselabeled_corpuses(split_name)
+def read_split(corpus_fpath):
+    gen_over_split = readgenerator_senselabeled_corpuses(corpus_fpath)
     for gen_over_corpus in gen_over_split:
         for elem in gen_over_corpus:
             yield elem

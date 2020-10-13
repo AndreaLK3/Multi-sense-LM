@@ -121,7 +121,6 @@ def init_model_parameters(model, graph_dataobj, grapharea_size, grapharea_matrix
     model.include_globalnode_input = include_globalnode_input
     model.predict_senses = False # it can be set to True when starting a training loop
 
-    model.first_idx_dummySenses = Utils.get_startpoint_dummySenses()
     model.last_idx_senses = graph_dataobj.node_types.tolist().index(1)
     model.last_idx_globals = graph_dataobj.node_types.tolist().index(2)
 
