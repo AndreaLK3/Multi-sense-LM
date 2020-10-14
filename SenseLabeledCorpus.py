@@ -107,7 +107,7 @@ def dataset_generator(xml_fpath):
 
 
 def readgenerator_senselabeled_corpuses(corpus_fpath):
-    full_fpaths = list(map(lambda fname: corpus_fpath,
+    full_fpaths = list(map(lambda fname: os.path.join(corpus_fpath, fname),
                            [fname for fname in os.listdir(corpus_fpath) if 'xml' in fname]))
 
     logging.debug("full_fpaths=" + str(full_fpaths))

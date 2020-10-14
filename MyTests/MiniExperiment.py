@@ -24,7 +24,40 @@ import gc
 from math import exp
 from time import time
 import VocabularyAndEmbeddings.ComputeEmbeddings as CE
+import NN.ExplorePredictions as EP
 
+
+################ Auxiliary function, for logging ################
+def log_input(batch_input, last_idx_senses, slc_or_text):
+    subfolder = F.FOLDER_SENSELABELED if slc_or_text else F.FOLDER_STANDARDTEXT
+    inputdata_folder = os.path.join(F.FOLDER_INPUT, subfolder)
+    vocabulary_folder = os.path.join(F.FOLDER_VOCABULARY, subfolder)
+
+    batch_words_ls = []
+    batch_senses_ls = []
+
+    # globals:
+    batch_globals_indices = batch_input[:, :, 0] - last_idx_senses
+    batch_senses_indices = batch_input[:, :, (batch_input.shape[2]//2)]
+    for b in range(batch_globals_indices.shape[0]):
+        for t in range(batch_globals_indices.shape[1]):
+            global_index = batch_globals_indices[b,t].item()
+            word = EP.get_globalword_fromindex_df(global_index, vocabulary_folder)
+            batch_words_ls.append(word)
+    # senses:
+    if slc_or_text:
+        for b in range(batch_globals_indices.shape[0]):
+            for t in range(batch_globals_indices.shape[1]):
+                sense_index = batch_senses_indices[b,t].item()
+                sense = EP.get_sense_fromindex(sense_index, inputdata_folder)
+                batch_senses_ls.append(sense)
+    logging.info("\n******\nBatch globals: " + str(batch_words_ls))
+    logging.info("Batch senses: " + str(batch_senses_ls))
+    return
+
+
+
+################ Creating the model, the train_dataloader, and any necessary variables ################
 def setup_train(slc_or_text_corpus, include_globalnode_input, load_saved_model, grapharea_size, batch_size, sequence_length,
                 method=CE.Method.FASTTEXT, allow_dataparallel=True):
 
@@ -125,7 +158,6 @@ def run_train(model,train_dataloader, learning_rate, num_epochs, predict_senses,
     try: # to catch KeyboardInterrupt-s and still save the training & validation losses
 
         for epoch in range(1,num_epochs+1):
-            print_input = True if (epoch==1) else False # check what the model is reading
 
             optimizer = optimizers[-1] # pick the most recently created optimizer. Useful when freezing
 
@@ -160,13 +192,15 @@ def run_train(model,train_dataloader, learning_rate, num_epochs, predict_senses,
                 batch_input, batch_labels = train_dataiter.__next__()
                 batch_input = batch_input.to(DEVICE)
                 batch_labels = batch_labels.to(DEVICE)
-
+                if epoch == 1:
+                    log_input(batch_input, model_forParameters.last_idx_senses, slc_or_text)
                 # starting operations on one batch
                 optimizer.zero_grad()
 
+
                 # compute loss for the batch
                 (losses_tpl, num_sense_instances_tpl) = compute_model_loss(model, batch_input, batch_labels, correct_predictions_dict,
-                                                                           multisense_globals_set,slc_or_text, print_input, verbose)
+                                                                           multisense_globals_set,slc_or_text, verbose)
                 loss_global, loss_sense, loss_multisense = losses_tpl
                 num_batch_sense_tokens, num_batch_multisense_tokens = num_sense_instances_tpl
 

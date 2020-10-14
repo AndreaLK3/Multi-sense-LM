@@ -38,9 +38,10 @@ def get_missing_sense_label(global_absolute_index, grapharea_matrix, last_sense_
 
 ### Internal function to: translate the word (and if present, the sense) into numerical indices.
 # sense = [0,se) ; single prototype = [se,se+sp) ; definitions = [se+sp, se+sp+d) ; examples = [se+sp+d, e==num_nodes)
-def convert_tokendict_to_tpl(token_dict, senseindices_db_c, globals_vocabulary_h5, grapharea_matrix, last_sense_idx,first_idx_dummySenses):
+def convert_tokendict_to_tpl(token_dict, senseindices_db_c, globals_vocabulary_h5, grapharea_matrix,
+                             last_sense_idx,first_idx_dummySenses, slc_or_text):
 
-    word = VocabUtils.process_word_token(token_dict, lowercasing=True)  # html.unescape + currently lowercasing
+    word = VocabUtils.process_word_token(token_dict, lowercasing=slc_or_text)  # html.unescape + currently lowercasing
     # logging.info("convert_tokendict_to_tpl>word=" + word)
     try:
         global_absolute_index = Utils.select_from_hdf5(globals_vocabulary_h5, 'vocabulary', ['word'], [word]).index[0]
@@ -70,20 +71,24 @@ def convert_tokendict_to_tpl(token_dict, senseindices_db_c, globals_vocabulary_h
         else:
             sense_index = sense_index_queryresult[0]
     else:
-        sense_index = get_missing_sense_label(global_absolute_index, grapharea_matrix, last_sense_idx, first_idx_dummySenses) # -1
+        if slc_or_text:
+            sense_index = get_missing_sense_label(global_absolute_index, grapharea_matrix, last_sense_idx, first_idx_dummySenses)
+        else: sense_index = -1
 
     logging.debug('(global_index, sense_index)=' + str((global_index, sense_index)))
     return (global_index, sense_index)
 
 ### Entry point function to: translate the word (and if present, the sense) into numerical indices.
-def get_tokens_tpls(next_token_tpl, split_datagenerator, senseindices_db_c, vocab_h5, grapharea_matrix, last_idx_sense, first_idx_dummySenses):
+def get_tokens_tpls(next_token_tpl, split_datagenerator, senseindices_db_c, vocab_h5, grapharea_matrix,
+                    last_idx_sense, first_idx_dummySenses, slc_or_text):
     if next_token_tpl is None:
         current_token_tpl = convert_tokendict_to_tpl(split_datagenerator.__next__(),
-                                                     senseindices_db_c, vocab_h5, grapharea_matrix, last_idx_sense, first_idx_dummySenses)
+                                                     senseindices_db_c, vocab_h5, grapharea_matrix, last_idx_sense, first_idx_dummySenses, slc_or_text)
         next_token_tpl = convert_tokendict_to_tpl(split_datagenerator.__next__(),
-                                                  senseindices_db_c, vocab_h5, grapharea_matrix, last_idx_sense, first_idx_dummySenses)
+                                                  senseindices_db_c, vocab_h5, grapharea_matrix, last_idx_sense, first_idx_dummySenses, slc_or_text)
     else:
         current_token_tpl = next_token_tpl
-        next_token_tpl = convert_tokendict_to_tpl(split_datagenerator.__next__(),senseindices_db_c, vocab_h5, grapharea_matrix, last_idx_sense, first_idx_dummySenses)
+        next_token_tpl = convert_tokendict_to_tpl(split_datagenerator.__next__(),senseindices_db_c, vocab_h5,
+                                                  grapharea_matrix, last_idx_sense, first_idx_dummySenses, slc_or_text)
 
     return current_token_tpl, next_token_tpl

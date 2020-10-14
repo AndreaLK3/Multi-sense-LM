@@ -101,8 +101,10 @@ class TextDataset(torch.utils.data.Dataset):
         self.next_token_tpl = None
 
     def __getitem__(self, index):
-        self.current_token_tpl, self.next_token_tpl = NI.get_tokens_tpls(self.next_token_tpl, self.generator,
-                                                                         self.senseindices_db_c, self.vocab_h5, self.grapharea_matrix, self.last_sense_idx, self.first_idx_dummySenses)
+        self.current_token_tpl, self.next_token_tpl = \
+            NI.get_tokens_tpls(self.next_token_tpl, self.generator,
+                                 self.senseindices_db_c, self.vocab_h5, self.grapharea_matrix,
+                                 self.last_sense_idx, self.first_idx_dummySenses, self.sensecorpus_or_text)
 
         global_idx, sense_idx = self.current_token_tpl
         #logging.info("TextDataset > global_idx, sense_idx =" + str((global_idx, sense_idx)))
