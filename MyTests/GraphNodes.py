@@ -55,7 +55,7 @@ def test(slc_or_text):
     num_nodes = len(graph_dataobj.node_types.tolist())
     last_indices_tpl = (last_idx_senses , last_idx_globals, last_idx_definitions)
 
-    random_nodes = [82224, 48694, 40096] + \
+    random_nodes = [82224, 40116, 40139] + \
                    [random.randint(0, last_idx_senses) for _i in range(10)] + \
                    [random.randint(last_idx_senses, last_idx_globals) for _i in range(10)] + \
                    [random.randint(last_idx_globals, last_idx_definitions) for _i in range(5)] + \

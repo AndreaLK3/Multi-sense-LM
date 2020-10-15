@@ -28,7 +28,8 @@ def load_model_from_file():
 
 ################
 
-def setup_train(slc_or_text_corpus, include_globalnode_input, load_saved_model, grapharea_size, batch_size, sequence_length,method=CE.Method.FASTTEXT, allow_dataparallel=True):
+def setup_train(slc_or_text_corpus, include_globalnode_input, load_saved_model, grapharea_size, batch_size, sequence_length,
+                method=CE.Method.FASTTEXT, allow_dataparallel=True):
 
     # -------------------- Setting up the graph, grapharea_matrix and vocabulary --------------------
     graph_dataobj = DG.get_graph_dataobject(new=False, method=method, slc_corpus=slc_or_text_corpus).to(DEVICE)
@@ -106,7 +107,7 @@ def setup_train(slc_or_text_corpus, include_globalnode_input, load_saved_model, 
 
 
 ################
-def run_train(model, learning_rate, train_dataloader, valid_dataloader, num_epochs, predict_senses, with_freezing):
+def run_train(model, train_dataloader, valid_dataloader, learning_rate, num_epochs, predict_senses, with_freezing):
 
     # -------------------- Setup; parameters and utilities --------------------
     Utils.init_logging('Training' + Utils.get_timestamp_month_to_min() + '.log', loglevel=logging.INFO)

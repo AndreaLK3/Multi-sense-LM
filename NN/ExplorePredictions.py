@@ -39,23 +39,23 @@ def get_sense_fromindex(sense_index, inputdata_folder):
 
 
 ### Logging the predictions for : globals
-def log_predicted_globals(predictions_globals, k=5):
+def log_predicted_globals(predictions_globals, k, vocabulary_folder):
     (values_g, indices_g) = predictions_globals.sort(dim=0, descending=True)[0:k]
 
     logging.info("The top- " + str(k) + " predicted globals are:")
     for i in range(k):
-        word = get_globalword_fromindex_df(indices_g[i].item())
+        word = get_globalword_fromindex_df(indices_g[i].item(), vocabulary_folder)
         score = values_g[i].item()
         probability = round(exp(score) * 100,2)
         logging.info("Word: " + word  +" ; p=" + str(probability) + "%")
 
 ### Logging the predictions for : senses
-def log_predicted_senses(predictions_senses, k=5):
+def log_predicted_senses(predictions_senses, k, inputdata_folder):
     (values_s, indices_s) = predictions_senses.sort(dim=0, descending=True)[0:k]
 
     logging.info("The top- " + str(k) + " predicted senses are:")
     for i in range(k):
-        sense = get_sense_fromindex(indices_s[i].item())
+        sense = get_sense_fromindex(indices_s[i].item(), inputdata_folder)
         score = values_s[i].item()
         probability = round(exp(score) * 100, 2)
         if probability > 1:
@@ -76,9 +76,9 @@ def log_solution_and_predictions(label_tpl, predictions_globals, predictions_sen
     logging.info("\nLabel: the next global is: " + str(nextglobal) + "(from " + str(solution_global_idx) + ")")
     logging.info("Label: the next sense is: " + str(nextsense)  + "(from " + str(solution_sense_idx) + ")")
 
-    log_predicted_globals(predictions_globals, k)
+    log_predicted_globals(predictions_globals, k, vocabulary_folder)
     if nextsense is not None and len(predictions_senses.shape)!=0:
-        log_predicted_senses(predictions_senses, k)
+        log_predicted_senses(predictions_senses, k, inputdata_folder)
 
 
 # Entry function, to invoke from RGCN. Batch level
