@@ -33,7 +33,11 @@ def get_missing_sense_label(global_absolute_index, grapharea_matrix, last_sense_
     if len(dummySenses) > 0:
         return dummySenses[0].item()  # (we can have only 1 here)
     else:
-        return senses[0].item()
+        try:
+            return senses[0].item()
+        except IndexError:
+            logging.info("Could not find sense for: global_absolute_index=" + str(global_absolute_index))
+            return -1
 
 
 ### Internal function to: translate the word (and if present, the sense) into numerical indices.

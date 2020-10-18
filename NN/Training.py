@@ -19,11 +19,28 @@ from itertools import cycle
 import gc
 from math import exp
 import VocabularyAndEmbeddings.ComputeEmbeddings as CE
+from torch.nn.parameter import Parameter
 
-def load_model_from_file():
+def load_model_from_file(slc_or_text, inputdata_folder, graph_dataobj):
     saved_model_path = os.path.join(F.FOLDER_NN, F.SAVED_MODEL_NAME)
     model = torch.load(saved_model_path).module
     logging.info("Loading the model found at: " + str(saved_model_path))
+
+    if slc_or_text:
+    # we must replace the linear FF-NNs that go from LastLayerDim (eg. 512) to the vocabulary,
+        last_idx_senses = graph_dataobj.node_types.tolist().index(1)
+        num_senses = last_idx_senses + 1
+        last_idx_globals = graph_dataobj.node_types.tolist().index(2)
+        num_globals = last_idx_globals - last_idx_senses
+
+        model.linear2global = torch.nn.Linear(in_features=model.hidden_size // 2, out_features=num_globals, bias=True)
+        model.linear2senses = torch.nn.Linear(in_features=model.hidden_size // 2, out_features=num_senses, bias=True)
+
+    # and the matrix E of embeddings too.
+        E_embeddings = DG.load_word_embeddings(inputdata_folder)
+        model.E = Parameter(E_embeddings.clone().detach(), requires_grad=True)
+
+
     return model
 
 ################
@@ -56,7 +73,7 @@ def setup_train(slc_or_text_corpus, include_globalnode_input, load_saved_model, 
     if torch.cuda.is_available():
          torch.cuda.manual_seed_all(1)
     if load_saved_model:
-        model = load_model_from_file()
+        model = load_model_from_file(slc_or_text_corpus, inputdata_folder, graph_dataobj)
     else:
         model = RNNs.RNN(graph_dataobj, grapharea_size, grapharea_matrix, vocabulary_df,
                            embeddings_matrix, include_globalnode_input,
@@ -175,7 +192,7 @@ def run_train(model, train_dataloader, valid_dataloader, learning_rate, num_epoc
             flag_earlystop = False
 
             # -------------------- Running on the validation set --------------------
-            if epoch>1: # moved to epochs 1 and onwards for debug purposes
+            if True: # using True instead of epoch>1 to check the validation-PPL of the pre-trained model
                 logging.info("After training " + str(epoch-1) + " epochs, validation:")
                 valid_loss_globals, valid_loss_senses, multisenses_evaluation_loss = evaluation(valid_dataloader,
                                                                                                 valid_dataiter,
@@ -185,9 +202,10 @@ def run_train(model, train_dataloader, valid_dataloader, learning_rate, num_epoc
                 Utils.record_statistics(validation_sumlosses, (1, 1, 1), losses_lts=validation_losses_lts)
 
                 # -------------------- Check the validation loss & the need for freezing / early stopping --------------------
-                if exp(valid_loss_globals) > exp(best_valid_loss_globals) + 0.1 and (epoch > 5): # sometimes to_do: re-set this condition for mini/standard experiments
+                if exp(valid_loss_globals) > exp(best_valid_loss_globals) + 0.1 and (epoch > 2):
 
-                    torch.save(model, os.path.join(F.FOLDER_NN, hyperparams_str + '_earlystop_on_globals.model'))
+                    if exp(valid_loss_globals) > exp(best_valid_loss_globals):
+                        torch.save(model, os.path.join(F.FOLDER_NN, hyperparams_str + '_best_validation.model'))
                     if not with_freezing:
                         # previous validation was better. Now we must early-stop
                         logging.info("Early stopping. Latest validation PPL=" + str(round(exp(valid_loss_globals), 2))
@@ -213,7 +231,7 @@ def run_train(model, train_dataloader, valid_dataloader, learning_rate, num_epoc
                             after_freezing_flag = True
                             freezing_epoch = epoch
                 if after_freezing_flag:
-                    if (exp(valid_loss_senses) > exp(previous_valid_loss_senses) + 1) and epoch > freezing_epoch + 3: # sometimes to_do: re-set this condition for mini/standard experiments
+                    if (exp(valid_loss_senses) > exp(previous_valid_loss_senses) + 1) and epoch > freezing_epoch + 2:
                         logging.info("Early stopping on senses.")
                         flag_earlystop = True
 
@@ -288,7 +306,7 @@ def run_train(model, train_dataloader, valid_dataloader, learning_rate, num_epoc
     np.save(hyperparams_str + '_' + Utils.VALIDATION + '_' + F.LOSSES_FILEEND, np.array(validation_losses_lts))
 
     # --------------------- Printing validation predictions & errors ---------------------
-    evaluation(valid_dataloader, valid_dataiter, model, verbose=True)
+    evaluation(valid_dataloader, valid_dataiter, model, verbose=True, slc_or_text=slc_or_text)
 
 
 

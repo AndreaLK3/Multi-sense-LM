@@ -81,7 +81,7 @@ def setup_train(slc_or_text_corpus, include_globalnode_input, load_saved_model, 
     if torch.cuda.is_available():
          torch.cuda.manual_seed_all(1)
     if load_saved_model:
-        model = load_model_from_file()
+        model = load_model_from_file(slc_or_text_corpus, inputdata_folder, graph_dataobj)
     else:
         model = RNNs.RNN(graph_dataobj, grapharea_size, grapharea_matrix, vocabulary_df,
                            embeddings_matrix, include_globalnode_input,
@@ -126,7 +126,7 @@ def setup_train(slc_or_text_corpus, include_globalnode_input, load_saved_model, 
 def run_train(model,train_dataloader, learning_rate, num_epochs, predict_senses, with_freezing):
 
     # -------------------- Setup; parameters and utilities --------------------
-    Utils.init_logging('Training' + Utils.get_timestamp_month_to_min() + '.log', loglevel=logging.INFO)
+    Utils.init_logging('MiniExp-' + Utils.get_timestamp_month_to_min() + '.log', loglevel=logging.INFO)
     slc_or_text = train_dataloader.dataset.sensecorpus_or_text
 
     optimizers = [torch.optim.Adam(model.parameters(), lr=learning_rate)]
@@ -141,12 +141,14 @@ def run_train(model,train_dataloader, learning_rate, num_epochs, predict_senses,
     steps_logging = 50
     overall_step = 0
     starting_time = time()
-    freezing_epoch = None
+
+    freezing_epoch = (num_epochs // 3)*2 # we decide to freeze at 2/3rds of the number of epochs in the miniexperiment
     after_freezing_flag = False
     if with_freezing:
         model_forParameters.predict_senses = False
     weights_before_freezing_check_ls = []
     parameters_to_check_names_ls = []
+
 
     # debug
     # torch.autograd.set_detect_anomaly(True)
@@ -183,7 +185,6 @@ def run_train(model,train_dataloader, learning_rate, num_epochs, predict_senses,
             verbose = True if (epoch==num_epochs) or (epoch% 200==0) else False # - log prediction output
             # verbose_valid = True if (epoch == num_epochs) or (epoch in []) else False  # - log prediction output
 
-            flag_earlystop = False
 
             # -------------------- The training loop over the batches --------------------
             logging.info("\nEpoch n." + str(epoch) + ":")
@@ -192,11 +193,10 @@ def run_train(model,train_dataloader, learning_rate, num_epochs, predict_senses,
                 batch_input, batch_labels = train_dataiter.__next__()
                 batch_input = batch_input.to(DEVICE)
                 batch_labels = batch_labels.to(DEVICE)
-                if epoch == 1:
+                if epoch == 1 or epoch==2:
                     log_input(batch_input, model_forParameters.last_idx_senses, slc_or_text)
                 # starting operations on one batch
                 optimizer.zero_grad()
-
 
                 # compute loss for the batch
                 (losses_tpl, num_sense_instances_tpl) = compute_model_loss(model, batch_input, batch_labels, correct_predictions_dict,
@@ -227,6 +227,25 @@ def run_train(model,train_dataloader, learning_rate, num_epochs, predict_senses,
                 if overall_step % steps_logging == 0:
                     logging.info("Global step=" + str(overall_step) + "\t ; Iteration time=" + str(round(time()-t0,5)))
                     gc.collect()
+
+                if epoch == freezing_epoch and not after_freezing_flag:
+                    # we are predicting first the standard LM, and then the senses. Freeze (1), activate (2).
+                    logging.info("New validation worse than previous one. " +
+                                 "Freezing the weights in the standard LM, activating senses' prediction.")
+                    for (name, p) in model_forParameters.named_parameters():  # (1)
+                        parameters_to_check_names_ls.append(name)
+                        weights_before_freezing_check_ls.append(p.clone().detach())
+
+                        if ("main_rnn" in name) or ("E" in name) or ("X" in name) or ("linear2global" in name):
+                            logging.info(name)
+                            p.requires_grad = False
+                            p.grad = p.grad * 0
+                    optimizers.append(torch.optim.Adam(model.parameters(),
+                                                       lr=learning_rate))  # [p for p in model.parameters() if p.requires_grad]
+                    optimizer = optimizers[-1]  # pick the most recently created optimizer
+                    model_forParameters.predict_senses = True  # (2)
+                    after_freezing_flag = True
+
                 # end of an epoch.
 
             # -------------------- Computing training losses for the epoch--------------------

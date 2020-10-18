@@ -13,6 +13,22 @@ import re
 from sklearn.decomposition import PCA
 
 
+
+def load_word_embeddings(inputdata_folder, method=Method.FASTTEXT):
+    if method == Method.FASTTEXT:
+        single_prototypes_file = F.SPVs_FASTTEXT_FILE
+    elif method == Method.DISTILBERT:
+        single_prototypes_file = F.SPVs_DISTILBERT_FILE
+    else:
+        logging.error("Method not implemented")
+        raise AssertionError
+
+    E_embeddings = torch.tensor(np.load(os.path.join(inputdata_folder, single_prototypes_file))).to(torch.float32)
+
+    return E_embeddings
+
+
+
 def load_senses_elements(elements_name, embeddings_method, use_PCA, inputdata_folder):
     if use_PCA:
         # the version reduced by PCA
@@ -104,13 +120,6 @@ def initialize_senses(X_defs, X_examples, X_globals, vocabulary_ls, average_or_r
 # ----------------------------------------
 
 def create_graph(method, slc_corpus):
-    if method == Method.FASTTEXT:
-        single_prototypes_file = F.SPVs_FASTTEXT_FILE
-    elif method == Method.DISTILBERT:
-        single_prototypes_file = F.SPVs_DISTILBERT_FILE
-    else:
-        logging.error("Method not implemented")
-        raise AssertionError
 
     Utils.init_logging('DefineGraph_SLC'+ str(slc_corpus)+'.log')
 
@@ -127,7 +136,7 @@ def create_graph(method, slc_corpus):
     globals_vocabulary_df = pd.read_hdf(globals_vocabulary_fpath, mode='r')
     globals_vocabulary_ls = globals_vocabulary_df['word'].to_list().copy()
 
-    E_embeddings = torch.tensor(np.load(os.path.join(inputdata_folder, single_prototypes_file))).to(torch.float32)
+    E_embeddings = load_word_embeddings(inputdata_folder)
     logging.info("E_embeddings.shape=" + str(E_embeddings.shape))
     num_globals = E_embeddings.shape[0]
     embeddings_size = E_embeddings.shape[1]
