@@ -56,6 +56,13 @@ def log_input(batch_input, last_idx_senses, slc_or_text):
     return
 
 
+def log_gradient_norms(model_forParameters):
+    for (name,param) in model_forParameters.named_parameters():
+        logging.info(str(name) + " ; gradient norm=" + str(torch.norm(param, p=None)) +
+                     " \t ; requires_grad=" + str(param.requires_grad))
+
+
+
 
 ################ Creating the model, the train_dataloader, and any necessary variables ################
 def setup_train(slc_or_text_corpus, include_globalnode_input, load_saved_model, grapharea_size, batch_size, sequence_length,
@@ -136,6 +143,7 @@ def run_train(model,train_dataloader, learning_rate, num_epochs, predict_senses,
     multisense_globals_set = set(AD.get_multisense_globals_indices(slc_or_text))
 
     model_forParameters = model.module if torch.cuda.device_count() > 1 and model.__class__.__name__=="DataParallel" else model
+    parameters_ls = [param for param in model_forParameters.parameters()]
     model_forParameters.predict_senses = predict_senses
 
     steps_logging = 50
@@ -152,7 +160,6 @@ def run_train(model,train_dataloader, learning_rate, num_epochs, predict_senses,
 
     # debug
     # torch.autograd.set_detect_anomaly(True)
-
     train_dataiter = iter(cycle(train_dataloader))
 
 
@@ -162,6 +169,7 @@ def run_train(model,train_dataloader, learning_rate, num_epochs, predict_senses,
         for epoch in range(1,num_epochs+1):
 
             optimizer = optimizers[-1] # pick the most recently created optimizer. Useful when freezing
+
 
             # -------------------- Initialization --------------------
             sum_epoch_loss_global = 0
@@ -193,7 +201,7 @@ def run_train(model,train_dataloader, learning_rate, num_epochs, predict_senses,
                 batch_input, batch_labels = train_dataiter.__next__()
                 batch_input = batch_input.to(DEVICE)
                 batch_labels = batch_labels.to(DEVICE)
-                if epoch == 1 or epoch==2:
+                if epoch == 1:
                     log_input(batch_input, model_forParameters.last_idx_senses, slc_or_text)
                 # starting operations on one batch
                 optimizer.zero_grad()

@@ -23,7 +23,8 @@ from torch.nn.parameter import Parameter
 
 def load_model_from_file(slc_or_text, inputdata_folder, graph_dataobj):
     saved_model_path = os.path.join(F.FOLDER_NN, F.SAVED_MODEL_NAME)
-    model = torch.load(saved_model_path).module
+    model = torch.load(saved_model_path).module if torch.cuda.is_available() \
+        else torch.load(saved_model_path, map_location=torch.device('cpu')).module # unwrapping DataParallel
     logging.info("Loading the model found at: " + str(saved_model_path))
 
     if slc_or_text:
@@ -192,7 +193,7 @@ def run_train(model, train_dataloader, valid_dataloader, learning_rate, num_epoc
             flag_earlystop = False
 
             # -------------------- Running on the validation set --------------------
-            if True: # using True instead of epoch>1 to check the validation-PPL of the pre-trained model
+            if epoch>1:
                 logging.info("After training " + str(epoch-1) + " epochs, validation:")
                 valid_loss_globals, valid_loss_senses, multisenses_evaluation_loss = evaluation(valid_dataloader,
                                                                                                 valid_dataiter,

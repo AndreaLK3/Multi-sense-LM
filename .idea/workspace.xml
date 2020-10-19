@@ -3,28 +3,9 @@
   <component name="ChangeListManager">
     <list default="true" id="d35dca92-959c-489d-8a61-f337e4cce7fa" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Graph/DefineGraph.py" beforeDir="false" afterPath="$PROJECT_DIR$/Graph/DefineGraph.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Media/Task1_DeveloperDiary_6.docx" beforeDir="false" afterPath="$PROJECT_DIR$/Media/Task1_DeveloperDiary_6.docx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Media/Task1_DeveloperDiary_7.docx" beforeDir="false" afterPath="$PROJECT_DIR$/Media/Task1_DeveloperDiary_7.docx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/MyTests/MiniExperiment.py" beforeDir="false" afterPath="$PROJECT_DIR$/MyTests/MiniExperiment.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/NN/NumericalIndices.py" beforeDir="false" afterPath="$PROJECT_DIR$/NN/NumericalIndices.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/NN/Training.py" beforeDir="false" afterPath="$PROJECT_DIR$/NN/Training.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Results/Chapter1_Trying to overfit on small dataset/128tokens_batch4_area32_lr0.001_epochs1000_training_losses.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Results/Chapter1_Trying to overfit on small dataset/128tokens_batch8_area32_lr0.003_epochs100_training_losses.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Results/Chapter1_Trying to overfit on small dataset/176steps_batch8_area32_lr0.001_epochs300_training_losses.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Results/Chapter1_Trying to overfit on small dataset/496tokens_batch8_area32_lr0.001_epochs100_training_losses.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Results/Chapter1_Trying to overfit on small dataset/88tokens_batch8_area32_lr0.003_epochs100_training_losses.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Results/Chapter1_Trying to overfit on small dataset/88tokens_batch8_area32_lr0.005_epochs100_training_losses.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Results/Chapter3_ComparingGNNs/Comparing_the_3.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Results/Chapter3_ComparingGNNs/MyRGCN_128tokens_batch8_area32_lr0.003_epochs100_training_losses.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Results/Chapter3_ComparingGNNs/PremadeRGCN_128tokens_batch4_area32_lr0.001_epochs250_training_losses.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Results/Chapter3_ComparingGNNs/modelPremadeRGCN_batch8_area32_lr0.002_epochs150_training_losses.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Results/Chapter4_Recurrence/GRU_gatedimensions_&amp;_GGCNs.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Results/Chapter5_SemCor_full/batch8_area32_lr0.01_epochs100.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Results/Chapter6_ProperLossAndHeads/MiniExperiment_batchsize4_seqlen8_lr0.001.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Results/Chapter6_ProperLossAndHeads/WikiText2_GlobalsOnly_GRU-RGCNvariant1.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Results/Chapter6_ProperLossAndHeads/WikiText2_GlobalsOnly_GRU-RGCNvariant2.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Results/Chapter7_RebuiltModel_ParallelInput/GRU_GAT4_Perplexity_on_WT2.png" beforeDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -37,11 +18,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/MyTests/MiniExperiment.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="270">
-              <caret line="84" column="4" selection-start-line="84" selection-start-column="4" selection-end-line="84" selection-end-column="4" />
+            <state relative-caret-position="150">
+              <caret line="163" lean-forward="true" selection-start-line="163" selection-end-line="163" />
               <folding>
                 <element signature="e#297#309#0" expanded="true" />
               </folding>
@@ -49,11 +30,11 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/NN/Training.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="501">
-              <caret line="74" column="24" lean-forward="true" selection-start-line="74" selection-start-column="24" selection-end-line="74" selection-end-column="24" />
+            <state relative-caret-position="75">
+              <caret line="98" column="20" lean-forward="true" selection-start-line="98" selection-start-column="20" selection-end-line="98" selection-end-column="20" />
               <folding>
                 <element signature="e#0#12#0" expanded="true" />
               </folding>
@@ -64,8 +45,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Graph/Adjacencies.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="239">
-              <caret line="18" column="65" lean-forward="true" selection-start-line="17" selection-start-column="4" selection-end-line="18" selection-end-column="65" />
+            <state relative-caret-position="120">
+              <caret line="18" column="65" selection-start-line="17" selection-start-column="4" selection-end-line="18" selection-end-column="65" />
               <folding>
                 <element signature="e#0#12#0" expanded="true" />
               </folding>
@@ -76,7 +57,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Graph/DefineGraph.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="306">
+            <state relative-caret-position="1890">
               <caret line="138" column="16" selection-start-line="138" selection-start-column="4" selection-end-line="138" selection-end-column="16" />
               <folding>
                 <element signature="e#0#19#0" expanded="true" />
@@ -88,7 +69,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/NN/Models/RNNs.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="426">
+            <state relative-caret-position="735">
               <caret line="56" column="65" selection-start-line="56" selection-start-column="65" selection-end-line="56" selection-end-column="65" />
               <folding>
                 <element signature="e#0#12#0" expanded="true" />
@@ -100,7 +81,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/NN/Models/Common.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="524">
+            <state relative-caret-position="1830">
               <caret line="131" column="21" selection-start-line="131" selection-start-column="4" selection-end-line="131" selection-end-column="21" />
               <folding>
                 <element signature="e#0#14#0" expanded="true" />
@@ -141,8 +122,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>last_sense</find>
-      <find>vocabulary_fpath</find>
       <find>indices</find>
       <find>inputdata_</find>
       <find>if sense</find>
@@ -171,6 +150,8 @@
       <find>parameters_to</find>
       <find>num_senses</find>
       <find>last_idx_senses</find>
+      <find>zero_grad</find>
+      <find>parameters_ls</find>
     </findStrings>
     <replaceStrings>
       <replace>F</replace>
@@ -266,7 +247,7 @@
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds">
+  <component name="ProjectFrameBounds" extendedState="6">
     <option name="y" value="23" />
     <option name="width" value="1920" />
     <option name="height" value="972" />
@@ -277,7 +258,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -325,6 +305,7 @@
           <select />
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -333,6 +314,13 @@
     <property name="full.screen.before.presentation.mode" value="false" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
+  </component>
+  <component name="PyConsoleOptionsProvider">
+    <option name="myPythonConsoleState">
+      <console-settings>
+        <option name="useSoftWraps" value="true" />
+      </console-settings>
+    </option>
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
@@ -383,10 +371,9 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="23" width="1920" height="972" extended-state="0" />
-    <editor active="true" />
+    <frame x="0" y="23" width="1920" height="972" extended-state="6" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.486166" visible="true" weight="0.13631523" />
+      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.486166" visible="true" weight="0.13951011" />
       <window_info id="Structure" order="1" sideWeight="0.513834" side_tool="true" weight="0.27110156" />
       <window_info id="Favorites" order="2" sideWeight="0.5059761" side_tool="true" weight="0.18025751" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -400,7 +387,7 @@
       <window_info anchor="bottom" id="Terminal" order="8" weight="0.325" />
       <window_info anchor="bottom" id="Event Log" order="9" sideWeight="0.5111821" side_tool="true" weight="0.40269965" />
       <window_info anchor="bottom" id="Inspection Results" order="10" weight="0.3284091" />
-      <window_info anchor="bottom" id="Python Console" order="11" sideWeight="0.4888179" visible="true" weight="0.20227273" />
+      <window_info active="true" anchor="bottom" id="Python Console" order="11" sideWeight="0.4888179" visible="true" weight="0.23977272" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
@@ -506,6 +493,28 @@
       </expression>
     </expressions>
     <expressions id="setValue">
+      <expression>
+        <expression-string>[Parameter containing:
+tensor([[ 7.3460e-02, -1.6991e-02,  2.2906e-02,  ...,  4.3596e-02,
+          3.7095e-02, -2.3845e-02],
+        [ 7.0654e-02, -8.2815e-01, -1.5783e-01,  ...,  1.1656e-01,
+         -2.4929e-01, -1.5444e-01],
+        [-8.9968e-02,  5.3412e-02,  1.0894e-02,  ...,  2.1564e-01,
+         -1.0922e-01, -9.6445e-02],
+        ...,
+        [ 4.3939e-03, -9.6507e-03, -4.2272e-02,  ..., -8.7665e-03,
+         -3.0161e-03,  4.3021e-02],
+        [ 5.8417e-02,  6.3881e-02, -6.9295e-02,  ...,  1.0392e-01,
+         -8.3165e-02,  9.9099e-02],
+        [-1.8979e-02, -5.9632e-02, -4.3827e-04,  ...,  5.0276e-02,
+         -3.4548e-02,  5.1985e-03]], requires_grad=True), Parameter containing:
+tensor([0.0000e+00, 1.0000e+00, 2.0000e+00,  ..., 1.0210e+03, 1.0220e+03,
+        1.0230e+03]), Parameter containing:
+tensor([[0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,
+         0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0....</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
       <expression>
         <expression-string>{'senses': [{'type': 'WordNetSense', 'properties': {'wordNetSenseNumber': 9, 'wordNetOffset': '13983304n', 'wordNetSynsetPosition': 1, 'fullLemma': 'light', 'simpleLemma': 'light', 'source': 'WN', 'senseKey': 'light%1:26:00::', 'frequency': 0, 'language': 'EN', 'pos': 'NOUN', 'synsetID': {'id': 'bn:00051114n', 'pos': 'NOUN', 'source': 'BABELNET'}, 'translationInfo': '', 'pronunciations': {'audios': [{'lemma': 'light', 'language': 'EN', 'filename': 'en-uk-light.ogg'}], 'transcriptions': ['[/laɪt/]']}, 'bKeySense': False, 'idSense': 1127007}}, {'type': 'WordNetSense', 'properties': {'wordNetSenseNumber': 1, 'wordNetOffset': '13983304n', 'wordNetSynsetPosition': 2, 'fullLemma': 'lighting', 'simpleLemma': 'lighting', 'source': 'WN', 'senseKey': 'lighting%1:26:00::', 'frequency': 0, 'language': 'EN', 'pos': 'NOUN', 'synsetID': {'id': 'bn:00051114n', 'pos': 'NOUN', 'source': 'BABELNET'}, 'translationInfo': '', 'pronunciations': {'audios': [{'lemma': 'lighting', 'language': 'EN', 'filename': ...</expression-string>
         <language-id>Python</language-id>
@@ -905,6 +914,46 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/Graph/Adjacencies.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="120">
+          <caret line="18" column="65" selection-start-line="17" selection-start-column="4" selection-end-line="18" selection-end-column="65" />
+          <folding>
+            <element signature="e#0#12#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Graph/DefineGraph.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1890">
+          <caret line="138" column="16" selection-start-line="138" selection-start-column="4" selection-end-line="138" selection-end-column="16" />
+          <folding>
+            <element signature="e#0#19#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/NN/Models/RNNs.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="735">
+          <caret line="56" column="65" selection-start-line="56" selection-start-column="65" selection-end-line="56" selection-end-column="65" />
+          <folding>
+            <element signature="e#0#12#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/NN/Models/Common.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1830">
+          <caret line="131" column="21" selection-start-line="131" selection-start-column="4" selection-end-line="131" selection-end-column="21" />
+          <folding>
+            <element signature="e#0#14#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/Filesystem.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="420">
@@ -922,62 +971,22 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/NN/Models/Common.py">
+    <entry file="file://$PROJECT_DIR$/MyTests/MiniExperiment.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="524">
-          <caret line="131" column="21" selection-start-line="131" selection-start-column="4" selection-end-line="131" selection-end-column="21" />
+        <state relative-caret-position="150">
+          <caret line="163" lean-forward="true" selection-start-line="163" selection-end-line="163" />
           <folding>
-            <element signature="e#0#14#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Graph/DefineGraph.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="306">
-          <caret line="138" column="16" selection-start-line="138" selection-start-column="4" selection-end-line="138" selection-end-column="16" />
-          <folding>
-            <element signature="e#0#19#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/NN/Models/RNNs.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="426">
-          <caret line="56" column="65" selection-start-line="56" selection-start-column="65" selection-end-line="56" selection-end-column="65" />
-          <folding>
-            <element signature="e#0#12#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Graph/Adjacencies.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="239">
-          <caret line="18" column="65" lean-forward="true" selection-start-line="17" selection-start-column="4" selection-end-line="18" selection-end-column="65" />
-          <folding>
-            <element signature="e#0#12#0" expanded="true" />
+            <element signature="e#297#309#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/NN/Training.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="501">
-          <caret line="74" column="24" lean-forward="true" selection-start-line="74" selection-start-column="24" selection-end-line="74" selection-end-column="24" />
+        <state relative-caret-position="75">
+          <caret line="98" column="20" lean-forward="true" selection-start-line="98" selection-start-column="20" selection-end-line="98" selection-end-column="20" />
           <folding>
             <element signature="e#0#12#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/MyTests/MiniExperiment.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="270">
-          <caret line="84" column="4" selection-start-line="84" selection-start-column="4" selection-end-line="84" selection-end-column="4" />
-          <folding>
-            <element signature="e#297#309#0" expanded="true" />
           </folding>
         </state>
       </provider>
