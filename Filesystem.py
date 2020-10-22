@@ -47,3 +47,5 @@ PERPLEXITY_FILEEND = 'perplexity.npy'
 GRAPHAREA_FILE = 'graphArea_matrix.npz'
 
 SAVED_MODEL_NAME = 'pretrained_model.pt'
+
+F.MATRIX_SENSE_CONTEXTS_FILEEND = '_SenseContext.npy'

@@ -61,7 +61,7 @@ def compute_sense_ctx_averages(num_prev_words):
     occurrences_counter_vector = np.zeros(shape=last_sense_idx)
 
     # --------- Initialize queue for the current average of the preceding context ---------
-    current_context_wordembs_q = q = deque()
+    current_context_wordembs_q = deque()
     for i in range(num_prev_words-1):
         current_context_wordembs_q.append(np.zeros(shape=graph_dataobj.x.shape[1]))
 

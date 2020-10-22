@@ -40,7 +40,7 @@ class RNN(torch.nn.Module):
             self.gat_globals = GATConv(in_channels=Utils.GRAPH_EMBEDDINGS_DIM, out_channels=int(Utils.GRAPH_EMBEDDINGS_DIM / 2),
                                        heads=2)  # , node_dim=1)
 
-        # -------------------- The networks --------------------
+        # -------------------- The networks --------------------½
         self.main_rnn_ls = torch.nn.ModuleList(
             [torch.nn.GRU(input_size=self.concatenated_input_dim if i == 0 else n_hid_units,
                                                 hidden_size=n_hid_units // 2 if i == n_layers - 1 else n_hid_units, num_layers=1)  # 512
