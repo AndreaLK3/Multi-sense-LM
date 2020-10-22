@@ -3,7 +3,7 @@ from torch_geometric.nn import GATConv
 import torch.nn.functional as tfunc
 import Graph.Adjacencies as AD
 from NN.Models.Common import unpack_input_tensor, init_model_parameters, lemmatize_node, run_graphnet
-from NN.Models.Steps_RNN import rnn_loop, reshape_memories
+from NN.Models.RNNSteps import rnn_loop, reshape_memories
 from Utils import DEVICE
 from torch.nn.parameter import Parameter
 import logging

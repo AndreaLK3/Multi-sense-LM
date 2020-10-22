@@ -2,10 +2,10 @@ import torch
 from torch_geometric.nn import GATConv
 import torch.nn.functional as tfunc
 from NN.Models.Common import unpack_input_tensor, init_model_parameters, run_graphnet
-from NN.Models.Steps_RNN import rnn_loop
+from NN.Models.RNNSteps import rnn_loop
 from torch.nn.parameter import Parameter
 import Utils
-from NN.Models.Steps_RNN import reshape_memories
+from NN.Models.RNNSteps import reshape_memories
 
 
 class RNN(torch.nn.Module):
