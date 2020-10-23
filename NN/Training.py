@@ -20,6 +20,15 @@ import gc
 from math import exp
 import VocabularyAndEmbeddings.ComputeEmbeddings as CE
 from torch.nn.parameter import Parameter
+from enum import Enum
+import NN.Models.SelectK as SelectK
+
+################
+
+class ModelType(Enum):
+    RNN = "RNN"
+    SELECTK = "SelectK"
+
 
 def load_model_from_file(slc_or_text, inputdata_folder, graph_dataobj):
     saved_model_path = os.path.join(F.FOLDER_NN, F.SAVED_MODEL_NAME)
@@ -46,8 +55,9 @@ def load_model_from_file(slc_or_text, inputdata_folder, graph_dataobj):
 
 ################
 
-def setup_train(slc_or_text_corpus, include_globalnode_input, load_saved_model, grapharea_size, batch_size, sequence_length,
-                method=CE.Method.FASTTEXT, allow_dataparallel=True):
+def setup_train(slc_or_text_corpus, model_type, include_globalnode_input, load_saved_model,
+                batch_size=32, sequence_length=35,
+                method=CE.Method.FASTTEXT, grapharea_size=32):
 
     # -------------------- Setting up the graph, grapharea_matrix and vocabulary --------------------
     graph_dataobj = DG.get_graph_dataobject(new=False, method=method, slc_corpus=slc_or_text_corpus).to(DEVICE)
@@ -76,11 +86,15 @@ def setup_train(slc_or_text_corpus, include_globalnode_input, load_saved_model, 
     if load_saved_model:
         model = load_model_from_file(slc_or_text_corpus, inputdata_folder, graph_dataobj)
     else:
-        model = RNNs.RNN(graph_dataobj, grapharea_size, grapharea_matrix, vocabulary_df,
-                           embeddings_matrix, include_globalnode_input,
-                           batch_size=batch_size, n_layers=3, n_hid_units=1024)
-        # model = Senses.SelectK(graph_dataobj, grapharea_size, grapharea_matrix, vocabulary_df, embeddings_matrix,
-        #          include_globalnode_input, batch_size=batch_size, n_layers=3, n_hid_units=1024, k=10)
+        if model_type==ModelType.RNN:
+            model = RNNs.RNN(graph_dataobj, grapharea_size, grapharea_matrix, vocabulary_df,
+                               embeddings_matrix, include_globalnode_input,
+                               batch_size=batch_size, n_layers=3, n_hid_units=1024)
+        elif model_type==ModelType.SELECTK:
+            model = SelectK.SelectK(graph_dataobj, grapharea_size, grapharea_matrix, vocabulary_df, embeddings_matrix,
+                                    include_globalnode_input, batch_size, n_layers=3, n_hid_units=1024, k=5)
+        else:
+            raise Exception ("Model type specification incorrect")
         # model = Senses.ContextSim(graph_dataobj, grapharea_size, grapharea_matrix, vocabulary_df, embeddings_matrix,
         #                            batch_size, seq_len=sequence_length, n_layers=3, n_hid_units=1024, k=10, c=10)
 
@@ -88,7 +102,7 @@ def setup_train(slc_or_text_corpus, include_globalnode_input, load_saved_model, 
     logging.info("Graph-data object loaded, model initialized. Moving them to GPU device(s) if present.")
 
     n_gpu = torch.cuda.device_count()
-    if n_gpu > 1 and allow_dataparallel:
+    if n_gpu > 1: # and allow_dataparallel:
         logging.info("Using " + str(n_gpu) + " GPUs")
         model = torch.nn.DataParallel(model, dim=0)
         model_forDataLoading = model.module

@@ -40,7 +40,7 @@ def initialize_archives(slc_or_text):
 
 
 def test(slc_or_text):
-    Utils.init_logging("Test-GraphNodes-Slc"+str(slc_or_text)+".log")
+    Utils.init_logging(os.path.join(F.FOLDER_TEST, "Test-GraphNodes-Slc"+str(slc_or_text)+".log"))
 
     logging.info("Graph test. On: SenseLabeled corpus")
     graph_dataobj = DG.get_graph_dataobject(new=False, slc_corpus=slc_or_text)
@@ -55,7 +55,7 @@ def test(slc_or_text):
     num_nodes = len(graph_dataobj.node_types.tolist())
     last_indices_tpl = (last_idx_senses , last_idx_globals, last_idx_definitions)
 
-    random_nodes = [82224, 40116, 40139] + \
+    random_nodes = [40139, 3380, 44378] + \
                    [random.randint(0, last_idx_senses) for _i in range(10)] + \
                    [random.randint(last_idx_senses, last_idx_globals) for _i in range(10)] + \
                    [random.randint(last_idx_globals, last_idx_definitions) for _i in range(5)] + \

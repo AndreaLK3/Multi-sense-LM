@@ -9,7 +9,6 @@ import numpy as np
 import logging
 import Utils
 from enum import Enum
-import transformers
 
 from VocabularyAndEmbeddings.EmbedWithDBERT import compute_sentence_dBert_vector
 

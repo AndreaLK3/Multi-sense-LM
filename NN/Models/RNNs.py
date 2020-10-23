@@ -134,12 +134,12 @@ class RNN(torch.nn.Module):
 class RNN_on_GAT(torch.nn.Module):
 
     def __init__(self, data, grapharea_size, grapharea_matrix, vocabulary_df, batch_size, n_layers, n_hid_units,
-                 concat_input_dim, num_heads, dropout_p):
+                 concat_input_dim, num_heads):
 
         # -------------------- Initialization and parameters --------------------
         super(RNN_on_GAT, self).__init__()
         init_model_parameters(self, data, grapharea_size, grapharea_matrix, vocabulary_df, include_globalnode_input=True,
-                                   batch_size=batch_size, n_layers=n_layers, n_hid_units=n_hid_units, dropout_p=dropout_p)
+                                   batch_size=batch_size, n_layers=n_layers, n_hid_units=n_hid_units)
         self.num_heads = num_heads
         self.concatenated_input_dim = concat_input_dim
 

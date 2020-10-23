@@ -13,12 +13,13 @@ import pandas as pd
 from math import inf
 import Graph.Adjacencies as AD
 import numpy as np
-from NN.Training import load_model_from_file
+from NN.Training import load_model_from_file, ModelType
 from VocabularyAndEmbeddings.ComputeEmbeddings import Method
 from NN.Loss import write_doc_logging, compute_model_loss
 from Utils import DEVICE
 import NN.DataLoading as DL
 import NN.Models.RNNs as RNNs
+import NN.Models.SelectK as SelectK
 from itertools import cycle
 import gc
 from math import exp
@@ -65,8 +66,9 @@ def log_gradient_norms(model_forParameters):
 
 
 ################ Creating the model, the train_dataloader, and any necessary variables ################
-def setup_train(slc_or_text_corpus, include_globalnode_input, load_saved_model, grapharea_size, batch_size, sequence_length,
-                method=CE.Method.FASTTEXT, allow_dataparallel=True):
+def setup_train(slc_or_text_corpus, model_type, include_globalnode_input, load_saved_model,
+                batch_size=2, sequence_length=3,
+                method=CE.Method.FASTTEXT, grapharea_size=32):
 
     # -------------------- Setting up the graph, grapharea_matrix and vocabulary --------------------
     graph_dataobj = DG.get_graph_dataobject(new=False, method=method, slc_corpus=slc_or_text_corpus).to(DEVICE)
@@ -90,19 +92,21 @@ def setup_train(slc_or_text_corpus, include_globalnode_input, load_saved_model, 
     if load_saved_model:
         model = load_model_from_file(slc_or_text_corpus, inputdata_folder, graph_dataobj)
     else:
-        model = RNNs.RNN(graph_dataobj, grapharea_size, grapharea_matrix, vocabulary_df,
-                           embeddings_matrix, include_globalnode_input,
-                           batch_size=batch_size, n_layers=3, n_hid_units=1024)
-        # model = Senses.SelectK(graph_dataobj, grapharea_size, grapharea_matrix, vocabulary_df, embeddings_matrix,
-        #          include_globalnode_input, batch_size=batch_size, n_layers=3, n_hid_units=1024, k=10)
-        # model = Senses.ContextSim(graph_dataobj, grapharea_size, grapharea_matrix, vocabulary_df, embeddings_matrix,
-        #                            batch_size, seq_len=sequence_length, n_layers=3, n_hid_units=1024, k=10, c=10)
+        if model_type == ModelType.RNN:
+            model = RNNs.RNN(graph_dataobj, grapharea_size, grapharea_matrix, vocabulary_df,
+                             embeddings_matrix, include_globalnode_input,
+                             batch_size=batch_size, n_layers=3, n_hid_units=1024)
+        elif model_type == ModelType.SELECTK:
+            model = SelectK.SelectK(graph_dataobj, grapharea_size, grapharea_matrix, vocabulary_df, embeddings_matrix,
+                                    include_globalnode_input, batch_size, n_layers=3, n_hid_units=1024, k=5)
+        else:
+            raise Exception("Model type specification incorrect")
 
     # -------------------- Moving objects on GPU --------------------
     logging.info("Graph-data object loaded, model initialized. Moving them to GPU device(s) if present.")
 
     n_gpu = torch.cuda.device_count()
-    if n_gpu > 1 and allow_dataparallel:
+    if n_gpu > 1: # and allow_dataparallel:
         logging.info("Using " + str(n_gpu) + " GPUs")
         model = torch.nn.DataParallel(model, dim=0)
         model_forDataLoading = model.module
