@@ -8,14 +8,134 @@ from torch.nn.parameter import Parameter
 from Graph import Adjacencies as AD
 from Utils import DEVICE
 import Utils
+from torch_geometric.nn import GATConv
+from NN.Models.RNNSteps import rnn_loop
 
+#########################
+##### 1: Model steps ####
+#########################
+
+##### 1.1: Initialization of: graph_dataobj, grapharea_matrix, vocabulary_lists & more
+def init_model_parameters(model, graph_dataobj, grapharea_size, grapharea_matrix, vocabulary_df,
+                          include_globalnode_input,
+                          batch_size, n_layers, n_hid_units):
+    model.grapharea_matrix = grapharea_matrix
+
+    model.vocabulary_df = vocabulary_df
+    model.vocabulary_wordList = vocabulary_df['word'].to_list().copy()
+    model.vocabulary_lemmatizedList = vocabulary_df['lemmatized_form'].to_list().copy()
+
+    model.include_globalnode_input = include_globalnode_input
+    model.predict_senses = False # it can be set to True when starting a training loop
+
+    model.last_idx_senses = graph_dataobj.node_types.tolist().index(1)
+    model.last_idx_globals = graph_dataobj.node_types.tolist().index(2)
+
+    model.grapharea_size = grapharea_size
+
+    model.dim_embs = graph_dataobj.x.shape[1]
+    model.batch_size = batch_size
+    model.n_layers = n_layers
+    model.hidden_size = n_hid_units
+
+    return
+
+##### 1.2: Initialization of: E, X, globals' (i.e. main) RNN
+def init_common_architecture(model, embeddings_matrix, graph_dataobj):
+    model.E = Parameter(embeddings_matrix.clone().detach(), requires_grad=True) # The matrix of embeddings
+    model.dim_embs = model.E.shape[1]
+    if model.include_globalnode_input:
+        model.X = Parameter(graph_dataobj.x.clone().detach(), requires_grad=True)  # The graph matrix
+
+    # -------------------- Utilities --------------------
+    # utility tensors, used in index_select etc.
+    model.select_first_indices = Parameter(torch.tensor(list(range(model.hidden_size))).to(torch.float32),requires_grad=False)
+    model.embedding_zeros = Parameter(torch.zeros(size=(1, model.dim_embs)), requires_grad=False)
+
+    # Memories of the hidden states; overwritten at the 1st forward, when we know the distributed batch size
+    model.memory_hn = Parameter(torch.zeros(size=(model.n_layers, model.batch_size, model.hidden_size)), requires_grad=False)
+    model.hidden_state_bsize_adjusted = False
+
+    # -------------------- Input signals --------------------
+    model.concatenated_input_dim = model.dim_embs + int(model.include_globalnode_input) * Utils.GRAPH_EMBEDDINGS_DIM
+    # GAT for the node-states from the dictionary graph
+    if model.include_globalnode_input:
+        model.gat_globals = GATConv(in_channels=Utils.GRAPH_EMBEDDINGS_DIM, out_channels=int(Utils.GRAPH_EMBEDDINGS_DIM / 2),
+                                   heads=2)  # , node_dim=1)
+
+    # -------------------- The networks --------------------½
+    model.main_rnn_ls = torch.nn.ModuleList(
+        [torch.nn.GRU(input_size=model.concatenated_input_dim if i == 0 else model.hidden_size,
+                                            hidden_size=model.hidden_size // 2 if i == model.n_layers - 1 else model.hidden_size, num_layers=1)  # 512
+         for i in range(model.n_layers)])
+    model.linear2global = torch.nn.Linear(in_features=model.hidden_size // 2,  # 512
+                                         out_features=model.last_idx_globals - model.last_idx_senses, bias=True)
+
+
+##### 1.3: forward() loop to create the input signal(s), over batch elements
+def get_input_signals(model, batch_elements_at_t, current_device):
+    instant_t_word_embs = []
+    instant_t_global_nodestates_ls = []
+    batch_elems_at_t = batch_elements_at_t.squeeze(dim=1)
+    elems_at_t_ls = batch_elements_at_t.chunk(chunks=batch_elems_at_t.shape[0], dim=0)
+
+    t_input_lts = [unpack_input_tensor(sample_tensor, model.grapharea_size) for sample_tensor in elems_at_t_ls]
+    t_globals_indices_ls = [t_input_lts[b][0][0] for b in range(len(t_input_lts))]
+
+    # -------------------- Input --------------------
+    # Input signal n.1: the embedding of the current (global) word
+    t_current_globals_indices_ls = [x_indices[0] - model.last_idx_senses for x_indices in t_globals_indices_ls]
+    t_current_globals_indices = torch.stack(t_current_globals_indices_ls, dim=0)
+    t_word_embeddings = model.E.index_select(dim=0, index=t_current_globals_indices)
+    instant_t_word_embs.append(t_word_embeddings)
+
+    # Input signal n.2: the node-state of the current global word - now with graph batching
+    if model.include_globalnode_input:
+        t_g_nodestates = run_graphnet(t_input_lts, batch_elems_at_t, t_globals_indices_ls, current_device, model)
+        instant_t_global_nodestates_ls.append(t_g_nodestates)
+
+    return instant_t_word_embs, instant_t_global_nodestates_ls
+
+
+#### 1.3b: Graph Neural Networks for globals
+def run_graphnet(t_input_lts, batch_elems_at_t,t_globals_indices_ls, CURRENT_DEVICE, model):
+
+    currentglobal_nodestates_ls = []
+    if model.include_globalnode_input:
+        t_edgeindex_g_ls = [t_input_lts[b][0][1] for b in range(len(t_input_lts))]
+        t_edgetype_g_ls = [t_input_lts[b][0][2] for b in range(len(t_input_lts))]
+        for i_sample in range(batch_elems_at_t.shape[0]):
+            sample_edge_index = t_edgeindex_g_ls[i_sample]
+            sample_edge_type = t_edgetype_g_ls[i_sample]
+            x_indices, edge_index, edge_type = lemmatize_node(t_globals_indices_ls[i_sample], sample_edge_index, sample_edge_type, model=model)
+            sample_x = model.X.index_select(dim=0, index=x_indices.squeeze())
+            x_attention_states = model.gat_globals(sample_x, edge_index)
+            currentglobal_node_state = x_attention_states.index_select(dim=0, index=model.select_first_indices[0].to(
+                torch.int64))
+            currentglobal_nodestates_ls.append(currentglobal_node_state)
+
+        t_currentglobal_node_states = torch.stack(currentglobal_nodestates_ls, dim=0).squeeze(dim=1)
+        return t_currentglobal_node_states
+
+##### 1.4: standard LM prediction with globals, using a GRU
+def predict_globals_withGRU(model, batch_input_signals, seq_len, distributed_batch_size):
+    # ------------------- Globals -------------------
+    # - input of shape(seq_len, batch_size, input_size): tensor containing the features of the input sequence.
+    task_1_out = rnn_loop(batch_input_signals, model, globals_or_senses_rnn=True)  # self.network_1_L1(input)
+    task_1_out = task_1_out.permute(1, 0, 2)  # going to: (batch_size, seq_len, n_units)
+
+    task_1_out = task_1_out.reshape(distributed_batch_size * seq_len, task_1_out.shape[2])
+
+    logits_global = model.linear2global(task_1_out)  # shape=torch.Size([5])
+    predictions_globals = tfunc.log_softmax(logits_global, dim=1)
+    return predictions_globals
 
 #############################
 ### 0 : Utility functions ###
 #############################
 
+### 0.1 : Extracting the input elements (x_indices, edge_index, edge_type) from the padded tensor in the batch
 
-# Extracting the input elements (x_indices, edge_index, edge_type) from the padded tensor in the batch
 def unpack_to_input_tpl(in_tensor, grapharea_size, max_edges):
     x_indices = in_tensor[(in_tensor[0:grapharea_size] != -1).nonzero().flatten()]
         # shortcut for the case when there is no sense
@@ -50,29 +170,11 @@ def unpack_input_tensor(in_tensor, grapharea_size):
     (x_indices_s, edge_index_s, edge_type_s) = unpack_to_input_tpl(in_tensor_senses, grapharea_size, max_edges)
     return ((x_indices_g, edge_index_g, edge_type_g), (x_indices_s, edge_index_s, edge_type_s))
 
-# Graph Neural Networks for globals
-def run_graphnet(t_input_lts, batch_elems_at_t,t_globals_indices_ls, CURRENT_DEVICE, model):
 
-    currentglobal_nodestates_ls = []
-    if model.include_globalnode_input:
-        t_edgeindex_g_ls = [t_input_lts[b][0][1] for b in range(len(t_input_lts))]
-        t_edgetype_g_ls = [t_input_lts[b][0][2] for b in range(len(t_input_lts))]
-        for i_sample in range(batch_elems_at_t.shape[0]):
-            sample_edge_index = t_edgeindex_g_ls[i_sample]
-            sample_edge_type = t_edgetype_g_ls[i_sample]
-            x_indices, edge_index, edge_type = lemmatize_node(t_globals_indices_ls[i_sample], sample_edge_index, sample_edge_type, model=model)
-            sample_x = model.X.index_select(dim=0, index=x_indices.squeeze())
-            x_attention_states = model.gat_globals(sample_x, edge_index)
-            currentglobal_node_state = x_attention_states.index_select(dim=0, index=model.select_first_indices[0].to(
-                torch.int64))
-            currentglobal_nodestates_ls.append(currentglobal_node_state)
-
-        t_currentglobal_node_states = torch.stack(currentglobal_nodestates_ls, dim=0).squeeze(dim=1)
-        return t_currentglobal_node_states
 
 
 ################################
-### 1: Lemmatize global node ###
+### 2: Lemmatize global node ###
 ################################
 
 
@@ -109,81 +211,7 @@ def lemmatize_node(x_indices, edge_index, edge_type, model):
 ### 2: Initialize common model parameters ###
 #############################################
 
-def init_model_parameters(model, graph_dataobj, grapharea_size, grapharea_matrix, vocabulary_df,
-                          include_globalnode_input,
-                          batch_size, n_layers, n_hid_units):
-    model.grapharea_matrix = grapharea_matrix
-
-    model.vocabulary_df = vocabulary_df
-    model.vocabulary_wordList = vocabulary_df['word'].to_list().copy()
-    model.vocabulary_lemmatizedList = vocabulary_df['lemmatized_form'].to_list().copy()
-
-    model.include_globalnode_input = include_globalnode_input
-    model.predict_senses = False # it can be set to True when starting a training loop
-
-    model.last_idx_senses = graph_dataobj.node_types.tolist().index(1)
-    model.last_idx_globals = graph_dataobj.node_types.tolist().index(2)
-
-    model.grapharea_size = grapharea_size
-
-    model.dim_embs = graph_dataobj.x.shape[1]
-    model.batch_size = batch_size
-    model.n_layers = n_layers
-    model.hidden_size = n_hid_units
-
-    return
 
 
-###################################
-### 3: Self-attention mechanism ###
-###################################
 
-class SelfAttention(torch.nn.Module):
-    # if operating with multiple heads, I use concatenation
-    def __init__(self, dim_input_context, dim_input_elems, dim_qkv, num_multiheads):
-        super(SelfAttention, self).__init__()
-        self.d_input_context = dim_input_context
-        self.d_input_elems = dim_input_elems
-        self.d_qkv = dim_qkv  # the dimensionality of queries, keys and values - down from self.d_input
-        self.num_multiheads = num_multiheads
-
-
-        self.Wq_ls = torch.nn.ModuleList([torch.nn.Linear(in_features=self.d_input_context,
-                                                          out_features=self.d_qkv, bias=False)
-                                          for _current_head in range(self.num_multiheads)])
-        self.Wk_ls = torch.nn.ModuleList([torch.nn.Linear(in_features=self.d_input_elems,
-                                                          out_features=self.d_qkv, bias=False)
-                                          for _current_head in range(self.num_multiheads)])
-        self.Wv_ls = torch.nn.ModuleList([torch.nn.Linear(in_features=self.d_input_elems,
-                                                          out_features=self.d_qkv, bias=False)
-                                          for _current_head in range(self.num_multiheads)])
-
-
-    def forward(self, input_q, input_kv, k):
-        results_of_heads = []
-        for current_head in range(self.num_multiheads):
-            # Self-attention:
-            input_query = input_q#.repeat(self.num_multiheads, 1)
-            query = self.Wq_ls[current_head](input_query)
-
-            # <= k keys, obtained projecting the embeddings of the selected senses
-            #input_kv = torch.nn.functional.pad(input_kv, [0, 0, 0, k - input_kv.shape[0]])
-            #input_keysandvalues = input_kv#.repeat(self.num_multiheads, 1)
-            keys = self.Wk_ls[current_head](input_kv)
-
-            # Formula for self-attention scores: softmax{(query*key)/sqrt(d_k)}
-            selfatt_logits_0 = torch.matmul(query, keys.t()).squeeze()[0:keys.shape[0]]
-            selfatt_logits_1 = selfatt_logits_0 / sqrt(self.d_qkv)
-
-            # n: we want to operate in chunks if we are in a multi-head setting
-            selfatt_scores = tfunc.softmax(selfatt_logits_1, dim=0)
-
-            # Weighted sum: Σ(score*value)
-            values = self.Wv_ls[current_head](input_kv)
-            result_elems = values*selfatt_scores.unsqueeze(dim=1)
-
-            result_sum = torch.sum(result_elems, dim=0)
-            results_of_heads.append(result_sum)
-
-        return torch.cat(results_of_heads, dim=0)
 
