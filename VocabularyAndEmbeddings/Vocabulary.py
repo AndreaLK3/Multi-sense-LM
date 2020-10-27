@@ -63,7 +63,8 @@ def build_vocabulary_dict_from_senselabeled(lowercase):
     lemmatizer = nltk.stem.WordNetLemmatizer()
 
     for slc_split_name in slc_split_names:
-        for token_dict in SLC.read_split(slc_split_name):
+        slc_corpus_fpaths = os.path.join(F.FOLDER_TEXT_CORPUSES, F.FOLDER_SENSELABELED, slc_split_name)
+        for token_dict in SLC.read_split(slc_corpus_fpaths):
             token = VocabUtils.process_word_token(token_dict, lowercase)
 
             lemmatized_token = LN.lemmatize_term(token, lemmatizer)

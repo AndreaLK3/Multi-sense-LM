@@ -25,6 +25,7 @@ import gc
 from math import exp
 from time import time
 import VocabularyAndEmbeddings.ComputeEmbeddings as CE
+import NN.Models.SenseContextAverage as SC
 import NN.ExplorePredictions as EP
 
 
@@ -66,7 +67,7 @@ def log_gradient_norms(model_forParameters):
 
 
 ################ Creating the model, the train_dataloader, and any necessary variables ################
-def setup_train(slc_or_text_corpus, model_type, include_globalnode_input, load_saved_model,
+def setup_train(slc_or_text_corpus, model_type, include_globalnode_input, load_saved_model, K,
                 batch_size=2, sequence_length=3,
                 method=CE.Method.FASTTEXT, grapharea_size=32):
 
@@ -98,7 +99,12 @@ def setup_train(slc_or_text_corpus, model_type, include_globalnode_input, load_s
                              batch_size=batch_size, n_layers=3, n_hid_units=1024)
         elif model_type == ModelType.SELECTK:
             model = SelectK.SelectK(graph_dataobj, grapharea_size, grapharea_matrix, vocabulary_df, embeddings_matrix,
-                                    include_globalnode_input, batch_size, n_layers=3, n_hid_units=1024, k=5)
+                                    include_globalnode_input, batch_size, n_layers=3, n_hid_units=1024, k=K)
+        elif model_type == ModelType.SC:
+            model = SC.SenseContextAverage(graph_dataobj, grapharea_size, grapharea_matrix, vocabulary_df,
+                                           embeddings_matrix,
+                                           include_globalnode_input, batch_size, n_layers=3, n_hid_units=1024, k=K,
+                                           num_C=10)
         else:
             raise Exception("Model type specification incorrect")
 
@@ -149,8 +155,13 @@ def run_train(model,train_dataloader, learning_rate, num_epochs, predict_senses,
     model_forParameters = model.module if torch.cuda.device_count() > 1 and model.__class__.__name__=="DataParallel" else model
     parameters_ls = [param for param in model_forParameters.parameters()]
     model_forParameters.predict_senses = predict_senses
+    # checking the value of K in SelectK
+    try:
+        logging.info("Using K=" + str(model_forParameters.K))
+    except Exception:
+        pass # not using SelectK here. Move on
 
-    steps_logging = 50
+    steps_logging = 1
     overall_step = 0
     starting_time = time()
 
@@ -161,11 +172,9 @@ def run_train(model,train_dataloader, learning_rate, num_epochs, predict_senses,
     weights_before_freezing_check_ls = []
     parameters_to_check_names_ls = []
 
-
     # debug
     # torch.autograd.set_detect_anomaly(True)
     train_dataiter = iter(cycle(train_dataloader))
-
 
     # -------------------- The training loop --------------------
     try: # to catch KeyboardInterrupt-s and still save the training & validation losses
@@ -173,7 +182,6 @@ def run_train(model,train_dataloader, learning_rate, num_epochs, predict_senses,
         for epoch in range(1,num_epochs+1):
 
             optimizer = optimizers[-1] # pick the most recently created optimizer. Useful when freezing
-
 
             # -------------------- Initialization --------------------
             sum_epoch_loss_global = 0

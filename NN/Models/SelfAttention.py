@@ -161,7 +161,7 @@ class SelfAttentionK(torch.nn.Module):
             word_embeddings_ls.append(t_word_embeddings)
             # Input signal n.2: the node-state of the current global word - now with graph batching
             if self.include_globalnode_input:
-                t_g_nodestates = run_graphnet(t_input_lts, batch_elems_at_t,t_globals_indices_ls, CURRENT_DEVICE, self)
+                t_g_nodestates = run_graphnet(t_input_lts, batch_elems_at_t, t_globals_indices_ls, self)
                 currentglobals_nodestates_ls.append(t_g_nodestates)
 
         word_embeddings = torch.stack(word_embeddings_ls, dim=0)

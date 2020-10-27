@@ -22,12 +22,14 @@ import VocabularyAndEmbeddings.ComputeEmbeddings as CE
 from torch.nn.parameter import Parameter
 from enum import Enum
 import NN.Models.SelectK as SelectK
+import NN.Models.SenseContextAverage as SC
 
 ################
 
 class ModelType(Enum):
     RNN = "RNN"
     SELECTK = "SelectK"
+    SC = "Sense Context"
 
 
 def load_model_from_file(slc_or_text, inputdata_folder, graph_dataobj):
@@ -49,7 +51,6 @@ def load_model_from_file(slc_or_text, inputdata_folder, graph_dataobj):
     # and the matrix E of embeddings too.
         E_embeddings = DG.load_word_embeddings(inputdata_folder)
         model.E = Parameter(E_embeddings.clone().detach(), requires_grad=True)
-
 
     return model
 
@@ -89,10 +90,13 @@ def setup_train(slc_or_text_corpus, model_type, include_globalnode_input, load_s
         if model_type==ModelType.RNN:
             model = RNNs.RNN(graph_dataobj, grapharea_size, grapharea_matrix, vocabulary_df,
                                embeddings_matrix, include_globalnode_input,
-                               batch_size=batch_size, n_layers=3, n_hid_units=1024)
+                               batch_size, n_layers=3, n_hid_units=1024)
         elif model_type==ModelType.SELECTK:
             model = SelectK.SelectK(graph_dataobj, grapharea_size, grapharea_matrix, vocabulary_df, embeddings_matrix,
                                     include_globalnode_input, batch_size, n_layers=3, n_hid_units=1024, k=5)
+        elif model_type==ModelType.SC:
+            model = SC.SenseContextAverage(graph_dataobj, grapharea_size, grapharea_matrix, vocabulary_df, embeddings_matrix,
+                 include_globalnode_input, batch_size, n_layers=3, n_hid_units=1024, k=1, num_C=10)
         else:
             raise Exception ("Model type specification incorrect")
         # model = Senses.ContextSim(graph_dataobj, grapharea_size, grapharea_matrix, vocabulary_df, embeddings_matrix,

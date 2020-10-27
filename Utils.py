@@ -49,9 +49,9 @@ VECTORIZED = 'vectorized'
 DISTILBERT = "DistilBERT"
 FASTTEXT = "FastText"
 
-TRAINING = 'training'
-VALIDATION = 'validation'
-TEST = 'test'
+TRAINING = 'Training'
+VALIDATION = 'Validation'
+TEST = 'Test'
 
 INDICES_TABLE_DB = 'indices_table.sql'
 

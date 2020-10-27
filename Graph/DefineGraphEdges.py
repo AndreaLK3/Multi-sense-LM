@@ -86,8 +86,8 @@ def get_edges_sensechildren(globals_voc_df, globals_start_index_toadd, inputdata
 def get_additional_edges_sensechildren_from_slc(globals_voc_df, globals_start_index_toadd, inputdata_folder):
     logging.info("Reading the sense-labeled corpus, to create the connections between globals"
                  " and the senses that belong to other words.")
-
-    slc_train_corpus_gen = SLC.read_split(Utils.TRAINING)
+    train_corpus_fpath = os.path.join(F.FOLDER_TEXT_CORPUSES, F.FOLDER_SENSELABELED, Utils.TRAINING)
+    slc_train_corpus_gen = SLC.read_split(train_corpus_fpath)
     senseindices_db = sqlite3.connect(os.path.join(inputdata_folder, Utils.INDICES_TABLE_DB))
     senseindices_db_c = senseindices_db.cursor()
     lemmatizer = nltk.stem.WordNetLemmatizer()

@@ -54,9 +54,7 @@ class RNN(torch.nn.Module):
         currentglobal_nodestates_ls = []
         # -------------------- Compute input signals --------------------
         for batch_elements_at_t in time_instants:
-            word_embs, global_nodestates = get_input_signals(self, batch_elements_at_t, CURRENT_DEVICE)
-            word_embeddings_ls = word_embeddings_ls + word_embs
-            currentglobal_nodestates_ls = currentglobal_nodestates_ls + global_nodestates
+            get_input_signals(self, batch_elements_at_t, word_embeddings_ls, currentglobal_nodestates_ls)
 
         # -------------------- Collect input signals --------------------
         word_embeddings = torch.stack(word_embeddings_ls, dim=0)
@@ -67,7 +65,7 @@ class RNN(torch.nn.Module):
 
         # ------------------- Globals ------------------
         seq_len = batch_input_signals.shape[0]
-        predictions_globals = predict_globals_withGRU(self, batch_input_signals, seq_len, distributed_batch_size)
+        predictions_globals, _logits_globals = predict_globals_withGRU(self, batch_input_signals, seq_len, distributed_batch_size)
 
         # ------------------- Senses -------------------
         if self.predict_senses:
