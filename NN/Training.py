@@ -93,10 +93,11 @@ def setup_train(slc_or_text_corpus, model_type, include_globalnode_input, load_s
                                batch_size, n_layers=3, n_hid_units=1024)
         elif model_type==ModelType.SELECTK:
             model = SelectK.SelectK(graph_dataobj, grapharea_size, grapharea_matrix, vocabulary_df, embeddings_matrix,
-                                    include_globalnode_input, batch_size, n_layers=3, n_hid_units=1024, k=5)
+                                    include_globalnode_input, batch_size, n_layers=3, n_hid_units=1024, K=5)
         elif model_type==ModelType.SC:
-            model = SC.SenseContextAverage(graph_dataobj, grapharea_size, grapharea_matrix, vocabulary_df, embeddings_matrix,
-                 include_globalnode_input, batch_size, n_layers=3, n_hid_units=1024, k=1, num_C=10)
+            model = SC.SenseContextAverage(graph_dataobj, grapharea_size, grapharea_matrix, vocabulary_df,
+                                           embeddings_matrix, include_globalnode_input, batch_size, n_layers=3,
+                                           n_hid_units=1024, K=1, num_C=10)
         else:
             raise Exception ("Model type specification incorrect")
         # model = Senses.ContextSim(graph_dataobj, grapharea_size, grapharea_matrix, vocabulary_df, embeddings_matrix,
@@ -235,12 +236,13 @@ def run_train(model, train_dataloader, valid_dataloader, learning_rate, num_epoc
                             # we are predicting first the standard LM, and then the senses. Freeze (1), activate (2).
                             logging.info("New validation worse than previous one. " +
                                          "Freezing the weights in the standard LM, activating senses' prediction.")
+                            logging.info("Status of parameters before freezing:")
                             for (name, p) in model_forParameters.named_parameters():  # (1)
+                                logging.info("Parameter=" + str(name), " ; requires_grad=" + str(p.requires_grad))
                                 parameters_to_check_names_ls.append(name)
                                 weights_before_freezing_check_ls.append(p.clone().detach())
 
                                 if ("main_rnn" in name) or ("E" in name) or ("X" in name) or ("linear2global" in name):
-                                    logging.info(name)
                                     p.requires_grad = False
                                     p.grad = p.grad * 0
                             optimizers.append(torch.optim.Adam(model.parameters(),
@@ -248,6 +250,9 @@ def run_train(model, train_dataloader, valid_dataloader, learning_rate, num_epoc
                             optimizer = optimizers[-1]  # pick the most recently created optimizer
                             model_forParameters.predict_senses = True  # (2)
                             after_freezing_flag = True
+                            logging.info("Status of parameters after freezing:")
+                            for (name, p) in model_forParameters.named_parameters():
+                                logging.info("Parameter=" + str(name), " ; requires_grad=" + str(p.requires_grad))
                             freezing_epoch = epoch
                 if after_freezing_flag:
                     if (exp(valid_loss_senses) > exp(previous_valid_loss_senses) + 1) and epoch > freezing_epoch + 2:

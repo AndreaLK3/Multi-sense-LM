@@ -67,7 +67,8 @@ def log_gradient_norms(model_forParameters):
 
 
 ################ Creating the model, the train_dataloader, and any necessary variables ################
-def setup_train(slc_or_text_corpus, model_type, include_globalnode_input, load_saved_model, K,
+def setup_train(slc_or_text_corpus, model_type, K, C,
+                include_globalnode_input = False, load_saved_model = False,
                 batch_size=2, sequence_length=3,
                 method=CE.Method.FASTTEXT, grapharea_size=32):
 
@@ -99,12 +100,11 @@ def setup_train(slc_or_text_corpus, model_type, include_globalnode_input, load_s
                              batch_size=batch_size, n_layers=3, n_hid_units=1024)
         elif model_type == ModelType.SELECTK:
             model = SelectK.SelectK(graph_dataobj, grapharea_size, grapharea_matrix, vocabulary_df, embeddings_matrix,
-                                    include_globalnode_input, batch_size, n_layers=3, n_hid_units=1024, k=K)
+                                    include_globalnode_input, batch_size, n_layers=3, n_hid_units=1024, K=K)
         elif model_type == ModelType.SC:
             model = SC.SenseContextAverage(graph_dataobj, grapharea_size, grapharea_matrix, vocabulary_df,
-                                           embeddings_matrix,
-                                           include_globalnode_input, batch_size, n_layers=3, n_hid_units=1024, k=K,
-                                           num_C=10)
+                                           embeddings_matrix, include_globalnode_input, batch_size, n_layers=3,
+                                           n_hid_units=1024, K=K, num_C=C)
         else:
             raise Exception("Model type specification incorrect")
 
@@ -248,16 +248,17 @@ def run_train(model,train_dataloader, learning_rate, num_epochs, predict_senses,
                     logging.info("Global step=" + str(overall_step) + "\t ; Iteration time=" + str(round(time()-t0,5)))
                     gc.collect()
 
-                if epoch == freezing_epoch and not after_freezing_flag:
+                if with_freezing and epoch == freezing_epoch and not after_freezing_flag:
                     # we are predicting first the standard LM, and then the senses. Freeze (1), activate (2).
                     logging.info("New validation worse than previous one. " +
                                  "Freezing the weights in the standard LM, activating senses' prediction.")
+                    logging.info("Status of parameters before freezing:")
                     for (name, p) in model_forParameters.named_parameters():  # (1)
+                        logging.info("Parameter=" + str(name), " ; requires_grad=" + str(p.requires_grad))
                         parameters_to_check_names_ls.append(name)
                         weights_before_freezing_check_ls.append(p.clone().detach())
 
                         if ("main_rnn" in name) or ("E" in name) or ("X" in name) or ("linear2global" in name):
-                            logging.info(name)
                             p.requires_grad = False
                             p.grad = p.grad * 0
                     optimizers.append(torch.optim.Adam(model.parameters(),
@@ -265,6 +266,9 @@ def run_train(model,train_dataloader, learning_rate, num_epochs, predict_senses,
                     optimizer = optimizers[-1]  # pick the most recently created optimizer
                     model_forParameters.predict_senses = True  # (2)
                     after_freezing_flag = True
+                    logging.info("Status of parameters after freezing:")
+                    for (name, p) in model_forParameters.named_parameters():
+                        logging.info("Parameter=" + str(name), " ; requires_grad=" + str(p.requires_grad))
 
                 # end of an epoch.
 

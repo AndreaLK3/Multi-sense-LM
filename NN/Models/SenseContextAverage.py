@@ -21,7 +21,7 @@ import Filesystem as F
 class SenseContextAverage(torch.nn.Module):
 
     def __init__(self, graph_dataobj, grapharea_size, grapharea_matrix, vocabulary_df, embeddings_matrix,
-                 include_globalnode_input, batch_size, n_layers, n_hid_units, k, num_C):
+                 include_globalnode_input, batch_size, n_layers, n_hid_units, K, num_C):
 
         # -------------------- Initialization in common: parameters & globals --------------------
         super(SenseContextAverage, self).__init__()
@@ -33,7 +33,7 @@ class SenseContextAverage(torch.nn.Module):
 
         # -------------------- Senses' architecture --------------------
 
-        self.K = k
+        self.K = K
         self.grapharea_matrix_neighbours_section = self.grapharea_matrix[:, 0:self.grapharea_size]
         self.num_C = num_C
 
@@ -163,7 +163,7 @@ class SenseContextAverage(torch.nn.Module):
                     senses_mask[t, b, samples_firstsense[t,b].item()] = True
             senses_softmax.masked_scatter(mask=senses_mask, source=assign_one)
             # t5 = time()
-            predictions_senses = torch.log(senses_softmax)
+            predictions_senses = torch.log(senses_softmax).reshape(seq_len * distributed_batch_size, senses_softmax.shape[2])
 
         else:
             predictions_senses = torch.tensor([0] * self.batch_size * seq_len).to(CURRENT_DEVICE)

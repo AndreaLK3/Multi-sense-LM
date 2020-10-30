@@ -48,7 +48,7 @@ def subtract_probability_mass_from_selected(softmax_selected_senses, delta_to_su
 class SelectK(torch.nn.Module):
 
     def __init__(self, graph_dataobj, grapharea_size, grapharea_matrix, vocabulary_df, embeddings_matrix,
-                 include_globalnode_input, batch_size, n_layers, n_hid_units, k):
+                 include_globalnode_input, batch_size, n_layers, n_hid_units, K):
 
         # -------------------- Initialization in common: parameters & globals --------------------
         super(SelectK, self).__init__()
@@ -60,7 +60,7 @@ class SelectK(torch.nn.Module):
 
         # -------------------- Senses' architecture --------------------
 
-        self.K = k
+        self.K = K
         self.grapharea_matrix_neighbours_section = self.grapharea_matrix[:, 0:self.grapharea_size]
 
 
@@ -81,7 +81,6 @@ class SelectK(torch.nn.Module):
         CURRENT_DEVICE = 'cpu' if not (torch.cuda.is_available()) else 'cuda:' + str(torch.cuda.current_device())
 
         # -------------------- Init --------------------
-        t0 = time()
         distributed_batch_size = batchinput_tensor.shape[0]
         if not (distributed_batch_size == self.batch_size) and not self.hidden_state_bsize_adjusted:
             reshape_memories(distributed_batch_size, self)
@@ -98,6 +97,7 @@ class SelectK(torch.nn.Module):
 
         word_embeddings_ls = []
         currentglobal_nodestates_ls = []
+
         # -------------------- Compute input signals -------------------
         for batch_elements_at_t in time_instants:
             get_input_signals(self, batch_elements_at_t, word_embeddings_ls, currentglobal_nodestates_ls)
@@ -155,38 +155,37 @@ class SelectK(torch.nn.Module):
             # softmax_selected_senses = tfunc.softmax(input=logits_selected_senses, dim=0)
 
             for s in range(distributed_batch_size * seq_len):
-                t0=time()
+                t0 = time()
                 k_globals_vocab_indices = sample_k_indices_in_vocab_lls[s]
                 k_globals_lemmatized = [self.vocabulary_lemmatizedList[idx] for idx in k_globals_vocab_indices]
                 t1 = time()
-                sample_k_indices_lemmatized_ls = [
-                    Utils.word_to_vocab_index(lemmatized_word, self.vocabulary_wordList)for
-                    lemmatized_word in k_globals_lemmatized]
-                sample_k_indices_lemmatized = torch.tensor(sample_k_indices_lemmatized_ls).to(CURRENT_DEVICE).squeeze(dim=0) + self.last_idx_senses
+                sample_k_indices_lemmatized_ls = self.vocabulary_df[self.vocabulary_df['word'].isin(k_globals_lemmatized)].index.to_list()
                 t2 = time()
-
+                sample_k_indices_lemmatized = torch.tensor(sample_k_indices_lemmatized_ls).to(CURRENT_DEVICE).squeeze(dim=0) + self.last_idx_senses
+                t3 = time()
                 sense_neighbours_t = torch.tensor(get_senseneighbours_of_k_globals(self, sample_k_indices_lemmatized))\
                     .squeeze(dim=0).to(torch.int64).to(CURRENT_DEVICE)
-                t3 = time()
-
+                t4 = time()
                 # standard procedure: get the logits of the senses of the most likely globals,
                 # apply a softmax only over them, and then assign an epsilon probability to the other senses
                 sample_logits_senses = logits_senses.index_select(dim=0, index=self.select_first_indices[s].to(torch.int64)).squeeze()
                 logits_selected_senses = sample_logits_senses.index_select(dim=0, index=sense_neighbours_t)
                 softmax_selected_senses = tfunc.softmax(input=logits_selected_senses, dim=0)
-                t4 = time()
-
+                t5 = time()
                 # for i in range(len(sense_neighbours_t)):
                 #     i_senseneighbours_mask[s,sense_neighbours_t[i]]=True
                 i_senseneighbours_mask[s, sense_neighbours_t] = True
-                t5 = time()
+                t6 = time()
                 quantity_to_subtract_from_selected = epsilon * (self.last_idx_senses - len(sense_neighbours_t))
                 softmax_selected_senses = subtract_probability_mass_from_selected(softmax_selected_senses, quantity_to_subtract_from_selected)
                 senses_softmax[s].masked_scatter_(mask=i_senseneighbours_mask[s].data.clone(), source=softmax_selected_senses)
-                #Utils.log_chronometer([t0, t1, t2, t3, t4, t5])
+                t7 = time()
+                Utils.log_chronometer([t0, t1, t2, t3, t4, t5, t6, t7])
             predictions_senses = torch.log(senses_softmax)
+
         else:
             predictions_senses = torch.tensor([0] * self.batch_size * seq_len).to(CURRENT_DEVICE)
+
 
         return predictions_globals, predictions_senses
 
