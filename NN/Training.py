@@ -56,7 +56,8 @@ def load_model_from_file(slc_or_text, inputdata_folder, graph_dataobj):
 
 ################
 
-def setup_train(slc_or_text_corpus, model_type, include_globalnode_input, load_saved_model,
+def setup_train(slc_or_text_corpus, model_type, K, C,
+                include_globalnode_input=False, load_saved_model=False,
                 batch_size=32, sequence_length=35,
                 method=CE.Method.FASTTEXT, grapharea_size=32):
 
@@ -93,11 +94,12 @@ def setup_train(slc_or_text_corpus, model_type, include_globalnode_input, load_s
                                batch_size, n_layers=3, n_hid_units=1024)
         elif model_type==ModelType.SELECTK:
             model = SelectK.SelectK(graph_dataobj, grapharea_size, grapharea_matrix, vocabulary_df, embeddings_matrix,
-                                    include_globalnode_input, batch_size, n_layers=3, n_hid_units=1024, K=5)
+                                    include_globalnode_input, batch_size, n_layers=3, n_hid_units=1024, K=K)
+            logging.info("Using K=" + str(K))
         elif model_type==ModelType.SC:
             model = SC.SenseContextAverage(graph_dataobj, grapharea_size, grapharea_matrix, vocabulary_df,
                                            embeddings_matrix, include_globalnode_input, batch_size, n_layers=3,
-                                           n_hid_units=1024, K=1, num_C=10)
+                                           n_hid_units=1024, K=1, num_C=C)
         else:
             raise Exception ("Model type specification incorrect")
         # model = Senses.ContextSim(graph_dataobj, grapharea_size, grapharea_matrix, vocabulary_df, embeddings_matrix,
@@ -147,7 +149,7 @@ def setup_train(slc_or_text_corpus, model_type, include_globalnode_input, load_s
 def run_train(model, train_dataloader, valid_dataloader, learning_rate, num_epochs, predict_senses, with_freezing):
 
     # -------------------- Setup; parameters and utilities --------------------
-    Utils.init_logging('Training' + Utils.get_timestamp_month_to_min() + '.log', loglevel=logging.INFO)
+    Utils.init_logging('Training' + Utils.get_timestamp_month_to_sec() + '.log', loglevel=logging.INFO)
     slc_or_text = train_dataloader.dataset.sensecorpus_or_text
 
     optimizers = [torch.optim.Adam(model.parameters(), lr=learning_rate)]
@@ -238,7 +240,7 @@ def run_train(model, train_dataloader, valid_dataloader, learning_rate, num_epoc
                                          "Freezing the weights in the standard LM, activating senses' prediction.")
                             logging.info("Status of parameters before freezing:")
                             for (name, p) in model_forParameters.named_parameters():  # (1)
-                                logging.info("Parameter=" + str(name), " ; requires_grad=" + str(p.requires_grad))
+                                logging.info("Parameter=" + str(name) + " ; requires_grad=" + str(p.requires_grad))
                                 parameters_to_check_names_ls.append(name)
                                 weights_before_freezing_check_ls.append(p.clone().detach())
 
@@ -252,7 +254,7 @@ def run_train(model, train_dataloader, valid_dataloader, learning_rate, num_epoc
                             after_freezing_flag = True
                             logging.info("Status of parameters after freezing:")
                             for (name, p) in model_forParameters.named_parameters():
-                                logging.info("Parameter=" + str(name), " ; requires_grad=" + str(p.requires_grad))
+                                logging.info("Parameter=" + str(name) + " ; requires_grad=" + str(p.requires_grad))
                             freezing_epoch = epoch
                 if after_freezing_flag:
                     if (exp(valid_loss_senses) > exp(previous_valid_loss_senses) + 1) and epoch > freezing_epoch + 2:

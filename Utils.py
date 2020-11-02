@@ -95,9 +95,9 @@ def log_chronometer(time_measurements):
         t2 = time_measurements[i+1]
         logging.info('t'+str(i+1)+' - t'+str(i)+' = '+str(round(t2-t1,5)))
 
-def get_timestamp_month_to_min():
+def get_timestamp_month_to_sec():
     return '_'.join([str(time.localtime().tm_mon), str(time.localtime().tm_mday), str(time.localtime().tm_hour),
-              str(time.localtime().tm_min)])
+              str(time.localtime().tm_min), str(time.localtime().tm_sec)])
 
 
 def record_statistics(epoch_sumlosses_tpl, epoch_numsteps_tpl, losses_lts):

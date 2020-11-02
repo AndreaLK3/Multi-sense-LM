@@ -100,7 +100,7 @@ def setup_train(slc_or_text_corpus, model_type, K, C,
                              batch_size=batch_size, n_layers=3, n_hid_units=1024)
         elif model_type == ModelType.SELECTK:
             model = SelectK.SelectK(graph_dataobj, grapharea_size, grapharea_matrix, vocabulary_df, embeddings_matrix,
-                                    include_globalnode_input, batch_size, n_layers=3, n_hid_units=1024, K=K)
+                 include_globalnode_input, batch_size, n_layers=3, n_hid_units=1024, K=K)
         elif model_type == ModelType.SC:
             model = SC.SenseContextAverage(graph_dataobj, grapharea_size, grapharea_matrix, vocabulary_df,
                                            embeddings_matrix, include_globalnode_input, batch_size, n_layers=3,
@@ -143,7 +143,7 @@ def setup_train(slc_or_text_corpus, model_type, K, C,
 def run_train(model,train_dataloader, learning_rate, num_epochs, predict_senses, with_freezing):
 
     # -------------------- Setup; parameters and utilities --------------------
-    Utils.init_logging('MiniExp-' + Utils.get_timestamp_month_to_min() + '.log', loglevel=logging.INFO)
+    Utils.init_logging('MiniExp-' + Utils.get_timestamp_month_to_sec() + '.log', loglevel=logging.INFO)
     slc_or_text = train_dataloader.dataset.sensecorpus_or_text
 
     optimizers = [torch.optim.Adam(model.parameters(), lr=learning_rate)]
@@ -161,7 +161,7 @@ def run_train(model,train_dataloader, learning_rate, num_epochs, predict_senses,
     except Exception:
         pass # not using SelectK here. Move on
 
-    steps_logging = 1
+    steps_logging = 5
     overall_step = 0
     starting_time = time()
 
@@ -254,7 +254,7 @@ def run_train(model,train_dataloader, learning_rate, num_epochs, predict_senses,
                                  "Freezing the weights in the standard LM, activating senses' prediction.")
                     logging.info("Status of parameters before freezing:")
                     for (name, p) in model_forParameters.named_parameters():  # (1)
-                        logging.info("Parameter=" + str(name), " ; requires_grad=" + str(p.requires_grad))
+                        logging.info("Parameter=" + name + " ; requires_grad=" + str(p.requires_grad))
                         parameters_to_check_names_ls.append(name)
                         weights_before_freezing_check_ls.append(p.clone().detach())
 
@@ -268,7 +268,12 @@ def run_train(model,train_dataloader, learning_rate, num_epochs, predict_senses,
                     after_freezing_flag = True
                     logging.info("Status of parameters after freezing:")
                     for (name, p) in model_forParameters.named_parameters():
-                        logging.info("Parameter=" + str(name), " ; requires_grad=" + str(p.requires_grad))
+                        logging.info("Parameter=" + name + " ; requires_grad=" + str(p.requires_grad))
+
+                if verbose:
+                    logging.info("Status of parameters:")
+                    for (name, p) in model_forParameters.named_parameters():
+                        logging.info("Parameter=" + name + " ; requires_grad=" + str(p.requires_grad))
 
                 # end of an epoch.
 

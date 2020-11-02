@@ -18,6 +18,20 @@ import numpy as np
 import os
 import Filesystem as F
 
+# May move it / refactor
+def update_context_average(location_context, word_embeddings, prev_word_embeddings, num_C):
+    current_and_prev_word_embeddings = torch.cat([prev_word_embeddings, word_embeddings], dim=0)
+    # logging.info("current_and_prev_word_embeddings=" + str(current_and_prev_word_embeddings))
+    loc_ctx_toadd = torch.zeros(size=location_context.shape)
+    # for every time instant t, we update the location context:
+    T = word_embeddings.shape[0]
+    for t in (range(0, T)):
+        loc_ctx_toadd[t, : ,:] = torch.sum(current_and_prev_word_embeddings[T+t-num_C+1 : T+t+1, :,:], dim=0)
+        # logging.info("t=" + str(t) + " ; loc_ctx_toadd.data / num_C = " + str(loc_ctx_toadd.data / num_C))
+    location_context.data = location_context.data + loc_ctx_toadd.data / num_C
+    return location_context
+
+
 class SenseContextAverage(torch.nn.Module):
 
     def __init__(self, graph_dataobj, grapharea_size, grapharea_matrix, vocabulary_df, embeddings_matrix,
@@ -40,8 +54,9 @@ class SenseContextAverage(torch.nn.Module):
         precomputed_SC_filepath = os.path.join(F.FOLDER_INPUT, F.FOLDER_SENSELABELED, str(num_C) + F.MATRIX_SENSE_CONTEXTS_FILEEND)
         senses_average_context_SC = np.load(precomputed_SC_filepath)
         self.SC = Parameter(torch.tensor(senses_average_context_SC), requires_grad=False)
+        self.prev_word_embeddings = Parameter(torch.tensor([]), requires_grad=False)
 
-        self.location_context = Parameter(torch.tensor([]), requires_grad=False) # starts as a Parameter here to have several versions via DataParallel
+        self.location_context = Parameter(torch.tensor([]), requires_grad=False)
         self.cosine_sim = torch.nn.CosineSimilarity(dim=3)
 
     # ---------------------------------------- Forward call ----------------------------------------
@@ -50,12 +65,12 @@ class SenseContextAverage(torch.nn.Module):
         CURRENT_DEVICE = 'cpu' if not (torch.cuda.is_available()) else 'cuda:' + str(torch.cuda.current_device())
 
         # -------------------- Init --------------------
-        t0 = time()
         distributed_batch_size = batchinput_tensor.shape[0]
         if not (distributed_batch_size == self.batch_size) and not self.hidden_state_bsize_adjusted:
             reshape_memories(distributed_batch_size, self) # # hidden_state_bsize_adjusted=True in reshape_memories
         if self.location_context.shape[0]==0:
             self.location_context = Parameter(torch.zeros(batchinput_tensor.shape[1], distributed_batch_size, self.E.shape[1]))
+            self.prev_word_embeddings = Parameter(torch.zeros(batchinput_tensor.shape[1], distributed_batch_size, self.E.shape[1]), requires_grad=False)
 
         # T-BPTT: at the start of each batch, we detach_() the hidden state from the graph&history that created it
         self.memory_hn.detach_()
@@ -89,41 +104,17 @@ class SenseContextAverage(torch.nn.Module):
             k_globals_indices = logits_globals.sort(descending=True).indices[:, 0:self.K]
             sample_k_indices_in_vocab_lls = k_globals_indices.tolist()
 
-            # New method
-            lemmatized_k_indices_ls = []
-
-            # for s in range(distributed_batch_size * seq_len):
-            #     k_globals_vocab_indices = sample_k_indices_in_vocab_lls[s]
-            #     k_globals_lemmatized = [self.vocabulary_lemmatizedList[idx] for idx in k_globals_vocab_indices]
-            #     sample_k_indices_lemmatized_ls = [
-            #         Utils.word_to_vocab_index(lemmatized_word, self.vocabulary_wordList) + self.last_idx_senses for
-            #         lemmatized_word in k_globals_lemmatized]
-            #     sample_k_indices_lemmatized = torch.tensor(sample_k_indices_lemmatized_ls).to(CURRENT_DEVICE).squeeze(dim=0)
-            #     lemmatized_k_indices_ls.append(sample_k_indices_lemmatized)
-            # lemmatized_k_indices = torch.stack(lemmatized_k_indices_ls, dim=0)
-            #
-            # sense_neighbours_t = torch.tensor(get_senseneighbours_of_k_globals(self, sample_k_indices_lemmatized)) \
-            #     .squeeze(dim=0).to(torch.int64).to(CURRENT_DEVICE)
-            # t2 = time()
-            #
-            # # standard procedure: get the logits of the senses of the most likely globals,
-            # # apply a softmax only over them, and then assign an epsilon probability to the other senses
-            # sample_logits_senses = logits_senses.index_select(dim=0, index=self.select_first_indices[s].to(
-            #     torch.int64)).squeeze()
-            # logits_selected_senses = sample_logits_senses.index_select(dim=0, index=sense_neighbours_t)
-            # softmax_selected_senses = tfunc.softmax(input=logits_selected_senses, dim=0)
             all_sense_neighbours_ls = []
             sense_neighbours_len_ls = []
             for s in range(distributed_batch_size * seq_len):
-                t0=time()
+
                 k_globals_vocab_indices = sample_k_indices_in_vocab_lls[s]
                 k_globals_lemmatized = [self.vocabulary_lemmatizedList[idx] for idx in k_globals_vocab_indices]
-                t1 = time()
+
                 sample_k_indices_lemmatized_ls = [
                     Utils.word_to_vocab_index(lemmatized_word, self.vocabulary_wordList)for
                     lemmatized_word in k_globals_lemmatized]
                 sample_k_indices_lemmatized = torch.tensor(sample_k_indices_lemmatized_ls).to(CURRENT_DEVICE).squeeze(dim=0) + self.last_idx_senses
-                t2 = time()
 
                 sense_neighbours = torch.tensor(get_senseneighbours_of_k_globals(self, sample_k_indices_lemmatized))\
                     .squeeze(dim=0).to(torch.int64).to(CURRENT_DEVICE)
@@ -131,7 +122,7 @@ class SenseContextAverage(torch.nn.Module):
 
                 random_sense_idx = np.random.randint(low=0, high=self.SC.shape[0]) # we use a random sense as pad/filler. In the case where it's actually closer than our selected senses, we will chose that one.
                 all_sense_neighbours_ls.append(torch.nn.functional.pad(input=sense_neighbours, pad=[0, self.grapharea_size - sense_neighbours.shape[0]], value=random_sense_idx))
-                t3 = time()
+
 
             # ------------------- Senses: compare location context with sense average context -------------------
             # prepare the base for the artificial softmax
@@ -143,7 +134,8 @@ class SenseContextAverage(torch.nn.Module):
             quantity_to_assign_to_chosen_sense = 1 - quantity_to_subtract_from_selected
 
             # update the location context with the latest word embeddings
-            self.location_context.data = (self.location_context.data + word_embeddings) / self.num_C
+            update_context_average(self.location_context, word_embeddings, self.prev_word_embeddings, self.num_C)
+            self.prev_word_embeddings = word_embeddings
 
             # the context of the selected senses and the cosine similarity:
             senses_context = torch.zeros((self.location_context.shape[0], self.location_context.shape[1],
@@ -162,7 +154,7 @@ class SenseContextAverage(torch.nn.Module):
                 for b in range(distributed_batch_size):
                     senses_mask[t, b, samples_firstsense[t,b].item()] = True
             senses_softmax.masked_scatter(mask=senses_mask, source=assign_one)
-            # t5 = time()
+
             predictions_senses = torch.log(senses_softmax).reshape(seq_len * distributed_batch_size, senses_softmax.shape[2])
 
         else:
