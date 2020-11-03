@@ -1,5 +1,4 @@
 import logging
-from math import sqrt
 
 import torch
 from torch.nn import functional as tfunc
@@ -10,6 +9,7 @@ from Utils import DEVICE
 import Utils
 from torch_geometric.nn import GATConv
 from NN.Models.RNNSteps import rnn_loop
+
 
 #########################
 ##### 1: Model steps ####
@@ -161,11 +161,6 @@ def predict_globals_withGRU(model, batch_input_signals, seq_len, distributed_bat
     return predictions_globals, logits_global
 
 
-
-
-
-
-
 ################################
 ### 2: Lemmatize global node ###
 ################################
@@ -199,12 +194,3 @@ def lemmatize_node(x_indices, edge_index, edge_type, model):
             return x_indices, edge_index, edge_type
     else:
         return x_indices, edge_index, edge_type
-
-#############################################
-### 2: Initialize common model parameters ###
-#############################################
-
-
-
-
-

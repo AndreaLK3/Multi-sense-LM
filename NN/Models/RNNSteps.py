@@ -1,5 +1,7 @@
+import numpy as np
 import torch
 from torch.nn import Parameter, functional as tfunc
+
 
 #############################
 ###### RNN operations #######
@@ -26,18 +28,14 @@ def rnn_loop(batch_input_signals, model, globals_or_senses_rnn):
     return rnn_out
 
 
+def reshape_tensor(parameter, shape_tpl):
+    new_num_elems = np.prod(shape_tpl)
+    return Parameter(torch.reshape(parameter.flatten()[0:new_num_elems], shape_tpl))
+
 # Reshaping the hidden state memories when we know the batch size allocated on the current GPU
 def reshape_memories(distributed_batch_size, model):
-
-    new_num_hidden_state_elems = model.n_layers * distributed_batch_size * model.hidden_size
-    model.memory_hn = Parameter(torch.reshape(model.memory_hn.flatten()[0:new_num_hidden_state_elems],
-                                              (model.n_layers, distributed_batch_size, model.hidden_size)),
-                                requires_grad=False)
-    model.memory_hn_senses = Parameter(
-        torch.reshape(
-            model.memory_hn_senses.flatten()[0:((model.n_layers) * distributed_batch_size * int(model.hidden_size))],
-            (model.n_layers, distributed_batch_size, int(model.hidden_size))),
-        requires_grad=False)
+    model.memory_hn = reshape_tensor(model.memory_hn, (model.n_layers, distributed_batch_size, model.hidden_size))
+    model.memory_hn_senses = reshape_tensor(model.memory_hn_senses, (model.n_layers, distributed_batch_size, model.hidden_size))
     model.hidden_state_bsize_adjusted = True
 
 # Selecting the portion of memory tensor (determined by the layer size) that is used in the RNN iteration

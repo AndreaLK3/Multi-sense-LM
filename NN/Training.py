@@ -99,7 +99,7 @@ def setup_train(slc_or_text_corpus, model_type, K, C,
         elif model_type==ModelType.SC:
             model = SC.SenseContextAverage(graph_dataobj, grapharea_size, grapharea_matrix, vocabulary_df,
                                            embeddings_matrix, include_globalnode_input, batch_size, n_layers=3,
-                                           n_hid_units=1024, K=1, num_C=C)
+                                           n_hid_units=1024, K=K, num_C=C)
         else:
             raise Exception ("Model type specification incorrect")
         # model = Senses.ContextSim(graph_dataobj, grapharea_size, grapharea_matrix, vocabulary_df, embeddings_matrix,
