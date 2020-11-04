@@ -155,6 +155,7 @@ def run_train(model,train_dataloader, learning_rate, num_epochs, predict_senses,
     model_forParameters = model.module if torch.cuda.device_count() > 1 and model.__class__.__name__=="DataParallel" else model
     parameters_ls = [param for param in model_forParameters.parameters()]
     model_forParameters.predict_senses = predict_senses
+    logging.info(model)
     # checking the value of K in SelectK
     try:
         logging.info("Using K=" + str(model_forParameters.K))
