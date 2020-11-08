@@ -22,14 +22,16 @@ import VocabularyAndEmbeddings.ComputeEmbeddings as CE
 from torch.nn.parameter import Parameter
 from enum import Enum
 import NN.Models.SelectK as SelectK
-import NN.Models.SenseContextAverage as SC
+import NN.Models.SenseContext as SC
+import NN.Models.SelfAttention as SA
+from NN.Models.Common import ContextMethod
 
 ################
-
 class ModelType(Enum):
     RNN = "RNN"
     SELECTK = "SelectK"
     SC = "Sense Context"
+    SELFATT = "Self Attention Scores"
 
 
 def load_model_from_file(slc_or_text, inputdata_folder, graph_dataobj):
@@ -56,7 +58,8 @@ def load_model_from_file(slc_or_text, inputdata_folder, graph_dataobj):
 
 ################
 
-def setup_train(slc_or_text_corpus, model_type, K, C,
+def setup_train(slc_or_text_corpus, model_type, K, C=0, context_method=None,
+                dim_qkv=300, num_multiheads=2,
                 include_globalnode_input=False, load_saved_model=False,
                 batch_size=32, sequence_length=35,
                 method=CE.Method.FASTTEXT, grapharea_size=32):
@@ -95,15 +98,16 @@ def setup_train(slc_or_text_corpus, model_type, K, C,
         elif model_type==ModelType.SELECTK:
             model = SelectK.SelectK(graph_dataobj, grapharea_size, grapharea_matrix, vocabulary_df, embeddings_matrix,
                                     include_globalnode_input, batch_size, n_layers=3, n_hid_units=1024, K=K)
-            logging.info("Using K=" + str(K))
         elif model_type==ModelType.SC:
-            model = SC.SenseContextAverage(graph_dataobj, grapharea_size, grapharea_matrix, vocabulary_df,
-                                           embeddings_matrix, include_globalnode_input, batch_size, n_layers=3,
-                                           n_hid_units=1024, K=K, num_C=C)
+            model = SC.SenseContext(graph_dataobj, grapharea_size, grapharea_matrix, vocabulary_df,
+                                    embeddings_matrix, include_globalnode_input, batch_size, n_layers=3,
+                                    n_hid_units=1024, K=K, num_C=C, context_method=context_method)
+        elif model_type==ModelType.SELFATT:
+            model = SA.ScoresLM(graph_dataobj, grapharea_size, grapharea_matrix, vocabulary_df, embeddings_matrix,
+                 include_globalnode_input, batch_size, n_layers=3, n_hid_units=1024, K=K,
+                                num_C=C, context_method=context_method, dim_qkv=dim_qkv, num_multiheads=num_multiheads)
         else:
             raise Exception ("Model type specification incorrect")
-        # model = Senses.ContextSim(graph_dataobj, grapharea_size, grapharea_matrix, vocabulary_df, embeddings_matrix,
-        #                            batch_size, seq_len=sequence_length, n_layers=3, n_hid_units=1024, k=10, c=10)
 
     # -------------------- Moving objects on GPU --------------------
     logging.info("Graph-data object loaded, model initialized. Moving them to GPU device(s) if present.")
@@ -150,6 +154,7 @@ def run_train(model, train_dataloader, valid_dataloader, learning_rate, num_epoc
 
     # -------------------- Setup; parameters and utilities --------------------
     Utils.init_logging('Training' + Utils.get_timestamp_month_to_sec() + '.log', loglevel=logging.INFO)
+
     slc_or_text = train_dataloader.dataset.sensecorpus_or_text
 
     optimizers = [torch.optim.Adam(model.parameters(), lr=learning_rate)]
@@ -162,6 +167,10 @@ def run_train(model, train_dataloader, valid_dataloader, learning_rate, num_epoc
     model_forParameters = model.module if torch.cuda.device_count() > 1 and model.__class__.__name__=="DataParallel" else model
     model_forParameters.predict_senses = predict_senses
     hyperparams_str = write_doc_logging(train_dataloader, model, model_forParameters, learning_rate, num_epochs)
+    try:
+        logging.info("Using K=" + str(model_forParameters.K) + " ; C=" + str(model_forParameters.num_C) + " ; context_method=" + str(model_forParameters.context_method))
+    except Exception:
+        pass # using RNN, no further hyperparameters here
 
     steps_logging = 50
     overall_step = 0
@@ -399,6 +408,3 @@ def evaluation(evaluation_dataloader, evaluation_dataiter, model, slc_or_text, v
     model.train()  # training can resume
 
     return globals_evaluation_loss, senses_evaluation_loss, multisenses_evaluation_loss
-
-
-

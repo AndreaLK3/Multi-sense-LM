@@ -116,7 +116,7 @@ class SelectK(torch.nn.Module):
         # ------------------- Senses -------------------
         # line 1: GRU for senses + linear FF-NN to logits.
         if self.predict_senses:
-            task_2_out = rnn_loop(batch_input_signals, model=self, globals_or_senses_rnn=False)
+            task_2_out = rnn_loop(batch_input_signals, model=self, rnn_ls=self.senses_rnn_ls, memory=self.memory_hn_senses)
             task2_out = task_2_out.reshape(distributed_batch_size * seq_len, task_2_out.shape[2])
             logits_senses = self.linear2senses(task2_out)
 
@@ -171,9 +171,3 @@ class QueryMethod(Enum):
     ATTENTION = "attention mechanism on the last C words of the context."
     OWN_GRU_OUT = "output of a separate GRU"
     GLOBALS_GRU = "output (or hidden layer, depending on the current version) of the globals' GRU"
-
-def compute_query(method, model):
-    if method == QueryMethod.CONTEXT_AVERAGE:
-        pass
-    else:
-        raise Exception("QueryMethod not yet implemented.")

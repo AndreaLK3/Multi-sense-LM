@@ -14,6 +14,7 @@ from math import inf
 import Graph.Adjacencies as AD
 import numpy as np
 from NN.Training import load_model_from_file, ModelType
+from NN.Models.Common import ContextMethod
 from VocabularyAndEmbeddings.ComputeEmbeddings import Method
 from NN.Loss import write_doc_logging, compute_model_loss
 from Utils import DEVICE
@@ -25,9 +26,9 @@ import gc
 from math import exp
 from time import time
 import VocabularyAndEmbeddings.ComputeEmbeddings as CE
-import NN.Models.SenseContextAverage as SC
+import NN.Models.SenseContext as SC
 import NN.ExplorePredictions as EP
-
+import NN.Models.SelfAttention as SA
 
 ################ Auxiliary function, for logging ################
 def log_input(batch_input, last_idx_senses, slc_or_text):
@@ -67,7 +68,8 @@ def log_gradient_norms(model_forParameters):
 
 
 ################ Creating the model, the train_dataloader, and any necessary variables ################
-def setup_train(slc_or_text_corpus, model_type, K, C,
+def setup_train(slc_or_text_corpus, model_type, K, C, context_method=None,
+                dim_qkv=300, num_multiheads=2,
                 include_globalnode_input = False, load_saved_model = False,
                 batch_size=2, sequence_length=3,
                 method=CE.Method.FASTTEXT, grapharea_size=32):
@@ -102,9 +104,13 @@ def setup_train(slc_or_text_corpus, model_type, K, C,
             model = SelectK.SelectK(graph_dataobj, grapharea_size, grapharea_matrix, vocabulary_df, embeddings_matrix,
                  include_globalnode_input, batch_size, n_layers=3, n_hid_units=1024, K=K)
         elif model_type == ModelType.SC:
-            model = SC.SenseContextAverage(graph_dataobj, grapharea_size, grapharea_matrix, vocabulary_df,
-                                           embeddings_matrix, include_globalnode_input, batch_size, n_layers=3,
-                                           n_hid_units=1024, K=K, num_C=C)
+            model =SC.SenseContext(graph_dataobj, grapharea_size, grapharea_matrix, vocabulary_df,
+                                   embeddings_matrix, include_globalnode_input, batch_size, n_layers=3,
+                                   n_hid_units=1024, K=K, num_C=C, context_method=context_method)
+        elif model_type==ModelType.SELFATT:
+            model = SA.ScoresLM(graph_dataobj, grapharea_size, grapharea_matrix, vocabulary_df, embeddings_matrix,
+                 include_globalnode_input, batch_size, n_layers=3, n_hid_units=1024, K=K,
+                                num_C=C, context_method=context_method, dim_qkv=dim_qkv, num_multiheads=num_multiheads)
         else:
             raise Exception("Model type specification incorrect")
 

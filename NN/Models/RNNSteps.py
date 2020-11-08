@@ -8,20 +8,16 @@ from torch.nn import Parameter, functional as tfunc
 #############################
 
 # The loop over the layers of a RNN
-def rnn_loop(batch_input_signals, model, globals_or_senses_rnn):
-    if globals_or_senses_rnn:
-        rnn_ls = model.main_rnn_ls
-    else:
-        rnn_ls = model.senses_rnn_ls
+def rnn_loop(batch_input_signals, model, rnn_ls, memory):
     rnn_out = None
     input = batch_input_signals
-    for i in range(model.n_layers):
+    for i in range(len(rnn_ls)):
         layer_rnn = rnn_ls[i]
         layer_rnn.flatten_parameters()
         # GRU
         rnn_out, hidden_i = \
-            layer_rnn(input, select_layer_memory(model, i, layer_rnn, globals_or_senses_rnn))
-        update_layer_memory(model, i, layer_rnn, hidden_i, globals_or_senses_rnn)
+            layer_rnn(input, select_layer_memory(model, i, layer_rnn, memory))
+        update_layer_memory(model, i, layer_rnn, hidden_i, memory)
 
         input = rnn_out
 
@@ -39,15 +35,14 @@ def reshape_memories(distributed_batch_size, model):
     model.hidden_state_bsize_adjusted = True
 
 # Selecting the portion of memory tensor (determined by the layer size) that is used in the RNN iteration
-def select_layer_memory(model, i, layer_rnn, globals_or_senses_rnn):
-    memory = model.memory_hn if globals_or_senses_rnn else model.memory_hn_senses
+def select_layer_memory(model, i, layer_rnn, memory):
     # GRU
     return  memory.index_select(dim=0, index=model.select_first_indices[i].to(torch.int64)).\
             index_select(dim=2,index=model.select_first_indices[0:layer_rnn.hidden_size].to(torch.int64))
 
 # After execution of a RNN layer, save the new hidden state in the proper storage.
-def update_layer_memory(model, i, layer_rnn, hidden_i, globals_or_senses_rnn):
-    memory = model.memory_hn if globals_or_senses_rnn else model.memory_hn_senses
+def update_layer_memory(model, i, layer_rnn, hidden_i, memory):
+
     hidden_i_forcopy = hidden_i.index_select(dim=2,
                                              index=model.select_first_indices[0:layer_rnn.hidden_size].to(
                                                  torch.int64))

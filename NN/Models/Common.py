@@ -1,4 +1,5 @@
 import logging
+from enum import Enum
 
 import torch
 from torch.nn import functional as tfunc
@@ -12,7 +13,7 @@ from NN.Models.RNNSteps import rnn_loop
 
 
 #########################
-##### 1: Model steps ####
+##### 1: Model steps ####C
 #########################
 
 ##### 1.1: Initialization of: graph_dataobj, grapharea_matrix, vocabulary_lists & more
@@ -150,7 +151,7 @@ def run_graphnet(t_input_lts, batch_elems_at_t, t_globals_indices_ls, model):
 def predict_globals_withGRU(model, batch_input_signals, seq_len, distributed_batch_size):
     # ------------------- Globals -------------------
     # - input of shape(seq_len, batch_size, input_size): tensor containing the features of the input sequence.
-    task_1_out = rnn_loop(batch_input_signals, model, globals_or_senses_rnn=True)  # self.network_1_L1(input)
+    task_1_out = rnn_loop(batch_input_signals, model, model.main_rnn_ls, model.memory_hn)  # self.network_1_L1(input)
     task_1_out = task_1_out.permute(1, 0, 2)  # going to: (batch_size, seq_len, n_units)
 
     task_1_out = task_1_out.reshape(distributed_batch_size * seq_len, task_1_out.shape[2])
@@ -159,6 +160,11 @@ def predict_globals_withGRU(model, batch_input_signals, seq_len, distributed_bat
     predictions_globals = tfunc.log_softmax(logits_global, dim=1)
 
     return predictions_globals, logits_global
+
+##### 1.6: Choose the method to compute the location context / Self-attention query
+class ContextMethod(Enum):
+    AVERAGE = "The context at location t is the average of the last [t-C,...,t] tokens"
+    GRU = "The context at location t is the output of a 2-layer GRU"
 
 
 ################################
@@ -194,3 +200,4 @@ def lemmatize_node(x_indices, edge_index, edge_type, model):
             return x_indices, edge_index, edge_type
     else:
         return x_indices, edge_index, edge_type
+

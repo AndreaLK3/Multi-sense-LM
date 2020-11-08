@@ -1,7 +1,7 @@
 import torch
 from NN.Models.Common import predict_globals_withGRU, init_model_parameters, init_common_architecture, \
-    get_input_signals
-from NN.Models.RNNSteps import reshape_memories, reshape_tensor
+    get_input_signals, ContextMethod
+from NN.Models.RNNSteps import reshape_memories, reshape_tensor, rnn_loop
 from torch.nn.parameter import Parameter
 import Utils
 from NN.Models.SelectK import get_senseneighbours_of_k_globals
@@ -24,13 +24,29 @@ def update_context_average(location_context, word_embeddings, prev_word_embeddin
     return location_context
 
 
-class SenseContextAverage(torch.nn.Module):
+def init_context_handling(model, context_method):
+    model.context_method = context_method
+    if model.context_method == ContextMethod.AVERAGE:
+        model.location_context = Parameter(torch.zeros(size=(200, model.batch_size, model.E.shape[1])), requires_grad=False)
+        # location_context will be reshaped
+    elif model.context_method == ContextMethod.GRU:
+        model.context_rnn_ls = torch.nn.ModuleList(
+            [torch.nn.GRU(input_size=model.concatenated_input_dim if i == 0 else model.hidden_size,
+                          hidden_size=model.hidden_size if i < model.n_layers - 1 else model.E.shape[1], num_layers=1)
+             for i in range(model.n_layers)])
+        model.location_context = Parameter(torch.zeros(size=(200, model.batch_size, model.E.shape[1])), requires_grad=True)  # grad
+    model.memory_hn_context = Parameter(torch.zeros(size=(model.n_layers, model.batch_size, model.hidden_size)),
+                                        requires_grad=False)
+    model.ctx_tensors_adjusted = False
+
+
+class SenseContext(torch.nn.Module):
 
     def __init__(self, graph_dataobj, grapharea_size, grapharea_matrix, vocabulary_df, embeddings_matrix,
-                 include_globalnode_input, batch_size, n_layers, n_hid_units, K, num_C):
+                 include_globalnode_input, batch_size, n_layers, n_hid_units, K, num_C, context_method):
 
         # -------------------- Initialization in common: parameters & globals --------------------
-        super(SenseContextAverage, self).__init__()
+        super(SenseContext, self).__init__()
 
         init_model_parameters(self, graph_dataobj, grapharea_size, grapharea_matrix, vocabulary_df,
                               include_globalnode_input,
@@ -49,9 +65,8 @@ class SenseContextAverage(torch.nn.Module):
         self.prev_word_embeddings = Parameter(torch.zeros((200, batch_size, self.E.shape[1])), requires_grad=False)
         # prev_word_embeddings will be reshaped when we know the seq_len and distributed_batch_size
 
-        self.location_context = Parameter(torch.zeros(size=(200, batch_size, self.E.shape[1])), requires_grad=False)
-        # location_context will be reshape
-        self.ctx_tensors_adjusted = False
+        init_context_handling(model=self, context_method=context_method)
+
         self.cosine_sim = torch.nn.CosineSimilarity(dim=3)
 
     # ---------------------------------------- Forward call ----------------------------------------
@@ -67,10 +82,13 @@ class SenseContextAverage(torch.nn.Module):
         if not(self.ctx_tensors_adjusted):
             self.location_context = reshape_tensor(self.location_context, (batchinput_tensor.shape[1], distributed_batch_size, self.E.shape[1]))
             self.prev_word_embeddings = reshape_tensor(self.prev_word_embeddings, (batchinput_tensor.shape[1], distributed_batch_size, self.E.shape[1]))
+            self.memory_hn_context = reshape_tensor(self.memory_hn_context, (self.n_layers, distributed_batch_size, self.hidden_size))# in case we are using the GRU context
             self.ctx_tensors_adjusted = True
 
         # T-BPTT: at the start of each batch, we detach_() the hidden state from the graph&history that created it
         self.memory_hn.detach_()
+        self.memory_hn_context.detach_()
+        self.location_context.detach_()
 
         if batchinput_tensor.shape[1] > 1:
             time_instants = torch.chunk(batchinput_tensor, chunks=batchinput_tensor.shape[1], dim=1)
@@ -97,7 +115,7 @@ class SenseContextAverage(torch.nn.Module):
         # ------------------- Senses -------------------
         if self.predict_senses:
 
-            # Select the senses of the k most likely globals
+            # ----- Select the senses of the k most likely globals -----
             k_globals_indices = logits_globals.sort(descending=True).indices[:, 0:self.K]
             sample_k_indices_in_vocab_lls = k_globals_indices.tolist()
 
@@ -118,11 +136,12 @@ class SenseContextAverage(torch.nn.Module):
                 sense_neighbours_len_ls.append(sense_neighbours.shape[0])
 
                 random_sense_idx = np.random.randint(low=0, high=self.SC.shape[0]) # we use a random sense as pad/filler. In the case where it's actually closer than our selected senses, we will chose that one.
-                all_sense_neighbours_ls.append(torch.nn.functional.pad(input=sense_neighbours, pad=[0, self.grapharea_size - sense_neighbours.shape[0]], value=random_sense_idx))
+                all_sense_neighbours_ls.append(torch.nn.functional.pad(input=sense_neighbours,
+                                                pad=[0, self.K* self.grapharea_size - sense_neighbours.shape[0]], value=random_sense_idx))
 
 
             # ------------------- Senses: compare location context with sense average context -------------------
-            # prepare the base for the artificial softmax
+            # ----- prepare the base for the artificial softmax -----
             senses_softmax = torch.ones((seq_len, distributed_batch_size, self.last_idx_senses)).to(CURRENT_DEVICE)
             epsilon = 10 ** (-8)
             senses_softmax = epsilon * senses_softmax  # base probability value for non-selected senses
@@ -130,11 +149,16 @@ class SenseContextAverage(torch.nn.Module):
             quantity_to_subtract_from_selected = epsilon * (self.last_idx_senses - 1)
             quantity_to_assign_to_chosen_sense = 1 - quantity_to_subtract_from_selected
 
-            # update the location context with the latest word embeddings
-            update_context_average(self.location_context, word_embeddings, self.prev_word_embeddings, self.num_C, CURRENT_DEVICE)
-            self.prev_word_embeddings.data = word_embeddings.data
+            # ----- update the location context with the latest word embeddings -----
+            if self.context_method == ContextMethod.AVERAGE:
+                update_context_average(self.location_context, word_embeddings, self.prev_word_embeddings, self.num_C, CURRENT_DEVICE)
+                self.prev_word_embeddings.data = word_embeddings.data
+            elif self.context_method == ContextMethod.GRU:
+                context_out = rnn_loop(batch_input_signals, model=self, rnn_ls=self.context_rnn_ls,
+                                       memory=self.memory_hn_context)
+                self.location_context.data = context_out.clone()
 
-            # the context of the selected senses and the cosine similarity:
+            # ----- the context of the selected senses and the cosine similarity: -----
             senses_context = torch.zeros((self.location_context.shape[0], self.location_context.shape[1],
                                          self.grapharea_size * self.K, self.location_context.shape[2]))
 
@@ -145,8 +169,7 @@ class SenseContextAverage(torch.nn.Module):
             samples_firstindex = samples_sortedindices[:,:,0]
             samples_firstsense = torch.gather(all_sense_neighbours, dim=2, index=samples_firstindex.unsqueeze(2))
 
-            # writing in the artificial softmax
-
+            # ----- writing in the artificial softmax -----
             for t in (range(seq_len)):
                 for b in range(distributed_batch_size):
                     senses_mask[t, b, samples_firstsense[t,b].item()] = True
