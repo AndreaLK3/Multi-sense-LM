@@ -23,16 +23,14 @@
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Media/.~lock.Task1_DeveloperDiary_7.odt#" beforeDir="false" afterPath="$PROJECT_DIR$/Media/.~lock.Task1_DeveloperDiary_7.odt#" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Media/Task1_DeveloperDiary_7.odt" beforeDir="false" afterPath="$PROJECT_DIR$/Media/Task1_DeveloperDiary_7.odt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MyTests/Method_SCA.py" beforeDir="false" afterPath="$PROJECT_DIR$/MyTests/Method_SCA.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/MyTests/MiniExperiment.py" beforeDir="false" afterPath="$PROJECT_DIR$/MyTests/MiniExperiment.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/NN/Models/Common.py" beforeDir="false" afterPath="$PROJECT_DIR$/NN/Models/Common.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/NN/Models/RNNSteps.py" beforeDir="false" afterPath="$PROJECT_DIR$/NN/Models/RNNSteps.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/NN/Models/RNNs.py" beforeDir="false" afterPath="$PROJECT_DIR$/NN/Models/RNNs.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/NN/Models/SelectK.py" beforeDir="false" afterPath="$PROJECT_DIR$/NN/Models/SelectK.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/NN/Models/SelfAttention.py" beforeDir="false" afterPath="$PROJECT_DIR$/NN/Models/SelfAttention.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/NN/Models/SenseContextAverage.py" beforeDir="false" afterPath="$PROJECT_DIR$/NN/Models/SenseContext.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/NN/Models/Steps_RNN.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/NN/Models/SenseContext.py" beforeDir="false" afterPath="$PROJECT_DIR$/NN/Models/SenseContext.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/NN/Training.py" beforeDir="false" afterPath="$PROJECT_DIR$/NN/Training.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/trainmodel_script.py" beforeDir="false" afterPath="$PROJECT_DIR$/trainmodel_script.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -121,10 +119,10 @@
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="148" y="168" key="#xdebugger.XInspectDialog/0.0.1536.824@0.0.1536.824" timestamp="1604335677150" />
-    <state x="654" y="310" width="488" height="494" key="#xdebugger.evaluate" timestamp="1604871083007">
+    <state x="656" y="266" width="488" height="494" key="#xdebugger.evaluate" timestamp="1605107976929">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="654" y="310" width="488" height="494" key="#xdebugger.evaluate/0.0.1536.824@0.0.1536.824" timestamp="1604871083007" />
+    <state x="656" y="266" width="488" height="494" key="#xdebugger.evaluate/0.0.1536.824@0.0.1536.824" timestamp="1605107976929" />
     <state x="100" y="100" width="1336" height="630" key="DiffContextDialog" timestamp="1604327078700">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
@@ -133,50 +131,50 @@
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="509" y="167" key="FileChooserDialogImpl/0.0.1536.824@0.0.1536.824" timestamp="1604508605575" />
-    <state width="1515" height="257" key="GridCell.Tab.0.bottom" timestamp="1604871222112">
+    <state width="1515" height="257" key="GridCell.Tab.0.bottom" timestamp="1605117541474">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1515" height="257" key="GridCell.Tab.0.bottom/0.0.1536.824@0.0.1536.824" timestamp="1604871222112" />
-    <state width="1515" height="257" key="GridCell.Tab.0.center" timestamp="1604871222111">
+    <state width="1515" height="257" key="GridCell.Tab.0.bottom/0.0.1536.824@0.0.1536.824" timestamp="1605117541474" />
+    <state width="1515" height="257" key="GridCell.Tab.0.center" timestamp="1605117541474">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1515" height="257" key="GridCell.Tab.0.center/0.0.1536.824@0.0.1536.824" timestamp="1604871222111" />
-    <state width="1515" height="257" key="GridCell.Tab.0.left" timestamp="1604871222111">
+    <state width="1515" height="257" key="GridCell.Tab.0.center/0.0.1536.824@0.0.1536.824" timestamp="1605117541474" />
+    <state width="1515" height="257" key="GridCell.Tab.0.left" timestamp="1605117541474">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1515" height="257" key="GridCell.Tab.0.left/0.0.1536.824@0.0.1536.824" timestamp="1604871222111" />
-    <state width="1515" height="257" key="GridCell.Tab.0.right" timestamp="1604871222111">
+    <state width="1515" height="257" key="GridCell.Tab.0.left/0.0.1536.824@0.0.1536.824" timestamp="1605117541474" />
+    <state width="1515" height="257" key="GridCell.Tab.0.right" timestamp="1605117541474">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1515" height="257" key="GridCell.Tab.0.right/0.0.1536.824@0.0.1536.824" timestamp="1604871222111" />
-    <state width="1515" height="257" key="GridCell.Tab.1.bottom" timestamp="1604871222112">
+    <state width="1515" height="257" key="GridCell.Tab.0.right/0.0.1536.824@0.0.1536.824" timestamp="1605117541474" />
+    <state width="1515" height="257" key="GridCell.Tab.1.bottom" timestamp="1605117541474">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1515" height="257" key="GridCell.Tab.1.bottom/0.0.1536.824@0.0.1536.824" timestamp="1604871222112" />
-    <state width="1515" height="257" key="GridCell.Tab.1.center" timestamp="1604871222112">
+    <state width="1515" height="257" key="GridCell.Tab.1.bottom/0.0.1536.824@0.0.1536.824" timestamp="1605117541474" />
+    <state width="1515" height="257" key="GridCell.Tab.1.center" timestamp="1605117541474">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1515" height="257" key="GridCell.Tab.1.center/0.0.1536.824@0.0.1536.824" timestamp="1604871222112" />
-    <state width="1515" height="257" key="GridCell.Tab.1.left" timestamp="1604871222112">
+    <state width="1515" height="257" key="GridCell.Tab.1.center/0.0.1536.824@0.0.1536.824" timestamp="1605117541474" />
+    <state width="1515" height="257" key="GridCell.Tab.1.left" timestamp="1605117541474">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1515" height="257" key="GridCell.Tab.1.left/0.0.1536.824@0.0.1536.824" timestamp="1604871222112" />
-    <state width="1515" height="257" key="GridCell.Tab.1.right" timestamp="1604871222112">
+    <state width="1515" height="257" key="GridCell.Tab.1.left/0.0.1536.824@0.0.1536.824" timestamp="1605117541474" />
+    <state width="1515" height="257" key="GridCell.Tab.1.right" timestamp="1605117541474">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1515" height="257" key="GridCell.Tab.1.right/0.0.1536.824@0.0.1536.824" timestamp="1604871222112" />
+    <state width="1515" height="257" key="GridCell.Tab.1.right/0.0.1536.824@0.0.1536.824" timestamp="1605117541474" />
     <state x="277" y="57" key="SettingsEditor" timestamp="1603547440731">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="277" y="57" key="SettingsEditor/0.0.1536.824@0.0.1536.824" timestamp="1603547440731" />
-    <state width="865" height="415" key="XDebugger.FullValuePopup" timestamp="1604410098779">
+    <state width="865" height="415" key="XDebugger.FullValuePopup" timestamp="1604875981444">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="865" height="415" key="XDebugger.FullValuePopup/0.0.1536.824@0.0.1536.824" timestamp="1604410098779" />
-    <state x="477" y="11" width="662" height="801" key="find.popup" timestamp="1604792815167">
+    <state width="865" height="415" key="XDebugger.FullValuePopup/0.0.1536.824@0.0.1536.824" timestamp="1604875981444" />
+    <state x="477" y="11" width="662" height="801" key="find.popup" timestamp="1605107519217">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="477" y="11" width="662" height="801" key="find.popup/0.0.1536.824@0.0.1536.824" timestamp="1604792815167" />
+    <state x="477" y="11" width="662" height="801" key="find.popup/0.0.1536.824@0.0.1536.824" timestamp="1605107519217" />
     <state x="611" y="197" key="refactoring.ChangeSignatureDialog" timestamp="1603989476241">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
@@ -196,48 +194,28 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/NN/Models/SelectK.py</url>
-          <line>164</line>
+          <line>165</line>
           <option name="timeStamp" value="6" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/NN/Models/SelfAttention.py</url>
-          <line>42</line>
-          <option name="timeStamp" value="8" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/NN/Models/SelfAttention.py</url>
-          <line>56</line>
-          <option name="timeStamp" value="9" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/NN/Models/SelfAttention.py</url>
-          <line>192</line>
-          <option name="timeStamp" value="10" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/NN/Models/SelfAttention.py</url>
-          <line>210</line>
+          <line>214</line>
           <option name="timeStamp" value="11" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/NN/Models/SelfAttention.py</url>
-          <line>215</line>
+          <line>219</line>
           <option name="timeStamp" value="12" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/NN/Models/SelfAttention.py</url>
-          <line>197</line>
-          <option name="timeStamp" value="13" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/NN/Models/SenseContext.py</url>
-          <line>165</line>
+          <line>166</line>
           <option name="timeStamp" value="15" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/NN/Models/SelfAttention.py</url>
-          <line>40</line>
-          <option name="timeStamp" value="16" />
+          <line>204</line>
+          <option name="timeStamp" value="17" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>

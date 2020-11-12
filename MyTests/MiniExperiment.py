@@ -70,7 +70,7 @@ def log_gradient_norms(model_forParameters):
 ################ Creating the model, the train_dataloader, and any necessary variables ################
 def setup_train(slc_or_text_corpus, model_type, K, C, context_method=None,
                 dim_qkv=300, num_multiheads=2,
-                include_globalnode_input = False, load_saved_model = False,
+                include_globalnode_input = 0, load_saved_model = False,
                 batch_size=2, sequence_length=3,
                 method=CE.Method.FASTTEXT, grapharea_size=32):
 

@@ -50,15 +50,18 @@ class ComputeScores(torch.nn.Module):
             keys = self.Wk_ls[current_head](input_kv)
 
             # Formula for self-attention scores: softmax{(query*key)/sqrt(d_k)}
-            selfatt_logits_0 = torch.matmul(query, keys.t()).squeeze()[0:keys.shape[0]]
+            query_4D = query.unsqueeze(2).repeat([1,1,32,1]) # todo: pass K*grapharea_size, the maximum number of senses x sample
+            query_2D = query_4D.reshape((query_4D.shape[0]*query_4D.shape[1]*query_4D.shape[2], query_4D.shape[3]))
+            keys_2D = keys.reshape((keys.shape[0] * keys.shape[1] * keys.shape[2], keys.shape[3]))
+            selfatt_logits_0 = torch.matmul(query_2D, keys_2D.t()).diagonal().reshape(keys.shape[0], keys.shape[1], keys.shape[2])
             selfatt_logits_1 = selfatt_logits_0 / sqrt(self.d_qkv)
 
             # n: we want to operate in chunks if we are in a multi-head setting
-            selfatt_scores = tfunc.softmax(selfatt_logits_1, dim=0)
+            selfatt_scores = tfunc.softmax(selfatt_logits_1, dim=2)
 
             results_of_heads.append(selfatt_scores)
 
-        return torch.cat(results_of_heads, dim=0)
+        return torch.mean(torch.stack(results_of_heads, dim=0), dim=0)
 
 # To obtain a probability distribution over the senses of the most likely K globals, use a self-attention score:
 # query: the context representation: the average of the last num_C words, or the state of its own GRU)
@@ -88,14 +91,14 @@ class ScoresLM(torch.nn.Module):
         precomputed_SC_filepath = os.path.join(F.FOLDER_INPUT, F.FOLDER_SENSELABELED,
                                                str(num_C) + F.MATRIX_SENSE_CONTEXTS_FILEEND)
         senses_average_context_SC = np.load(precomputed_SC_filepath)
-        self.SC = Parameter(torch.tensor(senses_average_context_SC), requires_grad=False)
-        self.prev_word_embeddings = Parameter(torch.zeros((200, batch_size, self.dim_embs)), requires_grad=False)
+        self.SC = Parameter(torch.tensor(senses_average_context_SC, dtype=torch.float32), requires_grad=False)
+        self.prev_word_embeddings = Parameter(torch.zeros((200, batch_size, self.SC.shape[1])), requires_grad=False)
         # prev_word_embeddings will be reshaped when we know the seq_len and distributed_batch_size
 
         init_context_handling(model=self, context_method=context_method)
         self.cosine_sim = torch.nn.CosineSimilarity(dim=3)
 
-        self.SelfAttScores = ComputeScores(dim_input_context=self.dim_embs, dim_input_elems=self.dim_embs,
+        self.SelfAttScores = ComputeScores(dim_input_context=self.SC.shape[1], dim_input_elems=self.SC.shape[1],
                                            dim_qkv=dim_qkv, num_multiheads=num_multiheads)
 
     # ---------------------------------------- Forward call ----------------------------------------
@@ -134,8 +137,9 @@ class ScoresLM(torch.nn.Module):
             get_input_signals(self, batch_elements_at_t, word_embeddings_ls, currentglobal_nodestates_ls)
 
         # -------------------- Collect input signals -------------------
-        word_embeddings = torch.stack(word_embeddings_ls, dim=0)
-        global_nodestates = torch.stack(currentglobal_nodestates_ls, dim=0) if self.include_globalnode_input else None
+        word_embeddings = torch.stack(word_embeddings_ls, dim=0) if self.include_globalnode_input < 2 else None
+        global_nodestates = torch.stack(currentglobal_nodestates_ls,
+                                        dim=0) if self.include_globalnode_input > 0 else None
         batch_input_signals_ls = list(filter(lambda signal: signal is not None,
                                              [word_embeddings, global_nodestates]))
         batch_input_signals = torch.cat(batch_input_signals_ls, dim=2)
@@ -198,7 +202,7 @@ class ScoresLM(torch.nn.Module):
             senses_context.data = self.SC[all_sense_neighbours, :].data
 
             # Insertion point
-            self.SelfAttScores(input_q=self.location_context, input_kv=senses_context)
+            probability_scores = self.SelfAttScores(input_q=self.location_context, input_kv=senses_context)
 
             samples_cosinesim = self.cosine_sim(self.location_context.unsqueeze(2), senses_context)
             samples_sortedindices = torch.sort(samples_cosinesim, descending=True).indices

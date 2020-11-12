@@ -103,8 +103,9 @@ class SelectK(torch.nn.Module):
             get_input_signals(self, batch_elements_at_t, word_embeddings_ls, currentglobal_nodestates_ls)
 
         # -------------------- Collect input signals
-        word_embeddings = torch.stack(word_embeddings_ls, dim=0)
-        global_nodestates = torch.stack(currentglobal_nodestates_ls, dim=0) if self.include_globalnode_input else None
+        word_embeddings = torch.stack(word_embeddings_ls, dim=0) if self.include_globalnode_input < 2 else None
+        global_nodestates = torch.stack(currentglobal_nodestates_ls,
+                                        dim=0) if self.include_globalnode_input > 0 else None
         batch_input_signals_ls = list(filter(lambda signal: signal is not None,
                                              [word_embeddings, global_nodestates]))
         batch_input_signals = torch.cat(batch_input_signals_ls, dim=2)

@@ -60,7 +60,7 @@ def load_model_from_file(slc_or_text, inputdata_folder, graph_dataobj):
 
 def setup_train(slc_or_text_corpus, model_type, K, C=0, context_method=None,
                 dim_qkv=300, num_multiheads=2,
-                include_globalnode_input=False, load_saved_model=False,
+                include_globalnode_input=0, load_saved_model=False,
                 batch_size=32, sequence_length=35,
                 method=CE.Method.FASTTEXT, grapharea_size=32):
 
@@ -168,7 +168,9 @@ def run_train(model, train_dataloader, valid_dataloader, learning_rate, num_epoc
     model_forParameters.predict_senses = predict_senses
     hyperparams_str = write_doc_logging(train_dataloader, model, model_forParameters, learning_rate, num_epochs)
     try:
-        logging.info("Using K=" + str(model_forParameters.K) + " ; C=" + str(model_forParameters.num_C) + " ; context_method=" + str(model_forParameters.context_method))
+        logging.info("Using K=" + str(model_forParameters.K))
+        logging.info("C=" + str(model_forParameters.num_C))
+        logging.info("context_method=" + str(model_forParameters.context_method))
     except Exception:
         pass # using RNN, no further hyperparameters here
 
