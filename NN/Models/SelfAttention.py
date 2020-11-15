@@ -16,15 +16,16 @@ from NN.Models.SenseContext import update_context_average, init_context_handling
 ### 0: Self-attention mechanism ###
 ###################################
 
-class ComputeScores(torch.nn.Module):
+class ComputeLogits(torch.nn.Module):
     # if operating with multiple heads, I use concatenation
-    def __init__(self, dim_input_context, dim_input_elems, dim_qkv, num_multiheads):
-        super(ComputeScores, self).__init__()
+    def __init__(self, dim_input_context, dim_input_elems, dim_qkv, num_multiheads, k, grapharea_size):
+        super(ComputeLogits, self).__init__()
         self.d_input_context = dim_input_context
         self.d_input_elems = dim_input_elems
         self.d_qkv = dim_qkv  # the dimensionality of queries, keys and values - down from self.d_input
         self.num_multiheads = num_multiheads
-
+        self.k = k
+        self.grapharea_size = grapharea_size
 
         self.Wq_ls = torch.nn.ModuleList([torch.nn.Linear(in_features=self.d_input_context,
                                                           out_features=self.d_qkv, bias=False)
@@ -50,16 +51,13 @@ class ComputeScores(torch.nn.Module):
             keys = self.Wk_ls[current_head](input_kv)
 
             # Formula for self-attention scores: softmax{(query*key)/sqrt(d_k)}
-            query_4D = query.unsqueeze(2).repeat([1,1,32,1]) # todo: pass K*grapharea_size, the maximum number of senses x sample
+            query_4D = query.unsqueeze(2).repeat([1,1,self.k * self.grapharea_size,1])
             query_2D = query_4D.reshape((query_4D.shape[0]*query_4D.shape[1]*query_4D.shape[2], query_4D.shape[3]))
             keys_2D = keys.reshape((keys.shape[0] * keys.shape[1] * keys.shape[2], keys.shape[3]))
             selfatt_logits_0 = torch.matmul(query_2D, keys_2D.t()).diagonal().reshape(keys.shape[0], keys.shape[1], keys.shape[2])
             selfatt_logits_1 = selfatt_logits_0 / sqrt(self.d_qkv)
 
-            # n: we want to operate in chunks if we are in a multi-head setting
-            selfatt_scores = tfunc.softmax(selfatt_logits_1, dim=2)
-
-            results_of_heads.append(selfatt_scores)
+            results_of_heads.append(selfatt_logits_1)
 
         return torch.mean(torch.stack(results_of_heads, dim=0), dim=0)
 
@@ -96,10 +94,9 @@ class ScoresLM(torch.nn.Module):
         # prev_word_embeddings will be reshaped when we know the seq_len and distributed_batch_size
 
         init_context_handling(model=self, context_method=context_method)
-        self.cosine_sim = torch.nn.CosineSimilarity(dim=3)
 
-        self.SelfAttScores = ComputeScores(dim_input_context=self.SC.shape[1], dim_input_elems=self.SC.shape[1],
-                                           dim_qkv=dim_qkv, num_multiheads=num_multiheads)
+        self.SelfAttLogits = ComputeLogits(dim_input_context=self.SC.shape[1], dim_input_elems=self.SC.shape[1],
+                                           dim_qkv=dim_qkv, num_multiheads=num_multiheads, k=self.K, grapharea_size=self.grapharea_size)
 
     # ---------------------------------------- Forward call ----------------------------------------
 
@@ -202,20 +199,16 @@ class ScoresLM(torch.nn.Module):
             senses_context.data = self.SC[all_sense_neighbours, :].data
 
             # Insertion point
-            probability_scores = self.SelfAttScores(input_q=self.location_context, input_kv=senses_context)
-
-            samples_cosinesim = self.cosine_sim(self.location_context.unsqueeze(2), senses_context)
-            samples_sortedindices = torch.sort(samples_cosinesim, descending=True).indices
-            samples_firstindex = samples_sortedindices[:, :, 0]
-            samples_firstsense = torch.gather(all_sense_neighbours, dim=2, index=samples_firstindex.unsqueeze(2))
-
+            sense_neighbours_logits_dupl = self.SelfAttLogits(input_q=self.location_context, input_kv=senses_context)
             # writing in the artificial softmax
             for t in (range(seq_len)):
                 for b in range(distributed_batch_size):
-                    senses_mask[t, b, samples_firstsense[t, b].item()] = True
-            assign_one = (torch.ones(
-                size=senses_mask[senses_mask == True].shape) * 1).to(CURRENT_DEVICE)
-            senses_softmax.masked_scatter_(mask=senses_mask.data.clone(), source=assign_one)
+                    logits_senseneighbour_ls = list(set(zip(sense_neighbours_logits_dupl[t,b,:].tolist(), all_sense_neighbours[t,b,:].tolist())))
+                    logits = torch.tensor(sense_neighbours_logits_dupl[t,b,:].tolist()[0:len(logits_senseneighbour_ls)]).to(CURRENT_DEVICE)
+                    senseneighbours = torch.tensor(all_sense_neighbours[t, b, :].tolist()[0:len(logits_senseneighbour_ls)]).to(CURRENT_DEVICE)
+                    p_scores = torch.softmax(logits, dim=0)
+                    senses_mask[t, b, senseneighbours] = True
+                    senses_softmax[t,b].masked_scatter_(mask=senses_mask[t,b], source=p_scores)
 
             predictions_senses = torch.log(senses_softmax).reshape(seq_len * distributed_batch_size,
                                                                    senses_softmax.shape[2])
