@@ -59,7 +59,7 @@ def load_model_from_file(slc_or_text, inputdata_folder, graph_dataobj):
 ################
 
 def setup_train(slc_or_text_corpus, model_type, K, C=0, context_method=None,
-                dim_qkv=300, num_multiheads=2,
+                dim_qkv=300,
                 include_globalnode_input=0, load_saved_model=False,
                 batch_size=32, sequence_length=35,
                 method=CE.Method.FASTTEXT, grapharea_size=32):
@@ -105,7 +105,7 @@ def setup_train(slc_or_text_corpus, model_type, K, C=0, context_method=None,
         elif model_type==ModelType.SELFATT:
             model = SA.ScoresLM(graph_dataobj, grapharea_size, grapharea_matrix, vocabulary_df, embeddings_matrix,
                  include_globalnode_input, batch_size, n_layers=3, n_hid_units=1024, K=K,
-                                num_C=C, context_method=context_method, dim_qkv=dim_qkv, num_multiheads=num_multiheads)
+                                num_C=C, context_method=context_method, dim_qkv=dim_qkv)
         else:
             raise Exception ("Model type specification incorrect")
 

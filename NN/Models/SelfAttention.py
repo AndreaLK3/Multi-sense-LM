@@ -11,6 +11,7 @@ import numpy as np
 import os
 import Filesystem as F
 from NN.Models.SenseContext import update_context_average, init_context_handling
+import logging
 
 ###################################
 ### 0: Self-attention mechanism ###
@@ -18,48 +19,41 @@ from NN.Models.SenseContext import update_context_average, init_context_handling
 
 class ComputeLogits(torch.nn.Module):
     # if operating with multiple heads, I use concatenation
-    def __init__(self, dim_input_context, dim_input_elems, dim_qkv, num_multiheads, k, grapharea_size):
+    def __init__(self, dim_input_context, dim_input_elems, dim_qkv, k, grapharea_size):
         super(ComputeLogits, self).__init__()
         self.d_input_context = dim_input_context
         self.d_input_elems = dim_input_elems
         self.d_qkv = dim_qkv  # the dimensionality of queries, keys and values - down from self.d_input
-        self.num_multiheads = num_multiheads
         self.k = k
         self.grapharea_size = grapharea_size
 
-        self.Wq_ls = torch.nn.ModuleList([torch.nn.Linear(in_features=self.d_input_context,
-                                                          out_features=self.d_qkv, bias=False)
-                                          for _current_head in range(self.num_multiheads)])
-        self.Wk_ls = torch.nn.ModuleList([torch.nn.Linear(in_features=self.d_input_elems,
-                                                          out_features=self.d_qkv, bias=False)
-                                          for _current_head in range(self.num_multiheads)])
-        # self.Wv_ls = torch.nn.ModuleList([torch.nn.Linear(in_features=self.d_input_elems,
-        #                                                   out_features=self.d_qkv, bias=False)
-        #                                   for _current_head in range(self.num_multiheads)])
-
+        self.Wq = torch.nn.Linear(in_features=self.d_input_context,out_features=self.d_qkv, bias=False)
+        self.Wk = torch.nn.Linear(in_features=self.d_input_elems, out_features=self.d_qkv, bias=False)
+        # self.logitsMultiplier = Parameter(torch.tensor(1000.0), requires_grad=True)
 
     def forward(self, input_q, input_kv):
-        results_of_heads = []
 
-        for current_head in range(self.num_multiheads):
-            # Self-attention:
-            # query, obtained projecting the representation of the local context
-            input_query = input_q#.repeat(self.num_multiheads, 1)
-            query = self.Wq_ls[current_head](input_query)
+        # Self-attention:
+        # query, obtained projecting the representation of the local context
+        input_query = input_q
+        query = self.Wq(input_query)
 
-            # <= k keys, obtained projecting the embeddings of the selected senses
-            keys = self.Wk_ls[current_head](input_kv)
+        # <= k keys, obtained projecting the embeddings of the selected senses
+        keys = self.Wk(input_kv)
 
-            # Formula for self-attention scores: softmax{(query*key)/sqrt(d_k)}
-            query_4D = query.unsqueeze(2).repeat([1,1,self.k * self.grapharea_size,1])
-            query_2D = query_4D.reshape((query_4D.shape[0]*query_4D.shape[1]*query_4D.shape[2], query_4D.shape[3]))
-            keys_2D = keys.reshape((keys.shape[0] * keys.shape[1] * keys.shape[2], keys.shape[3]))
-            selfatt_logits_0 = torch.matmul(query_2D, keys_2D.t()).diagonal().reshape(keys.shape[0], keys.shape[1], keys.shape[2])
-            selfatt_logits_1 = selfatt_logits_0 / sqrt(self.d_qkv)
+        # Formula for self-attention scores: softmax{(query*key)/sqrt(d_k)}
+        # query_4D = query.unsqueeze(2).repeat([1,1,self.k * self.grapharea_size,1])
+        # query_2D = query_4D.view((query_4D.shape[0]*query_4D.shape[1]*query_4D.shape[2], query_4D.shape[3]))
+        # keys_2D = keys.view((keys.shape[0] * keys.shape[1] * keys.shape[2], keys.shape[3]))
 
-            results_of_heads.append(selfatt_logits_1)
+        qk = torch.matmul(query.unsqueeze(2), keys.permute(0, 1, 3, 2))
 
-        return torch.mean(torch.stack(results_of_heads, dim=0), dim=0)
+        # selfatt_logits_0 = qk.squeeze().view(keys.shape[0]*keys.shape[1], self.grapharea_size*self.k) # torch.matmul(query_2D, keys_2D.t()).diagonal().reshape(keys.shape[0], keys.shape[1], keys.shape[2])
+        selfatt_logits_1 = qk.squeeze(dim=2) / sqrt(self.d_qkv)# torch.clamp(self.logitsMultiplier, min=10**(-6), max=1000) # numerical adjustment, otherwise Q*K is too small
+        # and in that case any softmax gives a ~uniform distribution.
+
+        # logging.info("selfatt_logits_1[0:3, 0:2, 0:5]=" + str(selfatt_logits_1[0:3, 0:2, 0:5]))
+        return selfatt_logits_1
 
 # To obtain a probability distribution over the senses of the most likely K globals, use a self-attention score:
 # query: the context representation: the average of the last num_C words, or the state of its own GRU)
@@ -70,7 +64,7 @@ class ScoresLM(torch.nn.Module):
 
     def __init__(self, graph_dataobj, grapharea_size, grapharea_matrix, vocabulary_df, embeddings_matrix,
                  include_globalnode_input, batch_size, n_layers, n_hid_units, K, num_C, context_method,
-                 dim_qkv, num_multiheads):
+                 dim_qkv):
 
         # -------------------- Initialization in common: parameters & globals --------------------
         super(ScoresLM, self).__init__()
@@ -96,7 +90,7 @@ class ScoresLM(torch.nn.Module):
         init_context_handling(model=self, context_method=context_method)
 
         self.SelfAttLogits = ComputeLogits(dim_input_context=self.SC.shape[1], dim_input_elems=self.SC.shape[1],
-                                           dim_qkv=dim_qkv, num_multiheads=num_multiheads, k=self.K, grapharea_size=self.grapharea_size)
+                                           dim_qkv=dim_qkv, k=self.K, grapharea_size=self.grapharea_size)
 
     # ---------------------------------------- Forward call ----------------------------------------
 
@@ -195,7 +189,7 @@ class ScoresLM(torch.nn.Module):
                                           self.grapharea_size * self.K, self.location_context.shape[2]))
 
             all_sense_neighbours = torch.stack(all_sense_neighbours_ls, dim=0).reshape(
-                (seq_len, distributed_batch_size, self.grapharea_size))
+                (seq_len, distributed_batch_size, self.grapharea_size * self.K))
             senses_context.data = self.SC[all_sense_neighbours, :].data
 
             # Insertion point
@@ -204,11 +198,11 @@ class ScoresLM(torch.nn.Module):
             for t in (range(seq_len)):
                 for b in range(distributed_batch_size):
                     logits_senseneighbour_ls = list(set(zip(sense_neighbours_logits_dupl[t,b,:].tolist(), all_sense_neighbours[t,b,:].tolist())))
-                    logits = torch.tensor(sense_neighbours_logits_dupl[t,b,:].tolist()[0:len(logits_senseneighbour_ls)]).to(CURRENT_DEVICE)
+                    logits = sense_neighbours_logits_dupl[t,b,0:len(logits_senseneighbour_ls)]
                     senseneighbours = torch.tensor(all_sense_neighbours[t, b, :].tolist()[0:len(logits_senseneighbour_ls)]).to(CURRENT_DEVICE)
                     p_scores = torch.softmax(logits, dim=0)
                     senses_mask[t, b, senseneighbours] = True
-                    senses_softmax[t,b].masked_scatter_(mask=senses_mask[t,b], source=p_scores)
+                    senses_softmax[t,b].masked_scatter_(mask=senses_mask[t,b].data.clone(), source=p_scores)
 
             predictions_senses = torch.log(senses_softmax).reshape(seq_len * distributed_batch_size,
                                                                    senses_softmax.shape[2])
