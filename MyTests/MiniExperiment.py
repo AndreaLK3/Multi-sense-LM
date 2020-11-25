@@ -69,8 +69,8 @@ def log_gradient_norms(model_forParameters):
 
 ################ Creating the model, the train_dataloader, and any necessary variables ################
 def setup_train(slc_or_text_corpus, model_type, K, C, context_method=None,
-                dim_qkv=300, #
-                include_globalnode_input = 0, load_saved_model = False,
+                dim_qkv=300,
+                include_globalnode_input=0, load_saved_model=False,
                 batch_size=2, sequence_length=3,
                 method=CE.Method.FASTTEXT, grapharea_size=32):
 
@@ -146,7 +146,7 @@ def setup_train(slc_or_text_corpus, model_type, K, C, context_method=None,
 
 
 ################
-def run_train(model,train_dataloader, learning_rate, num_epochs, predict_senses, with_freezing):
+def run_train(model,train_dataloader, learning_rate, num_epochs, predict_senses=True, with_freezing=False):
 
     # -------------------- Setup; parameters and utilities --------------------
     Utils.init_logging('MiniExp-' + Utils.get_timestamp_month_to_sec() + '.log', loglevel=logging.INFO)

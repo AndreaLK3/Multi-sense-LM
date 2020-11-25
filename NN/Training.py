@@ -150,7 +150,7 @@ def setup_train(slc_or_text_corpus, model_type, K, C=0, context_method=None,
 
 
 ################
-def run_train(model, train_dataloader, valid_dataloader, learning_rate, num_epochs, predict_senses, with_freezing):
+def run_train(model, train_dataloader, valid_dataloader, learning_rate, num_epochs, predict_senses=True, with_freezing=False):
 
     # -------------------- Setup; parameters and utilities --------------------
     Utils.init_logging('Training' + Utils.get_timestamp_month_to_sec() + '.log', loglevel=logging.INFO)

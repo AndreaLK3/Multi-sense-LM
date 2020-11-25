@@ -25,9 +25,11 @@
     <list default="true" id="3ec11be4-164e-4b9e-a836-f8865c6d1696" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Media/.~lock.Task1_DeveloperDiary_7.odt#" beforeDir="false" afterPath="$PROJECT_DIR$/Media/.~lock.Task1_DeveloperDiary_7.odt#" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Media/SenseArchitecture.pptx" beforeDir="false" afterPath="$PROJECT_DIR$/Media/SenseArchitecture.pptx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Media/SenseArchitecture_all.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/Media/SenseArchitecture_all.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Media/SimpleGRUs_view.png" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/Media/Task1_DeveloperDiary_7.odt" beforeDir="false" afterPath="$PROJECT_DIR$/Media/Task1_DeveloperDiary_7.odt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/MyTests/MiniExperiment.py" beforeDir="false" afterPath="$PROJECT_DIR$/MyTests/MiniExperiment.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/NN/Models/SelfAttention.py" beforeDir="false" afterPath="$PROJECT_DIR$/NN/Models/SelfAttention.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/NN/Training.py" beforeDir="false" afterPath="$PROJECT_DIR$/NN/Training.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -55,7 +57,7 @@
   </component>
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/NN/Models/Common.py" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
   <component name="RunManager">
@@ -129,38 +131,38 @@
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="509" y="167" key="FileChooserDialogImpl/0.0.1536.824@0.0.1536.824" timestamp="1604508605575" />
-    <state width="1515" height="257" key="GridCell.Tab.0.bottom" timestamp="1606001369056">
+    <state width="1515" height="257" key="GridCell.Tab.0.bottom" timestamp="1606002480676">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1515" height="257" key="GridCell.Tab.0.bottom/0.0.1536.824@0.0.1536.824" timestamp="1606001369056" />
-    <state width="1515" height="257" key="GridCell.Tab.0.center" timestamp="1606001369056">
+    <state width="1515" height="257" key="GridCell.Tab.0.bottom/0.0.1536.824@0.0.1536.824" timestamp="1606002480676" />
+    <state width="1515" height="257" key="GridCell.Tab.0.center" timestamp="1606002480676">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1515" height="257" key="GridCell.Tab.0.center/0.0.1536.824@0.0.1536.824" timestamp="1606001369056" />
-    <state width="1515" height="257" key="GridCell.Tab.0.left" timestamp="1606001369056">
+    <state width="1515" height="257" key="GridCell.Tab.0.center/0.0.1536.824@0.0.1536.824" timestamp="1606002480676" />
+    <state width="1515" height="257" key="GridCell.Tab.0.left" timestamp="1606002480676">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1515" height="257" key="GridCell.Tab.0.left/0.0.1536.824@0.0.1536.824" timestamp="1606001369056" />
-    <state width="1515" height="257" key="GridCell.Tab.0.right" timestamp="1606001369056">
+    <state width="1515" height="257" key="GridCell.Tab.0.left/0.0.1536.824@0.0.1536.824" timestamp="1606002480676" />
+    <state width="1515" height="257" key="GridCell.Tab.0.right" timestamp="1606002480676">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1515" height="257" key="GridCell.Tab.0.right/0.0.1536.824@0.0.1536.824" timestamp="1606001369056" />
-    <state width="1515" height="257" key="GridCell.Tab.1.bottom" timestamp="1606001369057">
+    <state width="1515" height="257" key="GridCell.Tab.0.right/0.0.1536.824@0.0.1536.824" timestamp="1606002480676" />
+    <state width="1515" height="257" key="GridCell.Tab.1.bottom" timestamp="1606002480677">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1515" height="257" key="GridCell.Tab.1.bottom/0.0.1536.824@0.0.1536.824" timestamp="1606001369057" />
-    <state width="1515" height="257" key="GridCell.Tab.1.center" timestamp="1606001369057">
+    <state width="1515" height="257" key="GridCell.Tab.1.bottom/0.0.1536.824@0.0.1536.824" timestamp="1606002480677" />
+    <state width="1515" height="257" key="GridCell.Tab.1.center" timestamp="1606002480676">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1515" height="257" key="GridCell.Tab.1.center/0.0.1536.824@0.0.1536.824" timestamp="1606001369057" />
-    <state width="1515" height="257" key="GridCell.Tab.1.left" timestamp="1606001369056">
+    <state width="1515" height="257" key="GridCell.Tab.1.center/0.0.1536.824@0.0.1536.824" timestamp="1606002480676" />
+    <state width="1515" height="257" key="GridCell.Tab.1.left" timestamp="1606002480676">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1515" height="257" key="GridCell.Tab.1.left/0.0.1536.824@0.0.1536.824" timestamp="1606001369056" />
-    <state width="1515" height="257" key="GridCell.Tab.1.right" timestamp="1606001369057">
+    <state width="1515" height="257" key="GridCell.Tab.1.left/0.0.1536.824@0.0.1536.824" timestamp="1606002480676" />
+    <state width="1515" height="257" key="GridCell.Tab.1.right" timestamp="1606002480677">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1515" height="257" key="GridCell.Tab.1.right/0.0.1536.824@0.0.1536.824" timestamp="1606001369057" />
+    <state width="1515" height="257" key="GridCell.Tab.1.right/0.0.1536.824@0.0.1536.824" timestamp="1606002480677" />
     <state x="277" y="57" key="SettingsEditor" timestamp="1603547440731">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
@@ -169,10 +171,10 @@
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state width="865" height="415" key="XDebugger.FullValuePopup/0.0.1536.824@0.0.1536.824" timestamp="1605999331859" />
-    <state x="477" y="11" width="662" height="801" key="find.popup" timestamp="1605999920931">
+    <state x="477" y="11" width="662" height="801" key="find.popup" timestamp="1606133861419">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="477" y="11" width="662" height="801" key="find.popup/0.0.1536.824@0.0.1536.824" timestamp="1605999920931" />
+    <state x="477" y="11" width="662" height="801" key="find.popup/0.0.1536.824@0.0.1536.824" timestamp="1606133861419" />
     <state x="611" y="197" key="refactoring.ChangeSignatureDialog" timestamp="1603989476241">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
