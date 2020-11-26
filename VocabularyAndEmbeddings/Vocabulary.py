@@ -52,7 +52,7 @@ def build_vocabulary_dict_fromtext(corpus_txt_fpaths):
     return vocab_dict, lemmatized_forms_ls
 
 
-def build_vocabulary_dict_from_senselabeled(lowercase):
+def  build_vocabulary_dict_from_senselabeled(lowercase):
     vocab_dict = {}
     lemmatized_forms_ls = []
 

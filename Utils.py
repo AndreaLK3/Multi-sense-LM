@@ -100,7 +100,7 @@ def get_timestamp_month_to_sec():
               str(time.localtime().tm_min), str(time.localtime().tm_sec)])
 
 
-def record_statistics(epoch_sumlosses_tpl, epoch_numsteps_tpl, losses_lts):
+def record_statistics(epoch_sumlosses_tpl, epoch_numsteps_tpl):
     sum_epoch_loss_global,sum_epoch_loss_sense, sum_epoch_loss_multisense = epoch_sumlosses_tpl
     epoch_step, num_steps_withsense, num_steps_withmultisense = epoch_numsteps_tpl
     if num_steps_withsense==0: num_steps_withsense=1 # adjusting for when we do only standard LM
@@ -113,12 +113,11 @@ def record_statistics(epoch_sumlosses_tpl, epoch_numsteps_tpl, losses_lts):
     epoch_loss = epoch_loss_globals + epoch_loss_senses
     logging.info("Losses: " + " Globals loss=" + str(round(epoch_loss_globals,2)) +
                                " \tSense loss=" + str(round(epoch_loss_senses,2)) +
-                               " \tLoss on multi-senses=" + str(round(epoch_loss_senses, 2)) +
+                               " \tLoss on polysemous senses=" + str(round(epoch_loss_senses, 2)) +
                                " \tTotal loss=" + str(round(epoch_loss,3)) )
     logging.info("Perplexity: " + " Globals perplexity=" + str(round(exp(epoch_loss_globals),2)) +
                  " \tPerplexity on all senses=" + str(round(exp(epoch_loss_senses),2)) +
-                 " \tPerplexity on multi-senses=" + str(round(exp(epoch_loss_multisenses),2)) + "\n-------")
-    losses_lts.append((epoch_loss_globals, epoch_loss_senses))
+                 " \tPerplexity on polysemous senses=" + str(round(exp(epoch_loss_multisenses),2)) + "\n-------")
 
 ##########
 

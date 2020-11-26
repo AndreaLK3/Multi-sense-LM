@@ -72,8 +72,7 @@ def compute_sense_ctx_averages(num_prev_words):
     while True:
         try:
             current_token_tpl, next_token_tpl = \
-                NI.get_tokens_tpls(next_token_tpl, generator,
-                                   senseindices_db_c, vocab_h5, grapharea_matrix,
+                NI.get_tokens_tpls(next_token_tpl, generator, senseindices_db_c, vocab_h5, grapharea_matrix,
                                    last_sense_idx, first_idx_dummySenses, slc_or_text_corpus)
             global_idx, sense_idx = current_token_tpl
 

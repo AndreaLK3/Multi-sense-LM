@@ -83,15 +83,17 @@ def standardtextcorpus_generator(in_folder_path):
 
 ##### The Dataset
 class TextDataset(torch.utils.data.Dataset):
-    def __init__(self, sensecorpus_or_text, textcorpus_path, senseindices_db_c, vocab_h5, model,
+    def __init__(self, sensecorpus_or_text, textcorpus_path, senseindices_db_c, vocab_df, model,
                        grapharea_matrix, area_size, graph_dataobj):
         self.textcorpus_path = textcorpus_path
         self.sensecorpus_or_text = sensecorpus_or_text
         self.generator = SLC.read_split(textcorpus_path) if sensecorpus_or_text else standardtextcorpus_generator(textcorpus_path)
         self.senseindices_db_c = senseindices_db_c
-        self.vocab_h5 = vocab_h5
+        # self.vocab_h5 = vocab_h5
+        self.vocab_df = vocab_df
         self.nn_model = model
         self.counter = 0
+        self.globals_unk_counter = 0
         self.last_sense_idx = senseindices_db_c.execute("SELECT COUNT(*) from indices_table").fetchone()[0]
         self.first_idx_dummySenses = Utils.get_startpoint_dummySenses(sensecorpus_or_text)
 
@@ -102,9 +104,9 @@ class TextDataset(torch.utils.data.Dataset):
 
     def __getitem__(self, index):
         self.current_token_tpl, self.next_token_tpl = \
-            NI.get_tokens_tpls(self.next_token_tpl, self.generator,
-                                 self.senseindices_db_c, self.vocab_h5, self.grapharea_matrix,
-                                 self.last_sense_idx, self.first_idx_dummySenses, self.sensecorpus_or_text)
+            NI.get_tokens_tpls(self.next_token_tpl, self.generator, self.senseindices_db_c, self.vocab_df,
+                               self.grapharea_matrix, self.last_sense_idx, self.first_idx_dummySenses,
+                               self.sensecorpus_or_text)
 
         global_idx, sense_idx = self.current_token_tpl
         #logging.info("TextDataset > global_idx, sense_idx =" + str((global_idx, sense_idx)))
@@ -128,6 +130,29 @@ class TextDataset(torch.utils.data.Dataset):
                 return self.counter
         else:
             return self.counter
+
+    def get_num_unks(self):
+        unk_index = self.vocab_df[self.vocab_df['word'] == Utils.UNK_TOKEN].index.values[0]
+        if self.globals_unk_counter == 0:
+            unk_reader = standardtextcorpus_generator(self.textcorpus_path) \
+                if self.generator.__name__ == 'standardtextcorpus_generator' else SLC.read_split(self.textcorpus_path)
+            logging.info("Reading the dataset to determine the number of <unk> tokens among the globals")
+            try:
+                while True:
+                    self.current_token_tpl, self.next_token_tpl = \
+                        NI.get_tokens_tpls(self.next_token_tpl, unk_reader, self.senseindices_db_c, self.vocab_df,
+                                           self.grapharea_matrix, self.last_sense_idx, self.first_idx_dummySenses,
+                                           self.sensecorpus_or_text)
+
+                    global_idx, sense_idx = self.current_token_tpl
+                    if global_idx == unk_index:
+                        self.globals_unk_counter = self.globals_unk_counter +1
+                        if self.globals_unk_counter % 1000 == 0:
+                            logging.info("self.globals_unk_counter=" + str(self.globals_unk_counter))
+            except StopIteration:
+                return self.globals_unk_counter
+        else:
+            return self.globals_unk_counter
 #####
 
 ### Auxiliary function:

@@ -40,28 +40,29 @@ def get_missing_sense_label(global_absolute_index, grapharea_matrix, last_sense_
             return -1
 
 
-### Internal function to: translate the word (and if present, the sense) into numerical indices.
-# sense = [0,se) ; single prototype = [se,se+sp) ; definitions = [se+sp, se+sp+d) ; examples = [se+sp+d, e==num_nodes)
-def convert_tokendict_to_tpl(token_dict, senseindices_db_c, globals_vocabulary_h5, grapharea_matrix,
-                             last_sense_idx,first_idx_dummySenses, slc_or_text):
-
+# Auxiliary function 1 for convert_tokendict_to_tpl: convert the standard word into a numerical index
+def convert_globalword_to_idx(token_dict, slc_or_text, globals_vocabulary_df):
     word = VocabUtils.process_word_token(token_dict, lowercasing=slc_or_text)  # html.unescape + currently lowercasing
     # logging.info("convert_tokendict_to_tpl>word=" + word)
-    h5_word_row = Utils.select_from_hdf5(globals_vocabulary_h5, 'vocabulary', ['word'], [word])
+    word_row_df = globals_vocabulary_df[globals_vocabulary_df['word']==word]
     try:
-        global_absolute_index = h5_word_row.index[0]
+        global_absolute_index = word_row_df.index.values[0]
     except IndexError: # redirect onto <unk>
         word = Utils.UNK_TOKEN
-        h5_word_row = Utils.select_from_hdf5(globals_vocabulary_h5, 'vocabulary', ['word'], [word])
-        global_absolute_index = h5_word_row.index[0]
+        word_row_df = globals_vocabulary_df[globals_vocabulary_df['word']==word]
+        global_absolute_index = word_row_df.index.values[0]
 
     global_index = global_absolute_index # + last_idx_senses; do not add this to globals, or we go beyond the n_classes
     # we still have to add the relative displacement of last_idx_senses to the global, but not here
+    return global_index, word_row_df
 
+# Auxiliary function 2 for convert_tokendict_to_tpl: convert the sense into a numerical index
+def convert_sense_to_idx(token_dict, globals_vocabulary_df, word_row_df, senseindices_db_c, grapharea_matrix,
+                         last_sense_idx, first_idx_dummySenses, slc_or_text):
     # we lemmatize to avoid flunking inflected forms, like "irregularities"
-    lemmatized_form = h5_word_row.lemmatized_form.values[0]
-    lemmatized_form_row = Utils.select_from_hdf5(globals_vocabulary_h5, 'vocabulary', ['word'], [lemmatized_form])
-    lemmatized_form_index = lemmatized_form_row.index[0]
+    lemmatized_form = word_row_df.lemmatized_form.values[0]
+    lemmatized_form_row_df = globals_vocabulary_df[globals_vocabulary_df['word']==lemmatized_form]
+    lemmatized_form_index = lemmatized_form_row_df.index.values[0]
 
     keys = token_dict.keys()
     sense_index_queryresult = None
@@ -84,21 +85,33 @@ def convert_tokendict_to_tpl(token_dict, senseindices_db_c, globals_vocabulary_h
         if slc_or_text:
             sense_index = get_missing_sense_label(lemmatized_form_index, grapharea_matrix, last_sense_idx, first_idx_dummySenses)
         else: sense_index = -1
+    return sense_index
+
+### Internal function to: translate the word (and if present, the sense) into numerical indices.
+# sense = [0,se) ; single prototype = [se,se+sp) ; definitions = [se+sp, se+sp+d) ; examples = [se+sp+d, e==num_nodes)
+def convert_tokendict_to_tpl(token_dict, senseindices_db_c, globals_vocabulary_h5, grapharea_matrix, last_sense_idx,
+                             first_idx_dummySenses, slc_or_text):
+
+    global_index, h5_word_row = convert_globalword_to_idx(token_dict, slc_or_text, globals_vocabulary_h5)
+
+    sense_index = convert_sense_to_idx(token_dict, globals_vocabulary_h5, h5_word_row, senseindices_db_c, grapharea_matrix,
+                    last_sense_idx, first_idx_dummySenses, slc_or_text)
 
     logging.debug('(global_index, sense_index)=' + str((global_index, sense_index)))
     return (global_index, sense_index)
 
 ### Entry point function to: translate the word (and if present, the sense) into numerical indices.
-def get_tokens_tpls(next_token_tpl, split_datagenerator, senseindices_db_c, vocab_h5, grapharea_matrix,
-                    last_idx_sense, first_idx_dummySenses, slc_or_text):
+def get_tokens_tpls(next_token_tpl, split_datagenerator, senseindices_db_c, vocab_df, grapharea_matrix, last_idx_sense,
+                    first_idx_dummySenses, slc_or_text):
     if next_token_tpl is None:
-        current_token_tpl = convert_tokendict_to_tpl(split_datagenerator.__next__(),
-                                                     senseindices_db_c, vocab_h5, grapharea_matrix, last_idx_sense, first_idx_dummySenses, slc_or_text)
-        next_token_tpl = convert_tokendict_to_tpl(split_datagenerator.__next__(),
-                                                  senseindices_db_c, vocab_h5, grapharea_matrix, last_idx_sense, first_idx_dummySenses, slc_or_text)
+        current_token_tpl = convert_tokendict_to_tpl(split_datagenerator.__next__(), senseindices_db_c, vocab_df,
+                                                     grapharea_matrix, last_idx_sense, first_idx_dummySenses,
+                                                     slc_or_text)
+        next_token_tpl = convert_tokendict_to_tpl(split_datagenerator.__next__(), senseindices_db_c, vocab_df,
+                                                  grapharea_matrix, last_idx_sense, first_idx_dummySenses, slc_or_text)
     else:
         current_token_tpl = next_token_tpl
-        next_token_tpl = convert_tokendict_to_tpl(split_datagenerator.__next__(),senseindices_db_c, vocab_h5,
+        next_token_tpl = convert_tokendict_to_tpl(split_datagenerator.__next__(), senseindices_db_c, vocab_df,
                                                   grapharea_matrix, last_idx_sense, first_idx_dummySenses, slc_or_text)
 
     return current_token_tpl, next_token_tpl

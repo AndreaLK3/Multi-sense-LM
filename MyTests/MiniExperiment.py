@@ -6,29 +6,16 @@ import torch
 import Utils
 import Filesystem as F
 import logging
-import Graph.DefineGraph as DG
-import sqlite3
 import os
-import pandas as pd
-from math import inf
 import Graph.Adjacencies as AD
-import numpy as np
-from NN.Training import load_model_from_file, ModelType
-from NN.Models.Common import ContextMethod
-from VocabularyAndEmbeddings.ComputeEmbeddings import Method
+from NN.Training import load_model_from_file, ModelType, get_objects, get_dataloaders, create_model, evaluation
 from NN.Loss import write_doc_logging, compute_model_loss
 from Utils import DEVICE
-import NN.DataLoading as DL
-import NN.Models.RNNs as RNNs
-import NN.Models.SelectK as SelectK
 from itertools import cycle
 import gc
-from math import exp
 from time import time
 import VocabularyAndEmbeddings.ComputeEmbeddings as CE
-import NN.Models.SenseContext as SC
 import NN.ExplorePredictions as EP
-import NN.Models.SelfAttention as SA
 
 ################ Auxiliary function, for logging ################
 def log_input(batch_input, last_idx_senses, slc_or_text):
@@ -59,66 +46,37 @@ def log_input(batch_input, last_idx_senses, slc_or_text):
     return
 
 
-def log_gradient_norms(model_forParameters):
-    for (name,param) in model_forParameters.named_parameters():
-        logging.info(str(name) + " ; gradient norm=" + str(torch.norm(param, p=None)) +
-                     " \t ; requires_grad=" + str(param.requires_grad))
-
-
-
-
 ################ Creating the model, the train_dataloader, and any necessary variables ################
-def setup_train(slc_or_text_corpus, model_type, K, C, context_method=None,
+def setup_train(slc_or_text_corpus, model_type, K=0, C=0, context_method=None,
                 dim_qkv=300,
                 include_globalnode_input=0, load_saved_model=False,
                 batch_size=2, sequence_length=3,
                 method=CE.Method.FASTTEXT, grapharea_size=32):
 
-    # -------------------- Setting up the graph, grapharea_matrix and vocabulary --------------------
-    graph_dataobj = DG.get_graph_dataobject(new=False, method=method, slc_corpus=slc_or_text_corpus).to(DEVICE)
-
     subfolder = F.FOLDER_SENSELABELED if slc_or_text_corpus else F.FOLDER_STANDARDTEXT
     graph_folder = os.path.join(F.FOLDER_GRAPH, subfolder)
     inputdata_folder = os.path.join(F.FOLDER_INPUT, subfolder)
     vocabulary_folder = os.path.join(F.FOLDER_VOCABULARY, subfolder)
-    grapharea_matrix = AD.get_grapharea_matrix(graph_dataobj, grapharea_size, hops_in_area=1, graph_folder=graph_folder)
+    folders = (graph_folder, inputdata_folder, vocabulary_folder)
 
-    single_prototypes_file = F.SPVs_FASTTEXT_FILE if method == Method.FASTTEXT else F.SPVs_DISTILBERT_FILE
-    embeddings_matrix = torch.tensor(np.load(os.path.join(inputdata_folder, single_prototypes_file))).to(torch.float32)
+    # -------------------- 1: Setting up the graph, grapharea_matrix and vocabulary --------------------
+    graph_dataobj, grapharea_size, grapharea_matrix, vocabulary_df, embeddings_matrix = get_objects(slc_or_text_corpus,folders, method, grapharea_size)
+    objects = graph_dataobj, grapharea_size, grapharea_matrix, vocabulary_df, embeddings_matrix
 
-    globals_vocabulary_fpath = os.path.join(vocabulary_folder, F.VOCABULARY_OF_GLOBALS_FILENAME)
-    vocabulary_df = pd.read_hdf(globals_vocabulary_fpath, mode='r')
-
-    # -------------------- Loading / creating the model --------------------
-    torch.manual_seed(1) # for reproducibility while conducting mini-experiments
+    # -------------------- 2: Loading / creating the model --------------------
+    torch.manual_seed(1) # for reproducibility while conducting experiments
     if torch.cuda.is_available():
-         torch.cuda.manual_seed_all(1)
-    if load_saved_model:
+        torch.cuda.manual_seed_all(1)
+    if load_saved_model: # allows to load a model pre-trained on another dataset. Was not used for the paper results.
         model = load_model_from_file(slc_or_text_corpus, inputdata_folder, graph_dataobj)
     else:
-        if model_type == ModelType.RNN:
-            model = RNNs.RNN(graph_dataobj, grapharea_size, grapharea_matrix, vocabulary_df,
-                             embeddings_matrix, include_globalnode_input,
-                             batch_size=batch_size, n_layers=3, n_hid_units=1024)
-        elif model_type == ModelType.SELECTK:
-            model = SelectK.SelectK(graph_dataobj, grapharea_size, grapharea_matrix, vocabulary_df, embeddings_matrix,
-                 include_globalnode_input, batch_size, n_layers=3, n_hid_units=1024, K=K)
-        elif model_type == ModelType.SC:
-            model =SC.SenseContext(graph_dataobj, grapharea_size, grapharea_matrix, vocabulary_df,
-                                   embeddings_matrix, include_globalnode_input, batch_size, n_layers=3,
-                                   n_hid_units=1024, K=K, num_C=C, context_method=context_method)
-        elif model_type==ModelType.SELFATT:
-            model = SA.ScoresLM(graph_dataobj, grapharea_size, grapharea_matrix, vocabulary_df, embeddings_matrix,
-                 include_globalnode_input, batch_size, n_layers=3, n_hid_units=1024, K=K,
-                                num_C=C, context_method=context_method, dim_qkv=dim_qkv)
-        else:
-            raise Exception("Model type specification incorrect")
+        model = create_model(model_type, objects, include_globalnode_input, K, context_method, C, dim_qkv)
 
-    # -------------------- Moving objects on GPU --------------------
+    # -------------------- 3: Moving objects on GPU --------------------
     logging.info("Graph-data object loaded, model initialized. Moving them to GPU device(s) if present.")
 
     n_gpu = torch.cuda.device_count()
-    if n_gpu > 1: # and allow_dataparallel:
+    if n_gpu > 1:
         logging.info("Using " + str(n_gpu) + " GPUs")
         model = torch.nn.DataParallel(model, dim=0)
         model_forDataLoading = model.module
@@ -128,25 +86,17 @@ def setup_train(slc_or_text_corpus, model_type, K, C, context_method=None,
         batch_size = 1 if batch_size is None else batch_size
     model.to(DEVICE)
 
-    # -------------------- Creating the DataLoaders for training and validation dataset --------------------
-    senseindices_db_filepath = os.path.join(inputdata_folder, Utils.INDICES_TABLE_DB)
-    senseindices_db = sqlite3.connect(senseindices_db_filepath)
-    senseindices_db_c = senseindices_db.cursor()
+    # -------------------- 4: Creating the DataLoaders for training, validation and test datasets --------------------
+    corpus_fpath = os.path.join(F.FOLDER_MINICORPUSES, subfolder) # The only modification in a MiniExperiment
+    datasets, dataloaders = get_dataloaders(objects, slc_or_text_corpus, corpus_fpath, folders,
+                                  batch_size, sequence_length, model_forDataLoading)
 
-    bptt_collator = DL.BPTTBatchCollator(grapharea_size, sequence_length)
-
-    vocab_h5 = pd.HDFStore(globals_vocabulary_fpath, mode='r')
-    train_corpus_fpath = os.path.join(F.FOLDER_MINICORPUSES, subfolder, F.FOLDER_TRAIN)
-    train_dataset = DL.TextDataset(slc_or_text_corpus, train_corpus_fpath, senseindices_db_c, vocab_h5, model_forDataLoading,
-                                   grapharea_matrix, grapharea_size, graph_dataobj)
-    train_dataloader = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size * sequence_length,
-                                                   num_workers=0, collate_fn=bptt_collator)
-
-    return model, train_dataloader
+    return model, datasets, dataloaders
 
 
 ################
-def run_train(model,train_dataloader, learning_rate, num_epochs, predict_senses=True, with_freezing=False):
+def run_train(model,dataloaders, learning_rate, num_epochs, predict_senses=True, with_freezing=False):
+    train_dataloader, _valid_dataloader, test_dataloader = dataloaders
 
     # -------------------- Setup; parameters and utilities --------------------
     Utils.init_logging('MiniExp-' + Utils.get_timestamp_month_to_sec() + '.log', loglevel=logging.INFO)
@@ -162,11 +112,12 @@ def run_train(model,train_dataloader, learning_rate, num_epochs, predict_senses=
     parameters_ls = [param for param in model_forParameters.parameters()]
     model_forParameters.predict_senses = predict_senses
     logging.info(model)
-    # checking the value of K in SelectK
     try:
         logging.info("Using K=" + str(model_forParameters.K))
+        logging.info("C=" + str(model_forParameters.num_C))
+        logging.info("context_method=" + str(model_forParameters.context_method))
     except Exception:
-        pass # not using SelectK here. Move on
+        pass # no further hyperparameters were specified
 
     steps_logging = 5
     overall_step = 0
@@ -182,6 +133,7 @@ def run_train(model,train_dataloader, learning_rate, num_epochs, predict_senses=
     # debug
     torch.autograd.set_detect_anomaly(True)
     train_dataiter = iter(cycle(train_dataloader))
+    test_dataiter = iter(cycle(test_dataloader))
 
     # -------------------- The training loop --------------------
     try: # to catch KeyboardInterrupt-s and still save the training & validation losses
@@ -200,18 +152,14 @@ def run_train(model,train_dataloader, learning_rate, num_epochs, predict_senses=
             epoch_multisense_tokens = 0
 
             correct_predictions_dict = {'correct_g':0,
-                                        'top_k_g':0,
                                         'tot_g':0,
                                         'correct_all_s':0,
-                                        'top_k_all_s':0,
+                                        'correct_poly_s': 0,
                                         'tot_all_s':0,
-                                        'correct_multi_s':0,
-                                        'top_k_multi_s':0,
-                                        'tot_multi_s':0
+                                        'tot_poly_s':0
                                         }
             verbose = True if (epoch==num_epochs) or (epoch% 200==0) else False # - log prediction output
             # verbose_valid = True if (epoch == num_epochs) or (epoch in []) else False  # - log prediction output
-
 
             # -------------------- The training loop over the batches --------------------
             logging.info("\nEpoch n." + str(epoch) + ":")
@@ -291,8 +239,11 @@ def run_train(model,train_dataloader, learning_rate, num_epochs, predict_senses=
 
             epoch_sumlosses_tpl = sum_epoch_loss_global, sum_epoch_loss_sense, sum_epoch_loss_multisense
             epoch_numsteps_tpl = epoch_step, epoch_senselabeled_tokens, epoch_multisense_tokens
-            Utils.record_statistics(epoch_sumlosses_tpl, epoch_numsteps_tpl, training_losses_lts)
+            Utils.record_statistics(epoch_sumlosses_tpl, epoch_numsteps_tpl)
 
 
     except KeyboardInterrupt:
         logging.info("Training loop interrupted manually by keyboard")
+
+    # At the end: Evaluation on the test set
+    evaluation(test_dataloader, test_dataiter, model, verbose=False, slc_or_text=slc_or_text)

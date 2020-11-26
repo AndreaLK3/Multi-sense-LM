@@ -1,18 +1,15 @@
 import logging
-
 import numpy as np
 import torch
 from torch.nn import functional as tfunc
-from math import isnan, isinf
 from NN import ExplorePredictions as EP
-from Utils import DEVICE
+from Utils import DEVICE, get_timestamp_month_to_sec
 
 
-def write_doc_logging(train_dataloader, model, model_forParameters, learning_rate, num_epochs):
-    hyperparams_str = '_batchPerSeqlen' + str(train_dataloader.batch_size) \
+def write_doc_logging(train_dataloader, model, model_forParameters, learning_rate):
+    hyperparams_str = 'Model_date' + get_timestamp_month_to_sec() + '_batchPerSeqlen' + str(train_dataloader.batch_size) \
                       + '_area' + str(model_forParameters.grapharea_size)\
-                      + '_lr' + str(learning_rate) \
-                      + '_epochs' + str(num_epochs)
+                      + '_lr' + str(learning_rate)
     logging.info("Hyperparameters: " + hyperparams_str)
     logging.info("Model:")
     logging.info(str(model))
@@ -31,7 +28,7 @@ def update_predictions_history_dict(correct_preds_dict, predictions_globals, pre
     k = 10
     batch_labels_globals = batch_labels_tpl[0]
     batch_labels_all_senses = batch_labels_tpl[1]
-    batch_labels_multi_senses = batch_labels_tpl[2]
+    batch_labels_poly_senses = batch_labels_tpl[2]
 
     (values_g, indices_g) = predictions_globals.sort(dim=1, descending=True)
 
@@ -45,32 +42,32 @@ def update_predictions_history_dict(correct_preds_dict, predictions_globals, pre
         label_g = batch_labels_globals[i]
         if label_g in top_k_predictions_g[i]:
             batch_counter_top_k_g = batch_counter_top_k_g+1
-    correct_preds_dict['top_k_g'] = correct_preds_dict['top_k_g'] + batch_counter_top_k_g
+    # correct_preds_dict['top_k_g'] = correct_preds_dict['top_k_g'] + batch_counter_top_k_g
 
 
     if len(predictions_senses.shape) > 1:
         (values_s, indices_s) = predictions_senses.sort(dim=1, descending=True)
         correct_preds_dict['correct_all_s'] = \
             correct_preds_dict['correct_all_s'] + torch.sum(indices_s[:, 0] == batch_labels_all_senses).item()
-        correct_preds_dict['correct_multi_s'] = \
-            correct_preds_dict['correct_multi_s'] + torch.sum(indices_s[:, 0] == batch_labels_multi_senses).item()
+        correct_preds_dict['correct_poly_s'] = \
+            correct_preds_dict['correct_poly_s'] + torch.sum(indices_s[:, 0] == batch_labels_poly_senses).item()
         correct_preds_dict['tot_all_s'] = correct_preds_dict['tot_all_s'] + \
                                       (batch_labels_all_senses[batch_labels_all_senses != -1].shape[0])
-        correct_preds_dict['tot_multi_s'] = correct_preds_dict['tot_multi_s'] + \
-                                          (batch_labels_all_senses[batch_labels_multi_senses != -1].shape[0])
+        correct_preds_dict['tot_poly_s'] = correct_preds_dict['tot_poly_s'] + \
+                                          (batch_labels_all_senses[batch_labels_poly_senses != -1].shape[0])
 
         top_k_predictions_s = indices_s[:, 0:k]
         batch_counter_top_k_all_s = 0
         batch_counter_top_k_multi_s = 0
         for i in range(len(batch_labels_all_senses)):
             label_all_s = batch_labels_all_senses[i]
-            label_multi_s = batch_labels_multi_senses[i]
+            label_multi_s = batch_labels_poly_senses[i]
             if label_all_s in top_k_predictions_s[i]:
                 batch_counter_top_k_all_s = batch_counter_top_k_all_s + 1
             if label_multi_s in top_k_predictions_s[i]:
                 batch_counter_top_k_multi_s = batch_counter_top_k_multi_s + 1
-        correct_preds_dict['top_k_all_s'] = correct_preds_dict['top_k_all_s'] + batch_counter_top_k_all_s
-        correct_preds_dict['top_k_multi_s'] = correct_preds_dict['top_k_multi_s'] + batch_counter_top_k_multi_s
+        # correct_preds_dict['top_k_all_s'] = correct_preds_dict['top_k_all_s'] + batch_counter_top_k_all_s
+        # correct_preds_dict['top_k_multi_s'] = correct_preds_dict['top_k_multi_s'] + batch_counter_top_k_multi_s
 
     logging.debug("updated_predictions_history_dict = " +str(correct_preds_dict))
     return

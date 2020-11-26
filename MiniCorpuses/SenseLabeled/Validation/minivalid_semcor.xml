@@ -1,0 +1,66 @@
+<root><document id="br-e09">
+        <paragraph>
+            <sentence>
+                <word surface_form="-" pos=":"/>
+                <word surface_form="The" pos="DT"/>
+                <word surface_form="best" lemma="best" pos="JJS"/>
+                <word surface_form="2" pos="CD"/>
+                <word surface_form="-" pos=":"/>
+                <word surface_form="year-old" pos="JJ"/>
+                <word surface_form="pacing" lemma="pacing" pos="NN"/>
+                <word surface_form="mile" lemma="mile" pos="NN"/>
+                <word surface_form="up_to_date" pos="JJ"/>
+                <word surface_form="at" pos="IN"/>
+                <word surface_form="Ben_White_Raceway" lemma="ben_white_raceway" pos="NNP"/>
+                <word surface_form="has" lemma="have" pos="VBZ"/>
+                <word surface_form="been" lemma="be" pos="VBN" wn16_key="be%2:42:06::" wn30_key="be%2:42:06::"/>
+                <word surface_form="that" pos="IN"/>
+                <word surface_form="of" pos="IN"/>
+                <word surface_form="Mary_Liner" lemma="mary_liner" pos="NNP"/>
+                <word surface_form="(" pos="NNP"/>
+                <word surface_form="Mainliner-Highland_Ellen" pos="NNP"/>
+                <word surface_form=")" pos="NNP"/>
+                <word surface_form="," pos=","/>
+                <word surface_form="a" pos="DT"/>
+                <word surface_form="member" lemma="member" pos="NN"/>
+                <word surface_form="of" pos="IN"/>
+                <word surface_form="the" pos="DT"/>
+                <word surface_form="Dick_Williams" lemma="dick_williams" pos="NNP"/>
+                <word surface_form="stable" lemma="stable" pos="JJ"/>
+                <word surface_form="," pos=","/>
+                <word surface_form="who" pos="WP"/>
+                <word surface_form="was" lemma="be" pos="VBD"/>
+                <word surface_form="clocked" lemma="clock" pos="VBN" wn16_key="clock%2:30:00::" wn30_key="clock%2:30:00::"/>
+                <word surface_form="2" pos="CD"/>
+                <word surface_form=":" pos=":"/>
+                <word surface_form="25" pos="CD"/>
+                <word surface_form="." pos="."/>
+            </sentence>
+            <sentence>
+                <word surface_form="She" pos="PRP"/>
+                <word surface_form="is" lemma="be" pos="VBZ"/>
+                <word surface_form="owned" lemma="own" pos="VBN" wn16_key="own%2:40:00::" wn30_key="own%2:40:00::"/>
+                <word surface_form="by" pos="IN"/>
+                <word surface_form="Ralph_H._Kroening" pos="NNP"/>
+                <word surface_form="," pos=","/>
+                <word surface_form="Milwaukee" lemma="milwaukee" pos="NNP"/>
+                <word surface_form="," pos=","/>
+                <word surface_form="Wis." pos="NNP"/>
+                <word surface_form="," pos=","/>
+                <word surface_form="who" pos="WP"/>
+                <word surface_form="," pos=","/>
+                <word surface_form="according" lemma="accord" pos="VBG" wn16_key="accord%2:42:00::" wn30_key="accord%2:42:00::"/>
+                <word surface_form="to" pos="TO"/>
+                <word surface_form="the" pos="DT"/>
+                <word surface_form="railbirds" lemma="railbird" pos="NNS"/>
+                <word surface_form="," pos=","/>
+                <word surface_form="can" pos="MD"/>
+                <word surface_form="feel" lemma="feel" pos="VB" wn16_key="feel%2:37:00::" wn30_key="feel%2:37:00::"/>
+                <word surface_form="justly" lemma="justly" pos="RB"/>
+                <word surface_form="proud_of" lemma="proud_of" pos="JJ"/>
+                <word surface_form="her" pos="PRP$"/>
+                <word surface_form="." pos="."/>
+            </sentence>
+        </paragraph>
+	</document>
+</root>
