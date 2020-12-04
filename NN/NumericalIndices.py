@@ -89,12 +89,12 @@ def convert_sense_to_idx(token_dict, globals_vocabulary_df, word_row_df, sensein
 
 ### Internal function to: translate the word (and if present, the sense) into numerical indices.
 # sense = [0,se) ; single prototype = [se,se+sp) ; definitions = [se+sp, se+sp+d) ; examples = [se+sp+d, e==num_nodes)
-def convert_tokendict_to_tpl(token_dict, senseindices_db_c, globals_vocabulary_h5, grapharea_matrix, last_sense_idx,
+def convert_tokendict_to_tpl(token_dict, senseindices_db_c, vocab_df, grapharea_matrix, last_sense_idx,
                              first_idx_dummySenses, slc_or_text):
 
-    global_index, h5_word_row = convert_globalword_to_idx(token_dict, slc_or_text, globals_vocabulary_h5)
+    global_index, h5_word_row = convert_globalword_to_idx(token_dict, slc_or_text, vocab_df)
 
-    sense_index = convert_sense_to_idx(token_dict, globals_vocabulary_h5, h5_word_row, senseindices_db_c, grapharea_matrix,
+    sense_index = convert_sense_to_idx(token_dict, vocab_df, h5_word_row, senseindices_db_c, grapharea_matrix,
                     last_sense_idx, first_idx_dummySenses, slc_or_text)
 
     logging.debug('(global_index, sense_index)=' + str((global_index, sense_index)))

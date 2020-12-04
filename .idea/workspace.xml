@@ -26,16 +26,9 @@
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Media/.~lock.Task1_DeveloperDiary_7.odt#" beforeDir="false" afterPath="$PROJECT_DIR$/Media/.~lock.Task1_DeveloperDiary_7.odt#" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Media/Task1_DeveloperDiary_7.odt" beforeDir="false" afterPath="$PROJECT_DIR$/Media/Task1_DeveloperDiary_7.odt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MyTests/ContextAverages.py" beforeDir="false" afterPath="$PROJECT_DIR$/MyTests/ContextAverages.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MyTests/MiniExperiment.py" beforeDir="false" afterPath="$PROJECT_DIR$/MyTests/MiniExperiment.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/NN/ContextAverages.py" beforeDir="false" afterPath="$PROJECT_DIR$/NN/ContextAverages.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/NN/DataLoading.py" beforeDir="false" afterPath="$PROJECT_DIR$/NN/DataLoading.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/NN/Loss.py" beforeDir="false" afterPath="$PROJECT_DIR$/NN/Loss.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/NN/NumericalIndices.py" beforeDir="false" afterPath="$PROJECT_DIR$/NN/NumericalIndices.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/NN/Training.py" beforeDir="false" afterPath="$PROJECT_DIR$/NN/Training.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/Utils.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/VocabularyAndEmbeddings/Vocabulary.py" beforeDir="false" afterPath="$PROJECT_DIR$/VocabularyAndEmbeddings/Vocabulary.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/trainmodel_script.py" beforeDir="false" afterPath="$PROJECT_DIR$/trainmodel_script.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -124,10 +117,10 @@
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="4" y="168" key="#xdebugger.XInspectDialog/0.0.1536.824@0.0.1536.824" timestamp="1605903902539" />
-    <state x="783" y="255" width="488" height="569" key="#xdebugger.evaluate" timestamp="1606410123885">
+    <state x="783" y="255" width="488" height="569" key="#xdebugger.evaluate" timestamp="1606730420412">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="783" y="255" width="488" height="569" key="#xdebugger.evaluate/0.0.1536.824@0.0.1536.824" timestamp="1606410123885" />
+    <state x="783" y="255" width="488" height="569" key="#xdebugger.evaluate/0.0.1536.824@0.0.1536.824" timestamp="1606730420412" />
     <state x="100" y="100" width="1336" height="630" key="DiffContextDialog" timestamp="1604327078700">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
@@ -136,38 +129,38 @@
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="509" y="167" key="FileChooserDialogImpl/0.0.1536.824@0.0.1536.824" timestamp="1604508605575" />
-    <state width="1515" height="257" key="GridCell.Tab.0.bottom" timestamp="1606416890223">
+    <state width="1515" height="257" key="GridCell.Tab.0.bottom" timestamp="1606730525089">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1515" height="257" key="GridCell.Tab.0.bottom/0.0.1536.824@0.0.1536.824" timestamp="1606416890223" />
-    <state width="1515" height="257" key="GridCell.Tab.0.center" timestamp="1606416890223">
+    <state width="1515" height="257" key="GridCell.Tab.0.bottom/0.0.1536.824@0.0.1536.824" timestamp="1606730525089" />
+    <state width="1515" height="257" key="GridCell.Tab.0.center" timestamp="1606730525088">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1515" height="257" key="GridCell.Tab.0.center/0.0.1536.824@0.0.1536.824" timestamp="1606416890223" />
-    <state width="1515" height="257" key="GridCell.Tab.0.left" timestamp="1606416890222">
+    <state width="1515" height="257" key="GridCell.Tab.0.center/0.0.1536.824@0.0.1536.824" timestamp="1606730525088" />
+    <state width="1515" height="257" key="GridCell.Tab.0.left" timestamp="1606730525088">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1515" height="257" key="GridCell.Tab.0.left/0.0.1536.824@0.0.1536.824" timestamp="1606416890222" />
-    <state width="1515" height="257" key="GridCell.Tab.0.right" timestamp="1606416890223">
+    <state width="1515" height="257" key="GridCell.Tab.0.left/0.0.1536.824@0.0.1536.824" timestamp="1606730525088" />
+    <state width="1515" height="257" key="GridCell.Tab.0.right" timestamp="1606730525089">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1515" height="257" key="GridCell.Tab.0.right/0.0.1536.824@0.0.1536.824" timestamp="1606416890223" />
-    <state width="1515" height="257" key="GridCell.Tab.1.bottom" timestamp="1606416890223">
+    <state width="1515" height="257" key="GridCell.Tab.0.right/0.0.1536.824@0.0.1536.824" timestamp="1606730525089" />
+    <state width="1515" height="257" key="GridCell.Tab.1.bottom" timestamp="1606730525090">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1515" height="257" key="GridCell.Tab.1.bottom/0.0.1536.824@0.0.1536.824" timestamp="1606416890223" />
-    <state width="1515" height="257" key="GridCell.Tab.1.center" timestamp="1606416890223">
+    <state width="1515" height="257" key="GridCell.Tab.1.bottom/0.0.1536.824@0.0.1536.824" timestamp="1606730525090" />
+    <state width="1515" height="257" key="GridCell.Tab.1.center" timestamp="1606730525089">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1515" height="257" key="GridCell.Tab.1.center/0.0.1536.824@0.0.1536.824" timestamp="1606416890223" />
-    <state width="1515" height="257" key="GridCell.Tab.1.left" timestamp="1606416890223">
+    <state width="1515" height="257" key="GridCell.Tab.1.center/0.0.1536.824@0.0.1536.824" timestamp="1606730525089" />
+    <state width="1515" height="257" key="GridCell.Tab.1.left" timestamp="1606730525089">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1515" height="257" key="GridCell.Tab.1.left/0.0.1536.824@0.0.1536.824" timestamp="1606416890223" />
-    <state width="1515" height="257" key="GridCell.Tab.1.right" timestamp="1606416890223">
+    <state width="1515" height="257" key="GridCell.Tab.1.left/0.0.1536.824@0.0.1536.824" timestamp="1606730525089" />
+    <state width="1515" height="257" key="GridCell.Tab.1.right" timestamp="1606730525089">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1515" height="257" key="GridCell.Tab.1.right/0.0.1536.824@0.0.1536.824" timestamp="1606416890223" />
+    <state width="1515" height="257" key="GridCell.Tab.1.right/0.0.1536.824@0.0.1536.824" timestamp="1606730525089" />
     <state x="277" y="57" key="SettingsEditor" timestamp="1603547440731">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
@@ -176,10 +169,10 @@
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state width="865" height="415" key="XDebugger.FullValuePopup/0.0.1536.824@0.0.1536.824" timestamp="1605999331859" />
-    <state x="477" y="11" width="696" height="801" key="find.popup" timestamp="1606417240765">
+    <state x="478" y="13" width="696" height="801" key="find.popup" timestamp="1606730497894">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="477" y="11" width="696" height="801" key="find.popup/0.0.1536.824@0.0.1536.824" timestamp="1606417240765" />
+    <state x="478" y="13" width="696" height="801" key="find.popup/0.0.1536.824@0.0.1536.824" timestamp="1606730497894" />
     <state x="611" y="197" key="refactoring.ChangeSignatureDialog" timestamp="1606417207663">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
@@ -211,6 +204,11 @@
           <url>file://$PROJECT_DIR$/NN/Models/SelfAttention.py</url>
           <line>190</line>
           <option name="timeStamp" value="38" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/NN/NumericalIndices.py</url>
+          <line>46</line>
+          <option name="timeStamp" value="40" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>

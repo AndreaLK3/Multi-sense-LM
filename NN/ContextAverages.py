@@ -23,7 +23,7 @@ def get_archives(subfolder):
     vocabulary_folder = os.path.join(F.FOLDER_VOCABULARY, subfolder)
 
     globals_vocabulary_fpath = os.path.join(vocabulary_folder, F.VOCABULARY_OF_GLOBALS_FILENAME)
-    vocab_h5 = pd.HDFStore(globals_vocabulary_fpath, mode='r')
+    vocab_df = pd.read_hdf(globals_vocabulary_fpath)
 
     senseindices_db_filepath = os.path.join(inputdata_folder, Utils.INDICES_TABLE_DB)
     senseindices_db = sqlite3.connect(senseindices_db_filepath)
@@ -33,7 +33,7 @@ def get_archives(subfolder):
     grapharea_matrix = AD.get_grapharea_matrix(graph_dataobj, area_size=32, hops_in_area=1, graph_folder=graph_folder)
     E = DG.load_word_embeddings(inputdata_folder)
 
-    return vocab_h5, senseindices_db_c, grapharea_matrix, E
+    return vocab_df, senseindices_db_c, grapharea_matrix, E
 
 
 
@@ -50,7 +50,7 @@ def compute_sense_ctx_averages(num_prev_words):
         os.remove(output_filepath)
 
     # --------- Preparation for reading the SLC corpus ---------
-    vocab_h5, senseindices_db_c, grapharea_matrix, E = get_archives(subfolder)
+    vocab_df, senseindices_db_c, grapharea_matrix, E = get_archives(subfolder)
 
     last_sense_idx = senseindices_db_c.execute("SELECT COUNT(*) from indices_table").fetchone()[0]
     first_idx_dummySenses = Utils.get_startpoint_dummySenses(slc_or_text_corpus)
@@ -72,7 +72,7 @@ def compute_sense_ctx_averages(num_prev_words):
     while True:
         try:
             current_token_tpl, next_token_tpl = \
-                NI.get_tokens_tpls(next_token_tpl, generator, senseindices_db_c, vocab_h5, grapharea_matrix,
+                NI.get_tokens_tpls(next_token_tpl, generator, senseindices_db_c, vocab_df, grapharea_matrix,
                                    last_sense_idx, first_idx_dummySenses, slc_or_text_corpus)
             global_idx, sense_idx = current_token_tpl
 

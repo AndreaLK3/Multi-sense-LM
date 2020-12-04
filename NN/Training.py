@@ -363,7 +363,7 @@ def run_train(model, dataloaders, learning_rate, num_epochs, predict_senses=True
 def evaluation(evaluation_dataloader, evaluation_dataiter, model, slc_or_text, verbose):
     model_forParameters = model.module if torch.cuda.device_count() > 1 and model.__class__.__name__=="DataParallel" else model
     including_senses = model_forParameters.predict_senses
-    multisense_globals_set = set(AD.get_multisense_globals_indices(slc_or_text))
+    polysemous_globals_set = set(AD.get_multisense_globals_indices(slc_or_text))
 
     model.eval()  # do not train the model now
     sum_eval_loss_globals = 0
@@ -388,16 +388,16 @@ def evaluation(evaluation_dataloader, evaluation_dataiter, model, slc_or_text, v
             batch_input = batch_input.to(DEVICE)
             batch_labels = batch_labels.to(DEVICE)
             (losses_tpl, num_sense_instances_tpl) = compute_model_loss(model, batch_input, batch_labels, eval_correct_predictions_dict,
-                                                                       multisense_globals_set, slc_or_text, verbose=verbose)
-            loss_globals, loss_sense, loss_multisense = losses_tpl
-            num_batch_sense_tokens, num_batch_multisense_tokens = num_sense_instances_tpl
+                                                                       polysemous_globals_set, slc_or_text, verbose=verbose)
+            loss_globals, loss_senses, loss_polysenses = losses_tpl
+            num_batch_sense_tokens, num_batch_polysense_tokens = num_sense_instances_tpl
             sum_eval_loss_globals = sum_eval_loss_globals + loss_globals.item()
 
             if including_senses:
-                sum_eval_loss_senses = sum_eval_loss_senses + loss_sense.item() * num_batch_sense_tokens
+                sum_eval_loss_senses = sum_eval_loss_senses + loss_senses.item() * num_batch_sense_tokens
                 evaluation_senselabeled_tokens = evaluation_senselabeled_tokens + num_batch_sense_tokens
-                sum_eval_loss_polysenses = sum_eval_loss_polysenses + loss_multisense.item() * num_batch_multisense_tokens
-                evaluation_polysense_tokens = evaluation_polysense_tokens + num_batch_multisense_tokens
+                sum_eval_loss_polysenses = sum_eval_loss_polysenses + loss_polysenses.item() * num_batch_polysense_tokens
+                evaluation_polysense_tokens = evaluation_polysense_tokens + num_batch_polysense_tokens
 
             evaluation_step = evaluation_step + 1
             if evaluation_step % logging_step == 0:
@@ -407,10 +407,10 @@ def evaluation(evaluation_dataloader, evaluation_dataiter, model, slc_or_text, v
     globals_evaluation_loss = sum_eval_loss_globals / evaluation_step
     if including_senses:
         senses_evaluation_loss = sum_eval_loss_senses / evaluation_senselabeled_tokens
-        multisenses_evaluation_loss = sum_eval_loss_polysenses / evaluation_polysense_tokens
+        polysenses_evaluation_loss = sum_eval_loss_polysenses / evaluation_polysense_tokens
     else:
         senses_evaluation_loss = 0
-        multisenses_evaluation_loss = 0
+        polysenses_evaluation_loss = 0
 
     logging.info("Evaluation - Correct predictions / Total predictions:\n" + str(eval_correct_predictions_dict))
     epoch_sumlosses_tpl = sum_eval_loss_globals, sum_eval_loss_senses, sum_eval_loss_polysenses
@@ -419,7 +419,7 @@ def evaluation(evaluation_dataloader, evaluation_dataiter, model, slc_or_text, v
 
     model.train()  # training can resume
 
-    return globals_evaluation_loss, senses_evaluation_loss, multisenses_evaluation_loss
+    return globals_evaluation_loss, senses_evaluation_loss, polysenses_evaluation_loss
 
 # Auxiliary function: freezing the standard-LM part of a model, unfreezing the senses' part. Implementation incomplete
 def freeze(optimizers, model, model_forParameters, learning_rate):
