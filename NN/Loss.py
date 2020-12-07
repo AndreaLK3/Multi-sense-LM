@@ -25,7 +25,7 @@ def write_doc_logging(train_dataloader, model, model_forParameters, learning_rat
 
 def update_predictions_history_dict(correct_preds_dict, predictions_globals, predictions_senses, batch_labels_tpl):
 
-    k = 10
+    # k = 10
     batch_labels_globals = batch_labels_tpl[0]
     batch_labels_all_senses = batch_labels_tpl[1]
     batch_labels_poly_senses = batch_labels_tpl[2]
@@ -36,12 +36,12 @@ def update_predictions_history_dict(correct_preds_dict, predictions_globals, pre
         correct_preds_dict['correct_g'] + torch.sum(indices_g[:, 0] == batch_labels_globals).item()
     correct_preds_dict['tot_g'] = correct_preds_dict['tot_g'] + batch_labels_globals.shape[0]
 
-    top_k_predictions_g = indices_g[:, 0:k]
+    # top_k_predictions_g = indices_g[:, 0:k]
     batch_counter_top_k_g = 0
     for i in range(len(batch_labels_globals)):
         label_g = batch_labels_globals[i]
-        if label_g in top_k_predictions_g[i]:
-            batch_counter_top_k_g = batch_counter_top_k_g+1
+        # if label_g in top_k_predictions_g[i]:
+        #    batch_counter_top_k_g = batch_counter_top_k_g+1
     # correct_preds_dict['top_k_g'] = correct_preds_dict['top_k_g'] + batch_counter_top_k_g
 
 
@@ -56,16 +56,16 @@ def update_predictions_history_dict(correct_preds_dict, predictions_globals, pre
         correct_preds_dict['tot_poly_s'] = correct_preds_dict['tot_poly_s'] + \
                                           (batch_labels_all_senses[batch_labels_poly_senses != -1].shape[0])
 
-        top_k_predictions_s = indices_s[:, 0:k]
-        batch_counter_top_k_all_s = 0
-        batch_counter_top_k_multi_s = 0
-        for i in range(len(batch_labels_all_senses)):
-            label_all_s = batch_labels_all_senses[i]
-            label_multi_s = batch_labels_poly_senses[i]
-            if label_all_s in top_k_predictions_s[i]:
-                batch_counter_top_k_all_s = batch_counter_top_k_all_s + 1
-            if label_multi_s in top_k_predictions_s[i]:
-                batch_counter_top_k_multi_s = batch_counter_top_k_multi_s + 1
+        # top_k_predictions_s = indices_s[:, 0:k]
+        # batch_counter_top_k_all_s = 0
+        # batch_counter_top_k_multi_s = 0
+        # for i in range(len(batch_labels_all_senses)):
+            #label_all_s = batch_labels_all_senses[i]
+            # label_multi_s = batch_labels_poly_senses[i]
+            # if label_all_s in top_k_predictions_s[i]:
+            #     batch_counter_top_k_all_s = batch_counter_top_k_all_s + 1
+            # if label_multi_s in top_k_predictions_s[i]:
+            #     batch_counter_top_k_multi_s = batch_counter_top_k_multi_s + 1
         # correct_preds_dict['top_k_all_s'] = correct_preds_dict['top_k_all_s'] + batch_counter_top_k_all_s
         # correct_preds_dict['top_k_multi_s'] = correct_preds_dict['top_k_multi_s'] + batch_counter_top_k_multi_s
 
@@ -95,9 +95,10 @@ def compute_model_loss(model, batch_input, batch_labels, correct_preds_dict, mul
     else:
         loss_all_senses = torch.tensor(0)
         loss_multi_senses = torch.tensor(0)
-    # Added to measure the senses' task, given that we can not rely on the senses' PPL for SelectK
+    # Added to measure the senses' task, given that we can not rely on the senses' PPL for SelectK & co.
     batch_labels_tpl = (batch_labels_globals, batch_labels_all_senses, batch_labels_multi_senses)
     update_predictions_history_dict(correct_preds_dict, predictions_globals, predictions_senses, batch_labels_tpl)
+    accuracy_counts = (correct_preds_dict['correct_g'], correct_preds_dict['correct_all_s'], correct_preds_dict['correct_all_s'])
 
     # debug: check the solutions and predictions. Is there anything the model is unable to predict?
     if verbose:
@@ -109,4 +110,4 @@ def compute_model_loss(model, batch_input, batch_labels, correct_preds_dict, mul
     multisenses_in_batch = len(batch_labels_multi_senses[batch_labels_multi_senses != -1])
     num_sense_instances_tpl = senses_in_batch, multisenses_in_batch
 
-    return (losses_tpl, num_sense_instances_tpl)
+    return (losses_tpl, num_sense_instances_tpl), accuracy_counts

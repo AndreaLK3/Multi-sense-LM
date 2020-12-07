@@ -117,7 +117,7 @@ def get_dataloaders(objects, slc_or_text_corpus, corpus_fpath, gr_in_voc_folders
 
     bptt_collator = DL.BPTTBatchCollator(grapharea_size, seq_len)
     globals_vocabulary_fpath = os.path.join(vocabulary_folder, F.VOCABULARY_OF_GLOBALS_FILENAME)
-    vocab_h5 = pd.HDFStore(globals_vocabulary_fpath, mode='r')
+    # vocab_h5 = pd.HDFStore(globals_vocabulary_fpath, mode='r')
     train_corpus_fpath = os.path.join(corpus_fpath, F.FOLDER_TRAIN)
     valid_corpus_fpath = os.path.join(corpus_fpath, F.FOLDER_VALIDATION)
     test_corpus_fpath = os.path.join(corpus_fpath, F.FOLDER_TEST)
@@ -215,11 +215,12 @@ def run_train(model, dataloaders, learning_rate, num_epochs, predict_senses=True
         pass # no further hyperparameters were specified
 
     # -------------------- Step 2: Setup flags --------------------
-    steps_logging = 100
+    steps_logging = 500
     overall_step = 0
     starting_time = time()
     best_valid_loss_globals = inf
     best_valid_loss_senses = inf
+    best_accuracy_counts = (0,0,0)
     previous_valid_loss_senses = inf
     freezing_epoch = None
     after_freezing_flag = False
@@ -307,7 +308,7 @@ def run_train(model, dataloaders, learning_rate, num_epochs, predict_senses=True
                 optimizer.zero_grad()
 
                 # compute loss for the batch
-                (losses_tpl, num_sense_instances_tpl) = compute_model_loss(model, batch_input, batch_labels, correct_predictions_dict,
+                (losses_tpl, num_sense_instances_tpl), _ = compute_model_loss(model, batch_input, batch_labels, correct_predictions_dict,
                                                                            multisense_globals_set,slc_or_text, verbose)
                 loss_global, loss_sense, loss_multisense = losses_tpl
                 num_batch_sense_tokens, num_batch_multisense_tokens = num_sense_instances_tpl
@@ -387,7 +388,7 @@ def evaluation(evaluation_dataloader, evaluation_dataiter, model, slc_or_text, v
             batch_input, batch_labels = evaluation_dataiter.__next__()
             batch_input = batch_input.to(DEVICE)
             batch_labels = batch_labels.to(DEVICE)
-            (losses_tpl, num_sense_instances_tpl) = compute_model_loss(model, batch_input, batch_labels, eval_correct_predictions_dict,
+            (losses_tpl, num_sense_instances_tpl), _ = compute_model_loss(model, batch_input, batch_labels, eval_correct_predictions_dict,
                                                                        polysemous_globals_set, slc_or_text, verbose=verbose)
             loss_globals, loss_senses, loss_polysenses = losses_tpl
             num_batch_sense_tokens, num_batch_polysense_tokens = num_sense_instances_tpl

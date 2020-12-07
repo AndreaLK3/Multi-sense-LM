@@ -32,9 +32,12 @@ def process_synset(target_word, synset):
 def retrieve_senses_desa(target_word):
 
     syns_ls = wn.synsets(target_word)
-    # e.g. [Synset('sea.n.01'), Synset('ocean.n.02'), Synset('sea.n.03')]
+    # [Synset('bank.n.01'), Synset('depository_financial_institution.n.01'), Synset('bank.n.03'), Synset('bank.n.04'),
+    # Synset('bank.n.05'), Synset('bank.n.06'), Synset('bank.n.07'), Synset('savings_bank.n.02'), Synset('bank.n.09'),
+    # Synset('bank.n.10'), Synset('bank.v.01'), Synset('bank.v.02'), Synset('bank.v.03'), Synset('bank.v.04'),
+    # Synset('bank.v.05'), Synset('deposit.v.02'), Synset('bank.v.07'), Synset('trust.v.01')]
     # note: only those synsets where the word appears first can be considered as belonging to the word.
-    # Otherwise, the words is a synonym
+    # Otherwise, the word is a synonym
     syns_ls = list(filter(
         lambda synset: target_word.lower() == (Utils.get_word_from_sense(synset.name())).lower(), syns_ls))
     logging.debug("WordNet.retrieve_senses_desa(target_word) > " + " synsets where the target_word word appears first " +

@@ -174,7 +174,7 @@ def run_train(model,dataloaders, learning_rate, num_epochs, predict_senses=True,
                 optimizer.zero_grad()
 
                 # compute loss for the batch
-                (losses_tpl, num_sense_instances_tpl) = compute_model_loss(model, batch_input, batch_labels, correct_predictions_dict,
+                (losses_tpl, num_sense_instances_tpl), accuracy_counts = compute_model_loss(model, batch_input, batch_labels, correct_predictions_dict,
                                                                            multisense_globals_set,slc_or_text, verbose)
                 loss_global, loss_sense, loss_multisense = losses_tpl
                 num_batch_sense_tokens, num_batch_multisense_tokens = num_sense_instances_tpl
