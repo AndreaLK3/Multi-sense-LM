@@ -1,5 +1,3 @@
-import os
-
 FOLDER_INPUT = 'InputData'
 FOLDER_PCA = 'PCA' # subfolder of InputData
 
@@ -26,7 +24,6 @@ WT_TRAIN_FILE = 'wiki.train.tokens'
 WT_VALID_FILE = 'wiki.valid.tokens'
 WT_TEST_FILE = 'wiki.test.tokens'
 
-
 VOCAB_CURRENT_INDEX_FILE = 'vocabulary_currentIndex.txt' # used for BabelNet requests over several days
 
 FASTTEXT_PRETRAINED_EMBEDDINGS_FILE = 'cc.en.300.bin'
@@ -49,3 +46,4 @@ GRAPHAREA_FILE = 'graphArea_matrix.npz'
 SAVED_MODEL_NAME = 'pretrained_model.pt'
 
 MATRIX_SENSE_CONTEXTS_FILEEND = '_SenseContext.npy'
+MOST_FREQ_SENSE_FILE = 'MostFrequentSense.h5'

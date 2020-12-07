@@ -62,7 +62,7 @@ def load_model_from_file(slc_or_text, inputdata_folder, graph_dataobj):
 # ########## Steps of setup_train ##########
 
 # ---------- Step 1: setting up the graph, grapharea_matrix (used for speed) and the vocabulary  ----------
-def get_objects(slc_or_text_corpus, gr_in_voc_folders, method, grapharea_size):
+def get_objects(slc_or_text_corpus, gr_in_voc_folders, method=CE.Method.FASTTEXT, grapharea_size=32):
     graph_folder, inputdata_folder, vocabulary_folder = gr_in_voc_folders
     graph_dataobj = DG.get_graph_dataobject(new=False, method=method, slc_corpus=slc_or_text_corpus).to(DEVICE)
 
@@ -116,7 +116,7 @@ def get_dataloaders(objects, slc_or_text_corpus, corpus_fpath, gr_in_voc_folders
     senseindices_db_c = senseindices_db.cursor()
 
     bptt_collator = DL.BPTTBatchCollator(grapharea_size, seq_len)
-    globals_vocabulary_fpath = os.path.join(vocabulary_folder, F.VOCABULARY_OF_GLOBALS_FILENAME)
+    # globals_vocabulary_fpath = os.path.join(vocabulary_folder, F.VOCABULARY_OF_GLOBALS_FILENAME)
     # vocab_h5 = pd.HDFStore(globals_vocabulary_fpath, mode='r')
     train_corpus_fpath = os.path.join(corpus_fpath, F.FOLDER_TRAIN)
     valid_corpus_fpath = os.path.join(corpus_fpath, F.FOLDER_VALIDATION)

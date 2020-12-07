@@ -62,6 +62,9 @@ EOS_TOKEN = '<eos>'
 SENSE_NOAD = 'Sense_NOAD'
 SENSE_WORDNET = 'Sense_WordNet'
 EMPTY = 'EMPTY'
+MOST_FREQUENT_SENSE = "MostFrequentSense"
+WORD = 'word'
+INDEX = 'index'
 
 GLOBALS = 'globals'
 SENSES = 'senses'
