@@ -12,6 +12,7 @@ import NN.NumericalIndices as NI
 from itertools import cycle
 import sqlite3
 import logging
+import SenseLabeledCorpus as SLC
 
 def get_sense_from_idx(senseindices_db_c, sense_index):
     senseindices_db_c.execute("SELECT word_sense FROM indices_table WHERE vocab_index=" + str(sense_index))
@@ -23,6 +24,19 @@ def get_sense_from_idx(senseindices_db_c, sense_index):
     return sense_name
 
 def compute_MFS_for_corpus():
+    subfolder = F.FOLDER_SENSELABELED
+    graph_folder = os.path.join(F.FOLDER_GRAPH, subfolder)
+    inputdata_folder = os.path.join(F.FOLDER_INPUT, subfolder)
+    vocabulary_folder = os.path.join(F.FOLDER_VOCABULARY, subfolder)
+    corpus_folder = os.path.join(F.FOLDER_TEXT_CORPUSES, F.FOLDER_SENSELABELED)
+    folders = (graph_folder, inputdata_folder, vocabulary_folder)
+
+    generator = SLC.read_split(corpus_folder)
+    for xml_instance in generator:
+        print(xml_instance)
+
+
+def compute_MFS_for_corpus_previous():
     Utils.init_logging("MostFrequentSense.log")
 
     # ---------- 1) Initializing folders ---------
@@ -53,7 +67,6 @@ def compute_MFS_for_corpus():
     objects = graph_dataobj, grapharea_size, grapharea_matrix, vocabulary_df, embeddings_matrix
 
     # Creating the iterators for training, validation and test datasets --------------------
-    corpus_fpath = os.path.join(F.FOLDER_MINICORPUSES, subfolder) # The only modification in a MiniExperiment
     _model_forDataLoading = RNNs.RNN(graph_dataobj, grapharea_size, grapharea_matrix, vocabulary_df,
                            embeddings_matrix, include_globalnode_input=False,
                            batch_size=1 , n_layers=1, n_hid_units=1024)# unused, just needed for the loading function
