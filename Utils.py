@@ -113,11 +113,6 @@ def record_statistics(epoch_sumlosses_tpl, epoch_numsteps_tpl):
     epoch_loss_senses = sum_epoch_loss_sense / num_steps_withsense
     epoch_loss_multisenses = sum_epoch_loss_multisense / num_steps_withmultisense
 
-    # epoch_loss = epoch_loss_globals + epoch_loss_senses
-    # logging.info("Losses: " + " Globals loss=" + str(round(epoch_loss_globals,2)) +
-    #                            " \tSense loss=" + str(round(epoch_loss_senses,2)) +
-    #                            " \tLoss on polysemous senses=" + str(round(epoch_loss_senses, 2)) +
-    #                            " \tTotal loss=" + str(round(epoch_loss,3)) )
     logging.info("Perplexity: " + " Globals perplexity=" + str(round(exp(epoch_loss_globals),2)) +
                  " \tPerplexity on all senses=" + str(round(exp(epoch_loss_senses),2)) +
                  " \tPerplexity on polysemous senses=" + str(round(exp(epoch_loss_multisenses),2)) + "\n-------")

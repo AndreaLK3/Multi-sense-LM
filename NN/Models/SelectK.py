@@ -22,18 +22,6 @@ def get_senseneighbours_of_k_globals(model, sample_k_indices):
     sense_neighbours = sample_neighbours[sample_neighbours < model.last_idx_senses]
     return sense_neighbours
 
-def get_senseneighbours_of_k_globals_3D(model, graphmat_neighbours_section, k_indices):
-
-    k_indices_flat = k_indices.flatten()
-    neighbours_rows = graphmat_neighbours_section.index_select(dim=0, index=k_indices_flat)
-
-    grouped_neighbors_rows_ls = [neighbours_rows[i:i + model.K] for i in range(0, neighbours_rows.shape[0], model.K)]
-    grouped_neighbours_rows = torch.stack(grouped_neighbors_rows_ls, dim=0) # it should be of torch.Size([(bsz * seq_len), K, grapharea_size])
-    grouped_neighbours_rows_adjusted = grouped_neighbours_rows -1
-
-
-    return grouped_neighbours_rows
-
 def subtract_probability_mass_from_selected(softmax_selected_senses, delta_to_subtract):
     max_index_t = torch.argmax(softmax_selected_senses)
     prev_max_value = softmax_selected_senses[max_index_t]
@@ -164,11 +152,3 @@ class SelectK(torch.nn.Module):
             predictions_senses = torch.tensor([0] * self.batch_size * seq_len).to(CURRENT_DEVICE)
 
         return predictions_globals, predictions_senses
-
-# ****** Auxiliary functions and elements *******
-
-class QueryMethod(Enum):
-    CONTEXT_AVERAGE = "average of the last C words of the context. C can be tuned"
-    ATTENTION = "attention mechanism on the last C words of the context."
-    OWN_GRU_OUT = "output of a separate GRU"
-    GLOBALS_GRU = "output (or hidden layer, depending on the current version) of the globals' GRU"

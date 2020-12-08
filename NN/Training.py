@@ -24,7 +24,7 @@ from enum import Enum
 import NN.Models.SelectK as SelectK
 import NN.Models.SenseContext as SC
 import NN.Models.SelfAttention as SA
-from NN.Models.Common import ContextMethod
+import NN.Models.MFS as MFS
 
 # ########## Auxiliary functions ##########
 
@@ -34,6 +34,7 @@ class ModelType(Enum):
     SELECTK = "SelectK"
     SC = "Sense Context"
     SELFATT = "Self Attention Scores"
+    MFS = "Most Frequent Sense"
 
 # ---------- b) The option to load a pre-trained version of one of our models ----------
 def load_model_from_file(slc_or_text, inputdata_folder, graph_dataobj):
@@ -100,6 +101,11 @@ def create_model(model_type, objects, include_globalnode_input, K, context_metho
         model = SA.ScoresLM(graph_dataobj, grapharea_size, grapharea_matrix, vocabulary_df, embeddings_matrix,
              include_globalnode_input, batch_size=32, n_layers=3, n_hid_units=1024, K=K,
                             num_C=C, context_method=context_method, dim_qkv=dim_qkv)
+    elif model_type==ModelType.MFS:
+        mfs_archive_fpath = os.path.join(F.FOLDER_TEXT_CORPUSES, F.FOLDER_SENSELABELED, F.MOST_FREQ_SENSE_FILE)
+        mfs_df = pd.read_hdf(mfs_archive_fpath)
+        model = MFS.MFS(graph_dataobj, grapharea_size, grapharea_matrix, vocabulary_df, embeddings_matrix,
+                            include_globalnode_input, batch_size=32, n_layers=3, n_hid_units=1024, K=1, mfs_df=mfs_df)
     else:
         raise Exception ("Model type specification incorrect")
     return model
