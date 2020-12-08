@@ -247,4 +247,5 @@ def run_train(model,dataloaders, learning_rate, num_epochs, predict_senses=True,
         logging.info("Training loop interrupted manually by keyboard")
 
     # At the end: Evaluation on the test set
-    evaluation(test_dataloader, test_dataiter, model, verbose=False, slc_or_text=slc_or_text)
+    evaluation(test_dataloader, test_dataiter, model, verbose=False,
+               polysense_thresholds=polysense_thresholds, slc_or_text=slc_or_text)

@@ -208,7 +208,8 @@ def run_train(model, dataloaders, learning_rate, num_epochs, predict_senses=True
     optimizers = [torch.optim.Adam(model.parameters(), lr=learning_rate)]
 
     model.train()
-    multisense_globals_set = set(AD.get_polysenseglobals_setsdict(slc_or_text))
+    polysense_thresholds = (2,3,5,10,30)
+    polysense_globals_dict= AD.get_polysenseglobals_dict(slc_or_text, thresholds=polysense_thresholds)
 
     model_forParameters = model.module if torch.cuda.device_count() > 1 and model.__class__.__name__=="DataParallel" else model
     model_forParameters.predict_senses = predict_senses
@@ -254,12 +255,12 @@ def run_train(model, dataloaders, learning_rate, num_epochs, predict_senses=True
             epoch_senselabeled_tokens = 0
             epoch_polysense_tokens = 0
 
-            correct_predictions_dict = {'correct_g':0,
+            predictions_history_dict = {'correct_g':0,
                                         'tot_g':0,
                                         'correct_all_s':0,
                                         'tot_all_s':0,
-                                        'correct_poly_s':0,
-                                        'tot_poly_s':0
+                                        'correct_poly_s': {}.fromkeys(polysense_thresholds,0),
+                                        'tot_poly_s': {}.fromkeys(polysense_thresholds, 0)
                                         }
             verbose = True if (epoch==num_epochs) or (epoch% 200==0) else False # deciding: log prediction output
             flag_earlystop = False
@@ -267,10 +268,8 @@ def run_train(model, dataloaders, learning_rate, num_epochs, predict_senses=True
             # -------------------- Step 3b) Evaluation on the validation set --------------------
             if epoch>1:
                 logging.info("After training " + str(epoch-1) + " epochs, validation:")
-                valid_loss_globals, valid_loss_senses, polysenses_evaluation_loss = evaluation(valid_dataloader,
-                                                                                                valid_dataiter,
-                                                                                                model, slc_or_text,
-                                                                                                verbose=False)
+                valid_loss_globals, valid_loss_senses, polysenses_evaluation_loss = \
+                    evaluation(valid_dataloader, valid_dataiter, model, slc_or_text, polysense_thresholds, verbose=False)
 
                 # -------------- 3c) Check the validation loss & the need for freezing / early stopping --------------
                 if exp(valid_loss_globals) > exp(best_valid_loss_globals) + 0.1 and (epoch > 2):
@@ -314,8 +313,8 @@ def run_train(model, dataloaders, learning_rate, num_epochs, predict_senses=True
                 optimizer.zero_grad()
 
                 # compute loss for the batch
-                (losses_tpl, num_sense_instances_tpl) = compute_model_loss(model, batch_input, batch_labels, correct_predictions_dict,
-                                                                           multisense_globals_set,slc_or_text, verbose)
+                (losses_tpl, num_sense_instances_tpl) = \
+                    compute_model_loss(model, batch_input, batch_labels, predictions_history_dict, polysense_globals_dict, slc_or_text, verbose=False)
                 loss_global, loss_sense, loss_multisense = losses_tpl
                 num_batch_sense_tokens, num_batch_multisense_tokens = num_sense_instances_tpl
 
@@ -347,7 +346,7 @@ def run_train(model, dataloaders, learning_rate, num_epochs, predict_senses=True
             # -------------------- 3e) Computing training losses for the epoch--------------------
             logging.info("-----\n Training, end of epoch " + str(epoch) + ". Global step n." + str(overall_step) +
                          ". Time = " + str(round(time() - starting_time, 2)))
-            logging.info("Training - Correct predictions / Total predictions:\n" + str(correct_predictions_dict))
+            logging.info("Training - Correct predictions / Total predictions:\n" + str(predictions_history_dict))
 
             epoch_sumlosses_tpl = sum_epoch_loss_global, sum_epoch_loss_senses, sum_epoch_loss_polysenses
             epoch_numsteps_tpl = epoch_step, epoch_senselabeled_tokens, epoch_polysense_tokens
@@ -361,29 +360,28 @@ def run_train(model, dataloaders, learning_rate, num_epochs, predict_senses=True
     torch.save(model, os.path.join(F.FOLDER_NN, hyperparams_str + '_end.model'))
 
     # --------------------- 5) At the end: Evaluation on the test set  ---------------------
-    evaluation(test_dataloader, test_dataiter, model, verbose=False, slc_or_text=slc_or_text)
+    evaluation(test_dataloader, test_dataiter, model, slc_or_text=slc_or_text,
+               polysense_thresholds=polysense_thresholds, verbose=False)
     logging.info("Final time=" + str(round(time() - starting_time, 2)))
 
 
 # ##########
 # Auxiliary function: Evaluation on a given dataset, e.g. validation or test set
-def evaluation(evaluation_dataloader, evaluation_dataiter, model, slc_or_text, verbose):
+def evaluation(evaluation_dataloader, evaluation_dataiter, model, slc_or_text, polysense_thresholds, verbose):
     model_forParameters = model.module if torch.cuda.device_count() > 1 and model.__class__.__name__=="DataParallel" else model
     including_senses = model_forParameters.predict_senses
-    polysemous_globals_set = set(AD.get_polysenseglobals_setsdict(slc_or_text))
+    polysense_globals_dict = AD.get_polysenseglobals_dict(slc_or_text, thresholds=polysense_thresholds)
 
     model.eval()  # do not train the model now
     sum_eval_loss_globals = 0
     sum_eval_loss_senses = 0
     sum_eval_loss_polysenses = 0
     eval_correct_predictions_dict = {'correct_g':0,
-                                    'tot_g':0,
-                                    'correct_all_s':0,
-                                    'tot_all_s':0,
-                                    'correct_poly_s':0,
-                                    'tot_poly_s':0
-                                    }
-
+                                     'tot_g':0,
+                                     'correct_all_s':0,
+                                     'tot_all_s':0,
+                                     'correct_poly_s': {}.fromkeys(polysense_thresholds,0),
+                                     'tot_poly_s': {}.fromkeys(polysense_thresholds, 0)}
     evaluation_step = 0
     evaluation_senselabeled_tokens = 0
     evaluation_polysense_tokens = 0
@@ -395,7 +393,7 @@ def evaluation(evaluation_dataloader, evaluation_dataiter, model, slc_or_text, v
             batch_input = batch_input.to(DEVICE)
             batch_labels = batch_labels.to(DEVICE)
             (losses_tpl, num_sense_instances_tpl) = compute_model_loss(model, batch_input, batch_labels, eval_correct_predictions_dict,
-                                                                       polysemous_globals_set, slc_or_text, verbose=verbose)
+                                                                       polysense_globals_dict, slc_or_text, verbose=verbose)
             loss_globals, loss_senses, loss_polysenses = losses_tpl
             num_batch_sense_tokens, num_batch_polysense_tokens = num_sense_instances_tpl
             sum_eval_loss_globals = sum_eval_loss_globals + loss_globals.item()
