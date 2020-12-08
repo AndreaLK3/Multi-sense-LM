@@ -208,7 +208,7 @@ def run_train(model, dataloaders, learning_rate, num_epochs, predict_senses=True
     optimizers = [torch.optim.Adam(model.parameters(), lr=learning_rate)]
 
     model.train()
-    multisense_globals_set = set(AD.get_multisense_globals_indices(slc_or_text))
+    multisense_globals_set = set(AD.get_polysenseglobals_setsdict(slc_or_text))
 
     model_forParameters = model.module if torch.cuda.device_count() > 1 and model.__class__.__name__=="DataParallel" else model
     model_forParameters.predict_senses = predict_senses
@@ -314,7 +314,7 @@ def run_train(model, dataloaders, learning_rate, num_epochs, predict_senses=True
                 optimizer.zero_grad()
 
                 # compute loss for the batch
-                (losses_tpl, num_sense_instances_tpl), _ = compute_model_loss(model, batch_input, batch_labels, correct_predictions_dict,
+                (losses_tpl, num_sense_instances_tpl) = compute_model_loss(model, batch_input, batch_labels, correct_predictions_dict,
                                                                            multisense_globals_set,slc_or_text, verbose)
                 loss_global, loss_sense, loss_multisense = losses_tpl
                 num_batch_sense_tokens, num_batch_multisense_tokens = num_sense_instances_tpl
@@ -370,7 +370,7 @@ def run_train(model, dataloaders, learning_rate, num_epochs, predict_senses=True
 def evaluation(evaluation_dataloader, evaluation_dataiter, model, slc_or_text, verbose):
     model_forParameters = model.module if torch.cuda.device_count() > 1 and model.__class__.__name__=="DataParallel" else model
     including_senses = model_forParameters.predict_senses
-    polysemous_globals_set = set(AD.get_multisense_globals_indices(slc_or_text))
+    polysemous_globals_set = set(AD.get_polysenseglobals_setsdict(slc_or_text))
 
     model.eval()  # do not train the model now
     sum_eval_loss_globals = 0
@@ -394,7 +394,7 @@ def evaluation(evaluation_dataloader, evaluation_dataiter, model, slc_or_text, v
             batch_input, batch_labels = evaluation_dataiter.__next__()
             batch_input = batch_input.to(DEVICE)
             batch_labels = batch_labels.to(DEVICE)
-            (losses_tpl, num_sense_instances_tpl), _ = compute_model_loss(model, batch_input, batch_labels, eval_correct_predictions_dict,
+            (losses_tpl, num_sense_instances_tpl) = compute_model_loss(model, batch_input, batch_labels, eval_correct_predictions_dict,
                                                                        polysemous_globals_set, slc_or_text, verbose=verbose)
             loss_globals, loss_senses, loss_polysenses = losses_tpl
             num_batch_sense_tokens, num_batch_polysense_tokens = num_sense_instances_tpl

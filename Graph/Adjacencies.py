@@ -57,15 +57,22 @@ def compute_globals_numsenses(graph_dataobj, grapharea_matrix, grapharea_size, s
     return new_vocabulary_df
 
 
-def get_multisense_globals_indices(slc_or_text):
+def get_polysenseglobals_dict(slc_or_text, thresholds=(2,3,5,10,30)):
+    logging.info("Identifying polysemous words...")
     subfolder = F.FOLDER_SENSELABELED if slc_or_text else F.FOLDER_STANDARDTEXT
     vocab_fpath = os.path.join(F.FOLDER_VOCABULARY, subfolder, "vocabulary_of_globals.h5");
     vocabulary_df = pd.read_hdf(vocab_fpath)
     vocabulary_num_senses_ls = vocabulary_df['num_senses'].to_list().copy()
 
-    multisense_globals_indices = [i for i in range(len(vocabulary_num_senses_ls)) if vocabulary_num_senses_ls[i] > 1]
+    numsenses_wordindices_dict = {}.fromkeys(thresholds)
 
-    return multisense_globals_indices
+    for threshold_key in thresholds:
+        numsenses_wordindices_dict[threshold_key] = set()
+        for i in range(len(vocabulary_num_senses_ls)):
+            if vocabulary_num_senses_ls[i] >= threshold_key:
+                numsenses_wordindices_dict[threshold_key].add(i)
+
+    return numsenses_wordindices_dict
 
 
 ### Getter function, to extract node area data from a row in the matrix

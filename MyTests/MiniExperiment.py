@@ -105,8 +105,9 @@ def run_train(model,dataloaders, learning_rate, num_epochs, predict_senses=True,
     optimizers = [torch.optim.Adam(model.parameters(), lr=learning_rate)]
 
     model.train()
-    training_losses_lts = []
-    multisense_globals_set = set(AD.get_multisense_globals_indices(slc_or_text))
+
+    polysense_thresholds = (2,3,5,10,30)
+    polysense_globals_dict= AD.get_polysenseglobals_dict(slc_or_text, thresholds=polysense_thresholds)
 
     model_forParameters = model.module if torch.cuda.device_count() > 1 and model.__class__.__name__=="DataParallel" else model
     parameters_ls = [param for param in model_forParameters.parameters()]
@@ -145,18 +146,18 @@ def run_train(model,dataloaders, learning_rate, num_epochs, predict_senses=True,
             # -------------------- Initialization --------------------
             sum_epoch_loss_global = 0
             sum_epoch_loss_sense = 0
-            sum_epoch_loss_multisense = 0
+            sum_epoch_loss_polysense = 0
 
             epoch_step = 0
             epoch_senselabeled_tokens = 0
-            epoch_multisense_tokens = 0
+            epoch_polysense_tokens = 0
 
-            correct_predictions_dict = {'correct_g':0,
+            predictions_history_dict = {'correct_g':0,
                                         'tot_g':0,
                                         'correct_all_s':0,
-                                        'correct_poly_s': 0,
                                         'tot_all_s':0,
-                                        'tot_poly_s':0
+                                        'correct_poly_s': {}.fromkeys(polysense_thresholds,0),
+                                        'tot_poly_s': {}.fromkeys(polysense_thresholds, 0)
                                         }
             verbose = True if (epoch==num_epochs) or (epoch% 200==0) else False # - log prediction output
             # verbose_valid = True if (epoch == num_epochs) or (epoch in []) else False  # - log prediction output
@@ -174,18 +175,18 @@ def run_train(model,dataloaders, learning_rate, num_epochs, predict_senses=True,
                 optimizer.zero_grad()
 
                 # compute loss for the batch
-                (losses_tpl, num_sense_instances_tpl), accuracy_counts = compute_model_loss(model, batch_input, batch_labels, correct_predictions_dict,
-                                                                           multisense_globals_set,slc_or_text, verbose)
-                loss_global, loss_sense, loss_multisense = losses_tpl
-                num_batch_sense_tokens, num_batch_multisense_tokens = num_sense_instances_tpl
+                (losses_tpl, num_sense_instances_tpl) = compute_model_loss(model, batch_input, batch_labels, predictions_history_dict,
+                                                                           polysense_globals_dict, slc_or_text, verbose)
+                loss_global, loss_sense, loss_polysense = losses_tpl
+                num_batch_sense_tokens, num_batch_polysense_tokens = num_sense_instances_tpl
 
                 # running sum of the training loss
                 sum_epoch_loss_global = sum_epoch_loss_global + loss_global.item()
                 if model_forParameters.predict_senses:
                     sum_epoch_loss_sense = sum_epoch_loss_sense + loss_sense.item() * num_batch_sense_tokens
                     epoch_senselabeled_tokens = epoch_senselabeled_tokens + num_batch_sense_tokens
-                    sum_epoch_loss_multisense = sum_epoch_loss_multisense + loss_multisense.item() * num_batch_multisense_tokens
-                    epoch_multisense_tokens = epoch_multisense_tokens + num_batch_multisense_tokens
+                    sum_epoch_loss_polysense = sum_epoch_loss_polysense + loss_polysense.item() * num_batch_polysense_tokens
+                    epoch_polysense_tokens = epoch_polysense_tokens + num_batch_polysense_tokens
                     if not after_freezing_flag:
                         loss = loss_global + loss_sense
                     else:
@@ -235,10 +236,10 @@ def run_train(model,dataloaders, learning_rate, num_epochs, predict_senses=True,
             # -------------------- Computing training losses for the epoch--------------------
             logging.info("-----\n Training, end of epoch " + str(epoch) + ". Global step n." + str(overall_step) +
                          ". Time = " + str(round(time() - starting_time, 2)))
-            logging.info("Training - Correct predictions / Total predictions:\n" + str(correct_predictions_dict))
+            logging.info("Training - Correct predictions / Total predictions:\n" + str(predictions_history_dict))
 
-            epoch_sumlosses_tpl = sum_epoch_loss_global, sum_epoch_loss_sense, sum_epoch_loss_multisense
-            epoch_numsteps_tpl = epoch_step, epoch_senselabeled_tokens, epoch_multisense_tokens
+            epoch_sumlosses_tpl = sum_epoch_loss_global, sum_epoch_loss_sense, sum_epoch_loss_polysense
+            epoch_numsteps_tpl = epoch_step, epoch_senselabeled_tokens, epoch_polysense_tokens
             Utils.record_statistics(epoch_sumlosses_tpl, epoch_numsteps_tpl)
 
 
