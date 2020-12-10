@@ -17,6 +17,7 @@ from NN.Models.SelectK import get_senseneighbours_of_k_globals
 import pandas as pd
 import os
 import numpy as np
+import Filesystem as F
 
 class MFS(torch.nn.Module):
 
@@ -86,7 +87,15 @@ class MFS(torch.nn.Module):
                 lemmatized_word = k_globals_lemmatized[0]
                 lemmatized_word_idx = Utils.word_to_vocab_index(lemmatized_word, self.vocabulary_wordList)
                 mfs_word_row = self.mfs_df.loc[self.mfs_df[Utils.WORD + Utils.INDEX] == lemmatized_word_idx]
-                word_mfs_idx = mfs_word_row[Utils.MOST_FREQUENT_SENSE+Utils.INDEX].item()
+                try:
+                    word_mfs_idx = mfs_word_row[Utils.MOST_FREQUENT_SENSE+Utils.INDEX].item()
+                except ValueError: # every token has a sense, but (not in the text corpus) --> (not among the MFS)
+                    sample_k_indices_lemmatized_ls = self.vocabulary_df[
+                        self.vocabulary_df['word'].isin(k_globals_lemmatized)].index.to_list()
+                    sample_k_indices_lemmatized = torch.tensor(sample_k_indices_lemmatized_ls).to(
+                        CURRENT_DEVICE).squeeze(dim=0) + self.last_idx_senses
+                    sense_neighbours_ls = get_senseneighbours_of_k_globals(model=self, sample_k_indices=sample_k_indices_lemmatized)
+                    word_mfs_idx = sense_neighbours_ls[0].item() # since it is a nparray
                 words_mfs_ls.append(word_mfs_idx)
 
             # ----- preparing the base for the artificial softmax -----
@@ -95,7 +104,7 @@ class MFS(torch.nn.Module):
             senses_softmax = epsilon * senses_softmax  # base probability value for non-selected senses
             senses_mask = torch.zeros(size=(seq_len,distributed_batch_size, self.last_idx_senses)).to(torch.bool).to(CURRENT_DEVICE)
 
-            words_mfs = torch.tensor(words_mfs_ls).reshape((seq_len, distributed_batch_size))
+            words_mfs = torch.tensor(words_mfs_ls).reshape((seq_len, distributed_batch_size)).to(torch.torch.int64).to(CURRENT_DEVICE)
             # ----- writing in the artificial softmax -----
             for t in (range(seq_len)):
                 for b in range(distributed_batch_size):

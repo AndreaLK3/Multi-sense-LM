@@ -25,6 +25,7 @@ import NN.Models.SelectK as SelectK
 import NN.Models.SenseContext as SC
 import NN.Models.SelfAttention as SA
 import NN.Models.MFS as MFS
+from NN.Models.Common import ContextMethod# for ease of launch
 
 # ########## Auxiliary functions ##########
 

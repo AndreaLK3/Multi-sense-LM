@@ -8,8 +8,6 @@ import re
 from itertools import cycle
 
 
-STOPWORDS_CORENLP_FILEPATH = os.path.join("GetKBInputData",'stopwords_coreNLP.txt')
-
 
 # Removing punctuation. Removing stopwords. It will be used to remove duplicates
 def process_def_or_example(element_text, stopwords_ls):

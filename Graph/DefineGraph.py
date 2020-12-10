@@ -121,8 +121,6 @@ def initialize_senses(X_defs, X_examples, X_globals, vocabulary_ls, average_or_r
 
 def create_graph(method, slc_corpus):
 
-    Utils.init_logging('DefineGraph_SLC'+ str(slc_corpus)+'.log')
-
     if slc_corpus:
         inputdata_folder = os.path.join(F.FOLDER_INPUT, F.FOLDER_SENSELABELED)
         vocabulary_folder = os.path.join(F.FOLDER_VOCABULARY, F.FOLDER_SENSELABELED)

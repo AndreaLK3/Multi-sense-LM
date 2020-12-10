@@ -9,6 +9,7 @@ import VocabularyAndEmbeddings.ComputeEmbeddings as CE
 import tables
 import logging
 import SenseLabeledCorpus as SLC
+from time import time
 
 # Before starting: clean all storage files; reset vocabulary index to 0
 def reset(senselabeled_or_text):
@@ -61,7 +62,8 @@ def reset_embeddings(senselabeled_or_text):
 
 
 def exe_from_input_to_vectors(do_reset, compute_single_prototype, senselabeled_or_text, sp_method=CE.Method.FASTTEXT):
-    Utils.init_logging('Pipeline_SLC'+ str(senselabeled_or_text)+'.log')
+
+    t0 = time()
     if do_reset:
         reset(senselabeled_or_text)
 
@@ -82,6 +84,8 @@ def exe_from_input_to_vectors(do_reset, compute_single_prototype, senselabeled_o
 
     textcorpus_fpaths = os.path.join(F.FOLDER_TEXT_CORPUSES, F.FOLDER_STANDARDTEXT, F.FOLDER_TRAIN, F.WT_TRAIN_FILE) # used when processing WikiText-2 / standard text
     vocabulary_df = V.get_vocabulary_df(senselabeled_or_text=senselabeled_or_text, textcorpus_fpaths=[textcorpus_fpaths],vocabulary_h5_filepath=vocabulary_h5, min_count=min_freq_vocab, lowercase=lowercasing)
+    t1 = time()
+    logging.info("Did read the corpus to create the vocabulary. Time elapsed="+str(round(t1-t0,2)))
 
     if compute_single_prototype:
         reset_embeddings(senselabeled_or_text)
@@ -93,7 +97,10 @@ def exe_from_input_to_vectors(do_reset, compute_single_prototype, senselabeled_o
 
 
     vocabulary_ls = RID.retrieve_data_WordNet(vocabulary_df, inputdata_folder, vocabulary_folder)
-    logging.info("CreateGraphInput.exe() > "
-                 + " number of ords included in the vocabulary chunk, to be prepared: " + str(len(vocabulary_ls)))
+    t2 = time()
+    logging.info("Did retrieve data from WordNet. Time elapsed= " + str(round(t2-t1,2)))
+
     PI.prepare(vocabulary_ls, inputdata_folder, vocabulary_folder, embeddings_method=sp_method)
     tables.file._open_files.close_all()
+    t3 = time()
+    logging.info("Did preprocess (no duplicate glosses + senses'table + sentence encoding=" + str(round(t3-t2,2)))

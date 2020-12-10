@@ -6,7 +6,6 @@ import nltk
 from itertools import cycle
 
 NUM_INSTANCES_CHUNK = 1000
-STOPWORDS_CORENLP_FILEPATH = os.path.join("GetKBInputData",'stopwords_coreNLP.txt')
 
 # Utility function
 def get_wordnet_pos(word):

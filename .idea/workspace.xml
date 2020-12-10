@@ -24,12 +24,46 @@
   <component name="ChangeListManager">
     <list default="true" id="3ec11be4-164e-4b9e-a836-f8865c6d1696" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MiniCorpuses/SenseLabeled/Test/minitest_semcor.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MiniCorpuses/SenseLabeled/Training/fragment_semcor.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MiniCorpuses/SenseLabeled/Validation/minivalid_semcor.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MiniCorpuses/StandardText/Training/wiki.train.tokens" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MyTests/MiniExperiment.py" beforeDir="false" afterPath="$PROJECT_DIR$/MyTests/MiniExperiment.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CreateGraphInput.py" beforeDir="false" afterPath="$PROJECT_DIR$/CreateGraphInput.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/GetKBInputData/LemmatizeNyms.py" beforeDir="false" afterPath="$PROJECT_DIR$/GetKBInputData/LemmatizeNyms.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/GetKBInputData/RemoveQuasiDuplicates.py" beforeDir="false" afterPath="$PROJECT_DIR$/GetKBInputData/RemoveQuasiDuplicates.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/GetKBInputData/stopwords_CoreNLP.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Graph/Adjacencies.py" beforeDir="false" afterPath="$PROJECT_DIR$/Graph/Adjacencies.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Graph/DefineGraph.py" beforeDir="false" afterPath="$PROJECT_DIR$/Graph/DefineGraph.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Graph/SenseLabeled/nodes_32_areahops_1_graphArea_matrix.npz" beforeDir="false" afterPath="$PROJECT_DIR$/Graph/SenseLabeled/nodes_32_areahops_1_graphArea_matrix.npz" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Graph/StandardText/nodes_32_areahops_1_graphArea_matrix.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/MyTests/MostFrequentSense.py" beforeDir="false" afterPath="$PROJECT_DIR$/MyTests/MostFrequentSense.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/NN/ComputeMFS.py" beforeDir="false" afterPath="$PROJECT_DIR$/NN/ComputeMFS.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/NN/ContextAverages.py" beforeDir="false" afterPath="$PROJECT_DIR$/NN/ContextAverages.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/NN/Models/MFS.py" beforeDir="false" afterPath="$PROJECT_DIR$/NN/Models/MFS.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/NN/Training.py" beforeDir="false" afterPath="$PROJECT_DIR$/NN/Training.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Results/Chapter15_ReRun_withTime&amp;TestSet/Experiments_Chapter15_all.xlsx" beforeDir="false" afterPath="$PROJECT_DIR$/Results/Chapter15_ReRun_withTime&amp;TestSet/Experiments_Chapter15_all.xlsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Results/Previous/1500steps_1000epochs_noBatching.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Results/Previous/1500steps_20epochs_noBatching.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Results/Previous/1500steps_50epochs_noBatching.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Results/Previous/18Ksteps_batchsize8_graphareasize32_epochs10_losses.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Results/Previous/36Ksteps_batchsize8_grapharea32_epochs5_losses.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Results/Previous/53Ksteps_noBatching.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Results/Previous/756steps_batch_size1_grapharea_size32_epochs50_trainingLosses.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Results/Previous/756steps_batch_size4_grapharea_size32_epochs50_trainingLosses.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Results/Previous/756steps_batch_size8_grapharea_size32_epochs50_trainingLosses.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Results/Previous/Chapter1_Trying to overfit on small dataset/128tokens_batch4_area32_lr0.001_epochs1000_training_losses.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Results/Previous/Chapter1_Trying to overfit on small dataset/128tokens_batch8_area32_lr0.003_epochs100_training_losses.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Results/Previous/Chapter1_Trying to overfit on small dataset/176steps_batch8_area32_lr0.001_epochs300_training_losses.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Results/Previous/Chapter1_Trying to overfit on small dataset/496tokens_batch8_area32_lr0.001_epochs100_training_losses.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Results/Previous/Chapter1_Trying to overfit on small dataset/88tokens_batch8_area32_lr0.003_epochs100_training_losses.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Results/Previous/Chapter1_Trying to overfit on small dataset/88tokens_batch8_area32_lr0.005_epochs100_training_losses.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Results/Previous/Chapter3_ComparingGNNs/Comparing_the_3.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Results/Previous/Chapter3_ComparingGNNs/MyRGCN_128tokens_batch8_area32_lr0.003_epochs100_training_losses.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Results/Previous/Chapter3_ComparingGNNs/PremadeRGCN_128tokens_batch4_area32_lr0.001_epochs250_training_losses.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Results/Previous/Chapter3_ComparingGNNs/modelPremadeRGCN_batch8_area32_lr0.002_epochs150_training_losses.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Results/Previous/Chapter4_Recurrence/GRU_gatedimensions_&amp;_GGCNs.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Results/Previous/Chapter5_SemCor_full/batch8_area32_lr0.01_epochs100.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Results/Previous/Chapter6_ProperLossAndHeads/MiniExperiment_batchsize4_seqlen8_lr0.001.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Results/Previous/Chapter6_ProperLossAndHeads/WikiText2_GlobalsOnly_GRU-RGCNvariant1.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Results/Previous/Chapter6_ProperLossAndHeads/WikiText2_GlobalsOnly_GRU-RGCNvariant2.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Results/Previous/Chapter7_RebuiltModel_ParallelInput/GRU_GAT4_Perplexity_on_WT2.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/trainmodel_script.py" beforeDir="false" afterPath="$PROJECT_DIR$/execute_pipeline.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -110,6 +144,10 @@
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="0" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog/0.0.1536.824@0.0.1536.824" timestamp="1604763561279" />
+    <state x="499" y="159" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog" timestamp="1607466780788">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="499" y="159" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.0.1536.824@0.0.1536.824" timestamp="1607466780788" />
     <state x="571" y="302" key="#com.jetbrains.python.refactoring.move.PyMoveModuleMembersDialog" timestamp="1604508606997">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
@@ -118,10 +156,10 @@
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="4" y="168" width="706" height="506" key="#xdebugger.XInspectDialog/0.0.1536.824@0.0.1536.824" timestamp="1607427981278" />
-    <state x="388" y="232" width="1070" height="592" key="#xdebugger.evaluate" timestamp="1607442592262">
+    <state x="390" y="232" width="1070" height="592" key="#xdebugger.evaluate" timestamp="1607603490110">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="388" y="232" width="1070" height="592" key="#xdebugger.evaluate/0.0.1536.824@0.0.1536.824" timestamp="1607442592262" />
+    <state x="390" y="232" width="1070" height="592" key="#xdebugger.evaluate/0.0.1536.824@0.0.1536.824" timestamp="1607603490110" />
     <state x="100" y="100" width="1336" height="630" key="DiffContextDialog" timestamp="1604327078700">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
@@ -130,50 +168,54 @@
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="509" y="167" key="FileChooserDialogImpl/0.0.1536.824@0.0.1536.824" timestamp="1604508605575" />
-    <state width="1515" height="240" key="GridCell.Tab.0.bottom" timestamp="1607444558427">
+    <state width="1515" height="240" key="GridCell.Tab.0.bottom" timestamp="1607612242404">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1515" height="240" key="GridCell.Tab.0.bottom/0.0.1536.824@0.0.1536.824" timestamp="1607444558427" />
-    <state width="1515" height="240" key="GridCell.Tab.0.center" timestamp="1607444558427">
+    <state width="1515" height="240" key="GridCell.Tab.0.bottom/0.0.1536.824@0.0.1536.824" timestamp="1607612242404" />
+    <state width="1515" height="240" key="GridCell.Tab.0.center" timestamp="1607612242404">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1515" height="240" key="GridCell.Tab.0.center/0.0.1536.824@0.0.1536.824" timestamp="1607444558427" />
-    <state width="1515" height="240" key="GridCell.Tab.0.left" timestamp="1607444558427">
+    <state width="1515" height="240" key="GridCell.Tab.0.center/0.0.1536.824@0.0.1536.824" timestamp="1607612242404" />
+    <state width="1515" height="240" key="GridCell.Tab.0.left" timestamp="1607612242403">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1515" height="240" key="GridCell.Tab.0.left/0.0.1536.824@0.0.1536.824" timestamp="1607444558427" />
-    <state width="1515" height="240" key="GridCell.Tab.0.right" timestamp="1607444558427">
+    <state width="1515" height="240" key="GridCell.Tab.0.left/0.0.1536.824@0.0.1536.824" timestamp="1607612242403" />
+    <state width="1515" height="240" key="GridCell.Tab.0.right" timestamp="1607612242404">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1515" height="240" key="GridCell.Tab.0.right/0.0.1536.824@0.0.1536.824" timestamp="1607444558427" />
-    <state width="1515" height="240" key="GridCell.Tab.1.bottom" timestamp="1607444558428">
+    <state width="1515" height="240" key="GridCell.Tab.0.right/0.0.1536.824@0.0.1536.824" timestamp="1607612242404" />
+    <state width="1515" height="240" key="GridCell.Tab.1.bottom" timestamp="1607612242405">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1515" height="240" key="GridCell.Tab.1.bottom/0.0.1536.824@0.0.1536.824" timestamp="1607444558428" />
-    <state width="1515" height="240" key="GridCell.Tab.1.center" timestamp="1607444558428">
+    <state width="1515" height="240" key="GridCell.Tab.1.bottom/0.0.1536.824@0.0.1536.824" timestamp="1607612242405" />
+    <state width="1515" height="240" key="GridCell.Tab.1.center" timestamp="1607612242405">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1515" height="240" key="GridCell.Tab.1.center/0.0.1536.824@0.0.1536.824" timestamp="1607444558428" />
-    <state width="1515" height="240" key="GridCell.Tab.1.left" timestamp="1607444558428">
+    <state width="1515" height="240" key="GridCell.Tab.1.center/0.0.1536.824@0.0.1536.824" timestamp="1607612242405" />
+    <state width="1515" height="240" key="GridCell.Tab.1.left" timestamp="1607612242405">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1515" height="240" key="GridCell.Tab.1.left/0.0.1536.824@0.0.1536.824" timestamp="1607444558428" />
-    <state width="1515" height="240" key="GridCell.Tab.1.right" timestamp="1607444558428">
+    <state width="1515" height="240" key="GridCell.Tab.1.left/0.0.1536.824@0.0.1536.824" timestamp="1607612242405" />
+    <state width="1515" height="240" key="GridCell.Tab.1.right" timestamp="1607612242405">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1515" height="240" key="GridCell.Tab.1.right/0.0.1536.824@0.0.1536.824" timestamp="1607444558428" />
+    <state width="1515" height="240" key="GridCell.Tab.1.right/0.0.1536.824@0.0.1536.824" timestamp="1607612242405" />
     <state x="277" y="57" key="SettingsEditor" timestamp="1603547440731">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="277" y="57" key="SettingsEditor/0.0.1536.824@0.0.1536.824" timestamp="1603547440731" />
-    <state width="865" height="415" key="XDebugger.FullValuePopup" timestamp="1607441185982">
+    <state width="865" height="415" key="XDebugger.FullValuePopup" timestamp="1607602787886">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="865" height="415" key="XDebugger.FullValuePopup/0.0.1536.824@0.0.1536.824" timestamp="1607441185982" />
-    <state x="478" y="13" width="724" height="801" key="find.popup" timestamp="1607445040989">
+    <state width="865" height="415" key="XDebugger.FullValuePopup/0.0.1536.824@0.0.1536.824" timestamp="1607602787886" />
+    <state x="586" y="326" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1607469113300">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="478" y="13" width="724" height="801" key="find.popup/0.0.1536.824@0.0.1536.824" timestamp="1607445040989" />
+    <state x="586" y="326" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.0.1536.824@0.0.1536.824" timestamp="1607469113300" />
+    <state x="478" y="13" width="724" height="801" key="find.popup" timestamp="1607603500436">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="478" y="13" width="724" height="801" key="find.popup/0.0.1536.824@0.0.1536.824" timestamp="1607603500436" />
     <state x="611" y="197" key="refactoring.ChangeSignatureDialog" timestamp="1606417207663">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
@@ -216,18 +258,8 @@
           <option name="timeStamp" value="47" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/MyTests/MiniExperiment.py</url>
-          <line>177</line>
-          <option name="timeStamp" value="62" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/NN/Loss.py</url>
-          <line>114</line>
-          <option name="timeStamp" value="73" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/NN/Training.py</url>
-          <line>351</line>
+          <line>352</line>
           <option name="timeStamp" value="74" />
         </line-breakpoint>
       </breakpoints>

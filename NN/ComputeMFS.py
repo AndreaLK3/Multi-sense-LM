@@ -27,7 +27,7 @@ def get_sense_from_idx(senseindices_db_c, sense_index):
 
 def compute_MFS_for_corpus():
     t0 = time()
-    Utils.init_logging("MostFrequentSense.log")
+
     # Init
     subfolder = F.FOLDER_SENSELABELED
     graph_folder = os.path.join(F.FOLDER_GRAPH, subfolder)

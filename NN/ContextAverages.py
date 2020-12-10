@@ -39,7 +39,7 @@ def get_archives(subfolder):
 
 def compute_sense_ctx_averages(num_prev_words):
     # --------- Log and reset ---------
-    Utils.init_logging('ContextAverages.log')
+
     slc_or_text_corpus = True
     subfolder = F.FOLDER_SENSELABELED if slc_or_text_corpus else F.FOLDER_STANDARDTEXT
     inputdata_folder = os.path.join(F.FOLDER_INPUT, subfolder)
