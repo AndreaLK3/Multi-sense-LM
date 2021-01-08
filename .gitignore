@@ -21,5 +21,7 @@ TextCorpuses/
 Saved_Results
 Media/IntermediateResults
 InputData/*.npy
+.idea/
+__pycache__/
 
 
