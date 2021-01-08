@@ -21,4 +21,5 @@ TextCorpuses/
 Saved_Results
 Media/IntermediateResults
 InputData/*.npy
-.idea/*
+
+
