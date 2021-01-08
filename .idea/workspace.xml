@@ -24,46 +24,9 @@
   <component name="ChangeListManager">
     <list default="true" id="3ec11be4-164e-4b9e-a836-f8865c6d1696" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CreateGraphInput.py" beforeDir="false" afterPath="$PROJECT_DIR$/CreateGraphInput.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/GetKBInputData/LemmatizeNyms.py" beforeDir="false" afterPath="$PROJECT_DIR$/GetKBInputData/LemmatizeNyms.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/GetKBInputData/RemoveQuasiDuplicates.py" beforeDir="false" afterPath="$PROJECT_DIR$/GetKBInputData/RemoveQuasiDuplicates.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/GetKBInputData/stopwords_CoreNLP.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Graph/Adjacencies.py" beforeDir="false" afterPath="$PROJECT_DIR$/Graph/Adjacencies.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Graph/DefineGraph.py" beforeDir="false" afterPath="$PROJECT_DIR$/Graph/DefineGraph.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Graph/SenseLabeled/nodes_32_areahops_1_graphArea_matrix.npz" beforeDir="false" afterPath="$PROJECT_DIR$/Graph/SenseLabeled/nodes_32_areahops_1_graphArea_matrix.npz" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Graph/StandardText/nodes_32_areahops_1_graphArea_matrix.npz" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MyTests/MostFrequentSense.py" beforeDir="false" afterPath="$PROJECT_DIR$/MyTests/MostFrequentSense.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/NN/ComputeMFS.py" beforeDir="false" afterPath="$PROJECT_DIR$/NN/ComputeMFS.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/NN/ContextAverages.py" beforeDir="false" afterPath="$PROJECT_DIR$/NN/ContextAverages.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/NN/Models/MFS.py" beforeDir="false" afterPath="$PROJECT_DIR$/NN/Models/MFS.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/NN/Training.py" beforeDir="false" afterPath="$PROJECT_DIR$/NN/Training.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AWS-1.pem" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/Results/Chapter15_ReRun_withTime&amp;TestSet/Experiments_Chapter15_all.xlsx" beforeDir="false" afterPath="$PROJECT_DIR$/Results/Chapter15_ReRun_withTime&amp;TestSet/Experiments_Chapter15_all.xlsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Results/Previous/1500steps_1000epochs_noBatching.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Results/Previous/1500steps_20epochs_noBatching.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Results/Previous/1500steps_50epochs_noBatching.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Results/Previous/18Ksteps_batchsize8_graphareasize32_epochs10_losses.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Results/Previous/36Ksteps_batchsize8_grapharea32_epochs5_losses.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Results/Previous/53Ksteps_noBatching.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Results/Previous/756steps_batch_size1_grapharea_size32_epochs50_trainingLosses.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Results/Previous/756steps_batch_size4_grapharea_size32_epochs50_trainingLosses.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Results/Previous/756steps_batch_size8_grapharea_size32_epochs50_trainingLosses.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Results/Previous/Chapter1_Trying to overfit on small dataset/128tokens_batch4_area32_lr0.001_epochs1000_training_losses.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Results/Previous/Chapter1_Trying to overfit on small dataset/128tokens_batch8_area32_lr0.003_epochs100_training_losses.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Results/Previous/Chapter1_Trying to overfit on small dataset/176steps_batch8_area32_lr0.001_epochs300_training_losses.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Results/Previous/Chapter1_Trying to overfit on small dataset/496tokens_batch8_area32_lr0.001_epochs100_training_losses.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Results/Previous/Chapter1_Trying to overfit on small dataset/88tokens_batch8_area32_lr0.003_epochs100_training_losses.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Results/Previous/Chapter1_Trying to overfit on small dataset/88tokens_batch8_area32_lr0.005_epochs100_training_losses.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Results/Previous/Chapter3_ComparingGNNs/Comparing_the_3.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Results/Previous/Chapter3_ComparingGNNs/MyRGCN_128tokens_batch8_area32_lr0.003_epochs100_training_losses.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Results/Previous/Chapter3_ComparingGNNs/PremadeRGCN_128tokens_batch4_area32_lr0.001_epochs250_training_losses.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Results/Previous/Chapter3_ComparingGNNs/modelPremadeRGCN_batch8_area32_lr0.002_epochs150_training_losses.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Results/Previous/Chapter4_Recurrence/GRU_gatedimensions_&amp;_GGCNs.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Results/Previous/Chapter5_SemCor_full/batch8_area32_lr0.01_epochs100.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Results/Previous/Chapter6_ProperLossAndHeads/MiniExperiment_batchsize4_seqlen8_lr0.001.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Results/Previous/Chapter6_ProperLossAndHeads/WikiText2_GlobalsOnly_GRU-RGCNvariant1.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Results/Previous/Chapter6_ProperLossAndHeads/WikiText2_GlobalsOnly_GRU-RGCNvariant2.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Results/Previous/Chapter7_RebuiltModel_ParallelInput/GRU_GAT4_Perplexity_on_WT2.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/trainmodel_script.py" beforeDir="false" afterPath="$PROJECT_DIR$/execute_pipeline.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/execute_pipeline.py" beforeDir="false" afterPath="$PROJECT_DIR$/execute_pipeline.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

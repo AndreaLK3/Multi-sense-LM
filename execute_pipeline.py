@@ -8,11 +8,11 @@ import os
 import Filesystem as F
 
 Utils.init_logging('Pipeline_SLC.log')
-# t0 = time()
-#
-# CGI.exe_from_input_to_vectors(do_reset=True, compute_single_prototype=True, senselabeled_or_text=True)
+t0 = time()
+
+CGI.exe_from_input_to_vectors(do_reset=True, compute_single_prototype=True, senselabeled_or_text=True)
 t1 = time()
-# logging.info("Created vocabulary, retrieved and preprocessed input. Time elapsed=" + str(t1 - t0))
+logging.info("Created vocabulary, retrieved and preprocessed input. Time elapsed=" + str(t1 - t0))
 
 
 graph_dataobj = DG.get_graph_dataobject(new=True, method=CE.Method.FASTTEXT, slc_corpus=True).to(Utils.DEVICE)
