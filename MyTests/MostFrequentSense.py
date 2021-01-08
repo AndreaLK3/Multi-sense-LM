@@ -26,7 +26,7 @@ def compute_MFS_for_corpus():
     graph_folder = os.path.join(F.FOLDER_GRAPH, subfolder)
     inputdata_folder = os.path.join(F.FOLDER_INPUT, subfolder)
     vocabulary_folder = os.path.join(F.FOLDER_VOCABULARY, subfolder)
-    corpus_folder = os.path.join(F.FOLDER_MINICORPUSES, F.FOLDER_SENSELABELED)
+    corpus_folder = os.path.join(F.FOLDER_MYTESTS, F.FOLDER_MINICORPUSES, F.FOLDER_SENSELABELED)
     folders = (graph_folder, inputdata_folder, vocabulary_folder)
 
     # More init, necessary objects

@@ -28,7 +28,7 @@ def compute_sense_ctx_averages(num_prev_words):
     last_sense_idx = senseindices_db_c.execute("SELECT COUNT(*) from indices_table").fetchone()[0]
     first_idx_dummySenses = Utils.get_startpoint_dummySenses(slc_or_text_corpus)
 
-    train_corpus_fpath = os.path.join(F.FOLDER_MINICORPUSES, subfolder, F.FOLDER_TRAIN)
+    train_corpus_fpath = os.path.join(F.FOLDER_MYTESTS, F.FOLDER_MINICORPUSES, subfolder, F.FOLDER_TRAIN)
 
     # --------- Initializing the matrix that accumulates the context averages of sense occurrences, etc. ---------
     sense_ctx_avgs_A = np.zeros(shape=(last_sense_idx, graph_dataobj.x.shape[1]))

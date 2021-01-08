@@ -87,7 +87,7 @@ def setup_train(slc_or_text_corpus, model_type, K=0, C=0, context_method=None,
     model.to(DEVICE)
 
     # -------------------- 4: Creating the DataLoaders for training, validation and test datasets --------------------
-    corpus_fpath = os.path.join(F.FOLDER_MINICORPUSES, subfolder) # The only modification in a MiniExperiment
+    corpus_fpath = os.path.join(F.FOLDER_MYTESTS, F.FOLDER_MINICORPUSES, subfolder) # The only modification in a MiniExperiment
     datasets, dataloaders = get_dataloaders(objects, slc_or_text_corpus, corpus_fpath, folders,
                                   batch_size, sequence_length, model_forDataLoading)
 

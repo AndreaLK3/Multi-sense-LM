@@ -7,6 +7,7 @@ VOCABULARY_OF_GLOBALS_FILENAME = 'vocabulary_of_globals.h5'
 FOLDER_TEXT_CORPUSES = 'TextCorpuses'
 FOLDER_SENSELABELED = "SenseLabeled"
 FOLDER_STANDARDTEXT = "StandardText"
+FOLDER_MYTESTS = "MyTests"
 FOLDER_MINICORPUSES = 'MiniCorpuses'
 
 FOLDER_UFSAC = 'ufsac-public-2.1'
