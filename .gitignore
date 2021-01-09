@@ -13,6 +13,8 @@
 *.model
 *.WT2
 pretrained*
+*.sql
+*.txt
 WikiText-103/
 runs/
 GraphNN/pyGAT
