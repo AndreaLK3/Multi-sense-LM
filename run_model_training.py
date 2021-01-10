@@ -67,7 +67,7 @@ def convert_arguments_into_parameters(arguments):
     return parameters
 
 args = parse_arguments()
-args.tied = not args.not_tied
+
 parameters = convert_arguments_into_parameters(args)
 
 t0 = time()
