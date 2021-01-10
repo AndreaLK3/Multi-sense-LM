@@ -102,6 +102,9 @@ def get_timestamp_month_to_sec():
     return '_'.join([str(time.localtime().tm_mon), str(time.localtime().tm_mday), str(time.localtime().tm_hour),
               str(time.localtime().tm_min), str(time.localtime().tm_sec)])
 
+def time_measurement_with_msg(t0, t1, message):
+    logging.info(message + ". Time elapsed=" + str(round(t1 - t0, 3)) + " s")
+
 
 def record_statistics(epoch_sumlosses_tpl, epoch_numsteps_tpl):
     sum_epoch_loss_global,sum_epoch_loss_sense, sum_epoch_loss_multisense = epoch_sumlosses_tpl
