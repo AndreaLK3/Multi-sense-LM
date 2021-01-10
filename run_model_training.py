@@ -37,9 +37,7 @@ def parse_arguments():
                         help='dimensionality of queries, keys & vectors for the Self-Attention Scores method')
 
     args = parser.parse_args()
-    args.tied = not args.not_tied
     return args
-
 
 def convert_arguments_into_parameters(arguments):
     parameters = dict()
@@ -69,6 +67,7 @@ def convert_arguments_into_parameters(arguments):
     return parameters
 
 args = parse_arguments()
+args.tied = not args.not_tied
 parameters = convert_arguments_into_parameters(args)
 
 t0 = time()

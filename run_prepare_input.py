@@ -18,6 +18,7 @@ def parse_arguments():
     return args
 
 args = parse_arguments()
+args.tied = not args.not_tied
 
 Utils.init_logging('InputPipeline.log'); t0 = time()
 
