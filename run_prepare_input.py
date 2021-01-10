@@ -14,7 +14,6 @@ def parse_arguments():
     parser.add_argument('--grapharea_size', type=int, default=32,
                         help='number of graph nodes included in a GNN mini-batch')
     args = parser.parse_args()
-    args.tied = not args.not_tied
     return args
 
 args = parse_arguments()
