@@ -18,7 +18,6 @@ pretrained*
 WikiText-103/
 runs/
 GraphNN/pyGAT
-InputData/
 InputData/*.npy
 .idea/
 __pycache__/
