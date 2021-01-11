@@ -152,7 +152,7 @@ def setup_train(slc_or_text_corpus, model_type, K=0, C=0, context_method=None,
                 dim_qkv=300,
                 include_globalnode_input=0, load_saved_model=False,
                 batch_size=32, sequence_length=35,
-                method=CE.Method.FASTTEXT, grapharea_size=32):
+                method=CE.Method.FASTTEXT, grapharea_size=32, random_seed=0):
 
     subfolder = F.FOLDER_SENSELABELED if slc_or_text_corpus else F.FOLDER_STANDARDTEXT
     graph_folder = os.path.join(F.FOLDER_GRAPH, subfolder)
@@ -165,9 +165,10 @@ def setup_train(slc_or_text_corpus, model_type, K=0, C=0, context_method=None,
     objects = graph_dataobj, grapharea_size, grapharea_matrix, vocabulary_df, embeddings_matrix
 
     # -------------------- 2: Loading / creating the model --------------------
-    torch.manual_seed(1) # for reproducibility while conducting experiments
-    if torch.cuda.is_available():
-        torch.cuda.manual_seed_all(1)
+    if random_seed != 0:
+        torch.manual_seed(random_seed) # for reproducibility while conducting experiments
+        if torch.cuda.is_available():
+            torch.cuda.manual_seed_all(random_seed)
     if load_saved_model: # allows to load a model pre-trained on another dataset. Was not used for the paper results.
         model = load_model_from_file(slc_or_text_corpus, inputdata_folder, graph_dataobj)
     else:

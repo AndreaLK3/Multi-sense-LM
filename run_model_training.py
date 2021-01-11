@@ -1,11 +1,8 @@
 import argparse
 import NN.Training as T
-import Graph.Adjacencies as AD
+import torch
 from time import time
 import Utils
-import logging
-import os
-import Filesystem as F
 import VocabularyAndEmbeddings.ComputeEmbeddings as CE
 
 def parse_arguments():
@@ -35,6 +32,8 @@ def parse_arguments():
                         help='number of previous tokens to average to get the context representation (if used)')
     parser.add_argument('--dim_qkv', type=int, default=300,
                         help='dimensionality of queries, keys & vectors for the Self-Attention Scores method')
+    parser.add_argument('--random_seed', type=int, default=0,
+                        help='We can specify a random seed != 0 for reproducibility')
 
     args = parser.parse_args()
     return args
@@ -71,6 +70,7 @@ args = parse_arguments()
 parameters = convert_arguments_into_parameters(args)
 
 t0 = time()
+
 model, datasets, dataloaders = T.setup_train(
         slc_or_text_corpus=True,
         model_type = parameters["model_type"],
@@ -82,6 +82,6 @@ model, datasets, dataloaders = T.setup_train(
         load_saved_model=False,
         batch_size=32, sequence_length=35,
         method=CE.Method.FASTTEXT,
-        grapharea_size=32)
+        grapharea_size=32, random_seed=0)
 T.run_train(model, dataloaders, learning_rate=args.learning_rate, num_epochs=args.num_epochs)
 t1 = time() ; Utils.time_measurement_with_msg(t0, t1, "Trained model")
