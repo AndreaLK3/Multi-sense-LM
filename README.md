@@ -68,11 +68,11 @@ Once it encounters early-stopping on the validation set, a model is saved in the
 A SelectK model with K=1 uses 2 GRUs and picks the sense among those of the most likely K=1 word
 predicted by the standard language modeling sub-task. To create it and train it, we execute step 3) as follows: <br/>
 `python run_model_training.py --model_type selectk --K 1` <br/>
-If we wish to concatenate the input signal computed by the GNN on the dictionary graph:
+If we wish to concatenate the input signal computed by the GNN on the dictionary graph: <br/>
 `python run_model_training.py --model_type selectk --K 1 --use_graph_input concat`
 
 SenseContext model, choosing among the senses of the most likely K=5 words by comparing their sense context to the
-current context. The representation of the current context is obtained via a 3-layer GRU:
+current context. The representation of the current context is obtained via a 3-layer GRU: <br/>
 `python run_model_training.py --model_type sensecontext --K 5 --context_method 1`
 
 ### Source code structure
@@ -83,9 +83,9 @@ current context. The representation of the current context is obtained via a 3-l
 - Folder: **GetKBInputData** <br/>
     Given a vocabulary, find the corresponding WordNet synsets, store the glosses (definitions, examples), synonyms and antonyms
 - Folder: **Graph** <br/>
-    Given a vocabulary and WordNet data, create a dictionary graph with word, sense and gloss nodes.
+    Create a dictionary graph with word, sense and gloss nodes.
 - Folder: **NN** <br/>
-    Given a sense-labeled corpus and a dictionary graph, create and train the specified multi-sense language model
+    Create and train the specified multi-sense language model
 - Folder: **TextCorpuses** <br/>
     Contains the SemCor sense-labeled corpus, and its splits.
 - Folder: **MyTests** <br/>
