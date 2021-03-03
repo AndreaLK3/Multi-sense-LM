@@ -60,7 +60,7 @@ Command parameters:
 - `--context_method`, type=int, default=0 
 - `--C`, type=int, default=20,
 - `--dim_qkv`, type=int, default=300  
-- `--random_seed`, type=int, default=0
+- `--random_seed`, type=int, default=0. The paper experiments were obtained with random_seed=1
 
 Once it encounters early-stopping on the validation set, a model is saved in the NN folder.
 
