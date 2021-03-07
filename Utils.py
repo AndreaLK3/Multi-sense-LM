@@ -18,14 +18,6 @@ import sqlite3
 
 ########## Constants ##########
 
-BABELNET_KEY = '7ba5e9a1-1f42-4d9a-97a7-c888975a60a1' # 5000 queries per day until 31-12-2019, then 1000
-
-SOURCE_WORDNET = 'WordNet'
-SOURCE_BABELNET = 'BabelNet'
-SOURCE_WIKTIONARY = 'Wiktionary'
-SOURCE_OMEGAWIKI = 'OmegaWiki'
-SOURCE_DBPEDIA = "DBpedia"
-
 HDF5_BASE_SIZE_512 = 512
 DEVICE = torch.device('cuda' if torch.cuda.is_available() else 'cpu') # torch.device('cpu')#
 
@@ -38,7 +30,6 @@ DEFINITIONS = 'definitions'
 EXAMPLES = 'examples'
 SYNONYMS = 'synonyms'
 ANTONYMS = 'antonyms'
-ENCYCLOPEDIA_DEF = 'encyclopedia_def'
 CATEGORIES = [DEFINITIONS, EXAMPLES, SYNONYMS, ANTONYMS] # , Utils.ENCYCLOPEDIA_DEF
 
 SENSE_WN_ID = 'sense_wn_id'
@@ -59,22 +50,18 @@ UNK_TOKEN = '<unk>'
 NUM_TOKEN = '<num>'
 EOS_TOKEN = '<eos>'
 
-SENSE_NOAD = 'Sense_NOAD'
-SENSE_WORDNET = 'Sense_WordNet'
 EMPTY = 'EMPTY'
 MOST_FREQUENT_SENSE = "MostFrequentSense"
 WORD = 'word'
 INDEX = 'index'
 
-GLOBALS = 'globals'
-SENSES = 'senses'
 CORRECT_PREDICTIONS = 'correct_predictions'
-TOTAL = 'total'
 
 GRAPH_EMBEDDINGS_DIM = 300
 
-########## Logging and development ##########
-
+WT2 = "WT2"
+WT103 = "WT103"
+SEMCOR = "SemCor"
 
 ########## Text logging ##########
 
