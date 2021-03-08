@@ -68,7 +68,7 @@ def exe_from_input_to_vectors(do_reset, compute_single_prototype, senselabeled_o
         reset(senselabeled_or_text)
 
     if senselabeled_or_text: # sense-labeled corpus
-        inputdata_folder = os.path.join(F.FOLDER_INPUT, F.FOLDER_SENSELABELED)
+        inputdata_folder = os.path.join(F.FOLDER_INPUT, F.FOLDER_SENSELABELED, F.FOLDER_SEMCOR)
         vocabulary_folder = os.path.join(F.FOLDER_VOCABULARY, F.FOLDER_SENSELABELED)
         xml_fnames = ['semcor.xml']  # , , 'subset_omsti_aa.xml']#, 'raganato_ALL.xml', 'wngt.xml']
         SLC.organize_splits(xml_fnames)
