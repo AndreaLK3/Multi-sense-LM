@@ -38,12 +38,15 @@ def restore_unk_token(list_of_tokens):
     i = 0
     while i < (len(list_of_tokens)):
         tok = list_of_tokens[i]
-        if tok == '<' and list_of_tokens[i+1]=='unk' and list_of_tokens[i+2] == '>':
-                modified_tokens.append(''.join(list_of_tokens[i:i+3])) #include <unk>
-                i = i+3 #and go beyond it
-        else:
-            modified_tokens.append(tok)
-            i = i + 1
+        try: # try & except, in case the corpus ends with a <
+            if tok == '<' and list_of_tokens[i+1]=='unk' and list_of_tokens[i+2] == '>':
+                    modified_tokens.append(''.join(list_of_tokens[i:i+3])) #include <unk>
+                    i = i+3 #and go beyond it
+            else:
+                modified_tokens.append(tok)
+                i = i + 1
+        except IndexError:
+            return list_of_tokens
     return modified_tokens
 #
 ##### Step 2: There are word-tokens with non-Latin and non-Greek characters, such as: 匹, 枚, マギカ , etc.

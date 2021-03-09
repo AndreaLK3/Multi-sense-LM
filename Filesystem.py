@@ -13,7 +13,7 @@ FOLDER_MINICORPUSES = 'MiniCorpuses'
 FOLDER_UFSAC = 'ufsac-public-2.1'
 FOLDER_WT103 = 'wikitext-103'
 FOLDER_WT2 = 'wikitext-2'
-FOLDER_SEMCOR = 'SemCor'
+FOLDER_SEMCOR = 'semcor'
 
 FOLDER_GRAPH = "Graph"
 FOLDER_NN = 'NN'

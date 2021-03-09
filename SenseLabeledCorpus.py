@@ -80,7 +80,7 @@ def organize_subcorpus(xml_fpath, train_fraction):
 
 def organize_splits(xml_fnames):
     xml_fpaths = list(map(
-        lambda fname: os.path.join(F.FOLDER_TEXT_CORPUSES, F.FOLDER_SENSELABELED, fname), xml_fnames))
+        lambda fname: os.path.join(F.FOLDER_TEXT_CORPUSES, F.FOLDER_SENSELABELED, fname.replace(".xml", ""), fname), xml_fnames))
     split_directories_paths = list(map(lambda dirname: os.path.join(F.FOLDER_TEXT_CORPUSES, F.FOLDER_SENSELABELED, dirname),
                                        [F.FOLDER_TRAIN, F.FOLDER_VALIDATION, F.FOLDER_TEST]))
     for dirpath in split_directories_paths:
@@ -106,9 +106,9 @@ def dataset_generator(xml_fpath):
             yield(elem.attrib)
 
 
-def readgenerator_senselabeled_corpuses(corpus_fpath):
-    full_fpaths = list(map(lambda fname: os.path.join(corpus_fpath, fname),
-                           [fname for fname in os.listdir(corpus_fpath) if 'xml' in fname]))
+def readgenerator_senselabeled_corpuses(split_dir_fpath):
+    full_fpaths = list(map(lambda fname: os.path.join(split_dir_fpath, fname),
+                           [fname for fname in os.listdir(split_dir_fpath) if 'xml' in fname]))
 
     logging.debug("full_fpaths=" + str(full_fpaths))
     for xml_fpath in full_fpaths: # n: when using the readgenerator, I have to invoke .__next__().__next__() ,
@@ -120,8 +120,8 @@ def readgenerator_senselabeled_corpuses(corpus_fpath):
 
 
 
-def read_split(corpus_fpath):
-    gen_over_split = readgenerator_senselabeled_corpuses(corpus_fpath)
+def read_split(split_dir_fpath):
+    gen_over_split = readgenerator_senselabeled_corpuses(split_dir_fpath)
     for gen_over_corpus in gen_over_split:
         for elem in gen_over_corpus:
             yield elem
