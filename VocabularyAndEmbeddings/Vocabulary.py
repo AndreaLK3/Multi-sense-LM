@@ -1,3 +1,4 @@
+import Filesystem
 import Utils
 import os
 import pandas as pd
@@ -35,6 +36,7 @@ def build_vocabulary_dict_fromtext(corpus_txt_fpath, vocab_dict, lowercase):
     lines_logpoint = 1000
     lemmatizer = nltk.stem.WordNetLemmatizer()
 
+    logging.info(corpus_txt_fpath)
     assert os.path.exists(corpus_txt_fpath)
 
     with open(corpus_txt_fpath, 'r', encoding="utf-8") as f:
@@ -56,7 +58,6 @@ def build_vocabulary_dict_fromtext(corpus_txt_fpath, vocab_dict, lowercase):
 
 # Read a sense-labeled corpus from a .xml file in the UFSAC notation
 def build_vocabulary_dict_from_senselabeled(slc_dir_fpath, vocab_dict, lowercase):
-    if vocab_dict is None: vocab_dict = {}
 
     tokens_toexclude = [] # [Utils.EOS_TOKEN] # + list(string.punctuation)
     # Commas and punctuation signs are present in the Sense-Labeled Corpus as separate tokens.
@@ -73,11 +74,11 @@ def build_vocabulary_dict_from_senselabeled(slc_dir_fpath, vocab_dict, lowercase
 
     return vocab_dict
 
-# Auxiliary function: reunite 2 vocabulary dictionaries, that were created on 2 different corpuses
+# Auxiliary function: reunite 2 vocabulary dictionaries, that were created on 2 different corpora
 def reunite_vocab_dicts(vocab_dict_1, vocab_dict_2):
     v1_keys_ls = list(vocab_dict_1.keys())
     v2_keys_ls = list(vocab_dict_2.keys())
-    all_words = list(set(v1_keys_ls + v2_keys_ls))
+    all_words = list(set(v1_keys_ls + v2_keys_ls)) # concat lists and apply set, to eliminate duplicates
     reunited_vocab_dict = {}
     for w in all_words:
         freq_1 = 0
@@ -93,62 +94,70 @@ def reunite_vocab_dicts(vocab_dict_1, vocab_dict_2):
     return reunited_vocab_dict
 
 
-# Entry function: specify which corpuses we wish to create the vocabulary from, and load it or create it as needed
-def get_vocabulary_df(corpuses, lowercase, slc_min_count=2, txt_min_count=1):
-    # 1) preparation: selecting the corpuses that are to be included
+# Entry function: specify which corpora we wish to create the vocabulary from, and load it or create it as needed
+def get_vocabulary_df(corpora_names, lowercase, slc_min_count=2, txt_min_count=1):
+    # 1) preparation: selecting the corpora that are to be included
     standardtext_corpus_fpaths = []
     senselabeled_dir_fpaths = []
-    if Utils.WT2 in corpuses:
-        standardtext_corpus_fpaths.append(os.path.join(F.FOLDER_TEXT_CORPUSES, F.FOLDER_STANDARDTEXT, F.FOLDER_WT2,
-                                                       F.WT_TRAIN_FILE))
-    if Utils.WT103 in corpuses:
-        standardtext_corpus_fpaths.append(os.path.join(F.FOLDER_TEXT_CORPUSES, F.FOLDER_STANDARDTEXT, F.FOLDER_WT103,
-                                                       F.WT_TRAIN_FILE))
-    if Utils.SEMCOR in corpuses:
-        senselabeled_dir_fpaths.append(os.path.join(F.FOLDER_TEXT_CORPUSES, F.FOLDER_SENSELABELED, F.FOLDER_SEMCOR,
-                                                       F.FOLDER_TRAIN))
 
-    # 2) specifying the filename of the vocabulary. It depends on which corpuses were included
-    vocab_filename = "vocabulary_" + "_".join(corpuses) + ".h5"
+    if Filesystem.WT2 in corpora_names:
+        standardtext_corpus_fpaths.append(os.path.join(F.CORPORA_LOCATIONS[Filesystem.WT2], F.WT_TRAIN_FILE))
+    if Filesystem.WT103 in corpora_names:
+        standardtext_corpus_fpaths.append(os.path.join(F.CORPORA_LOCATIONS[Filesystem.WT103], F.WT_TRAIN_FILE))
+    if Filesystem.SEMCOR in corpora_names:
+        senselabeled_dir_fpaths.append(os.path.join(F.CORPORA_LOCATIONS[Filesystem.SEMCOR], F.FOLDER_TRAIN))
+
+    # 2) specifying the filename of the vocabulary. It depends on which corpora were included
+    vocab_filename = "vocabulary_" + "_".join(corpora_names) + ".h5"
     vocab_filepath = os.path.join(F.FOLDER_VOCABULARY, vocab_filename)
+    logging.info("vocab_filepath=" + str(vocab_filepath))
 
     # 3) Does the vocabulary file exist already? If yes, just load it
     if os.path.exists(vocab_filepath):
         vocab_df = pd.read_hdf(vocab_filepath, mode='r')
         logging.info("*** The vocabulary was loaded from the file " + vocab_filepath)
+        return vocab_df
+    else:
+        # 4) If the vocabulary did not already exist, it is necessary to create it. Read each corpus one after the other
+        logging.info("*** Creating vocabulary at " + vocab_filepath)
 
-    # 4) If the vocabulary did not already exist, it is necessary to create it. Read each corpus one after the other
-    logging.info("*** Creating vocabulary at " + vocab_filepath)
+        slc_vocab_dict = {}
+        txt_vocab_dict = {}
 
-    slc_vocab_dict = {}
-    txt_vocab_dict = {}
-    for slc_dir_fpath in senselabeled_dir_fpaths:
-        build_vocabulary_dict_from_senselabeled(slc_dir_fpath, slc_vocab_dict, lowercase)
-    if slc_min_count > 1:  # 4b) Removing words with frequency < min_count, if needed
-        VocabUtils.eliminate_rare_words(slc_vocab_dict, slc_min_count)
-    for txt_corpus_fpath in standardtext_corpus_fpaths:
-        build_vocabulary_dict_fromtext(txt_corpus_fpath, txt_vocab_dict, lowercase)
-    if txt_min_count > 1:  # 4b) Removing words with frequency < min_count, if needed
-        VocabUtils.eliminate_rare_words(txt_vocab_dict, slc_min_count)
+        logging.info("senselabeled_dir_fpaths=" + str(senselabeled_dir_fpaths))
+        logging.info("standardtext_corpus_fpaths=" + str(standardtext_corpus_fpaths))
 
-    all_vocab_dict = reunite_vocab_dicts(slc_vocab_dict, txt_vocab_dict)
+        for slc_dir_fpath in senselabeled_dir_fpaths:
+            build_vocabulary_dict_from_senselabeled(slc_dir_fpath, slc_vocab_dict, lowercase)
+            if slc_min_count > 1:  # 4b) Removing words with frequency < min_count, if needed
+                VocabUtils.eliminate_rare_words(slc_vocab_dict, slc_min_count)
+        for txt_corpus_fpath in standardtext_corpus_fpaths:
+            build_vocabulary_dict_fromtext(txt_corpus_fpath, txt_vocab_dict, lowercase)
+            if txt_min_count > 1:  # 4b) Removing words with frequency < min_count, if needed
+                VocabUtils.eliminate_rare_words(txt_vocab_dict, txt_min_count)
 
-    # 5) Moving the dictionary onto a dataframe
-    frequencies = list(map(lambda tpl: tpl[0], all_vocab_dict.values()))
-    lemma_forms = list(map(lambda tpl: tpl[1], all_vocab_dict.values()))
+        all_vocab_dict = reunite_vocab_dicts(slc_vocab_dict, txt_vocab_dict)
 
-    vocab_df = pd.DataFrame(data=zip(all_vocab_dict.keys(), frequencies, lemma_forms), columns=['word', 'frequency', 'lemmatized_form'])
-    logging.info("*** The vocabulary was created. Number of words= " + str(len(vocab_df)) + "***")
+        # 5) Moving the dictionary onto a dataframe
+        frequencies = list(map(lambda tpl: tpl[0], all_vocab_dict.values()))
+        lemma_forms = list(map(lambda tpl: tpl[1], all_vocab_dict.values()))
 
-    vocab_wordls = vocab_df['word'].to_list().copy()
-    vocab_df['num_senses'] = [-1]* len(vocab_wordls) # this will be filled up later, when we have both WordNet data and the corpus
+        vocab_df = pd.DataFrame(data=zip(all_vocab_dict.keys(), frequencies, lemma_forms), columns=['word', 'frequency', 'lemmatized_form'])
+        logging.info("*** The vocabulary was created. Number of words= " + str(len(vocab_df)) + "***")
 
-    # 6) Writing to HDF5 archive
-    vocab_h5 = pd.HDFStore(vocab_filepath, mode='w')
-    vocab_h5_itemsizes = {'word': Utils.HDF5_BASE_SIZE_512 / 4, 'frequency': Utils.HDF5_BASE_SIZE_512 / 8,
-                          'lemmatized_form': Utils.HDF5_BASE_SIZE_512 / 4,
-                          'num_senses': Utils.HDF5_BASE_SIZE_512 / 8}
-    vocab_h5.append(key='vocabulary', value=vocab_df, min_itemsize=vocab_h5_itemsizes)
-    vocab_h5.close()
+        vocab_wordls = vocab_df['word'].to_list().copy()
+        vocab_df['num_senses'] = [-1]* len(vocab_wordls) # this will be filled up later, when we have both WordNet data and the corpus
 
-    return vocab_df
+        # 6) Writing to HDF5 archive, and to .txt file
+        vocab_h5 = pd.HDFStore(vocab_filepath, mode='w')
+        vocab_h5_itemsizes = {'word': Utils.HDF5_BASE_SIZE_512 / 4, 'frequency': Utils.HDF5_BASE_SIZE_512 / 8,
+                              'lemmatized_form': Utils.HDF5_BASE_SIZE_512 / 4,
+                              'num_senses': Utils.HDF5_BASE_SIZE_512 / 8}
+        vocab_h5.append(key='vocabulary', value=vocab_df, min_itemsize=vocab_h5_itemsizes)
+        vocab_h5.close()
+        words_ls = list(vocab_df["word"])
+        with open(os.path.join(F.FOLDER_VOCABULARY, vocab_filename.replace(".h5", ".txt")), "w") as vocab_txtfile:
+            for word in words_ls:
+                vocab_txtfile.write(word + "\n")
+
+        return vocab_df

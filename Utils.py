@@ -13,7 +13,6 @@ import time
 from math import exp
 import torch
 import os
-import Filesystem as F
 import sqlite3
 
 ########## Constants ##########
@@ -58,10 +57,6 @@ INDEX = 'index'
 CORRECT_PREDICTIONS = 'correct_predictions'
 
 GRAPH_EMBEDDINGS_DIM = 300
-
-WT2 = "WT2"
-WT103 = "WT103"
-SEMCOR = "SemCor"
 
 ########## Text logging ##########
 

@@ -12,11 +12,13 @@ import re
 # Post-processing function:
 # Modifies an already created vocabulary dictionary. Words are removed if frequency < min_count
 def eliminate_rare_words(vocabulary_dict, min_count):
-    logging.info('Removing from the vocabulary words with frequency < ' + str(min_count))
+    logging.info("Length of the vocabulary before filtering with min_freq=" + str(min_count) +
+                 " is |V|=" + str(len(list(vocabulary_dict.keys()))))
     all_words = list(vocabulary_dict.keys()) # if we operate directly on keys(), we get: RuntimeError: dictionary changed size during iteration
     for key in all_words:
         if vocabulary_dict[key][0] < min_count:
             vocabulary_dict.pop(key)
+    logging.info("Length of the vocabulary after filtering: |V|=" + str(len(list(vocabulary_dict.keys()))))
 
 # ######### When we build a vocabulary from text, to transform the text of a line:
 #
@@ -85,7 +87,7 @@ def restore_unk_token(list_of_tokens):
 #                 modified_tokens.append(tok)
 #
 #     return modified_tokens
-#
+
 ##### Process one line: tokenize, convert symbols like @-@, manage <unk>, replace numbers etc.
 def process_line(line, tot_tokens=0):
 
@@ -100,8 +102,6 @@ def process_line(line, tot_tokens=0):
       tot_tokens = tot_tokens + len(line_tokens_00)
 
       line_tokens_01_unk = restore_unk_token(line_tokens_00) # recreate <unk> from '<','unk','>'
-# #     line_tokens_02_onlyLatinOrGreek = replace_nonLatinGreek_words(line_tokens_01_unk)
-# #     line_tokens_03_replNumbers = replace_numbers(line_tokens_02_onlyLatinOrGreek)
 
       return line_tokens_01_unk, tot_tokens
 
