@@ -18,7 +18,7 @@ FOLDER_SEMCOR = 'semcor'
 WT_TRAIN_FILE = 'wiki.train.tokens'
 WT_VALID_FILE = 'wiki.valid.tokens'
 WT_TEST_FILE = 'wiki.test.tokens'
-CORPUS_NUMERICAL_EXTENSION = ".numerical.pt"
+CORPUS_NUMERICAL_EXTENSION = ".numerical."
 
 FOLDER_TRAIN = 'Training'
 FOLDER_VALIDATION = 'Validation'
