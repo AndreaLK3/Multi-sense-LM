@@ -78,19 +78,17 @@ def organize_subcorpus(xml_fpath, train_fraction):
 
 ##########
 
-def organize_splits(xml_fnames):
-    xml_fpaths = list(map(
-        lambda fname: os.path.join(F.FOLDER_TEXT_CORPUSES, F.FOLDER_SENSELABELED, fname.replace(".xml", ""), fname), xml_fnames))
-    split_directories_paths = list(map(lambda dirname: os.path.join(F.FOLDER_TEXT_CORPUSES, F.FOLDER_SENSELABELED, dirname),
+def organize_splits(xml_folder_path, xml_fname):
+    split_directories_paths = list(map(lambda dirname: os.path.join(xml_folder_path, dirname),
                                        [F.FOLDER_TRAIN, F.FOLDER_VALIDATION, F.FOLDER_TEST]))
     for dirpath in split_directories_paths:
         if not os.path.exists(dirpath):
             os.makedirs(dirpath)
 
-    for xml_fpath in xml_fpaths:
-        logging.info("Organizing subcorpus at: " + xml_fpath)
-        train_root, valid_root, test_root = organize_subcorpus(xml_fpath, 0.8)
-        write_splits_subcorpus(xml_fpath, train_root, valid_root, test_root)
+    xml_fpath = os.path.join(xml_folder_path, xml_fname)
+    logging.info("Organizing subcorpus at: " + xml_fpath)
+    train_root, valid_root, test_root = organize_subcorpus(xml_fpath, 0.8)
+    write_splits_subcorpus(xml_fpath, train_root, valid_root, test_root)
 
 ##########
 

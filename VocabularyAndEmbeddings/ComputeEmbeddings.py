@@ -14,8 +14,9 @@ from VocabularyAndEmbeddings.EmbedWithDBERT import compute_sentence_dBert_vector
 
 
 class Method(Enum):
-    DISTILBERT = Utils.DISTILBERT
+    DISTILBERT = Utils.DISTILBERT # to be removed
     FASTTEXT = Utils.FASTTEXT
+    TXL = Utils.TXL
 
 
 # The main function of the module: iterate over the vocabulary that we previously did build from the training corpus,

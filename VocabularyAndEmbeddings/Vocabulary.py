@@ -108,8 +108,8 @@ def get_vocabulary_df(corpora_names, lowercase, slc_min_count=2, txt_min_count=1
         senselabeled_dir_fpaths.append(os.path.join(F.CORPORA_LOCATIONS[Filesystem.SEMCOR], F.FOLDER_TRAIN))
 
     # 2) specifying the filename of the vocabulary. It depends on which corpora were included
-    vocab_filename = "vocabulary_" + "_".join(corpora_names) + ".h5"
-    vocab_filepath = os.path.join(F.FOLDER_VOCABULARY, vocab_filename)
+    vocab_filename = "vocabulary.h5"
+    vocab_filepath = os.path.join(F.FOLDER_VOCABULARY, "_".join(corpora_names), vocab_filename)
     logging.info("vocab_filepath=" + str(vocab_filepath))
 
     # 3) Does the vocabulary file exist already? If yes, just load it

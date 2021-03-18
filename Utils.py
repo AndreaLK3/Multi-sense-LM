@@ -38,6 +38,7 @@ PROCESSED = 'processed' # for defs and examples, it means: 'no duplicates'; for 
 VECTORIZED = 'vectorized'
 DISTILBERT = "DistilBERT"
 FASTTEXT = "FastText"
+TXL = "TXL"
 
 TRAINING = 'Training'
 VALIDATION = 'Validation'

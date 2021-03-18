@@ -43,8 +43,7 @@ BN_SYNSET_EDGES = 'BabelNet_synset_edges'
 VOCAB_CURRENT_INDEX_FILE = 'vocabulary_currentIndex.txt' # used for BabelNet requests over several days
 
 FASTTEXT_PRETRAINED_EMBEDDINGS_FILE = 'cc.en.300.bin'
-SPVs_FASTTEXT_FILE = 'SinglePrototypes_withFastText.npy'
-SPVs_DISTILBERT_FILE = 'SinglePrototypes_withDistilBERT.npy'
+SPVs_FILE = "SinglePrototypeVectors.npy"
 
 SEMCOR_DB = 'semcor_all.db'
 MASC_DB = 'masc_written.db'
