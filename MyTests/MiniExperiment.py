@@ -1,4 +1,4 @@
-# This file should mostly copy the NN/Training.py file, although it is not used to set up standard experiments,
+# This file should mostly copy the Models/Models.py file, although it is not used to set up standard experiments,
 # but instead small mini-experiments (overfitting on a fragment of the training set).
 # We operate on separate mini-corpuses, and print the input processed by the RNNs forward() call.
 
@@ -8,14 +8,14 @@ import Filesystem as F
 import logging
 import os
 import Graph.Adjacencies as AD
-from NN.Training import load_model_from_file, ModelType, get_objects, get_dataloaders, create_model, evaluation
-from NN.Loss import write_doc_logging, compute_model_loss
+from Models.Training import load_model_from_file, ModelType, get_objects, get_dataloaders, create_model, evaluation
+from Models.Loss import write_doc_logging, compute_model_loss
 from Utils import DEVICE
 from itertools import cycle
 import gc
 from time import time
 import VocabularyAndEmbeddings.ComputeEmbeddings as CE
-import NN.ExplorePredictions as EP
+import Models.ExplorePredictions as EP
 
 ################ Auxiliary function, for logging ################
 def log_input(batch_input, last_idx_senses, slc_or_text):
@@ -234,9 +234,9 @@ def run_train(model,dataloaders, learning_rate, num_epochs, predict_senses=True,
                 # end of an epoch.
 
             # -------------------- Computing training losses for the epoch--------------------
-            logging.info("-----\n Training, end of epoch " + str(epoch) + ". Global step n." + str(overall_step) +
+            logging.info("-----\n Models, end of epoch " + str(epoch) + ". Global step n." + str(overall_step) +
                          ". Time = " + str(round(time() - starting_time, 2)))
-            logging.info("Training - Correct predictions / Total predictions:\n" + str(predictions_history_dict))
+            logging.info("Models - Correct predictions / Total predictions:\n" + str(predictions_history_dict))
 
             epoch_sumlosses_tpl = sum_epoch_loss_global, sum_epoch_loss_sense, sum_epoch_loss_polysense
             epoch_numsteps_tpl = epoch_step, epoch_senselabeled_tokens, epoch_polysense_tokens
@@ -244,7 +244,7 @@ def run_train(model,dataloaders, learning_rate, num_epochs, predict_senses=True,
 
 
     except KeyboardInterrupt:
-        logging.info("Training loop interrupted manually by keyboard")
+        logging.info("Models loop interrupted manually by keyboard")
 
     # At the end: Evaluation on the test set
     evaluation(test_dataloader, test_dataiter, model, verbose=False,

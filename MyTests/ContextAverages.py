@@ -1,4 +1,4 @@
-from NN.ContextAverages import get_archives
+from Models.ContextAverages import get_archives
 import Utils
 import Filesystem as F
 import os
@@ -7,7 +7,7 @@ import Utils
 import pandas as pd
 import logging
 import SenseLabeledCorpus as SLC
-import NN.NumericalIndices as NI
+import Models.NumericalIndices as NI
 import numpy as np
 from collections import deque
 

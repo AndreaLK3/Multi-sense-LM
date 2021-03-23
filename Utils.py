@@ -40,7 +40,7 @@ DISTILBERT = "DistilBERT"
 FASTTEXT = "FastText"
 TXL = "TXL"
 
-TRAINING = 'Training'
+TRAINING = 'Models'
 VALIDATION = 'Validation'
 TEST = 'Test'
 
@@ -124,7 +124,7 @@ def display_ygraph_from_nparray(data_y_array, axis_labels=None, label=None):
 # For now, intended to be use with training_losses and validation_losses
 def display_xygraph_from_files(npy_fpaths_ls):
     overall_max = 0
-    legend_labels = ['Training loss', 'Validation loss']
+    legend_labels = ['Models loss', 'Validation loss']
     for i in range(len(npy_fpaths_ls)):
         npy_fpath = npy_fpaths_ls[i]
         xy_lts_array = np.load(npy_fpath, allow_pickle=True)
@@ -162,7 +162,15 @@ def check_language(text, lang_id):
     return possible_match
 
 
-### When we encounter UNK, reading in text for the NN, we skip it
+### Create the folder at a specified filepath, if it does not exist
+def set_directory(dir_path):
+    if os.path.exists(dir_path):
+        return dir_path
+    else:
+        os.makedirs(dir_path)
+    return dir_path
+
+### When we encounter UNK, reading in text for the Models, we skip it
 class MustSkipUNK_Exception(Exception):
     def __init__(self):
         super().__init__()
@@ -272,9 +280,7 @@ def get_gpu_memory_map():
 
 
 # Read the indices_table.sql, in order to determine the start of the dummmySenses.
-def get_startpoint_dummySenses(slc_or_text):
-    inputdata_folder = os.path.join(F.FOLDER_INPUT, F.FOLDER_SENSELABELED) if slc_or_text \
-        else os.path.join(F.FOLDER_INPUT, F.FOLDER_STANDARDTEXT)
+def get_startpoint_dummySenses(inputdata_folder):
     indicesTable_db = sqlite3.connect(os.path.join(inputdata_folder, INDICES_TABLE_DB))
     indicesTable_db_c = indicesTable_db.cursor()
     counter = 1

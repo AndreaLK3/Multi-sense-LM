@@ -11,26 +11,27 @@ import Graph.Adjacencies as AD
 import numpy as np
 from time import time
 from VocabularyAndEmbeddings.ComputeEmbeddings import Method
-from NN.Loss import write_doc_logging, compute_model_loss
+from Models.Loss import write_doc_logging, compute_model_loss
 from Utils import DEVICE
-import NN.DataLoading as DL
-import NN.Models.RNNs as RNNs
+import Models.DataLoading as DL
+import Models.Variants.RNNs as RNNs
 from itertools import cycle
 import gc
 from math import exp
 import VocabularyAndEmbeddings.ComputeEmbeddings as CE
 from torch.nn.parameter import Parameter
 from enum import Enum
-import NN.Models.SelectK as SelectK
-import NN.Models.SenseContext as SC
-import NN.Models.SelfAttention as SA
-import NN.Models.MFS as MFS
-from NN.Models.Common import ContextMethod# for ease of launch
+import Models.Variants.SelectK as SelectK
+import Models.Variants.SenseContext as SC
+import Models.Variants.SelfAttention as SA
+import Models.Variants.MFS as MFS
+from Models.Variants.Common import ContextMethod# for ease of launch
 
 # ########## Auxiliary functions ##########
 
 # ---------- a) Which variant of the model to use ----------
 class ModelType(Enum):
+    GOLD = "GoldLM"
     RNN = "RNN"
     SELECTK = "SelectK"
     SC = "Sense Context"
@@ -38,25 +39,11 @@ class ModelType(Enum):
     MFS = "Most Frequent Sense"
 
 # ---------- b) The option to load a pre-trained version of one of our models ----------
-def load_model_from_file(slc_or_text, inputdata_folder, graph_dataobj):
-    saved_model_path = os.path.join(F.FOLDER_NN, F.SAVED_MODEL_NAME)
+def load_model_from_file(modeltype):
+    saved_model_path = os.path.join(F.FOLDER_MODELS, F.FOLDER_SAVEDMODELS, modeltype.value + ".pt")
     model = torch.load(saved_model_path).module if torch.cuda.is_available() \
         else torch.load(saved_model_path, map_location=torch.device('cpu')).module # unwrapping DataParallel
     logging.info("Loading the model found at: " + str(saved_model_path))
-
-    if slc_or_text:
-    # we must replace the linear FF-NNs that go from LastLayerDim (eg. 512) to the vocabulary,
-        last_idx_senses = graph_dataobj.node_types.tolist().index(1)
-        num_senses = last_idx_senses + 1
-        last_idx_globals = graph_dataobj.node_types.tolist().index(2)
-        num_globals = last_idx_globals - last_idx_senses
-
-        model.linear2global = torch.nn.Linear(in_features=model.hidden_size // 2, out_features=num_globals, bias=True)
-        model.linear2senses = torch.nn.Linear(in_features=model.hidden_size // 2, out_features=num_senses, bias=True)
-
-    # and the matrix E of embeddings too.
-        E_embeddings = DG.load_word_embeddings(inputdata_folder)
-        model.E = Parameter(E_embeddings.clone().detach(), requires_grad=True)
 
     return model
 
@@ -64,23 +51,22 @@ def load_model_from_file(slc_or_text, inputdata_folder, graph_dataobj):
 # ########## Steps of setup_train ##########
 
 # ---------- Step 1: setting up the graph, grapharea_matrix (used for speed) and the vocabulary  ----------
-def get_objects(slc_or_text_corpus, gr_in_voc_folders, method=CE.Method.FASTTEXT, grapharea_size=32):
+def get_objects(vocab_sources_ls, gr_in_voc_folders, method=CE.Method.FASTTEXT, grapharea_size=32):
     graph_folder, inputdata_folder, vocabulary_folder = gr_in_voc_folders
-    graph_dataobj = DG.get_graph_dataobject(new=False, method=method, slc_corpus=slc_or_text_corpus).to(DEVICE)
+    graph_dataobj = DG.get_graph_dataobject(new=False, vocabulary_sources_ls=vocab_sources_ls, sp_method=method).to(DEVICE)
 
     grapharea_matrix = AD.get_grapharea_matrix(graph_dataobj, grapharea_size, hops_in_area=1, graph_folder=graph_folder)
 
-    single_prototypes_file = F.SPVs_FASTTEXT_FILE if method == Method.FASTTEXT else F.SPVs_DISTILBERT_FILE
+    single_prototypes_file = os.path.join(inputdata_folder, F.SPVs_FILENAME)
     embeddings_matrix = torch.tensor(np.load(os.path.join(inputdata_folder, single_prototypes_file))).to(torch.float32)
 
-
-    globals_vocabulary_fpath = os.path.join(vocabulary_folder, F.VOCABULARY_OF_GLOBALS_FILENAME)
+    globals_vocabulary_fpath = os.path.join(vocabulary_folder, "vocabulary.h5")
     vocabulary_df = pd.read_hdf(globals_vocabulary_fpath, mode='r')
 
     vocabulary_numSensesList = vocabulary_df['num_senses'].to_list().copy()
     if all([num_senses == -1 for num_senses in vocabulary_numSensesList]):
         vocabulary_df = AD.compute_globals_numsenses(graph_dataobj, grapharea_matrix, grapharea_size,
-                                                     slc_or_text_corpus)
+                                                     inputdata_folder, globals_vocabulary_fpath)
 
     return graph_dataobj, grapharea_size, grapharea_matrix, vocabulary_df, embeddings_matrix
 
@@ -202,7 +188,7 @@ def setup_train(slc_or_text_corpus, model_type, K=0, C=0, context_method=None,
 def run_train(model, dataloaders, learning_rate, num_epochs, predict_senses=True, with_freezing=False):
 
     # -------------------- Step 1: Setup model --------------------
-    Utils.init_logging('Training' + Utils.get_timestamp_month_to_sec() + '.log', loglevel=logging.INFO)
+    Utils.init_logging('Models' + Utils.get_timestamp_month_to_sec() + '.log', loglevel=logging.INFO)
     train_dataloader, valid_dataloader, test_dataloader = dataloaders
     slc_or_text = train_dataloader.dataset.sensecorpus_or_text
 
@@ -276,7 +262,7 @@ def run_train(model, dataloaders, learning_rate, num_epochs, predict_senses=True
                 if exp(valid_loss_globals) > exp(best_valid_loss_globals) + 0.1 and (epoch > 2):
 
                     if exp(valid_loss_globals) > exp(best_valid_loss_globals):
-                        torch.save(model, os.path.join(F.FOLDER_NN, hyperparams_str + '_best_validation.model'))
+                        torch.save(model, os.path.join(F.FOLDER_MODELS, hyperparams_str + '_best_validation.model'))
                     if not with_freezing:
                         # previous validation was better. Now we must early-stop
                         logging.info("Early stopping. Latest validation PPL=" + str(round(exp(valid_loss_globals), 2))
@@ -345,9 +331,9 @@ def run_train(model, dataloaders, learning_rate, num_epochs, predict_senses=True
                 # end of an epoch.
 
             # -------------------- 3e) Computing training losses for the epoch--------------------
-            logging.info("-----\n Training, end of epoch " + str(epoch) + ". Global step n." + str(overall_step) +
+            logging.info("-----\n Models, end of epoch " + str(epoch) + ". Global step n." + str(overall_step) +
                          ". Time = " + str(round(time() - starting_time, 2)))
-            logging.info("Training - Correct predictions / Total predictions:\n" + str(predictions_history_dict))
+            logging.info("Models - Correct predictions / Total predictions:\n" + str(predictions_history_dict))
 
             epoch_sumlosses_tpl = sum_epoch_loss_global, sum_epoch_loss_senses, sum_epoch_loss_polysenses
             epoch_numsteps_tpl = epoch_step, epoch_senselabeled_tokens, epoch_polysense_tokens
@@ -355,10 +341,10 @@ def run_train(model, dataloaders, learning_rate, num_epochs, predict_senses=True
 
 
     except KeyboardInterrupt:
-        logging.info("Training loop interrupted manually by keyboard")
+        logging.info("Models loop interrupted manually by keyboard")
 
     # --------------------- 4) Saving model --------------------
-    torch.save(model, os.path.join(F.FOLDER_NN, hyperparams_str + '_end.model'))
+    torch.save(model, os.path.join(F.FOLDER_MODELS, hyperparams_str + '_end.model'))
 
     # --------------------- 5) At the end: Evaluation on the test set  ---------------------
     evaluation(test_dataloader, test_dataiter, model, slc_or_text=slc_or_text,

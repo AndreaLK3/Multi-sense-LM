@@ -119,20 +119,14 @@ def initialize_senses(X_defs, X_examples, X_globals, vocabulary_ls, average_or_r
 
 # ----------------------------------------
 
-def create_graph(method, slc_corpus):
+def create_graph(vocabulary_sources, sp_method):
 
-    if slc_corpus:
-        inputdata_folder = os.path.join(F.FOLDER_INPUT, F.FOLDER_SENSELABELED)
-        vocabulary_folder = os.path.join(F.FOLDER_VOCABULARY, F.FOLDER_SENSELABELED)
-        graph_folder = os.path.join(F.FOLDER_GRAPH, F.FOLDER_SENSELABELED)
-    else:
-        inputdata_folder = os.path.join(F.FOLDER_INPUT, F.FOLDER_STANDARDTEXT)
-        vocabulary_folder = os.path.join(F.FOLDER_VOCABULARY, F.FOLDER_STANDARDTEXT)
-        graph_folder = os.path.join(F.FOLDER_GRAPH, F.FOLDER_STANDARDTEXT)
+    inputdata_folder = os.path.join(F.FOLDER_INPUT, "_".join(vocabulary_sources), sp_method.value)
+    graph_folder = Utils.set_directory(os.path.join(F.FOLDER_GRAPH, "_".join(vocabulary_sources), sp_method.value))
 
-    globals_vocabulary_fpath = os.path.join(vocabulary_folder, F.VOCABULARY_OF_GLOBALS_FILENAME)
-    globals_vocabulary_df = pd.read_hdf(globals_vocabulary_fpath, mode='r')
-    globals_vocabulary_ls = globals_vocabulary_df['word'].to_list().copy()
+    vocabulary_fpath = os.path.join(F.FOLDER_VOCABULARY, "_".join(vocabulary_sources), "vocabulary.h5")
+    vocabulary_df = pd.read_hdf(vocabulary_fpath, mode='r')
+    vocabulary_ls = vocabulary_df['word'].to_list().copy()
 
     E_embeddings = load_word_embeddings(inputdata_folder)
     logging.info("E_embeddings.shape=" + str(E_embeddings.shape))
@@ -141,11 +135,11 @@ def create_graph(method, slc_corpus):
 
     use_PCA = Utils.GRAPH_EMBEDDINGS_DIM < embeddings_size
 
-    X_definitions = load_senses_elements(Utils.DEFINITIONS, method, use_PCA, inputdata_folder)
-    X_examples = load_senses_elements(Utils.EXAMPLES, method, use_PCA, inputdata_folder)
+    X_definitions = load_senses_elements(Utils.DEFINITIONS, sp_method, use_PCA, inputdata_folder)
+    X_examples = load_senses_elements(Utils.EXAMPLES, sp_method, use_PCA, inputdata_folder)
 
-    X_globals = initialize_globals(E_embeddings, globals_vocabulary_ls, use_PCA)
-    X_senses, num_dummysenses = initialize_senses(X_definitions, X_examples, X_globals, globals_vocabulary_ls,
+    X_globals = initialize_globals(E_embeddings, vocabulary_ls, use_PCA)
+    X_senses, num_dummysenses = initialize_senses(X_definitions, X_examples, X_globals, vocabulary_ls,
                                                   average_or_random_flag=True, inputdata_folder=inputdata_folder)
     num_senses = X_senses.shape[0]
 
@@ -167,18 +161,17 @@ def create_graph(method, slc_corpus):
     logging.info("example_edges.__len__()=" + str(example_edges.__len__())) # example_edges.__len__()=26003
 
     logging.info("Defining the edges: lemma")
-    lemma_edges = DGE.get_edges_lemmatized(globals_vocabulary_df, globals_vocabulary_ls, last_sense_idx=num_senses)
+    lemma_edges = DGE.get_edges_lemmatized(vocabulary_df, vocabulary_ls, last_sense_idx=num_senses)
 
     logging.info("Defining the edges: senseChildren")
     senseChildren_edges = []
-    # If operating on a sense-labeled corpus, we need to connect globals & their senses that do not belong to them
-    if slc_corpus:
-        sc_external_edges = DGE.get_additional_edges_sensechildren_from_slc(globals_vocabulary_df,
+    # Operating on a sense-labeled corpus, we need to connect globals & their senses that do not belong to them
+    sc_external_edges = DGE.get_additional_edges_sensechildren_from_slc(vocabulary_df,
                                                                         globals_start_index_toadd=num_senses,
                                                                         inputdata_folder=inputdata_folder)
-        senseChildren_edges.extend(sc_external_edges)
-        logging.info("sc_edges_external_from_SLC.__len__()=" + str(sc_external_edges.__len__()))
-    senseChildren_edges.extend(DGE.get_edges_sensechildren(globals_vocabulary_df, X_senses.shape[0], inputdata_folder))
+    senseChildren_edges.extend(sc_external_edges)
+    logging.info("sc_edges_external_from_SLC.__len__()=" + str(sc_external_edges.__len__()))
+    senseChildren_edges.extend(DGE.get_edges_sensechildren(vocabulary_df, X_senses.shape[0], inputdata_folder))
     logging.info("sc_edges.__len__()=" + str(senseChildren_edges.__len__()))  # senseChildren_edges.__len__()=25986
     # We add self-loops to all globals that are not connected to any node.
     edges_selfloops = DGE.get_edges_selfloops(senseChildren_edges, lemma_edges, num_globals, num_senses)
@@ -186,9 +179,9 @@ def create_graph(method, slc_corpus):
     logging.info("sc_edges_with_selfloops.__len__()=" + str(senseChildren_edges.__len__()))
 
     logging.info("Defining the edges: syn, ant")
-    syn_edges = DGE.get_edges_nyms(Utils.SYNONYMS, globals_vocabulary_df, num_senses, inputdata_folder)
+    syn_edges = DGE.get_edges_nyms(Utils.SYNONYMS, vocabulary_df, num_senses, inputdata_folder)
     logging.info("syn_edges.__len__()=" + str(syn_edges.__len__()))
-    ant_edges = DGE.get_edges_nyms(Utils.ANTONYMS, globals_vocabulary_df, num_senses, inputdata_folder)
+    ant_edges = DGE.get_edges_nyms(Utils.ANTONYMS, vocabulary_df, num_senses, inputdata_folder)
     logging.info("ant_edges.__len__()=" + str(ant_edges.__len__()))
 
     edges_lts = torch.tensor(definition_edges + example_edges + senseChildren_edges + syn_edges + ant_edges + lemma_edges)
@@ -209,16 +202,12 @@ def create_graph(method, slc_corpus):
     return graph
 
 
-
 # Entry point function: try to load the graph, else create it if it does not exist
-def get_graph_dataobject(new, slc_corpus, method=Method.FASTTEXT):
-    if slc_corpus:
-        graph_fpath = os.path.join(F.FOLDER_GRAPH, F.FOLDER_SENSELABELED, F.KBGRAPH_FILE)
-    else:
-        graph_fpath = os.path.join(F.FOLDER_GRAPH, F.FOLDER_STANDARDTEXT, F.KBGRAPH_FILE)
+def get_graph_dataobject(new, vocabulary_sources_ls, sp_method=Method.FASTTEXT):
+    graph_fpath = os.path.join(F.FOLDER_GRAPH, F.FOLDER_SENSELABELED, F.KBGRAPH_FILE)
     if os.path.exists(graph_fpath) and not new:
         return torch.load(graph_fpath)
     else:
-        graph_dataobj = create_graph(method, slc_corpus)
+        graph_dataobj = create_graph(vocabulary_sources_ls, sp_method)
         torch.save(graph_dataobj, graph_fpath)
         return graph_dataobj

@@ -1,10 +1,10 @@
 import torch
-from NN.Models.Common import predict_globals_withGRU, init_model_parameters, init_common_architecture, \
+from Models.Variants.Common import predict_globals_withGRU, init_model_parameters, init_common_architecture, \
     get_input_signals, ContextMethod
-from NN.Models.RNNSteps import reshape_memories, reshape_tensor, rnn_loop
+from Models.Variants.RNNSteps import reshape_memories, reshape_tensor, rnn_loop
 from torch.nn.parameter import Parameter
 import Utils
-from NN.Models.SelectK import get_senseneighbours_of_k_globals
+from Models.Variants.SelectK import get_senseneighbours_of_k_globals
 import numpy as np
 import os
 import Filesystem as F

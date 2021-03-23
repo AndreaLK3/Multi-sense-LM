@@ -92,10 +92,10 @@ def txl_on_wt2(learning_rate=0.00001, max_num_epochs=500):
     epoch = 1
     best_valid_loss = inf
     while epoch <= max_num_epochs:
-        logging.info("Training: epoch n." + str(epoch) + "...")
+        logging.info("Models: epoch n." + str(epoch) + "...")
         train_loss = epoch_on_corpus(wt2_train_chunks_ls, model, optimizer, training_or_test=True)
         train_ppl = exp(train_loss)
-        logging.info("Epoch n." + str(epoch) + " completed. Training PPL=" + str(round(train_ppl, 2)))
+        logging.info("Epoch n." + str(epoch) + " completed. Models PPL=" + str(round(train_ppl, 2)))
         valid_loss = epoch_on_corpus(wt2_valid_chunks_ls, model, optimizer, training_or_test=False)
         logging.info("After epoch n." + str(epoch) + ", validation PPL=" + str(round(exp(valid_loss),2)))
         if (exp(valid_loss) > exp(best_valid_loss) + 0.1) and (epoch > 5):

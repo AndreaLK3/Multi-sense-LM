@@ -12,13 +12,12 @@ import SenseLabeledCorpus as SLC
 from time import time
 
 # Before starting: clean all storage files; reset vocabulary index to 0
-def reset(vocabulary_sources_ls, sp_method):
-    inputdata_folder = os.path.join(F.FOLDER_INPUT, "FromVocabulary_" + "_".join(vocabulary_sources_ls),
-                                    sp_method.value)
+def reset(vocabulary_sources_ls, sp_method=CE.Method.FASTTEXT):
+    inputdata_folder = Utils.set_directory(os.path.join(F.FOLDER_INPUT, "_".join(vocabulary_sources_ls), sp_method.value))
 
     vocab_h5_fname = "vocabulary_" + "_".join(vocabulary_sources_ls) + ".h5"
     vocab_txt_fname = vocab_h5_fname.replace(".h5", ".txt")
-    vocab_folder = os.path.join(F.FOLDER_VOCABULARY, "_".join(vocabulary_sources_ls))
+    vocab_folder = Utils.set_directory(os.path.join(F.FOLDER_VOCABULARY, "_".join(vocabulary_sources_ls)))
     vocab_filepaths = [os.path.join(vocab_folder, vocab_h5_fname), os.path.join(vocab_folder, vocab_txt_fname)]
     graph_folder = os.path.join(F.FOLDER_GRAPH, "_".join(vocabulary_sources_ls), sp_method.value)
 
@@ -45,9 +44,8 @@ def reset(vocabulary_sources_ls, sp_method):
         vi_file.close()
 
 
-def reset_embeddings(vocabulary_sources_ls, sp_method):
-    inputdata_folder = os.path.join(F.FOLDER_INPUT, "FromVocabulary_" + "_".join(vocabulary_sources_ls),
-                                    sp_method.value)
+def reset_embeddings(vocabulary_sources_ls, sp_method=CE.Method.FASTTEXT):
+    inputdata_folder = Utils.set_directory(os.path.join(F.FOLDER_INPUT, "_".join(vocabulary_sources_ls), sp_method.value))
     # reset the embeddings, both those for dictionary elements and those for single-prototype vectors
     vectorized_inputs_filenames = list(filter(lambda fname: '.npy' in fname, os.listdir(inputdata_folder)))
     vectorized_inputs_filepaths = list(map(lambda fname: os.path.join(inputdata_folder, fname),
@@ -59,13 +57,14 @@ def reset_embeddings(vocabulary_sources_ls, sp_method):
 
 
 def exe_from_input_to_vectors(do_reset, compute_single_prototype, vocabulary_sources_ls, sp_method=CE.Method.FASTTEXT):
+    Utils.init_logging("CGI-pipelineStart.log")
 
     t0 = time()
     if do_reset:
         reset(vocabulary_sources_ls, sp_method)
 
     # set the folder that will contain the WordNet gloss data, depending on vocabulary sources and embeddings method
-    inputdata_folder = os.path.join(F.FOLDER_INPUT, "FromVocabulary_" + "_".join(vocabulary_sources_ls), sp_method.value)
+    inputdata_folder = Utils.set_directory(os.path.join(F.FOLDER_INPUT, "_".join(vocabulary_sources_ls), sp_method.value))
 
     # organize the SemCor corpus in training, validation and test splits
     SLC.organize_splits(xml_folder_path=F.CORPORA_LOCATIONS[F.SEMCOR], xml_fname='semcor.xml')
@@ -77,8 +76,7 @@ def exe_from_input_to_vectors(do_reset, compute_single_prototype, vocabulary_sou
 
     if compute_single_prototype:
         reset_embeddings(vocabulary_sources_ls, sp_method)
-        single_prototypes_fname = F.SPVs_FILE
-        single_prototypes_fpath = os.path.join(inputdata_folder, single_prototypes_fname)
+        single_prototypes_fpath = os.path.join(inputdata_folder, F.SPVs_FILENAME)
         CE.compute_single_prototype_embeddings(vocabulary_df,
                                                single_prototypes_fpath,
                                                sp_method)
@@ -91,4 +89,4 @@ def exe_from_input_to_vectors(do_reset, compute_single_prototype, vocabulary_sou
     PI.prepare(vocabulary_ls, inputdata_folder, vocabulary_folder, embeddings_method=sp_method)
     tables.file._open_files.close_all()
     t3 = time()
-    logging.info("Did preprocess (no duplicate glosses + senses'table + sentence encoding=" + str(round(t3-t2,2)))
+    logging.info("Did preprocessing (no duplicate glosses + senses'table + sentence encoding)=" + str(round(t3-t2,2)))

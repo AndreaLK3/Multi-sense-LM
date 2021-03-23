@@ -1,5 +1,5 @@
 import VocabularyAndEmbeddings.ComputeEmbeddings as CE;import CreateGraphInput as CGI;import Graph.DefineGraph as DG
-import NN.Training as T
+import Models.Training as T
 import Graph.Adjacencies as AD
 from time import time
 import Utils

@@ -9,7 +9,7 @@ import Filesystem as F
 import SenseLabeledCorpus as SLC
 import Utils
 from GetKBInputData.LemmatizeNyms import lemmatize_term
-from NN.NumericalIndices import try_to_get_wordnet_sense
+from Models.NumericalIndices import try_to_get_wordnet_sense
 from VocabularyAndEmbeddings import Vocabulary_Utilities as VocabUtils
 
 
@@ -86,7 +86,7 @@ def get_edges_sensechildren(globals_voc_df, globals_start_index_toadd, inputdata
 def get_additional_edges_sensechildren_from_slc(globals_voc_df, globals_start_index_toadd, inputdata_folder):
     logging.info("Reading the sense-labeled corpus, to create the connections between globals"
                  " and the senses that belong to other words.")
-    train_corpus_fpath = os.path.join(F.FOLDER_TEXT_CORPUSES, F.FOLDER_SENSELABELED, Utils.TRAINING)
+    train_corpus_fpath = os.path.join(F.FOLDER_TEXT_CORPUSES, F.FOLDER_SENSELABELED, F.FOLDER_SEMCOR, Utils.TRAINING)
     slc_train_corpus_gen = SLC.read_split(train_corpus_fpath)
     senseindices_db = sqlite3.connect(os.path.join(inputdata_folder, Utils.INDICES_TABLE_DB))
     senseindices_db_c = senseindices_db.cursor()

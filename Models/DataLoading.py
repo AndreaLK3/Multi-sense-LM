@@ -1,6 +1,6 @@
 import torch
 import SenseLabeledCorpus as SLC
-import NN.NumericalIndices as NI
+import Models.NumericalIndices as NI
 import logging
 from Utils import DEVICE
 import Graph.Adjacencies as AD

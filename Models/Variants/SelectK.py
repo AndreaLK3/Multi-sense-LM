@@ -2,13 +2,13 @@ import torch
 from torch_geometric.nn import GATConv
 import torch.nn.functional as tfunc
 import Graph.Adjacencies as AD
-from NN.Models.Common import predict_globals_withGRU, init_model_parameters, init_common_architecture, get_input_signals
-from NN.Models.RNNSteps import rnn_loop, reshape_memories
+from Models.Variants.Common import predict_globals_withGRU, init_model_parameters, init_common_architecture, get_input_signals
+from Models.Variants.RNNSteps import rnn_loop, reshape_memories
 from Utils import DEVICE
 from torch.nn.parameter import Parameter
 import logging
 from time import time
-import NN.ExplorePredictions as EP
+import Models.ExplorePredictions as EP
 import Utils
 import nltk
 from GetKBInputData.LemmatizeNyms import lemmatize_term
@@ -103,7 +103,7 @@ class SelectK(torch.nn.Module):
         predictions_globals, logits_globals = predict_globals_withGRU(self, batch_input_signals, seq_len, distributed_batch_size)
 
         # ------------------- Senses -------------------
-        # line 1: GRU for senses + linear FF-NN to logits.
+        # line 1: GRU for senses + linear FF-Models to logits.
         if self.predict_senses:
             task_2_out = rnn_loop(batch_input_signals, model=self, rnn_ls=self.senses_rnn_ls, memory=self.memory_hn_senses)
             task2_out = task_2_out.reshape(distributed_batch_size * seq_len, task_2_out.shape[2])

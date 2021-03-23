@@ -1,5 +1,5 @@
 import argparse
-import NN.Training as T
+import Models.Training as T
 import torch
 from time import time
 import Utils

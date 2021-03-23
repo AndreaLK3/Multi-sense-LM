@@ -4,7 +4,7 @@ import pandas as pd
 import Utils
 import logging
 from torch.nn.parameter import Parameter
-from NN.Models.SenseContext import update_context_average
+from Models.Variants.SenseContext import update_context_average
 
 def ctx_running_average(seq_len=3, bsz=2, dim=4, num_C=3):
     CURRENT_DEVICE = 'cpu' if not (torch.cuda.is_available()) else 'cuda:' + str(torch.cuda.current_device())

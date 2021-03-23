@@ -20,7 +20,7 @@ WT_VALID_FILE = 'wiki.valid.tokens'
 WT_TEST_FILE = 'wiki.test.tokens'
 CORPUS_NUMERICAL_EXTENSION = ".numerical."
 
-FOLDER_TRAIN = 'Training'
+FOLDER_TRAIN = 'Models'
 FOLDER_VALIDATION = 'Validation'
 FOLDER_TEST= 'Test'
 
@@ -33,7 +33,8 @@ CORPORA_LOCATIONS = {WT2: os.path.join(FOLDER_TEXT_CORPUSES, FOLDER_STANDARDTEXT
                      }
 
 FOLDER_GRAPH = "Graph"
-FOLDER_NN = 'NN'
+FOLDER_MODELS = 'Models'
+FOLDER_SAVEDMODELS = "SavedModels"
 
 BN_WORD_INTROS = 'BabelNet_word_intros'
 BN_SYNSET_DATA = 'BabelNet_synset_data'
@@ -43,7 +44,7 @@ BN_SYNSET_EDGES = 'BabelNet_synset_edges'
 VOCAB_CURRENT_INDEX_FILE = 'vocabulary_currentIndex.txt' # used for BabelNet requests over several days
 
 FASTTEXT_PRETRAINED_EMBEDDINGS_FILE = 'cc.en.300.bin'
-SPVs_FILE = "SinglePrototypeVectors.npy"
+SPVs_FILENAME = "SinglePrototypeVectors.npy"
 
 SEMCOR_DB = 'semcor_all.db'
 MASC_DB = 'masc_written.db'
@@ -53,8 +54,6 @@ LOSSES_FILEEND = 'losses.npy'
 PERPLEXITY_FILEEND = 'perplexity.npy'
 
 GRAPHAREA_FILE = 'graphArea_matrix.npz'
-
-SAVED_MODEL_NAME = 'pretrained_model.pt'
 
 MATRIX_SENSE_CONTEXTS_FILEEND = '_SenseContext.npy'
 MOST_FREQ_SENSE_FILE = 'MostFrequentSense.h5'

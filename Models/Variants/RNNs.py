@@ -1,11 +1,11 @@
 import torch
 from torch_geometric.nn import GATConv
 import torch.nn.functional as tfunc
-from NN.Models.Common import init_model_parameters, init_common_architecture, predict_globals_withGRU, get_input_signals
-from NN.Models.RNNSteps import rnn_loop
+from Models.Variants.Common import init_model_parameters, init_common_architecture, predict_globals_withGRU, get_input_signals
+from Models.Variants.RNNSteps import rnn_loop
 from torch.nn.parameter import Parameter
 import Utils
-from NN.Models.RNNSteps import reshape_memories
+from Models.Variants.RNNSteps import reshape_memories
 
 
 class RNN(torch.nn.Module):

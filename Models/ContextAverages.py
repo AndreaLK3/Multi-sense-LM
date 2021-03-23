@@ -1,6 +1,6 @@
 import Graph.Adjacencies as AD
 import Graph.DefineGraph as DG
-import NN.DataLoading as DL
+import Models.DataLoading as DL
 import Filesystem as F
 import os
 import sqlite3
@@ -8,7 +8,7 @@ import Utils
 import pandas as pd
 import VocabularyAndEmbeddings.ComputeEmbeddings as CE
 import SenseLabeledCorpus as SLC
-import NN.NumericalIndices as NI
+import Models.NumericalIndices as NI
 import numpy as np
 from collections import deque
 import logging

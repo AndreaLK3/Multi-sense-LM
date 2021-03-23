@@ -6,7 +6,7 @@ import logging
 import os
 import Filesystem as F
 import pandas as pd
-from NN.ExplorePredictions import get_sense_fromindex, get_globalword_fromindex_df
+from Models.ExplorePredictions import get_sense_fromindex, get_globalword_fromindex_df
 
 def log_node(n, last_indices_tpl, inputdata_folder, vocabulary_folder, definitions_df, examples_df):
     last_idx_senses , last_idx_globals, last_idx_definitions = last_indices_tpl

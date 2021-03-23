@@ -9,7 +9,7 @@ from Graph import Adjacencies as AD
 from Utils import DEVICE
 import Utils
 from torch_geometric.nn import GATConv
-from NN.Models.RNNSteps import rnn_loop
+from Models.Variants.RNNSteps import rnn_loop
 
 
 #########################

@@ -2,18 +2,18 @@ import torch
 from torch_geometric.nn import GATConv
 import torch.nn.functional as tfunc
 import Graph.Adjacencies as AD
-from NN.Models.Common import predict_globals_withGRU, init_model_parameters, init_common_architecture, get_input_signals
-from NN.Models.RNNSteps import rnn_loop, reshape_tensor
+from Models.Variants.Common import predict_globals_withGRU, init_model_parameters, init_common_architecture, get_input_signals
+from Models.Variants.RNNSteps import rnn_loop, reshape_tensor
 from Utils import DEVICE
 from torch.nn.parameter import Parameter
 import logging
 from time import time
-import NN.ExplorePredictions as EP
+import Models.ExplorePredictions as EP
 import Utils
 import nltk
 from GetKBInputData.LemmatizeNyms import lemmatize_term
 from enum import Enum
-from NN.Models.SelectK import get_senseneighbours_of_k_globals
+from Models.Variants.SelectK import get_senseneighbours_of_k_globals
 import pandas as pd
 import os
 import numpy as np

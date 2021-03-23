@@ -5,8 +5,8 @@ import Utils
 import lxml.etree
 import copy
 
-##### Organizing each subcorpus into Training, Validation and Test splits (80-10-10)
-##### We do not rewrite the Training part of a corpus: we save separately Validation and Test,
+##### Organizing each subcorpus into Models, Validation and Test splits (80-10-10)
+##### We do not rewrite the Models part of a corpus: we save separately Validation and Test,
 ##### and we write down the index of the document <= 80% (training stops there)
 
 def count_elements(elements_tag, xml_fpath):
@@ -52,7 +52,7 @@ def organize_subcorpus(xml_fpath, train_fraction):
     num_for_training = int(train_fraction * total)
     num_for_validation = (total - num_for_training) // 2
 
-    logging.info("Training dataset will contain: " + str(num_for_training) + " " + superelements_tag + "s , " +
+    logging.info("Models dataset will contain: " + str(num_for_training) + " " + superelements_tag + "s , " +
                  "Validation dataset will contain: " + str(num_for_validation) + " " + superelements_tag + "s , " +
                  "Test dataset will contain: " + str(
         total - num_for_training - num_for_validation) + " " + superelements_tag + "s")

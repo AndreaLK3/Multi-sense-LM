@@ -2,7 +2,7 @@ import logging
 import numpy as np
 import torch
 from torch.nn import functional as tfunc
-from NN import ExplorePredictions as EP
+from Models import ExplorePredictions as EP
 from Utils import DEVICE, get_timestamp_month_to_sec
 
 

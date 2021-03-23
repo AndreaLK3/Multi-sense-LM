@@ -40,7 +40,7 @@ def preprocess(vocabulary_ls, inputdata_folder):
 def create_senses_indices_table(input_folder_fpath, vocabulary_folder):
 
     # ------- Setting filepaths --------
-    vocab_fpath = os.path.join(vocabulary_folder, F.VOCABULARY_OF_GLOBALS_FILENAME)
+    vocab_fpath = os.path.join(vocabulary_folder, "vocabulary.h5")
     vocabulary_df = pd.read_hdf(vocab_fpath)
     vocabulary_words_ls = vocabulary_df['word'].to_list().copy()
     vocabulary_lemmatizedforms_ls = vocabulary_df['lemmatized_form'].to_list().copy()

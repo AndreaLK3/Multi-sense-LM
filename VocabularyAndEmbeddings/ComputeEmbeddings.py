@@ -5,7 +5,7 @@ import VocabularyAndEmbeddings.EmbedWithFastText as EFT
 import pandas as pd
 import os
 import numpy as np
-
+import transformers
 import logging
 import Utils
 from enum import Enum
@@ -52,18 +52,17 @@ def compute_single_prototype_embeddings(vocabulary_df, spvs_out_fpath, method):
 # It is necessary to write the embeddings in the .npy file with the correct ordering.
 def compute_elements_embeddings(elements_name, method, inputdata_folder):
 
-    if method == Method.DISTILBERT:
-        distilBERT_model = transformers.DistilBertModel.from_pretrained('distilbert-base-uncased',
-                                                                        output_hidden_states=True)
-        distilBERT_tokenizer = transformers.DistilBertTokenizer.from_pretrained('distilbert-base-uncased')
-    else:  # i.e. elif method == Method.FASTTEXT:
+    if method == Method.TXL: # stub
+        TXL_model = None # load one of the pre-trained models, whether miniTXL on WT2 or main TXL from WT-103
+        TXL_tokenizer = None
+    elif method == Method.FASTTEXT:
         fasttext_vectors = EFT.load_fasttext_vectors()
 
     input_filepath = os.path.join(inputdata_folder, Utils.PROCESSED + '_' + elements_name + ".h5")
     output_filepath = os.path.join(inputdata_folder, Utils.VECTORIZED + '_' + str(method.value) + '_'
                                    + elements_name) # + ".npy"
-    indicesTable_db_filepath = os.path.join(inputdata_folder, Utils.INDICES_TABLE_DB)
 
+    indicesTable_db_filepath = os.path.join(inputdata_folder, Utils.INDICES_TABLE_DB)
     input_db = pd.HDFStore(input_filepath, mode='r')
     indices_table = sqlite3.connect(indicesTable_db_filepath)
     indicesTable_db_c = indices_table.cursor()
@@ -85,9 +84,9 @@ def compute_elements_embeddings(elements_name, method, inputdata_folder):
             logging.debug("ComputeEmbeddings.compute_elements_embeddings(elements_name, method) > " +
                          " wn_id=row[0]=" + str(row[0]) + " ;  elements_name=" + str(elements_name) +
                          " ; element_text=" + str(element_text))
-            if method == Method.DISTILBERT:
-                vector = compute_sentence_dBert_vector(distilBERT_model, distilBERT_tokenizer, element_text).squeeze().numpy()
-            else: # i.e. elif method == Method_for_SPV.FASTTEXT:
+            if method == Method.TXL:
+                vector = None # stub. Must extract the last-layer representation of the sentence
+            elif method == Method.FASTTEXT:
                 vector = EFT.get_sentence_avg_vector(element_text, fasttext_vectors)
             matrix_of_sentence_embeddings.append(vector)
 
