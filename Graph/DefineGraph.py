@@ -15,15 +15,9 @@ from sklearn.decomposition import PCA
 
 
 def load_word_embeddings(inputdata_folder, method=Method.FASTTEXT):
-    if method == Method.FASTTEXT:
-        single_prototypes_file = F.SPVs_FASTTEXT_FILE
-    elif method == Method.DISTILBERT:
-        single_prototypes_file = F.SPVs_DISTILBERT_FILE
-    else:
-        logging.error("Method not implemented")
-        raise AssertionError
 
-    E_embeddings = torch.tensor(np.load(os.path.join(inputdata_folder, single_prototypes_file))).to(torch.float32)
+    single_prototypes_file = os.path.join(inputdata_folder, F.SPVs_FILENAME)
+    E_embeddings = torch.tensor(np.load(single_prototypes_file)).to(torch.float32)
 
     return E_embeddings
 
@@ -198,13 +192,11 @@ def create_graph(vocabulary_sources, sp_method):
                                       num_relations=6)
 
     torch.save(graph, os.path.join(graph_folder, F.KBGRAPH_FILE))
-
     return graph
-
 
 # Entry point function: try to load the graph, else create it if it does not exist
 def get_graph_dataobject(new, vocabulary_sources_ls, sp_method=Method.FASTTEXT):
-    graph_fpath = os.path.join(F.FOLDER_GRAPH, F.FOLDER_SENSELABELED, F.KBGRAPH_FILE)
+    graph_fpath = Utils.set_directory(os.path.join(F.FOLDER_GRAPH, "_".join(vocabulary_sources_ls), F.KBGRAPH_FILE))
     if os.path.exists(graph_fpath) and not new:
         return torch.load(graph_fpath)
     else:

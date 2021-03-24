@@ -25,11 +25,11 @@ def get_sense_from_idx(senseindices_db_c, sense_index):
         sense_name = None
     return sense_name
 
-def compute_MFS_for_corpus():
+def compute_MFS_for_corpus(vocab_sources_ls):
     t0 = time()
 
     # Init
-    subfolder = F.FOLDER_SENSELABELED
+    subfolder = "_".join(vocab_sources_ls)
     graph_folder = os.path.join(F.FOLDER_GRAPH, subfolder)
     inputdata_folder = os.path.join(F.FOLDER_INPUT, subfolder)
     vocabulary_folder = os.path.join(F.FOLDER_VOCABULARY, subfolder)
@@ -85,7 +85,7 @@ def compute_MFS_for_corpus():
                       Utils.MOST_FREQUENT_SENSE + Utils.INDEX: Utils.HDF5_BASE_SIZE_512 / 4,
                       Utils.WORD: Utils.HDF5_BASE_SIZE_512 / 4,
                       Utils.MOST_FREQUENT_SENSE: Utils.HDF5_BASE_SIZE_512 / 4}
-    mfs_archive_fpath = os.path.join(corpus_folder, F.MOST_FREQ_SENSE_FILE)
+    mfs_archive_fpath = os.path.join(F.FOLDER_TEXT_CORPUSES, F.SEMCOR, F.FOLDER_TRAIN, F.MOST_FREQ_SENSE_FILE)
     mfs_archive = pd.HDFStore(mfs_archive_fpath, mode='w')
     mfs_archive.append(key=Utils.MOST_FREQUENT_SENSE, value=mfs_df, min_itemsize=hdf5_min_itemsizes)
 

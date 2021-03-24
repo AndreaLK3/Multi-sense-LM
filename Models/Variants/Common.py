@@ -13,12 +13,12 @@ from Models.Variants.RNNSteps import rnn_loop
 
 
 #########################
-##### 1: Model steps ####C
+##### 1: Model steps ####
 #########################
 
 ##### 1.1: Initialization of: graph_dataobj, grapharea_matrix, vocabulary_lists & more
 def init_model_parameters(model, graph_dataobj, grapharea_size, grapharea_matrix, vocabulary_df,
-                          include_globalnode_input,
+                          include_globalnode_input,# use_gold_lm,
                           batch_size, n_layers, n_hid_units):
     model.grapharea_matrix = grapharea_matrix
 
@@ -28,6 +28,7 @@ def init_model_parameters(model, graph_dataobj, grapharea_size, grapharea_matrix
 
     model.include_globalnode_input = include_globalnode_input
     model.predict_senses = False # it can be set to True when starting a training loop
+    #model.use_gold_lm = use_gold_lm
 
     model.first_idx_dummySenses = Utils.get_startpoint_dummySenses(slc_or_text=True) # used to lemmatizeNode in GNNs
     logging.info("model.first_idx_dummySenses set according to slc_or_text=True")
@@ -122,13 +123,13 @@ def get_input_signals(model, batch_elements_at_t, word_embeddings_ls, currentglo
     t_globals_indices_ls = [t_input_lts[b][0][0] for b in range(len(t_input_lts))]
 
     # -------------------- Input --------------------
-    # Input signal n.1: the embedding of the current (global) word
+    # Input signal n.1: the embedding of the current word
     if model.include_globalnode_input < 2:
         t_current_globals_indices_ls = [x_indices[0] - model.last_idx_senses for x_indices in t_globals_indices_ls]
         t_current_globals_indices = torch.stack(t_current_globals_indices_ls, dim=0)
         t_word_embeddings = model.E.index_select(dim=0, index=t_current_globals_indices)
         word_embeddings_ls.append(t_word_embeddings)
-    # Input signal n.2: the node-state of the current global word - now with graph batching
+    # Input signal n.2: the node-state of the current word (i.e. its global node) - now with graph batching
     if model.include_globalnode_input > 0:
         t_g_nodestates = run_graphnet(t_input_lts, batch_elems_at_t, t_globals_indices_ls, model)
         currentglobal_nodestates_ls.append(t_g_nodestates)

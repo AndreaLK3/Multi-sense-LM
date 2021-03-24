@@ -76,7 +76,7 @@ def exe_from_input_to_vectors(do_reset, compute_single_prototype, vocabulary_sou
 
     if compute_single_prototype:
         reset_embeddings(vocabulary_sources_ls, sp_method)
-        single_prototypes_fpath = os.path.join(inputdata_folder, F.SPVs_FILENAME)
+        single_prototypes_fpath = os.path.join(inputdata_folder, "_".join(vocabulary_sources_ls), sp_method.value, F.SPVs_FILENAME)
         CE.compute_single_prototype_embeddings(vocabulary_df,
                                                single_prototypes_fpath,
                                                sp_method)

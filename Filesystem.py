@@ -20,7 +20,7 @@ WT_VALID_FILE = 'wiki.valid.tokens'
 WT_TEST_FILE = 'wiki.test.tokens'
 CORPUS_NUMERICAL_EXTENSION = ".numerical."
 
-FOLDER_TRAIN = 'Models'
+FOLDER_TRAIN = 'Training'
 FOLDER_VALIDATION = 'Validation'
 FOLDER_TEST= 'Test'
 

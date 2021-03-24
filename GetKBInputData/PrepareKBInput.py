@@ -148,7 +148,8 @@ def apply_PCA_to_defs_examples(embeddings_method, inputdata_folder):
         pca = PCA(n_components=Utils.GRAPH_EMBEDDINGS_DIM)
         elems_E2 = pca.fit_transform(elems_E1)
 
-        output_fpath = os.path.join(inputdata_folder, F.FOLDER_PCA, elements_name + '_' + str(embeddings_method.value) + '.npy')
+        output_dir = Utils.set_directory(os.path.join(inputdata_folder, F.FOLDER_PCA))
+        output_fpath = os.path.join(output_dir, elements_name + '_' + str(embeddings_method.value) + '.npy')
         np.save(output_fpath, elems_E2)
     return
 

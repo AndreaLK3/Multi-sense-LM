@@ -31,7 +31,7 @@ def subtract_probability_mass_from_selected(softmax_selected_senses, delta_to_su
 # *****************************
 
 # Choose among the senses of the most likely k=,1,5,10... globals.
-# Add the [the probability distribution over those] to [the distribution over the whole senses' vocabulary]...
+# Add the [the probability distribution over those] to [the 0 distribution over the whole senses' vocabulary]...
 
 class SelectK(torch.nn.Module):
 
