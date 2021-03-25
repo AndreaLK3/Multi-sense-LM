@@ -16,9 +16,14 @@ def register_token(token, lemmatizer, vocab_dict):
         vocab_dict[token] = (prev_freq + 1, lemma)
     except KeyError:
         lemmatized_token = LN.lemmatize_term(token, lemmatizer)
-        vocab_dict[token] = (1, lemmatized_token)
+        vocab_dict[token] = (1, lemmatized_token) # we initialize the frequency at 1 and establish the lemmatized form
 
-        if lemmatized_token != token: # also adding to the vocabulary / counting the lemmatized token. 'spring'(s), etc.
+# Auxiliary function: add to the vocabulary the lemmatized forms of the words encountered in the corpus
+def add_lemmatized_forms(vocab_dict):
+    tokens = list(vocab_dict.keys())
+    for token in tokens:
+        (_freq, lemmatized_token) = vocab_dict[token]
+        if lemmatized_token != token:  # also adding to the vocabulary / counting the lemmatized token. 'spring'(s), etc.
             try:
                 (prev_freq, lemma) = vocab_dict[lemmatized_token]
                 vocab_dict[lemmatized_token] = (prev_freq + 1, lemma)
@@ -27,26 +32,21 @@ def register_token(token, lemmatizer, vocab_dict):
                     "Adding lemmatized word '" + lemmatized_token + "' in addition to '" + token + "'")
                 vocab_dict[lemmatized_token] = (1, lemmatized_token)
                 # the lemmatized form of a lemmatized form is itself
+    return vocab_dict
 
 # Read a standard, non sense-labeled text corpus from a file (e.g. WT-2, WT-103)
 def build_vocabulary_dict_fromtext(corpus_txt_fpath, vocab_dict, lowercase):
     if vocab_dict is None: vocab_dict = {}
 
-    Utils.init_logging("build_vocabulary_dict_fromtext.log")
     lines_logpoint = 1000
     lemmatizer = nltk.stem.WordNetLemmatizer()
-
-    logging.info(corpus_txt_fpath)
-    assert os.path.exists(corpus_txt_fpath)
 
     with open(corpus_txt_fpath, 'r', encoding="utf-8") as f:
         tot_tokens = 0
         for i,line in enumerate(f):
-            # words = line.split() + ['<eos>']
             # FastText has vectors for '@-@', '@.@', but T-XL does not, so we convert them into '-', '.' and join
             tokens, tot_tokens = VocabUtils.process_line(line, tot_tokens)
             tokens = list(map(lambda word_token: VocabUtils.process_word_token({'surface_form':word_token}, lowercasing=lowercase), tokens))
-            if len(tokens)>0: logging.debug("line tokens=" + str(tokens))
             for word in tokens:
                 register_token(word, lemmatizer, vocab_dict)
 
@@ -95,8 +95,8 @@ def reunite_vocab_dicts(vocab_dict_1, vocab_dict_2):
 
 
 # Entry function: specify which corpora we wish to create the vocabulary from, and load it or create it as needed
-def get_vocabulary_df(corpora_names, lowercase, slc_min_count=2, txt_min_count=1):
-    Utils.init_logging("Vocabulary creation.log")
+def get_vocabulary_df(corpora_names, lowercase, slc_min_count=2, txt_min_count=1, new=False):
+    Utils.init_logging("Vocabulary_creation.log")
     # 1) preparation: selecting the corpora that are to be included
     standardtext_corpus_fpaths = []
     senselabeled_dir_fpaths = []
@@ -114,7 +114,7 @@ def get_vocabulary_df(corpora_names, lowercase, slc_min_count=2, txt_min_count=1
     logging.info("vocab_filepath=" + str(vocab_filepath))
 
     # 3) Does the vocabulary file exist already? If yes, just load it
-    if os.path.exists(vocab_filepath):
+    if (not new) and os.path.exists(vocab_filepath):
         vocab_df = pd.read_hdf(vocab_filepath, mode='r')
         logging.info("*** The vocabulary was loaded from the file " + vocab_filepath)
         return vocab_df
@@ -137,7 +137,8 @@ def get_vocabulary_df(corpora_names, lowercase, slc_min_count=2, txt_min_count=1
             if txt_min_count > 1:  # 4b) Removing words with frequency < min_count, if needed
                 VocabUtils.eliminate_rare_words(txt_vocab_dict, txt_min_count)
 
-        all_vocab_dict = reunite_vocab_dicts(slc_vocab_dict, txt_vocab_dict)
+        all_vocab_dict_0 = reunite_vocab_dicts(slc_vocab_dict, txt_vocab_dict)
+        all_vocab_dict = add_lemmatized_forms(all_vocab_dict_0)
 
         # 5) Moving the dictionary onto a dataframe
         frequencies = list(map(lambda tpl: tpl[0], all_vocab_dict.values()))
