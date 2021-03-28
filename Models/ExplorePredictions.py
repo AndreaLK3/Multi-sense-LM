@@ -16,7 +16,7 @@ from math import exp
 ### Given the numerical index of a global, return the corresponding word/token
 def get_globalword_fromindex_df(global_index, vocabulary_folder):
 
-    globals_vocabulary_fpath = os.path.join(vocabulary_folder, F.VOCABULARY_OF_GLOBALS_FILENAME)
+    globals_vocabulary_fpath = os.path.join(vocabulary_folder, "vocabulary.h5")
     globals_vocabulary_df = pd.read_hdf(globals_vocabulary_fpath, mode='r')
 
     word = globals_vocabulary_df.iloc[global_index]['word']
@@ -63,13 +63,11 @@ def log_predicted_senses(predictions_senses, k, inputdata_folder):
 
 
 ### logs the solution and prediction for 1 sample
-def log_solution_and_predictions(label_tpl, predictions_globals, predictions_senses, k, slc_or_text):
+def log_solution_and_predictions(label_tpl, predictions_globals, predictions_senses, k, vocab_sources_ls, sp_method):
     solution_global_idx = label_tpl[0].item()
     solution_sense_idx = label_tpl[1].item()
 
-    subfolder = F.FOLDER_SENSELABELED if slc_or_text else F.FOLDER_STANDARDTEXT
-    inputdata_folder = os.path.join(F.FOLDER_INPUT, subfolder)
-    vocabulary_folder = os.path.join(F.FOLDER_VOCABULARY, subfolder)
+    _, inputdata_folder, vocabulary_folder = F.get_folders_graph_input_vocabulary(vocab_sources_ls, sp_method)
 
     nextglobal = get_globalword_fromindex_df(solution_global_idx, vocabulary_folder)
     nextsense = get_sense_fromindex(solution_sense_idx, inputdata_folder)
@@ -82,7 +80,7 @@ def log_solution_and_predictions(label_tpl, predictions_globals, predictions_sen
 
 
 # Entry function, to invoke from RGCN. Batch level
-def log_batch(labels_t, predictions_globals_t, predictions_senses_t, k, slc_or_text):
+def log_batch(labels_t, predictions_globals_t, predictions_senses_t, k, vocab_sources_ls, sp_method):
     batch_size = predictions_globals_t.shape[0]
     logging.info("log_batch:")
     logging.info("predictions_senses_t.shape=" + str(predictions_senses_t.shape))
@@ -90,4 +88,4 @@ def log_batch(labels_t, predictions_globals_t, predictions_senses_t, k, slc_or_t
         sample_labels = labels_t[i]
         sample_predglobals = predictions_globals_t[i]
         sample_predsenses = predictions_senses_t[i]
-        log_solution_and_predictions(sample_labels, sample_predglobals, sample_predsenses, k, slc_or_text)
+        log_solution_and_predictions(sample_labels, sample_predglobals, sample_predsenses, k, vocab_sources_ls, sp_method)

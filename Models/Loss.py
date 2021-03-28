@@ -4,7 +4,8 @@ import torch
 from torch.nn import functional as tfunc
 from Models import ExplorePredictions as EP
 from Utils import DEVICE, get_timestamp_month_to_sec
-
+import VocabularyAndEmbeddings.ComputeEmbeddings as CE
+import Filesystem as F
 
 def write_doc_logging(train_dataloader, model, model_forParameters, learning_rate):
     hyperparams_str = 'Model_date' + get_timestamp_month_to_sec() + '_batchPerSeqlen' + str(train_dataloader.batch_size) \
@@ -77,7 +78,8 @@ def organize_polysense_labels(batch_labels_globals, batch_labels_senses, polysen
 
     return batch_labels_polysenses_dict
 
-def compute_model_loss(model, batch_input, batch_labels, correct_preds_dict, polysense_globals_dict, slc_or_text, verbose=False):
+def compute_model_loss(model, batch_input, batch_labels, correct_preds_dict, polysense_globals_dict,
+                       vocab_sources_ls=[F.WT2, F.SEMCOR], sp_method=CE.Method.FASTTEXT, verbose=False):
 
     predictions_globals, predictions_senses = model(batch_input, batch_labels)
 
@@ -107,7 +109,7 @@ def compute_model_loss(model, batch_input, batch_labels, correct_preds_dict, pol
     # debug: check the solutions and predictions. Is there anything the model is unable to predict?
     if verbose:
         logging.info("*******\ncompute_model_loss > verbose logging of batch")
-        EP.log_batch(batch_labels, predictions_globals, predictions_senses, 10, slc_or_text)
+        EP.log_batch(batch_labels, predictions_globals, predictions_senses, 10, vocab_sources_ls, sp_method)
 
     losses_tpl = loss_global, loss_all_senses, loss_poly_senses
     senses_in_batch = len(batch_labels_all_senses[batch_labels_all_senses != -1])

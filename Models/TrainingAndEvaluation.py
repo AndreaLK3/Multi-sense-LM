@@ -87,7 +87,7 @@ def run_train(model, train_dataloader, valid_dataloader, learning_rate, num_epoc
             if epoch>1:
                 logging.info("After training " + str(epoch-1) + " epochs, validation:")
                 valid_loss_globals, valid_loss_senses, polysenses_evaluation_loss = \
-                    evaluation(valid_dataloader, valid_dataiter, model, slc_or_text, polysense_thresholds, verbose=False)
+                    evaluation(valid_dataloader, valid_dataiter, model, slc_or_text, verbose)
 
                 # -------------- 3c) Check the validation loss & the need for freezing / early stopping --------------
                 if exp(valid_loss_globals) > exp(best_valid_loss_globals) + 0.1 and (epoch > 2):
@@ -171,12 +171,13 @@ def run_train(model, train_dataloader, valid_dataloader, learning_rate, num_epoc
 
 # ##########
 # Auxiliary function: Evaluation on a given dataset, e.g. validation or test set
-def evaluation(evaluation_dataloader, evaluation_dataiter, model, slc_or_text, verbose):
+def evaluation(evaluation_dataloader, evaluation_dataiter, model, slc_or_text, verbose,
+               vocab_sources_ls=(F.WT2, F.SEMCOR), sp_method=CE.Method.FASTTEXT):
     model_forParameters = model.module if torch.cuda.device_count() > 1 and model.__class__.__name__=="DataParallel" else model
     including_senses = model_forParameters.predict_senses
 
     polysense_thresholds = (2, 3, 5, 10, 30)
-    polysense_globals_dict = AD.get_polysenseglobals_dict(slc_or_text, polysense_thresholds)
+    polysense_globals_dict = AD.get_polysenseglobals_dict(vocab_sources_ls, sp_method)
 
     model.eval()  # do not train the model now
     sum_eval_loss_globals = 0
@@ -195,7 +196,7 @@ def evaluation(evaluation_dataloader, evaluation_dataiter, model, slc_or_text, v
             batch_labels = batch_labels.to(DEVICE)
             (losses_tpl, num_sense_instances_tpl) \
                 = Loss.compute_model_loss(model, batch_input, batch_labels, eval_correct_predictions_dict,
-                                          polysense_globals_dict, slc_or_text, verbose=verbose)
+                                          polysense_globals_dict, vocab_sources_ls, sp_method, verbose=verbose)
             loss_globals, loss_senses, loss_polysenses = losses_tpl
             num_batch_sense_tokens, num_batch_polysense_tokens = num_sense_instances_tpl
             sum_eval_loss_globals = sum_eval_loss_globals + loss_globals.item()

@@ -48,7 +48,7 @@ def log_input(batch_input, last_idx_senses, vocab_sources_ls, sp_method=CE.Metho
 ###### Setup model and corpora ######
 def setup_training(model_type, include_globalnode_input, use_gold_lm, K,
                 load_saved_model=False, sp_method=CE.Method.FASTTEXT, context_method=ContextMethod.AVERAGE, C=0,
-                dim_qkv=300, grapharea_size=32, batch_size=2, seq_len=3, vocab_sources_ls=(F.WT2, F.SEMCOR), random_seed=1):
+                dim_qkv=300, grapharea_size=32, batch_size=4, seq_len=3, vocab_sources_ls=(F.WT2, F.SEMCOR), random_seed=1):
     gr_in_voc_folders = F.get_folders_graph_input_vocabulary(vocab_sources_ls, sp_method)
 
     objects = get_objects(vocab_sources_ls, sp_method, grapharea_size)
@@ -130,7 +130,7 @@ def run_train(model, train_dataloader, valid_dataloader, learning_rate, num_epoc
             if epoch>1:
                 logging.info("After training " + str(epoch-1) + " epochs, validation:")
                 valid_loss_globals, valid_loss_senses, polysenses_evaluation_loss = \
-                    evaluation(valid_dataloader, valid_dataiter, model, slc_or_text, polysense_thresholds, verbose=False)
+                    evaluation(valid_dataloader, valid_dataiter, model, slc_or_text, verbose)
 
                 best_valid_loss_globals = min(best_valid_loss_globals, valid_loss_globals)
                 best_valid_loss_senses = min(best_valid_loss_senses, valid_loss_senses)
