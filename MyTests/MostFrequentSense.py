@@ -3,7 +3,7 @@ import Utils
 import pandas as pd
 import os
 import Models.DataLoading as DL
-import Models.Training as T
+import Models.TrainingSetup as T
 import VocabularyAndEmbeddings.ComputeEmbeddings as CE
 import Models.Variants.RNNs as RNNs
 import tables
@@ -26,7 +26,7 @@ def compute_MFS_for_corpus():
     graph_folder = os.path.join(F.FOLDER_GRAPH, subfolder)
     inputdata_folder = os.path.join(F.FOLDER_INPUT, subfolder)
     vocabulary_folder = os.path.join(F.FOLDER_VOCABULARY, subfolder)
-    corpus_folder = os.path.join(F.FOLDER_MYTESTS, F.FOLDER_MINICORPUSES, F.FOLDER_SENSELABELED)
+    corpus_folder = os.path.join(F.FOLDER_MYTESTS, F.FOLDER_MINICORPORA, F.FOLDER_SENSELABELED)
     folders = (graph_folder, inputdata_folder, vocabulary_folder)
 
     # More init, necessary objects

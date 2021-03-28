@@ -3,7 +3,7 @@ import Utils
 import pandas as pd
 import os
 import Models.DataLoading as DL
-import Models.Training as T
+import Models.TrainingSetup as T
 import VocabularyAndEmbeddings.ComputeEmbeddings as CE
 import Models.Variants.RNNs as RNNs
 import tables

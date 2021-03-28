@@ -36,7 +36,7 @@ def subtract_probability_mass_from_selected(softmax_selected_senses, delta_to_su
 class SelectK(torch.nn.Module):
 
     def __init__(self, graph_dataobj, grapharea_size, grapharea_matrix, vocabulary_df, embeddings_matrix,
-                 include_globalnode_input, batch_size, n_layers, n_hid_units, K):
+                 use_gold_lm, include_globalnode_input, batch_size, n_layers, n_hid_units, K):
 
         # -------------------- Initialization in common: parameters & globals --------------------
         super(SelectK, self).__init__()
@@ -65,7 +65,7 @@ class SelectK(torch.nn.Module):
 
     # ---------------------------------------- Forward call ----------------------------------------
 
-    def forward(self, batchinput_tensor):  # given the batches, the current node is at index 0
+    def forward(self, batchinput_tensor, batch_labels):  # given the batches, the current node is at index 0
         CURRENT_DEVICE = 'cpu' if not (torch.cuda.is_available()) else 'cuda:' + str(torch.cuda.current_device())
 
         # -------------------- Init --------------------
@@ -100,7 +100,10 @@ class SelectK(torch.nn.Module):
 
         # ------------------- Globals ------------------
         seq_len = batch_input_signals.shape[0]
+        #if not self.use_gold_lm:
         predictions_globals, logits_globals = predict_globals_withGRU(self, batch_input_signals, seq_len, distributed_batch_size)
+        #else:
+        #    pass
 
         # ------------------- Senses -------------------
         # line 1: GRU for senses + linear FF-Models to logits.

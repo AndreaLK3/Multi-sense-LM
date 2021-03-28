@@ -1,79 +1,33 @@
-# This file should mostly copy the Models/TrainingSetup.py and /TrainingAndEvaluation.py files, although
-# but instead small mini-experiments (overfitting on a fragment of the training set).
-# We operate on separate mini-corpora, and print the input processed by the RNNs forward() call.
-
-import torch
 import Utils
-import Filesystem as F
 import logging
-import os
+import torch
 import Graph.Adjacencies as AD
-from Models.TrainingSetup import get_objects, setup_corpus, setup_model, ContextMethod, ModelType
-from Models.TrainingAndEvaluation import evaluation, init_accuracy_dict
-from Utils import DEVICE
 import Models.Loss as Loss
-import gc
-from math import inf, exp
 from time import time
-import VocabularyAndEmbeddings.ComputeEmbeddings as CE
-import Models.ExplorePredictions as EP
+from math import inf, exp
 import itertools
+import os
+import Filesystem as F
+from Utils import DEVICE
+import gc
+import VocabularyAndEmbeddings.ComputeEmbeddings as CE
 
-################ Auxiliary function, for logging ################
-def log_input(batch_input, last_idx_senses, vocab_sources_ls, sp_method=CE.Method.FASTTEXT):
-    graph_folder, input_folder, vocabulary_folder = F.get_folders_graph_input_vocabulary(vocab_sources_ls, sp_method)
+# Auxiliary function: initialize a dictionary that registers the accuracy
+def init_accuracy_dict(polysense_thresholds):
+    return {'correct_g': 0,
+     'tot_g': 0,
+     'correct_all_s': 0,
+     'tot_all_s': 0,
+     'correct_poly_s': {}.fromkeys(polysense_thresholds, 0),
+     'tot_poly_s': {}.fromkeys(polysense_thresholds, 0)
+     }
 
-    batch_words_ls = []
-    batch_senses_ls = []
-
-    # globals:
-    batch_globals_indices = batch_input[:, :, 0] - last_idx_senses
-    batch_senses_indices = batch_input[:, :, (batch_input.shape[2]//2)]
-    for b in range(batch_globals_indices.shape[0]):
-        for t in range(batch_globals_indices.shape[1]):
-            global_index = batch_globals_indices[b,t].item()
-            word = EP.get_globalword_fromindex_df(global_index, vocabulary_folder)
-            batch_words_ls.append(word)
-    # senses:
-    for b in range(batch_globals_indices.shape[0]):
-        for t in range(batch_globals_indices.shape[1]):
-            sense_index = batch_senses_indices[b,t].item()
-            sense = EP.get_sense_fromindex(sense_index, input_folder)
-            batch_senses_ls.append(sense)
-    logging.info("\n******\nBatch globals: " + str(batch_words_ls))
-    logging.info("Batch senses: " + str(batch_senses_ls))
-    return
-
-
-###### Setup model and corpora ######
-def setup_training(model_type, include_globalnode_input, use_gold_lm, K,
-                load_saved_model=False, sp_method=CE.Method.FASTTEXT, context_method=ContextMethod.AVERAGE, C=0,
-                dim_qkv=300, grapharea_size=32, batch_size=2, seq_len=3, vocab_sources_ls=(F.WT2, F.SEMCOR), random_seed=1):
-    gr_in_voc_folders = F.get_folders_graph_input_vocabulary(vocab_sources_ls, sp_method)
-
-    objects = get_objects(vocab_sources_ls, sp_method, grapharea_size)
-    # objects == graph_dataobj, grapharea_size, grapharea_matrix, vocabulary_df, embeddings_matrix
-
-    model, model_forDataLoading, batch_size = setup_model(model_type, include_globalnode_input, use_gold_lm, K,
-                                                                load_saved_model, sp_method, context_method, C,
-                                            dim_qkv, grapharea_size, batch_size, vocab_sources_ls, random_seed)
-
-    semcor_train_fpath = os.path.join(F.FOLDER_MINICORPORA, F.FOLDER_SENSELABELED, F.FOLDER_TRAIN)
-    semcor_valid_fpath = os.path.join(F.FOLDER_MINICORPORA, F.FOLDER_SENSELABELED, F.FOLDER_VALIDATION)
-
-    train_dataset, train_dataloader = setup_corpus(objects, semcor_train_fpath, True, gr_in_voc_folders,
-                                                   batch_size, seq_len, model_forDataLoading)
-    valid_dataset, valid_dataloader = setup_corpus(objects, semcor_valid_fpath, True, gr_in_voc_folders,
-                                                   batch_size, seq_len, model_forDataLoading)
-    return model, train_dataloader, valid_dataloader
-
-
-##### run loop of training + evaluation ######
+################
 def run_train(model, train_dataloader, valid_dataloader, learning_rate, num_epochs, predict_senses=True,
               vocab_sources_ls=(F.WT2, F.SEMCOR), sp_method=CE.Method.FASTTEXT):
 
     # -------------------- Step 1: Setup model --------------------
-    Utils.init_logging('Mini-experiment_' + Utils.get_timestamp_month_to_sec() + '.log', loglevel=logging.INFO)
+    Utils.init_logging('Models' + Utils.get_timestamp_month_to_sec() + '.log', loglevel=logging.INFO)
     slc_or_text = train_dataloader.dataset.sensecorpus_or_text
 
     optimizers = [torch.optim.Adam(model.parameters(), lr=learning_rate)]
@@ -99,6 +53,9 @@ def run_train(model, train_dataloader, valid_dataloader, learning_rate, num_epoc
     best_valid_loss_globals = inf
     best_valid_loss_senses = inf
     best_accuracy_counts = (0,0,0)
+    previous_valid_loss_senses = inf
+    freezing_epoch = None
+    after_freezing_flag = False
     # if with_freezing:
     #    model_forParameters.predict_senses = False
 
@@ -118,7 +75,7 @@ def run_train(model, train_dataloader, valid_dataloader, learning_rate, num_epoc
             sum_epoch_loss_senses = 0
             sum_epoch_loss_polysenses = 0
 
-            epoch_step = 1
+            epoch_step = 0
             epoch_senselabeled_tokens = 0
             epoch_polysense_tokens = 0
 
@@ -132,7 +89,19 @@ def run_train(model, train_dataloader, valid_dataloader, learning_rate, num_epoc
                 valid_loss_globals, valid_loss_senses, polysenses_evaluation_loss = \
                     evaluation(valid_dataloader, valid_dataiter, model, slc_or_text, polysense_thresholds, verbose=False)
 
+                # -------------- 3c) Check the validation loss & the need for freezing / early stopping --------------
+                if exp(valid_loss_globals) > exp(best_valid_loss_globals) + 0.1 and (epoch > 2):
+
+                    if exp(valid_loss_globals) > exp(best_valid_loss_globals):
+                        torch.save(model, os.path.join(F.FOLDER_MODELS, hyperparams_str + '_best_validation.model'))
+                if after_freezing_flag:
+                    if (exp(valid_loss_senses) > exp(previous_valid_loss_senses) + 1) and epoch > freezing_epoch + 2:
+                        # when properly implementing freezing, this should change into a check on the accuracy
+                        logging.info("Early stopping on senses.")
+                        flag_earlystop = True
+
                 best_valid_loss_globals = min(best_valid_loss_globals, valid_loss_globals)
+                previous_valid_loss_senses = valid_loss_senses
                 best_valid_loss_senses = min(best_valid_loss_senses, valid_loss_senses)
 
                 if epoch == num_epochs:
@@ -166,7 +135,10 @@ def run_train(model, train_dataloader, valid_dataloader, learning_rate, num_epoc
                     epoch_senselabeled_tokens = epoch_senselabeled_tokens + num_batch_sense_tokens
                     sum_epoch_loss_polysenses = sum_epoch_loss_polysenses + loss_multisense.item() * num_batch_multisense_tokens
                     epoch_polysense_tokens = epoch_polysense_tokens + num_batch_multisense_tokens
-                    loss = loss_global + loss_sense
+                    if not after_freezing_flag:
+                        loss = loss_global + loss_sense
+                    else:
+                        loss = loss_sense
                 else:
                     loss = loss_global
 
@@ -192,3 +164,68 @@ def run_train(model, train_dataloader, valid_dataloader, learning_rate, num_epoc
 
     except KeyboardInterrupt:
         logging.info("Models loop interrupted manually by keyboard")
+
+    # --------------------- 4) Saving model --------------------
+    torch.save(model, os.path.join(F.FOLDER_MODELS, hyperparams_str + '_end.model'))
+
+
+# ##########
+# Auxiliary function: Evaluation on a given dataset, e.g. validation or test set
+def evaluation(evaluation_dataloader, evaluation_dataiter, model, slc_or_text, verbose):
+    model_forParameters = model.module if torch.cuda.device_count() > 1 and model.__class__.__name__=="DataParallel" else model
+    including_senses = model_forParameters.predict_senses
+
+    polysense_thresholds = (2, 3, 5, 10, 30)
+    polysense_globals_dict = AD.get_polysenseglobals_dict(slc_or_text, polysense_thresholds)
+
+    model.eval()  # do not train the model now
+    sum_eval_loss_globals = 0
+    sum_eval_loss_senses = 0
+    sum_eval_loss_polysenses = 0
+    eval_correct_predictions_dict = init_accuracy_dict(polysense_thresholds)
+    evaluation_step = 0
+    evaluation_senselabeled_tokens = 0
+    evaluation_polysense_tokens = 0
+    logging_step = 500
+
+    with torch.no_grad():  # Deactivates the autograd engine entirely to save some memory
+        for b_idx in range(len(evaluation_dataloader)-1):
+            batch_input, batch_labels = evaluation_dataiter.__next__()
+            batch_input = batch_input.to(DEVICE)
+            batch_labels = batch_labels.to(DEVICE)
+            (losses_tpl, num_sense_instances_tpl) \
+                = Loss.compute_model_loss(model, batch_input, batch_labels, eval_correct_predictions_dict,
+                                          polysense_globals_dict, slc_or_text, verbose=verbose)
+            loss_globals, loss_senses, loss_polysenses = losses_tpl
+            num_batch_sense_tokens, num_batch_polysense_tokens = num_sense_instances_tpl
+            sum_eval_loss_globals = sum_eval_loss_globals + loss_globals.item()
+
+            if including_senses:
+                sum_eval_loss_senses = sum_eval_loss_senses + loss_senses.item() * num_batch_sense_tokens
+                evaluation_senselabeled_tokens = evaluation_senselabeled_tokens + num_batch_sense_tokens
+                sum_eval_loss_polysenses = sum_eval_loss_polysenses + loss_polysenses.item() * num_batch_polysense_tokens
+                evaluation_polysense_tokens = evaluation_polysense_tokens + num_batch_polysense_tokens
+
+            evaluation_step = evaluation_step + 1
+            if evaluation_step % logging_step == 0:
+                logging.info("Evaluation step n. " + str(evaluation_step))
+                gc.collect()
+
+    globals_evaluation_loss = sum_eval_loss_globals / evaluation_step
+    if including_senses:
+        senses_evaluation_loss = sum_eval_loss_senses / evaluation_senselabeled_tokens
+        polysenses_evaluation_loss = sum_eval_loss_polysenses / evaluation_polysense_tokens
+    else:
+        senses_evaluation_loss = 0
+        polysenses_evaluation_loss = 0
+
+    logging.info("Evaluation - Correct predictions / Total predictions:\n" + str(eval_correct_predictions_dict))
+    epoch_sumlosses_tpl = sum_eval_loss_globals, sum_eval_loss_senses, sum_eval_loss_polysenses
+    epoch_numsteps_tpl = evaluation_step, evaluation_senselabeled_tokens, evaluation_polysense_tokens
+    Utils.record_statistics(epoch_sumlosses_tpl, epoch_numsteps_tpl)
+
+    model.train()  # training can resume
+
+    return globals_evaluation_loss, senses_evaluation_loss, polysenses_evaluation_loss
+
+

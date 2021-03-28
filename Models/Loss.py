@@ -79,7 +79,7 @@ def organize_polysense_labels(batch_labels_globals, batch_labels_senses, polysen
 
 def compute_model_loss(model, batch_input, batch_labels, correct_preds_dict, polysense_globals_dict, slc_or_text, verbose=False):
 
-    predictions_globals, predictions_senses = model(batch_input)
+    predictions_globals, predictions_senses = model(batch_input, batch_labels)
 
     batch_labels_t = (batch_labels).clone().t().to(DEVICE)
     batch_labels_globals = batch_labels_t[0]

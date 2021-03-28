@@ -9,7 +9,7 @@ from scipy import sparse
 import pandas as pd
 from Models.Variants.Common import lemmatize_node
 from types import SimpleNamespace
-
+import sqlite3
 
 # Utility function: determine which globals have more than 1 sense, versus the dummySenses and 0or1 sense.
 # (We evaluate the number of senses of the lemmatized form). Used to compute different Perplexities
@@ -17,6 +17,7 @@ def compute_globals_numsenses(graph_dataobj, grapharea_matrix, grapharea_size, i
     num_senses_ls = []
     last_idx_senses = graph_dataobj.node_types.tolist().index(1)
     last_idx_globals = graph_dataobj.node_types.tolist().index(2)
+
     first_idx_dummySenses = Utils.get_startpoint_dummySenses(inputdata_folder)
     logging.info("Examining the graph + corpus, to determine which globals have multiple senses...")
 
@@ -55,10 +56,9 @@ def compute_globals_numsenses(graph_dataobj, grapharea_matrix, grapharea_size, i
     return new_vocabulary_df
 
 
-def get_polysenseglobals_dict(slc_or_text, thresholds=(2,3,5,10,30)):
-    logging.info("Identifying polysemous words...")
-    subfolder = F.FOLDER_SENSELABELED if slc_or_text else F.FOLDER_STANDARDTEXT
-    vocab_fpath = os.path.join(F.FOLDER_VOCABULARY, subfolder, "vocabulary_of_globals.h5");
+def get_polysenseglobals_dict(vocab_sources_ls, sp_method, thresholds=(2,3,5,10,30)):
+    _, _, vocab_folder = F.get_folders_graph_input_vocabulary(vocab_sources_ls, sp_method)
+    vocab_fpath = os.path.join(vocab_folder, "vocabulary.h5")
     vocabulary_df = pd.read_hdf(vocab_fpath)
     vocabulary_num_senses_ls = vocabulary_df['num_senses'].to_list().copy()
 

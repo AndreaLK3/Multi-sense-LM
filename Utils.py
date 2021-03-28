@@ -14,6 +14,7 @@ from math import exp
 import torch
 import os
 import sqlite3
+import Utils
 
 ########## Constants ##########
 
@@ -40,7 +41,7 @@ DISTILBERT = "DistilBERT"
 FASTTEXT = "FastText"
 TXL = "TXL"
 
-TRAINING = 'Models'
+TRAINING = 'Training'
 VALIDATION = 'Validation'
 TEST = 'Test'
 
@@ -162,14 +163,6 @@ def check_language(text, lang_id):
     return possible_match
 
 
-### Create the folder at a specified filepath, if it does not exist
-def set_directory(dir_path):
-    if os.path.exists(dir_path):
-        return dir_path
-    else:
-        os.makedirs(dir_path)
-    return dir_path
-
 ### When we encounter UNK, reading in text for the Models, we skip it
 class MustSkipUNK_Exception(Exception):
     def __init__(self):
@@ -281,11 +274,13 @@ def get_gpu_memory_map():
 
 # Read the indices_table.sql, in order to determine the start of the dummmySenses.
 def get_startpoint_dummySenses(inputdata_folder):
-    indicesTable_db = sqlite3.connect(os.path.join(inputdata_folder, INDICES_TABLE_DB))
-    indicesTable_db_c = indicesTable_db.cursor()
-    counter = 1
+    counter = 0
 
+    db_filepath = os.path.join(inputdata_folder, Utils.INDICES_TABLE_DB)
+    indicesTable_db = sqlite3.connect(db_filepath)
+    indicesTable_db_c = indicesTable_db.cursor()
     indicesTable_db_c.execute("SELECT * FROM indices_table")
+
     while (True):
         db_row = indicesTable_db_c.fetchone()
         if db_row is None:
@@ -295,3 +290,11 @@ def get_startpoint_dummySenses(inputdata_folder):
             return counter
         counter = counter +1
     return counter
+
+# this can be used to compute the startpoint of the dummySenses, by executing |senses| - (|senses| - |definitions|)
+def compute_startpoint_dummySenses(graph_dataobj):
+    len_senses = graph_dataobj.node_types.tolist().index(1)
+    len_defs = graph_dataobj.node_types.tolist().index(3) - graph_dataobj.node_types.tolist().index(2)
+    num_dummySenses = len_senses - len_defs
+    startpoint_dummySenses = len_senses - num_dummySenses
+    return startpoint_dummySenses

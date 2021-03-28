@@ -9,6 +9,8 @@ import os
 import Filesystem as F
 import Utils
 import io
+import VocabularyAndEmbeddings.Vocabulary_Utilities as VocabUtils
+import sqlite3
 
 # Auxiliary function to pack an input tuple (x_indices, edge_index, edge_type)
 # into a tensor [x_indices; edge_sources; edge_destinations; edge_type]
@@ -66,36 +68,34 @@ class BPTTBatchCollator():
 
 ##### Auxiliary function: reading a standard text corpus into the dataset,
 ##### without the need to use the SLC facility to process a sense-labeled XML
-def standardtextcorpus_generator(in_folder_path):
+def standardtextcorpus_generator(txt_corpus_fpath):
 
-    # in_folder_path = os.path.join(F.FOLDER_TEXT_CORPUSES, F.FOLDER_STANDARDTEXT, folder)
-    logging.info("setting up standardtextcorpus_generator on path: " + str(in_folder_path))
-    textfiles_fnames = os.listdir(in_folder_path)
-    with [io.open(os.path.join(in_folder_path, fname),'r') for fname in textfiles_fnames][0] as text_file:
-        for i, line in enumerate(text_file):
-            if line == '':
-                break
-            # tokens_in_line, _tot_tokens = VU.process_line(line, tot_tokens=0)
-            tokens_in_line_ls = line.split()
-            for token in tokens_in_line_ls:
-                token_dict ={'surface_form':token} # to use the same refinement as the tokens from sense-labeled corpus
+    logging.info("setting up standardtextcorpus_generator on path: " + str(txt_corpus_fpath))
+    with io.open(txt_corpus_fpath,'r', encoding="utf-8") as text_file:
+        for i,line in enumerate(text_file):
+            # FastText has vectors for '@-@', '@.@', but T-XL does not, so we convert them into '-', '.' and join
+            line_tokens, _ = VocabUtils.process_line(line, 0)
+            escaped_tokens = list(map(lambda word_token: VocabUtils.process_word_token({'surface_form':word_token}, lowercasing=False), line_tokens))
+            for token in escaped_tokens:
+                token_dict ={'surface_form':token}
                 yield token_dict
 
 ##### The Dataset
 class TextDataset(torch.utils.data.Dataset):
-    def __init__(self, sensecorpus_or_text, textcorpus_path, senseindices_db_c, vocab_df, model,
+    def __init__(self, corpus_fpath, corpus_type, inputdata_folder, vocab_df, model,
                        grapharea_matrix, area_size, graph_dataobj):
-        self.textcorpus_path = textcorpus_path
-        self.sensecorpus_or_text = sensecorpus_or_text
-        self.generator = SLC.read_split(textcorpus_path) if sensecorpus_or_text else standardtextcorpus_generator(textcorpus_path)
-        self.senseindices_db_c = senseindices_db_c
-        # self.vocab_h5 = vocab_h5
+        self.textcorpus_path = corpus_fpath
+        self.sensecorpus_or_text = corpus_type
+        self.generator = SLC.read_split(corpus_fpath) if self.sensecorpus_or_text else standardtextcorpus_generator(corpus_fpath)
         self.vocab_df = vocab_df
         self.nn_model = model
         self.counter = 0
         self.globals_unk_counter = 0
-        self.last_sense_idx = senseindices_db_c.execute("SELECT COUNT(*) from indices_table").fetchone()[0]
-        self.first_idx_dummySenses = Utils.get_startpoint_dummySenses(sensecorpus_or_text)
+        db_filepath = os.path.join(inputdata_folder, Utils.INDICES_TABLE_DB)
+        indicesTable_db = sqlite3.connect(db_filepath)
+        self.senseindices_db_c = indicesTable_db.cursor()
+        self.last_sense_idx = self.senseindices_db_c.execute("SELECT COUNT(*) from indices_table").fetchone()[0]
+        self.first_idx_dummySenses = Utils.get_startpoint_dummySenses(inputdata_folder)
 
         self.grapharea_matrix = grapharea_matrix
         self.area_size = area_size

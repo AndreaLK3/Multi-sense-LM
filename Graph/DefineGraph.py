@@ -1,5 +1,7 @@
 import pandas as pd
 import torch
+
+import Filesystem
 import Filesystem as F
 import Utils
 import Graph.DefineGraphEdges as DGE
@@ -115,8 +117,7 @@ def initialize_senses(X_defs, X_examples, X_globals, vocabulary_ls, average_or_r
 
 def create_graph(vocabulary_sources, sp_method):
 
-    inputdata_folder = os.path.join(F.FOLDER_INPUT, "_".join(vocabulary_sources), sp_method.value)
-    graph_folder = Utils.set_directory(os.path.join(F.FOLDER_GRAPH, "_".join(vocabulary_sources), sp_method.value))
+    graph_folder, inputdata_folder, _ = F.get_folders_graph_input_vocabulary(vocabulary_sources, sp_method)
 
     vocabulary_fpath = os.path.join(F.FOLDER_VOCABULARY, "_".join(vocabulary_sources), "vocabulary.h5")
     vocabulary_df = pd.read_hdf(vocabulary_fpath, mode='r')
@@ -196,7 +197,9 @@ def create_graph(vocabulary_sources, sp_method):
 
 # Entry point function: try to load the graph, else create it if it does not exist
 def get_graph_dataobject(new, vocabulary_sources_ls, sp_method=Method.FASTTEXT):
-    graph_fpath = Utils.set_directory(os.path.join(F.FOLDER_GRAPH, "_".join(vocabulary_sources_ls), F.KBGRAPH_FILE))
+    Utils.init_logging("get_graph_dataobject.log")
+    graph_folder, _, _ = F.get_folders_graph_input_vocabulary(vocabulary_sources_ls, sp_method)
+    graph_fpath = os.path.join(graph_folder, F.KBGRAPH_FILE)
     if os.path.exists(graph_fpath) and not new:
         return torch.load(graph_fpath)
     else:

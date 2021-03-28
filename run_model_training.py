@@ -1,5 +1,5 @@
 import argparse
-import Models.Training as T
+import Models.TrainingSetup as T
 import torch
 from time import time
 import Utils
@@ -81,7 +81,7 @@ model, datasets, dataloaders = T.setup_train(
         include_globalnode_input=parameters["include_globalnode_input"],
         load_saved_model=False,
         batch_size=32, sequence_length=35,
-        method=CE.Method.FASTTEXT,
+        sp_method=CE.Method.FASTTEXT,
         grapharea_size=32, random_seed=0)
 T.run_train(model, dataloaders, learning_rate=args.learning_rate, num_epochs=args.num_epochs)
 t1 = time() ; Utils.time_measurement_with_msg(t0, t1, "Trained model")

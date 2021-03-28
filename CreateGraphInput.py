@@ -1,3 +1,4 @@
+import Filesystem
 import Filesystem as F
 import GetKBInputData.RetrieveInputData as RID
 import GetKBInputData.PrepareKBInput as PI
@@ -13,13 +14,12 @@ from time import time
 
 # Before starting: clean all storage files; reset vocabulary index to 0
 def reset(vocabulary_sources_ls, sp_method=CE.Method.FASTTEXT):
-    inputdata_folder = Utils.set_directory(os.path.join(F.FOLDER_INPUT, "_".join(vocabulary_sources_ls), sp_method.value))
+
+    graph_folder, inputdata_folder, vocab_folder = F.get_folders_graph_input_vocabulary(vocabulary_sources_ls, sp_method)
 
     vocab_h5_fname = "vocabulary_" + "_".join(vocabulary_sources_ls) + ".h5"
     vocab_txt_fname = vocab_h5_fname.replace(".h5", ".txt")
-    vocab_folder = Utils.set_directory(os.path.join(F.FOLDER_VOCABULARY, "_".join(vocabulary_sources_ls)))
     vocab_filepaths = [os.path.join(vocab_folder, vocab_h5_fname), os.path.join(vocab_folder, vocab_txt_fname)]
-    graph_folder = os.path.join(F.FOLDER_GRAPH, "_".join(vocabulary_sources_ls), sp_method.value)
 
     # reset the hdf5 archives for dictionary information: definitions, examples, synonyms, antonyms
     archives_filenames = list(filter(lambda fname: 'h5' in fname, os.listdir(inputdata_folder)))
@@ -45,7 +45,7 @@ def reset(vocabulary_sources_ls, sp_method=CE.Method.FASTTEXT):
 
 
 def reset_embeddings(vocabulary_sources_ls, sp_method=CE.Method.FASTTEXT):
-    inputdata_folder = Utils.set_directory(os.path.join(F.FOLDER_INPUT, "_".join(vocabulary_sources_ls), sp_method.value))
+    inputdata_folder = Filesystem.set_directory(os.path.join(F.FOLDER_INPUT, "_".join(vocabulary_sources_ls), sp_method.value))
     # reset the embeddings, both those for dictionary elements and those for single-prototype vectors
     vectorized_inputs_filenames = list(filter(lambda fname: '.npy' in fname, os.listdir(inputdata_folder)))
     vectorized_inputs_filepaths = list(map(lambda fname: os.path.join(inputdata_folder, fname),
@@ -64,7 +64,7 @@ def exe_from_input_to_vectors(do_reset, compute_single_prototype, vocabulary_sou
         reset(vocabulary_sources_ls, sp_method)
 
     # set the folder that will contain the WordNet gloss data, depending on vocabulary sources and embeddings method
-    inputdata_folder = Utils.set_directory(os.path.join(F.FOLDER_INPUT, "_".join(vocabulary_sources_ls), sp_method.value))
+    inputdata_folder = Filesystem.set_directory(os.path.join(F.FOLDER_INPUT, "_".join(vocabulary_sources_ls), sp_method.value))
 
     # organize the SemCor corpus in training, validation and test splits
     SLC.organize_splits(xml_folder_path=F.CORPORA_LOCATIONS[F.SEMCOR], xml_fname='semcor.xml')

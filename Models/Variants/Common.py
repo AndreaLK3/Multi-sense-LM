@@ -18,7 +18,7 @@ from Models.Variants.RNNSteps import rnn_loop
 
 ##### 1.1: Initialization of: graph_dataobj, grapharea_matrix, vocabulary_lists & more
 def init_model_parameters(model, graph_dataobj, grapharea_size, grapharea_matrix, vocabulary_df,
-                          include_globalnode_input,# use_gold_lm,
+                          include_globalnode_input, #use_gold_lm,
                           batch_size, n_layers, n_hid_units):
     model.grapharea_matrix = grapharea_matrix
 
@@ -28,10 +28,9 @@ def init_model_parameters(model, graph_dataobj, grapharea_size, grapharea_matrix
 
     model.include_globalnode_input = include_globalnode_input
     model.predict_senses = False # it can be set to True when starting a training loop
-    #model.use_gold_lm = use_gold_lm
+    # model.use_gold_lm = use_gold_lm
 
-    model.first_idx_dummySenses = Utils.get_startpoint_dummySenses(slc_or_text=True) # used to lemmatizeNode in GNNs
-    logging.info("model.first_idx_dummySenses set according to slc_or_text=True")
+    model.first_idx_dummySenses = Utils.compute_startpoint_dummySenses(graph_dataobj) # used to lemmatizeNode in GNNs
     model.last_idx_senses = graph_dataobj.node_types.tolist().index(1)
     model.last_idx_globals = graph_dataobj.node_types.tolist().index(2)
 

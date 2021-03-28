@@ -43,7 +43,7 @@ def init_context_handling(model, context_method):
 class SenseContext(torch.nn.Module):
 
     def __init__(self, graph_dataobj, grapharea_size, grapharea_matrix, vocabulary_df, embeddings_matrix,
-                 include_globalnode_input, batch_size, n_layers, n_hid_units, K, num_C, context_method):
+                 use_gold_lm, include_globalnode_input, batch_size, n_layers, n_hid_units, K, num_C, context_method):
 
         # -------------------- Initialization in common: parameters & globals --------------------
         super(SenseContext, self).__init__()
