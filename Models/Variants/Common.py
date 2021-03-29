@@ -18,7 +18,7 @@ from Models.Variants.RNNSteps import rnn_loop
 
 ##### 1.1: Initialization of: graph_dataobj, grapharea_matrix, vocabulary_lists & more
 def init_model_parameters(model, graph_dataobj, grapharea_size, grapharea_matrix, vocabulary_df,
-                          include_globalnode_input, #use_gold_lm,
+                          include_globalnode_input, use_gold_lm,
                           batch_size, n_layers, n_hid_units):
     model.grapharea_matrix = grapharea_matrix
 
@@ -28,7 +28,7 @@ def init_model_parameters(model, graph_dataobj, grapharea_size, grapharea_matrix
 
     model.include_globalnode_input = include_globalnode_input
     model.predict_senses = False # it can be set to True when starting a training loop
-    # model.use_gold_lm = use_gold_lm
+    model.use_gold_lm = use_gold_lm
 
     model.first_idx_dummySenses = Utils.compute_startpoint_dummySenses(graph_dataobj) # used to lemmatizeNode in GNNs
     model.last_idx_senses = graph_dataobj.node_types.tolist().index(1)
@@ -207,4 +207,29 @@ def lemmatize_node(x_indices, edge_index, edge_type, model):
             return x_indices, edge_index, edge_type
     else:
         return x_indices, edge_index, edge_type
+
+# ---------------
+# 3: assign =1 to a specific global or sense in the probability distribution
+# ---------------
+def assign_one(target_elements, seq_len, distributed_batch_size, len_output_distr, current_device):
+
+    # ----- preparing the base for the artificial softmax -----
+    softmax_distribution = torch.ones((seq_len, distributed_batch_size, len_output_distr)).to(current_device)
+    epsilon = 10 ** (-8)
+    softmax_distribution = epsilon * softmax_distribution  # base probability value for non-selected senses
+    mask = torch.zeros(size=(seq_len, distributed_batch_size, len_output_distr)).to(torch.bool).to(current_device)
+
+    targets = target_elements.clone().reshape((seq_len, distributed_batch_size)).to(torch.torch.int64).to(
+        current_device)
+    # ----- writing in the artificial softmax -----
+    for t in (range(seq_len)):
+        for b in range(distributed_batch_size):
+            mask[t, b, targets[t, b]] = True
+    assign_one = (torch.ones(
+        size=mask[mask == True].shape)).to(current_device)
+    softmax_distribution.masked_scatter_(mask=mask.data.clone(), source=assign_one)
+
+    predictions = torch.log(softmax_distribution).reshape(seq_len * distributed_batch_size,
+                                                           softmax_distribution.shape[2])
+    return predictions
 

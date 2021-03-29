@@ -197,12 +197,12 @@ def create_graph(vocabulary_sources, sp_method):
 
 # Entry point function: try to load the graph, else create it if it does not exist
 def get_graph_dataobject(new, vocabulary_sources_ls, sp_method=Method.FASTTEXT):
-    Utils.init_logging("get_graph_dataobject.log")
     graph_folder, _, _ = F.get_folders_graph_input_vocabulary(vocabulary_sources_ls, sp_method)
     graph_fpath = os.path.join(graph_folder, F.KBGRAPH_FILE)
     if os.path.exists(graph_fpath) and not new:
         return torch.load(graph_fpath)
     else:
+        Utils.init_logging("get_graph_dataobject.log")
         graph_dataobj = create_graph(vocabulary_sources_ls, sp_method)
         torch.save(graph_dataobj, graph_fpath)
         return graph_dataobj

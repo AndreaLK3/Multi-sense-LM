@@ -2,17 +2,12 @@ import torch
 from torch_geometric.nn import GATConv
 import torch.nn.functional as tfunc
 import Graph.Adjacencies as AD
-from Models.Variants.Common import predict_globals_withGRU, init_model_parameters, init_common_architecture, get_input_signals
+from Models.Variants.Common import predict_globals_withGRU, init_model_parameters, \
+    init_common_architecture, get_input_signals, assign_one
 from Models.Variants.RNNSteps import rnn_loop, reshape_memories
 from Utils import DEVICE
 from torch.nn.parameter import Parameter
 import logging
-from time import time
-import Models.ExplorePredictions as EP
-import Utils
-import nltk
-from GetKBInputData.LemmatizeNyms import lemmatize_term
-from enum import Enum
 
 # ****** Auxiliary functions *******
 def get_senseneighbours_of_k_globals(model, sample_k_indices):
@@ -42,7 +37,7 @@ class SelectK(torch.nn.Module):
         super(SelectK, self).__init__()
 
         init_model_parameters(self, graph_dataobj, grapharea_size, grapharea_matrix, vocabulary_df,
-                              include_globalnode_input,
+                              include_globalnode_input, use_gold_lm,
                               batch_size, n_layers, n_hid_units)
         init_common_architecture(self, embeddings_matrix, graph_dataobj)
 
@@ -100,10 +95,11 @@ class SelectK(torch.nn.Module):
 
         # ------------------- Globals ------------------
         seq_len = batch_input_signals.shape[0]
-        #if not self.use_gold_lm:
-        predictions_globals, logits_globals = predict_globals_withGRU(self, batch_input_signals, seq_len, distributed_batch_size)
-        #else:
-        #    pass
+        if not self.use_gold_lm:
+            predictions_globals, logits_globals = predict_globals_withGRU(self, batch_input_signals, seq_len, distributed_batch_size)
+        else:
+            predictions_globals = assign_one(batch_labels[:,0], seq_len, distributed_batch_size,
+                                            self.last_idx_globals - self.last_idx_senses, CURRENT_DEVICE)
 
         # ------------------- Senses -------------------
         # line 1: GRU for senses + linear FF-Models to logits.
@@ -113,7 +109,7 @@ class SelectK(torch.nn.Module):
             logits_senses = self.linear2senses(task2_out)
 
             # line 2: select senses of the k most likely globals
-            k_globals_indices = logits_globals.sort(descending=True).indices[:, 0:self.K]
+            k_globals_indices = predictions_globals.sort(descending=True).indices[:, 0:self.K]
 
             senses_softmax = torch.ones((distributed_batch_size * seq_len, self.last_idx_senses)).to(CURRENT_DEVICE)
             epsilon = 10 ** (-8)

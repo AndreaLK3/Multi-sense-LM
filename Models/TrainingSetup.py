@@ -93,8 +93,6 @@ def setup_model(model_type, include_globalnode_input, use_gold_lm, K,
                 load_saved_model=False, sp_method=CE.Method.FASTTEXT, context_method=ContextMethod.AVERAGE, C=20,
                 dim_qkv=300 , grapharea_size=32, batch_size=35, vocab_sources_ls=(F.WT2, F.SEMCOR), random_seed=1):
 
-    graph_folder, input_folder, vocabulary_folder = F.get_folders_graph_input_vocabulary(vocab_sources_ls, sp_method)
-
     # -------------------- 1: Setting up the graph, grapharea_matrix and vocabulary --------------------
     graph_dataobj, grapharea_size, grapharea_matrix, vocabulary_df, embeddings_matrix = get_objects(vocab_sources_ls, sp_method, grapharea_size)
     objects = graph_dataobj, grapharea_size, grapharea_matrix, vocabulary_df, embeddings_matrix
@@ -125,7 +123,6 @@ def setup_model(model_type, include_globalnode_input, use_gold_lm, K,
     model.to(DEVICE)
 
     return model, model_forDataLoading, batch_size
-
 
 
 # ---------- Step 3: Creating the DataLoaders for training, validation and test datasets ----------

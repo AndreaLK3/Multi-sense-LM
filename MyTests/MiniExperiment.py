@@ -84,7 +84,7 @@ def run_train(model, train_dataloader, valid_dataloader, learning_rate, num_epoc
 
     model_forParameters = model.module if torch.cuda.device_count() > 1 and model.__class__.__name__=="DataParallel" else model
     model_forParameters.predict_senses = predict_senses
-    hyperparams_str = Loss.write_doc_logging(train_dataloader, model, model_forParameters, learning_rate)
+    # hyperparams_str = Loss.write_doc_logging(train_dataloader, model, model_forParameters, learning_rate)
     try:
         logging.info("Using K=" + str(model_forParameters.K))
         logging.info("C=" + str(model_forParameters.num_C))
@@ -123,7 +123,7 @@ def run_train(model, train_dataloader, valid_dataloader, learning_rate, num_epoc
             epoch_polysense_tokens = 0
 
             predictions_history_dict = init_accuracy_dict(polysense_thresholds)
-            verbose = True if (epoch==num_epochs) or (epoch% 200==0) else False # deciding: log prediction output
+            verbose = True if (epoch==num_epochs) or (epoch% 50==0) else False # deciding: log prediction output
             flag_earlystop = False
 
             # -------------------- Step 3b) Evaluation on the validation set --------------------
@@ -155,7 +155,7 @@ def run_train(model, train_dataloader, valid_dataloader, learning_rate, num_epoc
                 # compute loss for the batch
                 (losses_tpl, num_sense_instances_tpl) = \
                    Loss.compute_model_loss(model, batch_input, batch_labels, predictions_history_dict,
-                                            polysense_globals_dict, slc_or_text, verbose=False)
+                                            polysense_globals_dict, slc_or_text, verbose=verbose)
                 loss_global, loss_sense, loss_multisense = losses_tpl
                 num_batch_sense_tokens, num_batch_multisense_tokens = num_sense_instances_tpl
 

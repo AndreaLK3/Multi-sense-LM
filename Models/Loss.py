@@ -109,7 +109,7 @@ def compute_model_loss(model, batch_input, batch_labels, correct_preds_dict, pol
     # debug: check the solutions and predictions. Is there anything the model is unable to predict?
     if verbose:
         logging.info("*******\ncompute_model_loss > verbose logging of batch")
-        EP.log_batch(batch_labels, predictions_globals, predictions_senses, 10, vocab_sources_ls, sp_method)
+        EP.log_batch(batch_labels, predictions_globals, predictions_senses, 5, vocab_sources_ls, sp_method)
 
     losses_tpl = loss_global, loss_all_senses, loss_poly_senses
     senses_in_batch = len(batch_labels_all_senses[batch_labels_all_senses != -1])
