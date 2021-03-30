@@ -27,12 +27,12 @@ def run_train(model, train_dataloader, valid_dataloader, learning_rate, num_epoc
               vocab_sources_ls=(F.WT2, F.SEMCOR), sp_method=CE.Method.FASTTEXT):
 
     # -------------------- Step 1: Setup model --------------------
-    Utils.init_logging('Models' + Utils.get_timestamp_month_to_sec() + '.log', loglevel=logging.INFO)
+    Utils.init_logging('RunTrain' + Utils.get_timestamp_month_to_sec() + '.log', loglevel=logging.INFO)
     slc_or_text = train_dataloader.dataset.sensecorpus_or_text
 
-    optimizers = [torch.optim.Adam(model.parameters(), lr=learning_rate)]
-
+    optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
     model.train()
+
     polysense_thresholds = (2,3,5,10,30)
     polysense_globals_dict= AD.get_polysenseglobals_dict(vocab_sources_ls, sp_method, thresholds=polysense_thresholds)
 
@@ -52,12 +52,7 @@ def run_train(model, train_dataloader, valid_dataloader, learning_rate, num_epoc
     starting_time = time()
     best_valid_loss_globals = inf
     best_valid_loss_senses = inf
-    best_accuracy_counts = (0,0,0)
-    previous_valid_loss_senses = inf
-    freezing_epoch = None
-    after_freezing_flag = False
-    # if with_freezing:
-    #    model_forParameters.predict_senses = False
+    best_valid_accuracy_senses = 0
 
     # torch.autograd.set_detect_anomaly(True) # for debug
     train_dataiter = iter(itertools.cycle(train_dataloader))
@@ -68,16 +63,12 @@ def run_train(model, train_dataloader, valid_dataloader, learning_rate, num_epoc
 
         for epoch in range(1,num_epochs+1):
 
-            optimizer = optimizers[-1]  # pick the most recently created optimizer. Useful if using the freezing option
-
             # -------------------- Step 3a) Initialization --------------------
             sum_epoch_loss_global = 0
             sum_epoch_loss_senses = 0
-            sum_epoch_loss_polysenses = 0
 
             epoch_step = 0
             epoch_senselabeled_tokens = 0
-            epoch_polysense_tokens = 0
 
             predictions_history_dict = init_accuracy_dict(polysense_thresholds)
             verbose = True if (epoch==num_epochs) or (epoch% 200==0) else False # deciding: log prediction output
@@ -86,26 +77,17 @@ def run_train(model, train_dataloader, valid_dataloader, learning_rate, num_epoc
             # -------------------- Step 3b) Evaluation on the validation set --------------------
             if epoch>1:
                 logging.info("After training " + str(epoch-1) + " epochs, validation:")
-                valid_loss_globals, valid_loss_senses, polysenses_evaluation_loss = \
+                valid_loss_globals, valid_loss_senses, valid_accuracy_senses = \
                     evaluation(valid_dataloader, valid_dataiter, model, slc_or_text, verbose)
 
-                # -------------- 3c) Check the validation loss & the need for freezing / early stopping --------------
-                if exp(valid_loss_globals) > exp(best_valid_loss_globals) + 0.1 and (epoch > 2):
-
-                    if exp(valid_loss_globals) > exp(best_valid_loss_globals):
-                        torch.save(model, os.path.join(F.FOLDER_MODELS, hyperparams_str + '_best_validation.model'))
-                if after_freezing_flag:
-                    if (exp(valid_loss_senses) > exp(previous_valid_loss_senses) + 1) and epoch > freezing_epoch + 2:
-                        # when properly implementing freezing, this should change into a check on the accuracy
-                        logging.info("Early stopping on senses.")
-                        flag_earlystop = True
+                # -------------- 3c) Check the validation accuracy & the need for early stopping --------------
+                if valid_accuracy_senses < best_valid_accuracy_senses and (epoch > 2):
+                    logging.info("Early stopping on senses.")
+                    flag_earlystop = True
 
                 best_valid_loss_globals = min(best_valid_loss_globals, valid_loss_globals)
-                previous_valid_loss_senses = valid_loss_senses
                 best_valid_loss_senses = min(best_valid_loss_senses, valid_loss_senses)
-
-                if epoch == num_epochs:
-                    Loss.write_doc_logging(train_dataloader, model, model_forParameters, learning_rate)
+                best_valid_accuracy_senses = min(best_valid_accuracy_senses, valid_accuracy_senses)
 
                 if flag_earlystop:
                     break
@@ -125,20 +107,15 @@ def run_train(model, train_dataloader, valid_dataloader, learning_rate, num_epoc
                 (losses_tpl, num_sense_instances_tpl) = \
                    Loss.compute_model_loss(model, batch_input, batch_labels, predictions_history_dict,
                                             polysense_globals_dict, slc_or_text, verbose=False)
-                loss_global, loss_sense, loss_multisense = losses_tpl
-                num_batch_sense_tokens, num_batch_multisense_tokens = num_sense_instances_tpl
+                loss_global, loss_sense = losses_tpl
+                num_batch_sense_tokens = num_sense_instances_tpl
 
                 # running sum of the training loss
                 sum_epoch_loss_global = sum_epoch_loss_global + loss_global.item()
                 if model_forParameters.predict_senses:
                     sum_epoch_loss_senses = sum_epoch_loss_senses + loss_sense.item() * num_batch_sense_tokens
                     epoch_senselabeled_tokens = epoch_senselabeled_tokens + num_batch_sense_tokens
-                    sum_epoch_loss_polysenses = sum_epoch_loss_polysenses + loss_multisense.item() * num_batch_multisense_tokens
-                    epoch_polysense_tokens = epoch_polysense_tokens + num_batch_multisense_tokens
-                    if not after_freezing_flag:
-                        loss = loss_global + loss_sense
-                    else:
-                        loss = loss_sense
+                    loss = loss_global + loss_sense
                 else:
                     loss = loss_global
 
@@ -158,8 +135,8 @@ def run_train(model, train_dataloader, valid_dataloader, learning_rate, num_epoc
                          ". Time = " + str(round(time() - starting_time, 2)))
             logging.info("Models - Correct predictions / Total predictions:\n" + str(predictions_history_dict))
 
-            epoch_sumlosses_tpl = sum_epoch_loss_global, sum_epoch_loss_senses, sum_epoch_loss_polysenses
-            epoch_numsteps_tpl = epoch_step, epoch_senselabeled_tokens, epoch_polysense_tokens
+            epoch_sumlosses_tpl = sum_epoch_loss_global, sum_epoch_loss_senses
+            epoch_numsteps_tpl = epoch_step, epoch_senselabeled_tokens
             Utils.record_statistics(epoch_sumlosses_tpl, epoch_numsteps_tpl)
 
     except KeyboardInterrupt:
@@ -182,11 +159,9 @@ def evaluation(evaluation_dataloader, evaluation_dataiter, model, slc_or_text, v
     model.eval()  # do not train the model now
     sum_eval_loss_globals = 0
     sum_eval_loss_senses = 0
-    sum_eval_loss_polysenses = 0
     eval_correct_predictions_dict = init_accuracy_dict(polysense_thresholds)
     evaluation_step = 0
     evaluation_senselabeled_tokens = 0
-    evaluation_polysense_tokens = 0
     logging_step = 500
 
     with torch.no_grad():  # Deactivates the autograd engine entirely to save some memory
@@ -197,15 +172,13 @@ def evaluation(evaluation_dataloader, evaluation_dataiter, model, slc_or_text, v
             (losses_tpl, num_sense_instances_tpl) \
                 = Loss.compute_model_loss(model, batch_input, batch_labels, eval_correct_predictions_dict,
                                           polysense_globals_dict, vocab_sources_ls, sp_method, verbose=verbose)
-            loss_globals, loss_senses, loss_polysenses = losses_tpl
-            num_batch_sense_tokens, num_batch_polysense_tokens = num_sense_instances_tpl
+            loss_globals, loss_senses = losses_tpl
+            num_batch_sense_tokens = num_sense_instances_tpl
             sum_eval_loss_globals = sum_eval_loss_globals + loss_globals.item()
 
             if including_senses:
                 sum_eval_loss_senses = sum_eval_loss_senses + loss_senses.item() * num_batch_sense_tokens
                 evaluation_senselabeled_tokens = evaluation_senselabeled_tokens + num_batch_sense_tokens
-                sum_eval_loss_polysenses = sum_eval_loss_polysenses + loss_polysenses.item() * num_batch_polysense_tokens
-                evaluation_polysense_tokens = evaluation_polysense_tokens + num_batch_polysense_tokens
 
             evaluation_step = evaluation_step + 1
             if evaluation_step % logging_step == 0:
@@ -215,18 +188,20 @@ def evaluation(evaluation_dataloader, evaluation_dataiter, model, slc_or_text, v
     globals_evaluation_loss = sum_eval_loss_globals / evaluation_step
     if including_senses:
         senses_evaluation_loss = sum_eval_loss_senses / evaluation_senselabeled_tokens
-        polysenses_evaluation_loss = sum_eval_loss_polysenses / evaluation_polysense_tokens
     else:
         senses_evaluation_loss = 0
-        polysenses_evaluation_loss = 0
 
     logging.info("Evaluation - Correct predictions / Total predictions:\n" + str(eval_correct_predictions_dict))
-    epoch_sumlosses_tpl = sum_eval_loss_globals, sum_eval_loss_senses, sum_eval_loss_polysenses
-    epoch_numsteps_tpl = evaluation_step, evaluation_senselabeled_tokens, evaluation_polysense_tokens
+    epoch_sumlosses_tpl = sum_eval_loss_globals, sum_eval_loss_senses
+    epoch_numsteps_tpl = evaluation_step, evaluation_senselabeled_tokens
     Utils.record_statistics(epoch_sumlosses_tpl, epoch_numsteps_tpl)
+
+    # ---- we need the sense accuracy / number of correct senses, for early-stopping
+    senses_acc = round(eval_correct_predictions_dict["correct_all_s"] / eval_correct_predictions_dict["tot_all_s"] ,2)
+    logging.info("Validation, accuracy on senses=" + str(senses_acc))
 
     model.train()  # training can resume
 
-    return globals_evaluation_loss, senses_evaluation_loss, polysenses_evaluation_loss
+    return globals_evaluation_loss, senses_evaluation_loss, senses_acc
 
 

@@ -91,18 +91,15 @@ def time_measurement_with_msg(t0, t1, message):
 
 
 def record_statistics(epoch_sumlosses_tpl, epoch_numsteps_tpl):
-    sum_epoch_loss_global,sum_epoch_loss_sense, sum_epoch_loss_multisense = epoch_sumlosses_tpl
-    epoch_step, num_steps_withsense, num_steps_withmultisense = epoch_numsteps_tpl
+    sum_epoch_loss_global,sum_epoch_loss_sense = epoch_sumlosses_tpl
+    epoch_step, num_steps_withsense = epoch_numsteps_tpl
     if num_steps_withsense==0: num_steps_withsense=1 # adjusting for when we do only standard LM
-    if num_steps_withmultisense == 0:  num_steps_withmultisense = 1
 
     epoch_loss_globals = sum_epoch_loss_global / epoch_step
     epoch_loss_senses = sum_epoch_loss_sense / num_steps_withsense
-    epoch_loss_multisenses = sum_epoch_loss_multisense / num_steps_withmultisense
 
     logging.info("Perplexity: " + " Globals perplexity=" + str(round(exp(epoch_loss_globals),2)) +
-                 " \tPerplexity on all senses=" + str(round(exp(epoch_loss_senses),2)) +
-                 " \tPerplexity on polysemous senses=" + str(round(exp(epoch_loss_multisenses),2)) + "\n-------")
+                 " \tPerplexity on all senses=" + str(round(exp(epoch_loss_senses),2)) + "\n-------")
 
 ##########
 

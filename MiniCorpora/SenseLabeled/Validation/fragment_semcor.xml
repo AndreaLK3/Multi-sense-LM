@@ -1,0 +1,72 @@
+<root><document id="br-a01">
+        <paragraph>
+            <sentence>
+                <word surface_form="The" pos="DT"/>
+                <word surface_form="Fulton_County_Grand_Jury" lemma="group" pos="NN" wn16_key="group%1:03:00::" wn30_key="group%1:03:00::"/>
+                <word surface_form="said" lemma="say" pos="VBD" wn16_key="say%2:32:00::" wn30_key="say%2:32:00::"/>
+                <word surface_form="Friday" lemma="friday" pos="NNP" wn16_key="friday%1:28:00::" wn30_key="friday%1:28:00::"/>
+                <word surface_form="an" pos="DT"/>
+                <word surface_form="investigation" lemma="investigation" pos="NN" wn16_key="investigation%1:09:00::" wn30_key="investigation%1:09:00::"/>
+                <word surface_form="of" pos="IN"/>
+                <word surface_form="Atlanta" lemma="atlanta" pos="NNP" wn16_key="atlanta%1:15:00::" wn30_key="atlanta%1:15:00::"/>
+                <word surface_form="'s" pos="POS"/>
+                <word surface_form="recent" lemma="recent" pos="JJ" wn16_key="recent%5:00:00:past:00" wn30_key="recent%3:00:00:past:00"/>
+                <word surface_form="primary_election" lemma="primary_election" pos="NN" wn16_key="primary_election%1:04:00::" wn30_key="primary_election%1:04:00::"/>
+                <word surface_form="produced" lemma="produce" pos="VBD" wn16_key="produce%2:39:01::" wn30_key="produce%2:39:01::"/>
+                <word surface_form="&quot;" pos="''"/>
+                <word surface_form="no" pos="DT"/>
+                <word surface_form="evidence" lemma="evidence" pos="NN" wn16_key="evidence%1:09:00::" wn30_key="evidence%1:09:00::"/>
+                <word surface_form="&quot;" pos="''"/>
+                <word surface_form="that" pos="IN"/>
+                <word surface_form="any" pos="DT"/>
+                <word surface_form="irregularities" lemma="irregularity" pos="NNS" wn16_key="irregularity%1:04:00::" wn30_key="irregularity%1:04:00::"/>
+                <word surface_form="took_place" lemma="take_place" pos="VB" wn16_key="take_place%2:30:00::" wn30_key="take_place%2:30:00::"/>
+                <word surface_form="." pos="."/>
+            </sentence>
+        </paragraph>
+        <paragraph>
+            <sentence>
+                <word surface_form="The" pos="DT"/>
+                <word surface_form="jury" lemma="jury" pos="NN" wn16_key="jury%1:14:00::" wn30_key="jury%1:14:00::"/>
+                <word surface_form="further" lemma="far" pos="RB" wn16_key="far%4:02:00::" wn30_key="far%4:02:00::"/>
+                <word surface_form="said" lemma="say" pos="VBD" wn16_key="say%2:32:00::" wn30_key="say%2:32:00::"/>
+                <word surface_form="in" pos="IN"/>
+                <word surface_form="term" lemma="term" pos="NN" wn16_key="term%1:28:00::" wn30_key="term%1:28:00::"/>
+                <word surface_form="end" lemma="end" pos="NN" wn16_key="end%1:28:00::" wn30_key="end%1:28:00::"/>
+                <word surface_form="presentments" lemma="presentment" pos="NNS" wn16_key="presentment%1:04:00::" wn30_key="presentment%1:04:00::"/>
+                <word surface_form="that" pos="IN"/>
+                <word surface_form="the" pos="DT"/>
+                <word surface_form="City_Executive_Committee" lemma="group" pos="NN" wn16_key="group%1:03:00::" wn30_key="group%1:03:00::"/>
+                <word surface_form="," pos=","/>
+                <word surface_form="which" pos="WDT"/>
+                <word surface_form="had" lemma="have" pos="VBD" wn16_key="have%2:40:04::" wn30_key="have%2:40:04::"/>
+                <word surface_form="over-all" lemma="overall" pos="JJ" wn16_key="overall%5:00:00:gross:00" wn30_key="overall%3:00:00:gross:00"/>
+                <word surface_form="charge" lemma="charge" pos="NN" wn16_key="charge%1:04:03::" wn30_key="charge%1:04:03::"/>
+                <word surface_form="of" pos="IN"/>
+                <word surface_form="the" pos="DT"/>
+                <word surface_form="election" lemma="election" pos="NN" wn16_key="election%1:04:01::" wn30_key="election%1:04:01::"/>
+                <word surface_form="," pos=","/>
+                <word surface_form="&quot;" pos="''"/>
+                <word surface_form="deserves" lemma="deserve" pos="VBZ" wn16_key="deserve%2:42:00::" wn30_key="deserve%2:42:00::"/>
+                <word surface_form="the" pos="DT"/>
+                <word surface_form="praise" lemma="praise" pos="NN" wn16_key="praise%1:10:00::" wn30_key="praise%1:10:00::"/>
+                <word surface_form="and" pos="CC"/>
+                <word surface_form="thanks" lemma="thanks" pos="NNS" wn16_key="thanks%1:10:00::" wn30_key="thanks%1:10:00::"/>
+                <word surface_form="of" pos="IN"/>
+                <word surface_form="the" pos="DT"/>
+                <word surface_form="City_of_Atlanta" lemma="location" pos="NN" wn16_key="location%1:03:00::" wn30_key="location%1:03:00::"/>
+                <word surface_form="&quot;" pos="''"/>
+                <word surface_form="for" pos="IN"/>
+                <word surface_form="the" pos="DT"/>
+                <word surface_form="manner" lemma="manner" pos="NN" wn16_key="manner%1:07:02::" wn30_key="manner%1:07:02::"/>
+                <word surface_form="in" lemma="in" pos="RB"/>
+                <word surface_form="which" pos="RB"/>
+                <word surface_form="the" pos="DT"/>
+                <word surface_form="election" lemma="election" pos="NN" wn16_key="election%1:04:01::" wn30_key="election%1:04:01::"/>
+                <word surface_form="was" lemma="be" pos="VBD"/>
+                <word surface_form="conducted" lemma="conduct" pos="VBN" wn16_key="conduct%2:41:00::" wn30_key="conduct%2:41:00::"/>
+                <word surface_form="." pos="."/>
+            </sentence>
+        </paragraph>
+    </document>
+    </root>

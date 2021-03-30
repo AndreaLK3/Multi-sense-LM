@@ -90,8 +90,8 @@ def create_model(model_type, objects, use_gold_lm, include_globalnode_input, K, 
 
 # ---------- Step 2: locating the necessary folders, creating the model, moving it on GPU if needed
 def setup_model(model_type, include_globalnode_input, use_gold_lm, K,
-                load_saved_model=False, sp_method=CE.Method.FASTTEXT, context_method=ContextMethod.AVERAGE, C=20,
-                dim_qkv=300 , grapharea_size=32, batch_size=35, vocab_sources_ls=(F.WT2, F.SEMCOR), random_seed=1):
+                load_saved_model, sp_method, context_method, C,
+                dim_qkv, grapharea_size, batch_size, vocab_sources_ls, random_seed=1):
 
     # -------------------- 1: Setting up the graph, grapharea_matrix and vocabulary --------------------
     graph_dataobj, grapharea_size, grapharea_matrix, vocabulary_df, embeddings_matrix = get_objects(vocab_sources_ls, sp_method, grapharea_size)
@@ -116,7 +116,8 @@ def setup_model(model_type, include_globalnode_input, use_gold_lm, K,
         logging.info("Using " + str(n_gpu) + " GPUs")
         model = torch.nn.DataParallel(model, dim=0)
         model_forDataLoading = model.module
-        batch_size = n_gpu if batch_size is None else batch_size  # if not specified, default batch_size = n. GPUs
+        batch_size = n_gpu if batch_size is None else (batch_size + batch_size % n_gpu)
+        # if not specified, default batch_size = n. GPUs. use_gold_lm needs batch_size % n_gpu == 0 to work correctly
     else:
         model_forDataLoading = model
         batch_size = 1 if batch_size is None else batch_size
@@ -143,7 +144,7 @@ def setup_corpus(objects, corpus_location, slc_or_text, gr_in_voc_folders, batch
 
 def setup_training_on_semcor(model_type, include_globalnode_input, use_gold_lm, K,
                 load_saved_model=False, sp_method=CE.Method.FASTTEXT, context_method=ContextMethod.AVERAGE, C=0,
-                dim_qkv=300, grapharea_size=32, batch_size=35, seq_len=70, vocab_sources_ls=(F.WT2, F.SEMCOR), random_seed=1):
+                dim_qkv=300, grapharea_size=32, batch_size=32, seq_len=35, vocab_sources_ls=(F.WT2, F.SEMCOR), random_seed=1):
     gr_in_voc_folders = F.get_folders_graph_input_vocabulary(vocab_sources_ls, sp_method)
 
     objects = get_objects(vocab_sources_ls, sp_method, grapharea_size)

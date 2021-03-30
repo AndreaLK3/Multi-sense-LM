@@ -86,10 +86,6 @@ def compute_model_loss(model, batch_input, batch_labels, correct_preds_dict, pol
     batch_labels_t = (batch_labels).clone().t().to(DEVICE)
     batch_labels_globals = batch_labels_t[0]
     batch_labels_all_senses = batch_labels_t[1]
-    polysense_thresholds = polysense_globals_dict.keys()
-    batch_labels_all_polysenses = torch.tensor( list(map(lambda i : batch_labels_all_senses[i].item()
-        if batch_labels_globals[i].item() in polysense_globals_dict[min(polysense_thresholds)]
-        else -1, range(len(batch_labels_all_senses)))) ) .to(DEVICE)
 
     # compute the loss for the batch
     loss_global = tfunc.nll_loss(predictions_globals, batch_labels_globals)
@@ -97,10 +93,8 @@ def compute_model_loss(model, batch_input, batch_labels, correct_preds_dict, pol
     model_forParameters = model.module if torch.cuda.device_count() > 1 and model.__class__.__name__== "DataParallel" else model
     if model_forParameters.predict_senses:
         loss_all_senses = tfunc.nll_loss(predictions_senses, batch_labels_all_senses, ignore_index=-1)
-        loss_poly_senses = tfunc.nll_loss(predictions_senses, batch_labels_all_polysenses, ignore_index=-1)
     else:
         loss_all_senses = torch.tensor(0)
-        loss_poly_senses = torch.tensor(0)
     # Adding accuracy to measure the senses' task, given that we can not rely on the senses' PPL for SelectK & co.
     batch_labels_polysenses_dict=organize_polysense_labels(batch_labels_globals, batch_labels_all_senses, polysense_globals_dict)
     update_predictions_history_dict(correct_preds_dict, predictions_globals, predictions_senses,
@@ -111,9 +105,7 @@ def compute_model_loss(model, batch_input, batch_labels, correct_preds_dict, pol
         logging.info("*******\ncompute_model_loss > verbose logging of batch")
         EP.log_batch(batch_labels, predictions_globals, predictions_senses, 5, vocab_sources_ls, sp_method)
 
-    losses_tpl = loss_global, loss_all_senses, loss_poly_senses
-    senses_in_batch = len(batch_labels_all_senses[batch_labels_all_senses != -1])
-    multisenses_in_batch = len(batch_labels_all_polysenses[batch_labels_all_polysenses != -1])
-    num_sense_instances_tpl = senses_in_batch, multisenses_in_batch
+    losses_tpl = loss_global, loss_all_senses
+    num_sense_instances = len(batch_labels_all_senses[batch_labels_all_senses != -1])
 
-    return (losses_tpl, num_sense_instances_tpl)
+    return (losses_tpl, num_sense_instances)

@@ -71,10 +71,11 @@ def init_common_architecture(model, embeddings_matrix, graph_dataobj):
                                     heads=2)
 
     # -------------------- The networks --------------------½
-    model.main_rnn_ls = torch.nn.ModuleList(
-        [torch.nn.GRU(input_size=model.concatenated_input_dim if i == 0 else model.hidden_size,
-                                            hidden_size=model.hidden_size // 2 if i == model.n_layers - 1 else model.hidden_size, num_layers=1)  # 512
-         for i in range(model.n_layers)])
+    if not model.use_gold_lm:
+        model.main_rnn_ls = torch.nn.ModuleList(
+            [torch.nn.GRU(input_size=model.concatenated_input_dim if i == 0 else model.hidden_size,
+                                                hidden_size=model.hidden_size // 2 if i == model.n_layers - 1 else model.hidden_size, num_layers=1)  # 512
+             for i in range(model.n_layers)])
     model.linear2global = torch.nn.Linear(in_features=model.hidden_size // 2,  # 512
                                          out_features=model.last_idx_globals - model.last_idx_senses, bias=True)
 
