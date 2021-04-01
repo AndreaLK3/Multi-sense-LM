@@ -65,7 +65,7 @@ def create_model(model_type, objects, use_gold_lm, include_globalnode_input, K, 
     graph_dataobj, grapharea_size, grapharea_matrix, vocabulary_df, embeddings_matrix = objects
     if model_type==ModelType.RNN:
         model = RNNs.RNN(graph_dataobj, grapharea_size, grapharea_matrix, vocabulary_df,
-                           embeddings_matrix, include_globalnode_input,
+                           embeddings_matrix, include_globalnode_input, use_gold_lm,
                            batch_size=32, n_layers=3, n_hid_units=1024)
     elif model_type==ModelType.SELECTK:
         model = SelectK.SelectK(graph_dataobj, grapharea_size, grapharea_matrix, vocabulary_df, embeddings_matrix,
@@ -79,8 +79,7 @@ def create_model(model_type, objects, use_gold_lm, include_globalnode_input, K, 
              use_gold_lm, include_globalnode_input, batch_size=32, n_layers=3, n_hid_units=1024, K=K,
                             num_C=C, context_method=context_method, dim_qkv=dim_qkv)
     elif model_type==ModelType.MFS:
-        mfs_archive_fpath = os.path.join(F.FOLDER_TEXT_CORPUSES, F.SEMCOR, F.FOLDER_TRAIN, F.MOST_FREQ_SENSE_FILE)
-        mfs_df = pd.read_hdf(mfs_archive_fpath)
+        mfs_df = pd.read_hdf(F.MOST_FREQ_SENSE_FPATH)
         model = MFS.MFS(graph_dataobj, grapharea_size, grapharea_matrix, vocabulary_df, embeddings_matrix,
                             use_gold_lm, include_globalnode_input, batch_size=32, n_layers=3, n_hid_units=1024, K=1, mfs_df=mfs_df)
     else:

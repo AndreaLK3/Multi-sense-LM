@@ -1,5 +1,7 @@
 import Graph.DefineGraph as DG
 import Graph.Adjacencies as AD
+import Models.NumericalIndices as NI
+import VocabularyAndEmbeddings.ComputeEmbeddings as CE
 import Utils
 import random
 import logging
@@ -7,6 +9,7 @@ import os
 import Filesystem as F
 import pandas as pd
 from Models.ExplorePredictions import get_sense_fromindex, get_globalword_fromindex_df
+import sqlite3
 
 def log_node(n, last_indices_tpl, inputdata_folder, vocabulary_folder, definitions_df, examples_df):
     last_idx_senses , last_idx_globals, last_idx_definitions = last_indices_tpl
@@ -25,11 +28,8 @@ def log_node(n, last_indices_tpl, inputdata_folder, vocabulary_folder, definitio
         logging.info("example: n=" + str(n) + str((examples_df.iloc[idx].sense_wn_id, examples_df.iloc[idx].examples)))
 
 
-def initialize_archives(slc_or_text):
-    subfolder = F.FOLDER_SENSELABELED if slc_or_text else F.FOLDER_STANDARDTEXT
-    graph_folder = os.path.join(F.FOLDER_GRAPH, subfolder)
-    vocabulary_folder = os.path.join(F.FOLDER_VOCABULARY, subfolder)
-    inputdata_folder = os.path.join(F.FOLDER_INPUT, subfolder)
+def initialize_archives(vocab_sources_ls, sp_method):
+    graph_folder, inputdata_folder, vocabulary_folder = F.get_folders_graph_input_vocabulary(vocab_sources_ls, sp_method)
 
     definitions_h5 = os.path.join(inputdata_folder, Utils.PROCESSED + '_' + Utils.DEFINITIONS + ".h5")
     definitions_df = pd.read_hdf(definitions_h5, key=Utils.DEFINITIONS, mode="r")
@@ -39,13 +39,14 @@ def initialize_archives(slc_or_text):
     return inputdata_folder, vocabulary_folder, definitions_df, examples_df, graph_folder
 
 
-def test(slc_or_text):
-    Utils.init_logging(os.path.join(F.FOLDER_TEST, "Test-GraphNodes-Slc"+str(slc_or_text)+".log"))
+def graph_nodes(vocab_sources_ls=(F.WT2, F.SEMCOR), sp_method=CE.Method.FASTTEXT):
+    Utils.init_logging("Test-GraphNodes.log")
 
     logging.info("Graph test. On: SenseLabeled corpus")
-    graph_dataobj = DG.get_graph_dataobject(new=False, slc_corpus=slc_or_text)
+    graph_dataobj = DG.get_graph_dataobject(False, vocab_sources_ls, sp_method)
 
-    inputdata_folder, vocabulary_folder, definitions_df, examples_df, graph_folder = initialize_archives(slc_or_text)
+    inputdata_folder, vocabulary_folder, definitions_df, examples_df, graph_folder = \
+        initialize_archives(vocab_sources_ls, sp_method)
 
     grapharea_matrix = AD.get_grapharea_matrix(graph_dataobj, area_size=32, hops_in_area=1, graph_folder=graph_folder)
 
@@ -54,12 +55,12 @@ def test(slc_or_text):
     last_idx_definitions = graph_dataobj.node_types.tolist().index(3)
     num_nodes = len(graph_dataobj.node_types.tolist())
     last_indices_tpl = (last_idx_senses , last_idx_globals, last_idx_definitions)
-
-    random_nodes = [40139, 3380, 44378] + \
-                   [random.randint(0, last_idx_senses) for _i in range(10)] + \
-                   [random.randint(last_idx_senses, last_idx_globals) for _i in range(10)] + \
-                   [random.randint(last_idx_globals, last_idx_definitions) for _i in range(5)] + \
-                   [random.randint(last_idx_definitions, num_nodes) for _i in range(5)]
+    logging.info("last_idx_senses=" + str(last_idx_senses))
+    random_nodes = [64922, 99437] # + \
+                   #[random.randint(0, last_idx_senses) for _i in range(10)] + \
+                   #[random.randint(last_idx_senses, last_idx_globals) for _i in range(10)] + \
+                   #[random.randint(last_idx_globals, last_idx_definitions) for _i in range(5)] + \
+                   #[random.randint(last_idx_definitions, num_nodes) for _i in range(5)]
 
     for center in random_nodes:
         logging.info("\nCenter:")
@@ -69,3 +70,24 @@ def test(slc_or_text):
         logging.info("Neighbours:")
         for n_t in neighbours:
             log_node(n_t.item(), last_indices_tpl, inputdata_folder, vocabulary_folder, definitions_df, examples_df)
+
+
+def get_missing_sense(vocab_sources_ls=(F.WT2, F.SEMCOR), sp_method=CE.Method.FASTTEXT):
+    Utils.init_logging("Test-GraphNodes.log")
+
+    graph_folder, inputdata_folder, vocabulary_folder = F.get_folders_graph_input_vocabulary(vocab_sources_ls,
+                                                                                             sp_method)
+    senseindices_db = sqlite3.connect(os.path.join(inputdata_folder, Utils.INDICES_TABLE_DB))
+    senseindices_db_c = senseindices_db.cursor()
+    last_sense_idx = senseindices_db_c.execute("SELECT COUNT(*) from indices_table").fetchone()[0]
+    #logging.info("last_sense_idx from db=" + str(last_sense_idx))
+    first_idx_dummySenses = Utils.get_startpoint_dummySenses(inputdata_folder)
+
+    graph_dataobj = DG.get_graph_dataobject(False, vocab_sources_ls, sp_method)
+    grapharea_matrix = AD.get_grapharea_matrix(graph_dataobj, area_size=32, hops_in_area=1, graph_folder=graph_folder)
+    #logging.info("last_idx_senses from graph=" + str(graph_dataobj.node_types.tolist().index(1)))
+
+    global_vocab_indices = [6620, 6621]
+    for global_absolute_index in global_vocab_indices:
+        logging.info(
+        NI.get_missing_sense_label(global_absolute_index, grapharea_matrix, last_sense_idx, first_idx_dummySenses) )

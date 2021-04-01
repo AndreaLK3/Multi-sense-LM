@@ -93,7 +93,7 @@ def time_measurement_with_msg(t0, t1, message):
 def record_statistics(epoch_sumlosses_tpl, epoch_numsteps_tpl):
     sum_epoch_loss_global,sum_epoch_loss_sense = epoch_sumlosses_tpl
     epoch_step, num_steps_withsense = epoch_numsteps_tpl
-    if num_steps_withsense==0: num_steps_withsense=1 # adjusting for when we do only standard LM
+    if num_steps_withsense==0: num_steps_withsense=1  # adjusting for when we do only standard LM
 
     epoch_loss_globals = sum_epoch_loss_global / epoch_step
     epoch_loss_senses = sum_epoch_loss_sense / num_steps_withsense

@@ -1,23 +1,10 @@
 import torch
-from torch_geometric.nn import GATConv
-import torch.nn.functional as tfunc
-import Graph.Adjacencies as AD
-from Models.Variants.Common import predict_globals_withGRU, init_model_parameters, init_common_architecture, get_input_signals
+import Models.Variants.Common as Common
 from Models.Variants.RNNSteps import rnn_loop, reshape_tensor
-from Utils import DEVICE
-from torch.nn.parameter import Parameter
 import logging
-from time import time
-import Models.ExplorePredictions as EP
 import Utils
-import nltk
-from GetKBInputData.LemmatizeNyms import lemmatize_term
-from enum import Enum
 from Models.Variants.SelectK import get_senseneighbours_of_k_globals
-import pandas as pd
-import os
-import numpy as np
-import Filesystem as F
+
 
 class MFS(torch.nn.Module):
 
@@ -26,10 +13,10 @@ class MFS(torch.nn.Module):
 
         # -------------------- Initialization in common: parameters & globals --------------------
         super(MFS, self).__init__()
-        init_model_parameters(self, graph_dataobj, grapharea_size, grapharea_matrix, vocabulary_df,
+        Common.init_model_parameters(self, graph_dataobj, grapharea_size, grapharea_matrix, vocabulary_df,
                               include_globalnode_input,
                               batch_size, n_layers, n_hid_units)
-        init_common_architecture(self, embeddings_matrix, graph_dataobj)
+        Common.init_common_architecture(self, embeddings_matrix, graph_dataobj)
 
         # -------------------- Senses' architecture --------------------
         self.K = K
@@ -59,7 +46,7 @@ class MFS(torch.nn.Module):
 
         # -------------------- Compute input signals -------------------
         for batch_elements_at_t in time_instants:
-            get_input_signals(self, batch_elements_at_t, word_embeddings_ls, currentglobal_nodestates_ls)
+            Common.get_input_signals(self, batch_elements_at_t, word_embeddings_ls, currentglobal_nodestates_ls)
 
         # -------------------- Collect input signals
         word_embeddings = torch.stack(word_embeddings_ls, dim=0) if self.include_globalnode_input < 2 else None
@@ -71,7 +58,11 @@ class MFS(torch.nn.Module):
 
         # ------------------- Globals ------------------
         seq_len = batch_input_signals.shape[0]
-        predictions_globals, logits_globals = predict_globals_withGRU(self, batch_input_signals, seq_len, distributed_batch_size)
+        if not self.use_gold_lm:
+            predictions_globals, logits_globals = Common.predict_globals_withGRU(self, batch_input_signals, seq_len, distributed_batch_size)
+        else:
+            predictions_globals = Common.assign_one(batch_labels[:,0], seq_len, distributed_batch_size,
+                                            self.last_idx_globals - self.last_idx_senses, CURRENT_DEVICE)
 
         # ------------------- Senses : pick MFS of the K=1 candidate -------------------
         if self.predict_senses:
@@ -98,23 +89,7 @@ class MFS(torch.nn.Module):
                     word_mfs_idx = sense_neighbours_ls[0].item() # since it is a nparray
                 words_mfs_ls.append(word_mfs_idx)
 
-            # ----- preparing the base for the artificial softmax -----
-            senses_softmax = torch.ones((seq_len, distributed_batch_size, self.last_idx_senses)).to(CURRENT_DEVICE)
-            epsilon = 10 ** (-8)
-            senses_softmax = epsilon * senses_softmax  # base probability value for non-selected senses
-            senses_mask = torch.zeros(size=(seq_len,distributed_batch_size, self.last_idx_senses)).to(torch.bool).to(CURRENT_DEVICE)
-
-            words_mfs = torch.tensor(words_mfs_ls).reshape((seq_len, distributed_batch_size)).to(torch.torch.int64).to(CURRENT_DEVICE)
-            # ----- writing in the artificial softmax -----
-            for t in (range(seq_len)):
-                for b in range(distributed_batch_size):
-                    senses_mask[t, b, words_mfs[t,b]] = True
-            assign_one = (torch.ones(
-                size=senses_mask[senses_mask == True].shape)).to(CURRENT_DEVICE)
-            senses_softmax.masked_scatter_(mask=senses_mask.data.clone(), source=assign_one)
-
-            predictions_senses = torch.log(senses_softmax).reshape(seq_len * distributed_batch_size,
-                                                                   senses_softmax.shape[2])
+            predictions_senses = Common.assign_one(words_mfs_ls, seq_len, distributed_batch_size, self.last_idx_senses, CURRENT_DEVICE)
 
         else:
             predictions_senses = torch.tensor([0] * self.batch_size * seq_len).to(CURRENT_DEVICE)

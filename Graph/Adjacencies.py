@@ -9,7 +9,7 @@ from scipy import sparse
 import pandas as pd
 from Models.Variants.Common import lemmatize_node
 from types import SimpleNamespace
-import sqlite3
+import logging
 
 # Utility function: determine which globals have more than 1 sense, versus the dummySenses and 0or1 sense.
 # (We evaluate the number of senses of the lemmatized form). Used to compute different Perplexities

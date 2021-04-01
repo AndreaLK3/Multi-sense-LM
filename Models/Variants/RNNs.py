@@ -11,13 +11,13 @@ from Models.Variants.RNNSteps import reshape_memories
 class RNN(torch.nn.Module):
 
     def __init__(self, graph_dataobj, grapharea_size, grapharea_matrix, vocabulary_df, embeddings_matrix,
-                 include_globalnode_input, batch_size, n_layers, n_hid_units):
+                 include_globalnode_input, use_gold_lm, batch_size, n_layers, n_hid_units):
 
         # -------------------- Initialization in common: parameters & globals --------------------
         super(RNN, self).__init__()
 
-        init_model_parameters(self, graph_dataobj, grapharea_size, grapharea_matrix, vocabulary_df, include_globalnode_input,
-                              batch_size, n_layers, n_hid_units)
+        init_model_parameters(self, graph_dataobj, grapharea_size, grapharea_matrix, vocabulary_df,
+                              include_globalnode_input, use_gold_lm, batch_size, n_layers, n_hid_units)
         init_common_architecture(self, embeddings_matrix, graph_dataobj)
 
         # -------------------- Senses' architecture --------------------

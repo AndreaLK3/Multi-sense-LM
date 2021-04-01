@@ -2,8 +2,7 @@ import Filesystem as F
 import Utils
 import pandas as pd
 import os
-import Models.DataLoading as DL
-import Models.TrainingSetup as T
+import Models.TrainingSetup as TS
 import VocabularyAndEmbeddings.ComputeEmbeddings as CE
 import Models.Variants.RNNs as RNNs
 import tables
@@ -25,28 +24,22 @@ def get_sense_from_idx(senseindices_db_c, sense_index):
         sense_name = None
     return sense_name
 
-def compute_MFS_for_corpus(vocab_sources_ls):
+def compute_MFS_for_corpus(vocab_sources_ls=[F.WT2, F.SEMCOR], sp_method=CE.Method.FASTTEXT):
     t0 = time()
 
     # Init
-    subfolder = "_".join(vocab_sources_ls)
-    graph_folder = os.path.join(F.FOLDER_GRAPH, subfolder)
-    inputdata_folder = os.path.join(F.FOLDER_INPUT, subfolder)
-    vocabulary_folder = os.path.join(F.FOLDER_VOCABULARY, subfolder)
-    corpus_folder = os.path.join(F.FOLDER_TEXT_CORPUSES, F.FOLDER_SENSELABELED)
+    graph_folder, inputdata_folder, vocabulary_folder = F.get_folders_graph_input_vocabulary(vocab_sources_ls, sp_method)
+    corpus_trainsplit_folder = os.path.join(F.CORPORA_LOCATIONS[F.SEMCOR], F.FOLDER_TRAIN)  # always the SLC corpus
     folders = (graph_folder, inputdata_folder, vocabulary_folder)
 
-    # More init, necessary objects
-    generator = SLC.read_split(os.path.join(corpus_folder, F.FOLDER_TRAIN))
+    generator = SLC.read_split(corpus_trainsplit_folder)
+    objects = TS.get_objects(vocab_sources_ls, sp_method, grapharea_size=32)
+    _, model_forDataLoading, _ = TS.setup_model(model_type=TS.ModelType.RNN, include_globalnode_input=0, use_gold_lm=False,
+            K=0, load_saved_model=False, sp_method=sp_method, context_method=None, C=0, dim_qkv=0, grapharea_size=32,
+            batch_size=1, vocab_sources_ls=vocab_sources_ls) # unused, needed only for the loading function
 
-    objects = T.get_objects(True, folders)
-    graph_dataobj, grapharea_size, grapharea_matrix, vocabulary_df, embeddings_matrix = objects
-    _model_forDataLoading = RNNs.RNN(graph_dataobj, grapharea_size, grapharea_matrix, vocabulary_df,
-                           embeddings_matrix, include_globalnode_input=False,
-                           batch_size=1 , n_layers=1, n_hid_units=1024)# unused, just needed for the loading function
-    datasets, _dataloaders = T.get_dataloaders(objects, True, corpus_folder, folders,
-                                              batch_size=1, seq_len=1, model_forDataLoading=_model_forDataLoading)
-    training_dataset = datasets[0]
+    training_dataset, _ = TS.setup_corpus(objects, corpus_trainsplit_folder, True, folders, batch_size=32, seq_len=35,
+                                          model_forDataLoading = model_forDataLoading)
 
     vocab_ls = training_dataset.vocab_df['word'].to_list().copy()
     lemm_words_x_senses_mat = np.zeros(shape=(len(vocab_ls), training_dataset.last_sense_idx))
@@ -59,7 +52,7 @@ def compute_MFS_for_corpus(vocab_sources_ls):
                                                      training_dataset.first_idx_dummySenses, slc_or_text=True)
         lemmatized_word = training_dataset.vocab_df.iloc[global_index]['lemmatized_form']
         lemmatized_idx = vocab_ls.index(lemmatized_word)
-        sense = get_sense_from_idx(training_dataset.senseindices_db_c, sense_index)
+        #sense = get_sense_from_idx(training_dataset.senseindices_db_c, sense_index)
         # logging.info(str((lemmatized_word, sense)))
         lemm_words_x_senses_mat[lemmatized_idx, sense_index] = lemm_words_x_senses_mat[global_index, sense_index]+1
 
@@ -85,7 +78,7 @@ def compute_MFS_for_corpus(vocab_sources_ls):
                       Utils.MOST_FREQUENT_SENSE + Utils.INDEX: Utils.HDF5_BASE_SIZE_512 / 4,
                       Utils.WORD: Utils.HDF5_BASE_SIZE_512 / 4,
                       Utils.MOST_FREQUENT_SENSE: Utils.HDF5_BASE_SIZE_512 / 4}
-    mfs_archive_fpath = os.path.join(F.FOLDER_TEXT_CORPUSES, F.SEMCOR, F.FOLDER_TRAIN, F.MOST_FREQ_SENSE_FILE)
+    mfs_archive_fpath = F.MOST_FREQ_SENSE_FPATH
     mfs_archive = pd.HDFStore(mfs_archive_fpath, mode='w')
     mfs_archive.append(key=Utils.MOST_FREQUENT_SENSE, value=mfs_df, min_itemsize=hdf5_min_itemsizes)
 

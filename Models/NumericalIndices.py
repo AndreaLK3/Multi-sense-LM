@@ -82,9 +82,7 @@ def convert_sense_to_idx(token_dict, globals_vocabulary_df, word_row_df, sensein
         else:
             sense_index = sense_index_queryresult[0]
     else:
-        if slc_or_text:
-            sense_index = get_missing_sense_label(lemmatized_form_index, grapharea_matrix, last_sense_idx, first_idx_dummySenses)
-        else: sense_index = -1
+        sense_index = get_missing_sense_label(lemmatized_form_index, grapharea_matrix, last_sense_idx, first_idx_dummySenses)
     return sense_index
 
 ### Internal function to: translate the word (and if present, the sense) into numerical indices.
