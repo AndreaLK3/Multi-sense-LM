@@ -68,7 +68,7 @@ class MFS(torch.nn.Module):
         if self.predict_senses:
 
             # ----- Find the k most likely globals, and retrieve their m.f.s -----
-            k_globals_indices = logits_globals.sort(descending=True).indices[:, 0:1] # self.K==1 here
+            k_globals_indices = predictions_globals.sort(descending=True).indices[:, 0:1] # self.K==1 here
             sample_k_indices_in_vocab_lls = k_globals_indices.tolist()
 
             words_mfs_ls = []

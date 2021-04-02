@@ -138,7 +138,8 @@ def get_vocabulary_df(corpora_names, lowercase, slc_min_count=2, txt_min_count=1
                 VocabUtils.eliminate_rare_words(txt_vocab_dict, txt_min_count)
 
         all_vocab_dict_0 = reunite_vocab_dicts(slc_vocab_dict, txt_vocab_dict)
-        all_vocab_dict = add_lemmatized_forms(all_vocab_dict_0)
+        all_vocab_dict_1 = add_lemmatized_forms(all_vocab_dict_0)
+        all_vocab_dict = add_lemmatized_forms(all_vocab_dict_1) # 2nd pass, to solve 2-step lemmas with non-standard sense denominations like "trappings"
 
         # 5) Moving the dictionary onto a dataframe
         frequencies = list(map(lambda tpl: tpl[0], all_vocab_dict.values()))

@@ -5,7 +5,7 @@ FOLDER_PCA = 'PCA' # subfolder of InputData
 
 FOLDER_VOCABULARY = 'VocabularyAndEmbeddings'
 
-FOLDER_TEXT_CORPUSES = 'TextCorpuses'
+FOLDER_TEXT_CORPORA = 'TextCorpora'
 FOLDER_SENSELABELED = "SenseLabeled"
 FOLDER_STANDARDTEXT = "StandardText"
 FOLDER_MYTESTS = "MyTests"
@@ -27,9 +27,9 @@ FOLDER_TEST= 'Test'
 WT2 = "WT2"
 WT103 = "WT103"
 SEMCOR = "SemCor"
-CORPORA_LOCATIONS = {WT2: os.path.join(FOLDER_TEXT_CORPUSES, FOLDER_STANDARDTEXT, FOLDER_WT2),
-                     WT103: os.path.join(FOLDER_TEXT_CORPUSES, FOLDER_STANDARDTEXT, FOLDER_WT103),
-                     SEMCOR: os.path.join(FOLDER_TEXT_CORPUSES, FOLDER_SENSELABELED, FOLDER_SEMCOR)
+CORPORA_LOCATIONS = {WT2: os.path.join(FOLDER_TEXT_CORPORA, FOLDER_STANDARDTEXT, FOLDER_WT2),
+                     WT103: os.path.join(FOLDER_TEXT_CORPORA, FOLDER_STANDARDTEXT, FOLDER_WT103),
+                     SEMCOR: os.path.join(FOLDER_TEXT_CORPORA, FOLDER_SENSELABELED, FOLDER_SEMCOR)
                      }
 
 FOLDER_GRAPH = "Graph"
@@ -56,7 +56,7 @@ PERPLEXITY_FILEEND = 'perplexity.npy'
 GRAPHAREA_FILE = 'graphArea_matrix.npz'
 
 MATRIX_SENSE_CONTEXTS_FILEEND = '_SenseContext.npy'
-MOST_FREQ_SENSE_FPATH = os.path.join(FOLDER_TEXT_CORPUSES, SEMCOR, FOLDER_TRAIN, "MostFrequentSense.h5")
+MOST_FREQ_SENSE_FPATH = os.path.join(FOLDER_TEXT_CORPORA, SEMCOR, FOLDER_TRAIN, "MostFrequentSense.h5")
 
 
 def get_folders_graph_input_vocabulary(vocab_sources_ls, sp_method):

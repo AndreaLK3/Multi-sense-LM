@@ -15,12 +15,25 @@ def get_senseneighbours_of_k_globals(model, sample_k_indices):
     sample_neighbours_section = (model.grapharea_matrix[sample_k_indices.cpu(), 0:32].todense()) -1
     sample_neighbours = sample_neighbours_section[sample_neighbours_section >= 0]
     sense_neighbours = sample_neighbours[sample_neighbours < model.last_idx_senses]
+
+    # fix for rare error (1 every several thousands of tokens), where we find no senses:
+    if torch.numel(sense_neighbours) == 0:
+        sense_neighbours = (torch.rand((1)) * model.last_idx_senses)
+        logging.info("Found 0 senses for word_idx=" + str(sample_k_indices) + ", using random")
+
     return sense_neighbours
 
+
 def subtract_probability_mass_from_selected(softmax_selected_senses, delta_to_subtract):
-    max_index_t = torch.argmax(softmax_selected_senses)
-    prev_max_value = softmax_selected_senses[max_index_t]
-    softmax_selected_senses[max_index_t].data = prev_max_value - delta_to_subtract
+    try:
+        max_index_t = torch.argmax(softmax_selected_senses)
+        prev_max_value = softmax_selected_senses[max_index_t]
+        softmax_selected_senses[max_index_t].data = prev_max_value - delta_to_subtract
+    except RuntimeError as e:
+        logging.info("softmax_selected_senses.shape=" + str(softmax_selected_senses.shape))
+        logging.info("delta_to_subtract=" + str(delta_to_subtract))
+        raise e
+
     return softmax_selected_senses
 
 # *****************************
@@ -45,7 +58,6 @@ class SelectK(torch.nn.Module):
 
         self.K = K
         self.grapharea_matrix_neighbours_section = self.grapharea_matrix[:, 0:self.grapharea_size]
-
 
         self.memory_hn_senses = Parameter(torch.zeros(size=(n_layers, batch_size, int(n_hid_units))),
                                           requires_grad=False)

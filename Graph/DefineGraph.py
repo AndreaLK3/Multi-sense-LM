@@ -193,6 +193,7 @@ def create_graph(vocabulary_sources, sp_method):
                                       num_relations=6)
 
     torch.save(graph, os.path.join(graph_folder, F.KBGRAPH_FILE))
+    logging.info("Graph saved at " + str( os.path.join(graph_folder, F.KBGRAPH_FILE)))
     return graph
 
 # Entry point function: try to load the graph, else create it if it does not exist

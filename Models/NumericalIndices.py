@@ -58,7 +58,7 @@ def convert_globalword_to_idx(token_dict, slc_or_text, globals_vocabulary_df):
 
 # Auxiliary function 2 for convert_tokendict_to_tpl: convert the sense into a numerical index
 def convert_sense_to_idx(token_dict, globals_vocabulary_df, word_row_df, senseindices_db_c, grapharea_matrix,
-                         last_sense_idx, first_idx_dummySenses, slc_or_text):
+                         last_sense_idx, first_idx_dummySenses):
     # we lemmatize to avoid flunking inflected forms, like "irregularities"
     lemmatized_form = word_row_df.lemmatized_form.values[0]
     lemmatized_form_row_df = globals_vocabulary_df[globals_vocabulary_df['word']==lemmatized_form]
@@ -66,19 +66,24 @@ def convert_sense_to_idx(token_dict, globals_vocabulary_df, word_row_df, sensein
 
     keys = token_dict.keys()
     sense_index_queryresult = None
+    # backup for senses that do not correspond to words in the vocabulary, e.g. "caparison.n.01"
+    # unk_dummySense = "<unk>.dummySense.01"
+    # unk_query = "SELECT vocab_index FROM indices_table " + "WHERE word_sense='" + unk_dummySense + "'"
+    # unk_dummySense_index = senseindices_db_c.execute(unk_query).fetchone()[0]
 
     if 'wn30_key' in keys:
 
         wn30_key = token_dict['wn30_key']
         wordnet_sense = try_to_get_wordnet_sense(wn30_key)
+        # logging.debug("token_dict['surface_form']:" + str(token_dict['surface_form']) + "wordnet_sense=" + str(wordnet_sense))
         if wordnet_sense is not None:
             try:
                 query = "SELECT vocab_index FROM indices_table " + "WHERE word_sense='" + wordnet_sense + "'"
                 sense_index_queryresult = senseindices_db_c.execute(query).fetchone()
-            except sqlite3.OperationalError :
+            except sqlite3.OperationalError:
                 logging.info("Error while attempting to execute query: " + query + " . Skipping sense")
         if sense_index_queryresult is None: # there was no sense-key, or we did not find the sense for the key
-            sense_index = get_missing_sense_label(lemmatized_form_index, grapharea_matrix, last_sense_idx, first_idx_dummySenses) # -1
+            sense_index = get_missing_sense_label(lemmatized_form_index, grapharea_matrix, last_sense_idx, first_idx_dummySenses)
         else:
             sense_index = sense_index_queryresult[0]
     else:
@@ -93,7 +98,7 @@ def convert_tokendict_to_tpl(token_dict, senseindices_db_c, vocab_df, grapharea_
     global_index, h5_word_row = convert_globalword_to_idx(token_dict, slc_or_text, vocab_df)
 
     sense_index = convert_sense_to_idx(token_dict, vocab_df, h5_word_row, senseindices_db_c, grapharea_matrix,
-                    last_sense_idx, first_idx_dummySenses, slc_or_text)
+                    last_sense_idx, first_idx_dummySenses)
 
     logging.debug('(global_index, sense_index)=' + str((global_index, sense_index)))
     return (global_index, sense_index)

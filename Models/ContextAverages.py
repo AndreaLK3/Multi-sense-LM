@@ -14,22 +14,18 @@ from collections import deque
 import logging
 import warnings
 
-def get_archives(subfolder):
+def get_archives(vocab_sources_ls, sp_method):
 
-    slc_or_text_corpus = True
+    graph_folder, inputdata_folder, vocab_folder = F.get_folders_graph_input_vocabulary(vocab_sources_ls, sp_method)
 
-    graph_folder = os.path.join(F.FOLDER_GRAPH, subfolder)
-    inputdata_folder = os.path.join(F.FOLDER_INPUT, subfolder)
-    vocabulary_folder = os.path.join(F.FOLDER_VOCABULARY, subfolder)
-
-    globals_vocabulary_fpath = os.path.join(vocabulary_folder, F.VOCABULARY_OF_GLOBALS_FILENAME)
+    globals_vocabulary_fpath = os.path.join(vocab_folder, "vocabulary.h5")
     vocab_df = pd.read_hdf(globals_vocabulary_fpath)
 
     senseindices_db_filepath = os.path.join(inputdata_folder, Utils.INDICES_TABLE_DB)
     senseindices_db = sqlite3.connect(senseindices_db_filepath)
     senseindices_db_c = senseindices_db.cursor()
 
-    graph_dataobj = DG.get_graph_dataobject(new=False, method=CE.Method.FASTTEXT, slc_corpus=slc_or_text_corpus)
+    graph_dataobj = DG.get_graph_dataobject(False, vocab_sources_ls, sp_method)
     grapharea_matrix = AD.get_grapharea_matrix(graph_dataobj, area_size=32, hops_in_area=1, graph_folder=graph_folder)
     E = DG.load_word_embeddings(inputdata_folder)
 
@@ -37,12 +33,10 @@ def get_archives(subfolder):
 
 
 
-def compute_sense_ctx_averages(num_prev_words):
+def compute_sense_ctx_averages(vocab_sources_ls, sp_method, num_prev_words):
     # --------- Log and reset ---------
-
-    slc_or_text_corpus = True
-    subfolder = F.FOLDER_SENSELABELED if slc_or_text_corpus else F.FOLDER_STANDARDTEXT
-    inputdata_folder = os.path.join(F.FOLDER_INPUT, subfolder)
+    Utils.init_logging("Compute_sense_ctx_averages.log")
+    graph_folder, inputdata_folder, vocab_folder = F.get_folders_graph_input_vocabulary(vocab_sources_ls, sp_method)
 
     output_fname = str(num_prev_words) + F.MATRIX_SENSE_CONTEXTS_FILEEND
     output_filepath = os.path.join(inputdata_folder, output_fname)
@@ -50,12 +44,12 @@ def compute_sense_ctx_averages(num_prev_words):
         os.remove(output_filepath)
 
     # --------- Preparation for reading the SLC corpus ---------
-    vocab_df, senseindices_db_c, grapharea_matrix, E = get_archives(subfolder)
+    vocab_df, senseindices_db_c, grapharea_matrix, E = get_archives(vocab_sources_ls, sp_method)
 
     last_sense_idx = senseindices_db_c.execute("SELECT COUNT(*) from indices_table").fetchone()[0]
-    first_idx_dummySenses = Utils.get_startpoint_dummySenses(slc_or_text_corpus)
+    first_idx_dummySenses = Utils.get_startpoint_dummySenses(inputdata_folder)
 
-    train_corpus_fpath = os.path.join(F.FOLDER_TEXT_CORPUSES, subfolder, F.FOLDER_TRAIN)
+    train_corpus_fpath = os.path.join(F.CORPORA_LOCATIONS[F.SEMCOR], F.FOLDER_TRAIN)
 
     # --------- Initializing the matrix that accumulates the context averages of sense occurrences, etc. ---------
     sense_ctx_avgs_A = np.zeros(shape=(last_sense_idx, E.shape[1]))
@@ -73,7 +67,7 @@ def compute_sense_ctx_averages(num_prev_words):
         try:
             current_token_tpl, next_token_tpl = \
                 NI.get_tokens_tpls(next_token_tpl, generator, senseindices_db_c, vocab_df, grapharea_matrix,
-                                   last_sense_idx, first_idx_dummySenses, slc_or_text_corpus)
+                                   last_sense_idx, first_idx_dummySenses, slc_or_text=True)
             global_idx, sense_idx = current_token_tpl
 
             global_embedding = E[global_idx]

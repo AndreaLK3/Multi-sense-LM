@@ -1,8 +1,7 @@
 import torch.nn.functional as tfunc
 from math import sqrt
 import torch
-from Models.Variants.Common import predict_globals_withGRU, init_model_parameters, init_common_architecture, \
-    get_input_signals, ContextMethod
+from Models.Variants.Common import predict_globals_withGRU, init_model_parameters, init_common_architecture, get_input_signals, ContextMethod, assign_one
 from Models.Variants.RNNSteps import reshape_memories, reshape_tensor, rnn_loop
 from torch.nn.parameter import Parameter
 import Utils
@@ -94,7 +93,7 @@ class ScoresLM(torch.nn.Module):
 
     # ---------------------------------------- Forward call ----------------------------------------
 
-    def forward(self, batchinput_tensor):  # given the batches, the current node is at index 0
+    def forward(self, batchinput_tensor, batch_labels):  # given the batches, the current node is at index 0
         CURRENT_DEVICE = 'cpu' if not (torch.cuda.is_available()) else 'cuda:' + str(torch.cuda.current_device())
 
         # -------------------- Init --------------------
@@ -137,8 +136,13 @@ class ScoresLM(torch.nn.Module):
 
         # ------------------- Globals ------------------
         seq_len = batch_input_signals.shape[0]
-        predictions_globals, logits_globals = predict_globals_withGRU(self, batch_input_signals, seq_len,
-                                                                      distributed_batch_size)
+        if not self.use_gold_lm:
+            predictions_globals, logits_globals = predict_globals_withGRU(self, batch_input_signals, seq_len,
+                                                                          distributed_batch_size)
+        else:
+            predictions_globals = assign_one(batch_labels[:, 0], seq_len, distributed_batch_size,
+                                             self.last_idx_globals - self.last_idx_senses, CURRENT_DEVICE)
+
         # ------------------- Senses -------------------
         if self.predict_senses:
 

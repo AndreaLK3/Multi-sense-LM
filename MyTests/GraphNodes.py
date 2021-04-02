@@ -56,7 +56,7 @@ def graph_nodes(vocab_sources_ls=(F.WT2, F.SEMCOR), sp_method=CE.Method.FASTTEXT
     num_nodes = len(graph_dataobj.node_types.tolist())
     last_indices_tpl = (last_idx_senses , last_idx_globals, last_idx_definitions)
     logging.info("last_idx_senses=" + str(last_idx_senses))
-    random_nodes = [64922, 99437] # + \
+    random_nodes = [6602 + last_idx_senses] # + \
                    #[random.randint(0, last_idx_senses) for _i in range(10)] + \
                    #[random.randint(last_idx_senses, last_idx_globals) for _i in range(10)] + \
                    #[random.randint(last_idx_globals, last_idx_definitions) for _i in range(5)] + \
@@ -87,7 +87,7 @@ def get_missing_sense(vocab_sources_ls=(F.WT2, F.SEMCOR), sp_method=CE.Method.FA
     grapharea_matrix = AD.get_grapharea_matrix(graph_dataobj, area_size=32, hops_in_area=1, graph_folder=graph_folder)
     #logging.info("last_idx_senses from graph=" + str(graph_dataobj.node_types.tolist().index(1)))
 
-    global_vocab_indices = [6620, 6621]
+    global_vocab_indices = [6602]
     for global_absolute_index in global_vocab_indices:
         logging.info(
         NI.get_missing_sense_label(global_absolute_index, grapharea_matrix, last_sense_idx, first_idx_dummySenses) )
