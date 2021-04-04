@@ -90,16 +90,25 @@ def time_measurement_with_msg(t0, t1, message):
     logging.info(message + ". Time elapsed=" + str(round(t1 - t0, 3)) + " s")
 
 
-def record_statistics(epoch_sumlosses_tpl, epoch_numsteps_tpl):
+def record_statistics(epoch_sumlosses_tpl, epoch_numsteps_tpl, correct_predictions_dict):
     sum_epoch_loss_global,sum_epoch_loss_sense = epoch_sumlosses_tpl
     epoch_step, num_steps_withsense = epoch_numsteps_tpl
     if num_steps_withsense==0: num_steps_withsense=1  # adjusting for when we do only standard LM
-
+    # loss
     epoch_loss_globals = sum_epoch_loss_global / epoch_step
     epoch_loss_senses = sum_epoch_loss_sense / num_steps_withsense
+    # accuracy, on globals, all senses and senses of polysemous words
+    globals_acc = round(correct_predictions_dict["correct_g"] / correct_predictions_dict["tot_g"],3)
+    senses_acc = round(correct_predictions_dict["correct_all_s"] / correct_predictions_dict["tot_all_s"],3)
+    senses_polysemouswords_acc = round( sum(list(correct_predictions_dict["correct_poly_s"].values())) / \
+        sum(list(correct_predictions_dict["tot_poly_s"].values())) , 3)
 
     logging.info("Perplexity: " + " Globals perplexity=" + str(round(exp(epoch_loss_globals),2)) +
-                 " \tPerplexity on all senses=" + str(round(exp(epoch_loss_senses),2)) + "\n-------")
+                 " \tPerplexity on all senses=" + str(round(exp(epoch_loss_senses),2)))
+    logging.info("Accuracy: " + " ; Globals accuracy=" + str(globals_acc) + " ; Senses accuracy=" + str(senses_acc)
+                 + " ; Senses accuracy, polysemous words=" + str(senses_polysemouswords_acc))
+    # it returns the accuracy measure that we use for early stop
+    return senses_acc
 
 ##########
 
@@ -158,13 +167,6 @@ def check_language(text, lang_id):
     if not possible_match:
         logging.info("Not of language : " + lang_id + " Element : '" + str(text) + "'")
     return possible_match
-
-
-### When we encounter UNK, reading in text for the Models, we skip it
-class MustSkipUNK_Exception(Exception):
-    def __init__(self):
-        super().__init__()
-
 
 # Utility for processing entities, word embeddings & co
 def count_tokens_in_corpus(corpus_txt_filepath, include_punctuation):

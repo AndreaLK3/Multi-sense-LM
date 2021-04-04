@@ -4,7 +4,7 @@ from Models.Variants.RNNSteps import rnn_loop, reshape_tensor
 import logging
 import Utils
 from Models.Variants.SelectK import get_senseneighbours_of_k_globals
-
+import numpy as np
 
 class MFS(torch.nn.Module):
 
@@ -14,7 +14,7 @@ class MFS(torch.nn.Module):
         # -------------------- Initialization in common: parameters & globals --------------------
         super(MFS, self).__init__()
         Common.init_model_parameters(self, graph_dataobj, grapharea_size, grapharea_matrix, vocabulary_df,
-                              include_globalnode_input,
+                              include_globalnode_input, use_gold_lm,
                               batch_size, n_layers, n_hid_units)
         Common.init_common_architecture(self, embeddings_matrix, graph_dataobj)
 
@@ -76,20 +76,18 @@ class MFS(torch.nn.Module):
                 k_globals_vocab_indices = sample_k_indices_in_vocab_lls[s]
                 k_globals_lemmatized = [self.vocabulary_lemmatizedList[idx] for idx in k_globals_vocab_indices] # 1 element
                 lemmatized_word = k_globals_lemmatized[0]
-                lemmatized_word_idx = Utils.word_to_vocab_index(lemmatized_word, self.vocabulary_wordList)
-                mfs_word_row = self.mfs_df.loc[self.mfs_df[Utils.WORD + Utils.INDEX] == lemmatized_word_idx]
+                mfs_word_row = self.mfs_df.loc[self.mfs_df[Utils.WORD] == lemmatized_word]
                 try:
-                    word_mfs_idx = mfs_word_row[Utils.MOST_FREQUENT_SENSE+Utils.INDEX].item()
-                except ValueError: # every token has a sense, but (not in the text corpus) --> (not among the MFS)
-                    sample_k_indices_lemmatized_ls = self.vocabulary_df[
-                        self.vocabulary_df['word'].isin(k_globals_lemmatized)].index.to_list()
-                    sample_k_indices_lemmatized = torch.tensor(sample_k_indices_lemmatized_ls).to(
-                        CURRENT_DEVICE).squeeze(dim=0) + self.last_idx_senses
-                    sense_neighbours_ls = get_senseneighbours_of_k_globals(model=self, sample_k_indices=sample_k_indices_lemmatized)
-                    word_mfs_idx = sense_neighbours_ls[0].item() # since it is a nparray
+                    word_mfs_idx = mfs_word_row["MostFrequentSenseindex"].values[0]
+                except IndexError: # dummySenses do not appear in the MFS table, and must be retrieved separately
+                    logging.debug("Did not find MFS for lemmatized_word=" + lemmatized_word)
+                    lemmatized_word_idx = self.last_idx_senses + self.vocabulary_wordList.index(lemmatized_word)
+                    senseneighbours_t = get_senseneighbours_of_k_globals(model=self, sample_k_indices=torch.tensor([lemmatized_word_idx]).to(torch.int64))
+                    word_mfs_idx = senseneighbours_t.tolist()[0][0]
                 words_mfs_ls.append(word_mfs_idx)
 
-            predictions_senses = Common.assign_one(words_mfs_ls, seq_len, distributed_batch_size, self.last_idx_senses, CURRENT_DEVICE)
+            words_mfs_t = torch.tensor(words_mfs_ls).reshape((seq_len, distributed_batch_size)).to(torch.torch.int64).to(CURRENT_DEVICE)
+            predictions_senses = Common.assign_one(words_mfs_t, seq_len, distributed_batch_size, self.last_idx_senses, CURRENT_DEVICE)
 
         else:
             predictions_senses = torch.tensor([0] * self.batch_size * seq_len).to(CURRENT_DEVICE)

@@ -79,7 +79,7 @@ def create_model(model_type, objects, use_gold_lm, include_globalnode_input, K, 
              use_gold_lm, include_globalnode_input, batch_size=32, n_layers=3, n_hid_units=1024, K=K,
                             num_C=C, context_method=context_method, dim_qkv=dim_qkv)
     elif model_type==ModelType.MFS:
-        mfs_df = pd.read_hdf(F.MOST_FREQ_SENSE_FPATH)
+        mfs_df = pd.read_hdf(F.MFS_H5_FPATH)
         model = MFS.MFS(graph_dataobj, grapharea_size, grapharea_matrix, vocabulary_df, embeddings_matrix,
                             use_gold_lm, include_globalnode_input, batch_size=32, n_layers=3, n_hid_units=1024, K=1, mfs_df=mfs_df)
     else:

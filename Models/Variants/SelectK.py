@@ -17,9 +17,9 @@ def get_senseneighbours_of_k_globals(model, sample_k_indices):
     sense_neighbours = sample_neighbours[sample_neighbours < model.last_idx_senses]
 
     # fix for rare error (1 every several thousands of tokens), where we find no senses:
-    if torch.numel(sense_neighbours) == 0:
-        sense_neighbours = (torch.rand((1)) * model.last_idx_senses)
-        logging.info("Found 0 senses for word_idx=" + str(sample_k_indices) + ", using random")
+    if sense_neighbours.size == 0:
+        sense_neighbours = (torch.rand((1)) * model.last_idx_senses).unsqueeze(0)
+        logging.debug("Found 0 senses for word_idx=" + str(sample_k_indices) + ", using random")
 
     return sense_neighbours
 

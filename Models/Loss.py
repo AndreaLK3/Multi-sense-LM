@@ -7,10 +7,8 @@ from Utils import DEVICE, get_timestamp_month_to_sec
 import VocabularyAndEmbeddings.ComputeEmbeddings as CE
 import Filesystem as F
 
-def write_doc_logging(train_dataloader, model, model_forParameters, learning_rate):
-    hyperparams_str = 'Model_date' + get_timestamp_month_to_sec() + '_batchPerSeqlen' + str(train_dataloader.batch_size) \
-                      + '_area' + str(model_forParameters.grapharea_size)\
-                      + '_lr' + str(learning_rate)
+def write_doc_logging(model, model_forParameters):
+    hyperparams_str = 'Model_' + model_forParameters.__class__.__name__ + '_date_' + get_timestamp_month_to_sec()
     logging.info("Hyperparameters: " + hyperparams_str)
     logging.info("Model:")
     logging.info(str(model))
@@ -48,9 +46,6 @@ def update_predictions_history_dict(predictions_history_dict, predictions_global
                                                          [batch_labels_polysenses_dict[threshold_key] != -1].shape[0]
             predictions_history_dict['tot_poly_s'][threshold_key] = predictions_history_dict['tot_poly_s'][
                                                                        threshold_key] + num_polysenses
-            # logging.info("threshold_key=" + str(threshold_key) +
-            #              " ; num_correct_polysenses=" + str(num_correct_polysenses) +
-            #              " ; num_polysenses=" + str(num_polysenses))
 
     logging.debug("updated_predictions_history_dict = " + str(predictions_history_dict))
     return

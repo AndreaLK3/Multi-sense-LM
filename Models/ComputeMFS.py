@@ -109,7 +109,7 @@ def compute_MFS_for_corpus(vocab_sources_ls=[F.WT2, F.SEMCOR], sp_method=CE.Meth
                       Utils.MOST_FREQUENT_SENSE + Utils.INDEX: Utils.HDF5_BASE_SIZE_512 / 4,
                       Utils.WORD: Utils.HDF5_BASE_SIZE_512 / 4,
                       Utils.MOST_FREQUENT_SENSE: Utils.HDF5_BASE_SIZE_512 / 4}
-    mfs_archive_fpath = F.MOST_FREQ_SENSE_FPATH
+    mfs_archive_fpath = os.path.join(F.MFS_H5_FPATH)
     mfs_archive = pd.HDFStore(mfs_archive_fpath, mode='w')
     mfs_archive.append(key=Utils.MOST_FREQUENT_SENSE, value=mfs_df, min_itemsize=hdf5_min_itemsizes)
 

@@ -55,9 +55,9 @@ PERPLEXITY_FILEEND = 'perplexity.npy'
 
 GRAPHAREA_FILE = 'graphArea_matrix.npz'
 
-MATRIX_SENSE_CONTEXTS_FILEEND = '_SenseContext.npy'
-MOST_FREQ_SENSE_FPATH = os.path.join(FOLDER_TEXT_CORPORA, SEMCOR, FOLDER_TRAIN, "MostFrequentSense.h5")
+MFS_H5_FPATH = os.path.join(FOLDER_TEXT_CORPORA, FOLDER_SENSELABELED, FOLDER_SEMCOR, FOLDER_TRAIN, "MostFrequentSense.h5")
 
+MATRIX_SENSE_CONTEXTS_FILEEND = '_SenseContext.npy'
 
 def get_folders_graph_input_vocabulary(vocab_sources_ls, sp_method):
     inputdata_folder = set_directory(os.path.join(FOLDER_INPUT, "_".join(vocab_sources_ls), sp_method.value))

@@ -21,5 +21,6 @@ runs/
 GraphNN/pyGAT
 .idea/
 __pycache__/
+TextCorpora/
 
 

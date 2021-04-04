@@ -27,7 +27,6 @@ def run_train(model, train_dataloader, valid_dataloader, learning_rate, num_epoc
               vocab_sources_ls=(F.WT2, F.SEMCOR), sp_method=CE.Method.FASTTEXT):
 
     # -------------------- Step 1: Setup model --------------------
-    Utils.init_logging('RunTrain' + Utils.get_timestamp_month_to_sec() + '.log', loglevel=logging.INFO)
     slc_or_text = train_dataloader.dataset.sensecorpus_or_text
 
     optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
@@ -38,13 +37,16 @@ def run_train(model, train_dataloader, valid_dataloader, learning_rate, num_epoc
 
     model_forParameters = model.module if torch.cuda.device_count() > 1 and model.__class__.__name__=="DataParallel" else model
     model_forParameters.predict_senses = predict_senses
-    hyperparams_str = Loss.write_doc_logging(train_dataloader, model, model_forParameters, learning_rate)
+    hyperparams_str = Loss.write_doc_logging(model, model_forParameters)
     try:
         logging.info("Using K=" + str(model_forParameters.K))
         logging.info("C=" + str(model_forParameters.num_C))
         logging.info("context_method=" + str(model_forParameters.context_method))
     except Exception:
         pass # no further hyperparameters were specified
+
+    Utils.init_logging('RunTrain_' + str(model_forParameters.__class__.__name__) + "_" + Utils.get_timestamp_month_to_sec() + '.log',
+                       loglevel=logging.INFO)
 
     # -------------------- Step 2: Setup flags --------------------
     steps_logging = 500
@@ -81,13 +83,13 @@ def run_train(model, train_dataloader, valid_dataloader, learning_rate, num_epoc
                     evaluation(valid_dataloader, valid_dataiter, model, slc_or_text, verbose)
 
                 # -------------- 3c) Check the validation accuracy & the need for early stopping --------------
-                if valid_accuracy_senses < best_valid_accuracy_senses and (epoch > 2):
+                if valid_accuracy_senses <= best_valid_accuracy_senses and (epoch > 2):
                     logging.info("Early stopping on senses.")
                     flag_earlystop = True
 
                 best_valid_loss_globals = min(best_valid_loss_globals, valid_loss_globals)
                 best_valid_loss_senses = min(best_valid_loss_senses, valid_loss_senses)
-                best_valid_accuracy_senses = min(best_valid_accuracy_senses, valid_accuracy_senses)
+                best_valid_accuracy_senses = max(best_valid_accuracy_senses, valid_accuracy_senses)
 
                 if flag_earlystop:
                     break
@@ -119,7 +121,8 @@ def run_train(model, train_dataloader, valid_dataloader, learning_rate, num_epoc
                 else:
                     loss = loss_global
 
-                loss.backward()
+                if loss.requires_grad: # to cover the gold_lm + MFS case, that has no gradient
+                    loss.backward()
 
                 optimizer.step()
                 overall_step = overall_step + 1
@@ -131,19 +134,20 @@ def run_train(model, train_dataloader, valid_dataloader, learning_rate, num_epoc
                 # end of an epoch.
 
             # -------------------- 3e) Computing training losses for the epoch--------------------
-            logging.info("-----\n Models, end of epoch " + str(epoch) + ". Global step n." + str(overall_step) +
+            logging.info("-----\n Training, end of epoch " + str(epoch) + ". Global step n." + str(overall_step) +
                          ". Time = " + str(round(time() - starting_time, 2)))
             logging.info("Models - Correct predictions / Total predictions:\n" + str(predictions_history_dict))
 
             epoch_sumlosses_tpl = sum_epoch_loss_global, sum_epoch_loss_senses
             epoch_numsteps_tpl = epoch_step, epoch_senselabeled_tokens
-            Utils.record_statistics(epoch_sumlosses_tpl, epoch_numsteps_tpl)
+            _senses_acc = Utils.record_statistics(epoch_sumlosses_tpl, epoch_numsteps_tpl, predictions_history_dict)
 
     except KeyboardInterrupt:
         logging.info("Models loop interrupted manually by keyboard")
 
     # --------------------- 4) Saving model --------------------
-    torch.save(model, os.path.join(F.FOLDER_MODELS, hyperparams_str + '_end.model'))
+    logging.info("Proceeding to save the model: " + model_forParameters.__class__.__name__ + ", timestamp: " + Utils.get_timestamp_month_to_sec())
+    torch.save(model, os.path.join(F.FOLDER_MODELS, F.FOLDER_SAVEDMODELS, hyperparams_str + '.model'))
 
 
 # ##########
@@ -194,11 +198,7 @@ def evaluation(evaluation_dataloader, evaluation_dataiter, model, slc_or_text, v
     logging.info("Evaluation - Correct predictions / Total predictions:\n" + str(eval_correct_predictions_dict))
     epoch_sumlosses_tpl = sum_eval_loss_globals, sum_eval_loss_senses
     epoch_numsteps_tpl = evaluation_step, evaluation_senselabeled_tokens
-    Utils.record_statistics(epoch_sumlosses_tpl, epoch_numsteps_tpl)
-
-    # ---- we need the sense accuracy / number of correct senses, for early-stopping
-    senses_acc = round(eval_correct_predictions_dict["correct_all_s"] / eval_correct_predictions_dict["tot_all_s"] ,2)
-    logging.info("Validation, accuracy on senses=" + str(senses_acc))
+    senses_acc = Utils.record_statistics(epoch_sumlosses_tpl, epoch_numsteps_tpl, eval_correct_predictions_dict)
 
     model.train()  # training can resume
 

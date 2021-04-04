@@ -52,7 +52,7 @@ def organize_subcorpus(xml_fpath, train_fraction):
     num_for_training = int(train_fraction * total)
     num_for_validation = (total - num_for_training) // 2
 
-    logging.info("Models dataset will contain: " + str(num_for_training) + " " + superelements_tag + "s , " +
+    logging.info("Training dataset will contain: " + str(num_for_training) + " " + superelements_tag + "s , " +
                  "Validation dataset will contain: " + str(num_for_validation) + " " + superelements_tag + "s , " +
                  "Test dataset will contain: " + str(
         total - num_for_training - num_for_validation) + " " + superelements_tag + "s")
