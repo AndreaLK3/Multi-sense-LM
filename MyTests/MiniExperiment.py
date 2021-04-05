@@ -9,11 +9,7 @@ import logging
 import os
 import Graph.Adjacencies as AD
 from Models.TrainingSetup import get_objects, setup_corpus, setup_model, ContextMethod, ModelType
-from Models.TrainingAndEvaluation import evaluation, init_accuracy_dict, run_train
-from Utils import DEVICE
-import Models.Loss as Loss
-import gc
-from math import inf, exp
+
 from time import time
 import VocabularyAndEmbeddings.ComputeEmbeddings as CE
 import Models.ExplorePredictions as EP

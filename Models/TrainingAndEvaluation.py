@@ -1,3 +1,5 @@
+import Graph.PolysemousWords
+import Models.Loss
 import Utils
 import logging
 import torch
@@ -33,7 +35,7 @@ def run_train(model, train_dataloader, valid_dataloader, learning_rate, num_epoc
     model.train()
 
     polysense_thresholds = (2,3,5,10,30)
-    polysense_globals_dict= AD.get_polysenseglobals_dict(vocab_sources_ls, sp_method, thresholds=polysense_thresholds)
+    polysense_globals_dict= Graph.PolysemousWords.get_polysenseglobals_dict(vocab_sources_ls, sp_method, thresholds=polysense_thresholds)
 
     model_forParameters = model.module if torch.cuda.device_count() > 1 and model.__class__.__name__=="DataParallel" else model
     model_forParameters.predict_senses = predict_senses
@@ -140,7 +142,7 @@ def run_train(model, train_dataloader, valid_dataloader, learning_rate, num_epoc
 
             epoch_sumlosses_tpl = sum_epoch_loss_global, sum_epoch_loss_senses
             epoch_numsteps_tpl = epoch_step, epoch_senselabeled_tokens
-            _senses_acc = Utils.record_statistics(epoch_sumlosses_tpl, epoch_numsteps_tpl, predictions_history_dict)
+            _senses_acc = Models.Loss.record_statistics(epoch_sumlosses_tpl, epoch_numsteps_tpl, predictions_history_dict)
 
     except KeyboardInterrupt:
         logging.info("Models loop interrupted manually by keyboard")
@@ -158,7 +160,7 @@ def evaluation(evaluation_dataloader, evaluation_dataiter, model, slc_or_text, v
     including_senses = model_forParameters.predict_senses
 
     polysense_thresholds = (2, 3, 5, 10, 30)
-    polysense_globals_dict = AD.get_polysenseglobals_dict(vocab_sources_ls, sp_method)
+    polysense_globals_dict = Graph.PolysemousWords.get_polysenseglobals_dict(vocab_sources_ls, sp_method)
 
     model.eval()  # do not train the model now
     sum_eval_loss_globals = 0
@@ -198,7 +200,7 @@ def evaluation(evaluation_dataloader, evaluation_dataiter, model, slc_or_text, v
     logging.info("Evaluation - Correct predictions / Total predictions:\n" + str(eval_correct_predictions_dict))
     epoch_sumlosses_tpl = sum_eval_loss_globals, sum_eval_loss_senses
     epoch_numsteps_tpl = evaluation_step, evaluation_senselabeled_tokens
-    senses_acc = Utils.record_statistics(epoch_sumlosses_tpl, epoch_numsteps_tpl, eval_correct_predictions_dict)
+    senses_acc = Models.Loss.record_statistics(epoch_sumlosses_tpl, epoch_numsteps_tpl, eval_correct_predictions_dict)
 
     model.train()  # training can resume
 

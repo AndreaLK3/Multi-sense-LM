@@ -18,18 +18,19 @@ from scipy import sparse
 import numpy as np
 from time import time
 
+# not updated for version 2
 def compute_MFS_for_corpus(vocabulary_sources_ls=[F.WT2, F.SEMCOR], sp_method=CE.Method.FASTTEXT):
     t0 = time()
     Utils.init_logging("Tests-compute_MFS_for_corpus.log")
     # Init
     corpus_folder = os.path.join(F.FOLDER_MINICORPORA, F.FOLDER_SENSELABELED)
-    graph_folder, input_folder, vocabulary_folder = F.get_folders_graph_input_vocabulary(vocabulary_sources_ls, sp_method)
+    folders = graph_folder, input_folder, vocabulary_folder = F.get_folders_graph_input_vocabulary(vocabulary_sources_ls, sp_method)
 
     # More init, necessary objects
     generator = SLC.read_split(os.path.join(corpus_folder, F.FOLDER_TRAIN))
 
     objects = T.get_objects(vocabulary_sources_ls, sp_method)
-    graph_dataobj, grapharea_size, grapharea_matrix, vocabulary_df, embeddings_matrix = objects
+    graph_dataobj, grapharea_size, grapharea_matrix, vocabulary_df, embeddings_matrix, inputdata_folder = objects
     _model_forDataLoading = RNNs.RNN(graph_dataobj, grapharea_size, grapharea_matrix, vocabulary_df,
                            embeddings_matrix, include_globalnode_input=False,
                            batch_size=1 , n_layers=1, n_hid_units=1024)# unused, just needed for the loading function

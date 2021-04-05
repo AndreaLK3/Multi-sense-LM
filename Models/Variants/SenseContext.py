@@ -41,14 +41,14 @@ def init_context_handling(model, context_method):
 
 class SenseContext(torch.nn.Module):
 
-    def __init__(self, graph_dataobj, grapharea_size, grapharea_matrix, vocabulary_df, embeddings_matrix,
-                 use_gold_lm, include_globalnode_input, batch_size, n_layers, n_hid_units, K, num_C, context_method):
+    def __init__(self, graph_dataobj, grapharea_size, grapharea_matrix, vocabulary_df, embeddings_matrix, use_gold_lm,
+                 include_globalnode_input, batch_size, n_layers, n_hid_units, K, num_C, context_method, inputdata_folder):
 
         # -------------------- Initialization in common: parameters & globals --------------------
         super(SenseContext, self).__init__()
 
         Common.init_model_parameters(self, graph_dataobj, grapharea_size, grapharea_matrix, vocabulary_df,
-                              include_globalnode_input,
+                              include_globalnode_input, use_gold_lm,
                               batch_size, n_layers, n_hid_units)
         Common.init_common_architecture(self, embeddings_matrix, graph_dataobj)
 
@@ -58,7 +58,7 @@ class SenseContext(torch.nn.Module):
         self.grapharea_matrix_neighbours_section = self.grapharea_matrix[:, 0:self.grapharea_size]
         self.num_C = num_C
 
-        precomputed_SC_filepath = os.path.join(F.FOLDER_INPUT, F.FOLDER_SENSELABELED, str(num_C) + F.MATRIX_SENSE_CONTEXTS_FILEEND)
+        precomputed_SC_filepath = os.path.join(inputdata_folder, str(num_C) + F.MATRIX_SENSE_CONTEXTS_FILEEND)
         senses_average_context_SC = np.load(precomputed_SC_filepath)
         self.SC = Parameter(torch.tensor(senses_average_context_SC), requires_grad=False)
         self.prev_word_embeddings = Parameter(torch.zeros((200, batch_size, self.E.shape[1])), requires_grad=False)

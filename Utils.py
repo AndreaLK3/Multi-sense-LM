@@ -4,17 +4,10 @@ import langid
 import nltk
 import string
 import re
-import subprocess
-import numpy as np
-import matplotlib
-matplotlib.use('Agg')
-import matplotlib.pyplot as plt
 import time
-from math import exp
 import torch
 import os
 import sqlite3
-import Utils
 
 ########## Constants ##########
 
@@ -89,63 +82,9 @@ def get_timestamp_month_to_sec():
 def time_measurement_with_msg(t0, t1, message):
     logging.info(message + ". Time elapsed=" + str(round(t1 - t0, 3)) + " s")
 
-
-def record_statistics(epoch_sumlosses_tpl, epoch_numsteps_tpl, correct_predictions_dict):
-    sum_epoch_loss_global,sum_epoch_loss_sense = epoch_sumlosses_tpl
-    epoch_step, num_steps_withsense = epoch_numsteps_tpl
-    if num_steps_withsense==0: num_steps_withsense=1  # adjusting for when we do only standard LM
-    # loss
-    epoch_loss_globals = sum_epoch_loss_global / epoch_step
-    epoch_loss_senses = sum_epoch_loss_sense / num_steps_withsense
-    # accuracy, on globals, all senses and senses of polysemous words
-    globals_acc = round(correct_predictions_dict["correct_g"] / correct_predictions_dict["tot_g"],3)
-    senses_acc = round(correct_predictions_dict["correct_all_s"] / correct_predictions_dict["tot_all_s"],3)
-    senses_polysemouswords_acc = round( sum(list(correct_predictions_dict["correct_poly_s"].values())) / \
-        sum(list(correct_predictions_dict["tot_poly_s"].values())) , 3)
-
-    logging.info("Perplexity: " + " Globals perplexity=" + str(round(exp(epoch_loss_globals),2)) +
-                 " \tPerplexity on all senses=" + str(round(exp(epoch_loss_senses),2)))
-    logging.info("Accuracy: " + " ; Globals accuracy=" + str(globals_acc) + " ; Senses accuracy=" + str(senses_acc)
-                 + " ; Senses accuracy, polysemous words=" + str(senses_polysemouswords_acc))
-    # it returns the accuracy measure that we use for early stop
-    return senses_acc
-
 ##########
 
-########## Graphics logging ##########
 
-def display_ygraph_from_nparray(data_y_array, axis_labels=None, label=None):
-
-    # data_y_array = np.load(npy_fpath, allow_pickle=True)
-    plt.plot(data_y_array, label=label, marker='.')
-    plt.xticks(range(0, int(len(data_y_array)) + 1, max(int(len(data_y_array))//20, 1)))##np.arange(len(data_y_array)), np.arange(1, len(data_y_array)+1))
-    plt.yticks(range(0, int(max(data_y_array)) + 1, max(int(max(data_y_array))//20, 1)))
-    plt.xlim((0, len(data_y_array)))
-    plt.ylim((0, max(data_y_array)))
-    plt.grid(b=True, color='lightgrey', linestyle='-', linewidth=0.5)
-    if axis_labels is not None:
-        plt.xlabel(axis_labels[0])
-        plt.ylabel(axis_labels[1])
-
-
-# For now, intended to be use with training_losses and validation_losses
-def display_xygraph_from_files(npy_fpaths_ls):
-    overall_max = 0
-    legend_labels = ['Models loss', 'Validation loss']
-    for i in range(len(npy_fpaths_ls)):
-        npy_fpath = npy_fpaths_ls[i]
-        xy_lts_array = np.load(npy_fpath, allow_pickle=True)
-        plt.plot(xy_lts_array.transpose()[0], xy_lts_array.transpose()[1], label = legend_labels[i])
-        array_max = max(xy_lts_array.transpose()[1])
-        overall_max = array_max if array_max > overall_max else overall_max
-    plt.ylim((0, overall_max))
-    ax = plt.axes()
-    ax.legend()
-
-
-
-
-##########
 
 ########## Other utilities ##########
 
@@ -168,43 +107,13 @@ def check_language(text, lang_id):
         logging.info("Not of language : " + lang_id + " Element : '" + str(text) + "'")
     return possible_match
 
-# Utility for processing entities, word embeddings & co
-def count_tokens_in_corpus(corpus_txt_filepath, include_punctuation):
-
-    file = open(corpus_txt_filepath, "r") # encoding="utf-8"
-    tot_tokens = 0
-
-    for i, line in enumerate(file):
-        if line == '':
-            break
-        # tokens_in_line = nltk.tokenize.word_tokenize(line)
-        line_noPuncts = re.sub('['+string.punctuation.replace('-', '')+']', ' ', line)
-        if not (include_punctuation):
-            the_line = line_noPuncts
-        else:
-            the_line = line
-        tokens_in_line = nltk.tokenize.word_tokenize(the_line)
-        tot_tokens = tot_tokens + len(tokens_in_line)
-
-        if i % 2000 == 0:
-            print("Reading in line n. : " + str(i) + ' ; number of tokens encountered: ' + str(tot_tokens))
-
-    file.close()
-
-    return tot_tokens
-
-
 
 def word_to_vocab_index(word, vocabulary_wordList):
-
     try:
         return vocabulary_wordList.index(word)
     except ValueError:
         return vocabulary_wordList.index(UNK_TOKEN)
 
-def close_list_of_files(files_ls):
-    for file in files_ls:
-        file.close()
 
 ### Selecting from a HDF5 archive, and dealing with the possible syntax errors
 ### e.g.: where word == and, or ==''s ' or =='\'
@@ -248,34 +157,11 @@ def get_locations_of_char(word, char):
             locations.append(i)
     return locations
 
-
-
-##### Check GPU memory usage
-def get_gpu_memory_map():
-    """Get the current gpu usage.
-
-    Returns
-    -------
-    usage: dict
-        Keys are device ids as integers.
-        Values are memory usage as integers in MB.
-    """
-    result = subprocess.check_output(
-      [
-        'nvidia-smi', '--query-gpu=memory.used',
-        '--format=csv,nounits,noheader'
-      ], encoding='utf-8')
-    # Convert lines into a dictionary
-    gpu_memory = [int(x) for x in result.strip().split('\n')]
-    gpu_memory_map = dict(zip(range(len(gpu_memory)), gpu_memory))
-    return gpu_memory_map
-
-
 # Read the indices_table.sql, in order to determine the start of the dummmySenses.
 def get_startpoint_dummySenses(inputdata_folder):
     counter = 0
 
-    db_filepath = os.path.join(inputdata_folder, Utils.INDICES_TABLE_DB)
+    db_filepath = os.path.join(inputdata_folder, INDICES_TABLE_DB)
     indicesTable_db = sqlite3.connect(db_filepath)
     indicesTable_db_c = indicesTable_db.cursor()
     indicesTable_db_c.execute("SELECT * FROM indices_table")
@@ -297,3 +183,5 @@ def compute_startpoint_dummySenses(graph_dataobj):
     num_dummySenses = len_senses - len_defs
     startpoint_dummySenses = len_senses - num_dummySenses
     return startpoint_dummySenses
+
+

@@ -1,4 +1,6 @@
 import torch
+
+import Graph.PolysemousWords
 import Utils
 import Filesystem as F
 import logging
@@ -54,15 +56,15 @@ def get_objects(vocab_sources_ls, sp_method=CE.Method.FASTTEXT, grapharea_size=3
 
     vocabulary_numSensesList = vocabulary_df['num_senses'].to_list().copy()
     if all([num_senses == -1 for num_senses in vocabulary_numSensesList]):
-        vocabulary_df = AD.compute_globals_numsenses(graph_dataobj, grapharea_matrix, grapharea_size,
-                                                     inputdata_folder, globals_vocabulary_fpath)
+        vocabulary_df = Graph.PolysemousWords.compute_globals_numsenses(graph_dataobj, grapharea_matrix, grapharea_size,
+                                                                        inputdata_folder, globals_vocabulary_fpath)
 
-    return graph_dataobj, grapharea_size, grapharea_matrix, vocabulary_df, embeddings_matrix
+    return graph_dataobj, grapharea_size, grapharea_matrix, vocabulary_df, embeddings_matrix, inputdata_folder
 
 
 # ---------- Step 2, auxiliary function: create the model, of the type we specify ----------
 def create_model(model_type, objects, use_gold_lm, include_globalnode_input, K, context_method, C, dim_qkv):
-    graph_dataobj, grapharea_size, grapharea_matrix, vocabulary_df, embeddings_matrix = objects
+    graph_dataobj, grapharea_size, grapharea_matrix, vocabulary_df, embeddings_matrix, inputdata_folder = objects
     if model_type==ModelType.RNN:
         model = RNNs.RNN(graph_dataobj, grapharea_size, grapharea_matrix, vocabulary_df,
                            embeddings_matrix, include_globalnode_input, use_gold_lm,
@@ -73,7 +75,7 @@ def create_model(model_type, objects, use_gold_lm, include_globalnode_input, K, 
     elif model_type==ModelType.SC:
         model = SC.SenseContext(graph_dataobj, grapharea_size, grapharea_matrix, vocabulary_df,
                                 embeddings_matrix, use_gold_lm, include_globalnode_input, batch_size=32, n_layers=3,
-                                n_hid_units=1024, K=K, num_C=C, context_method=context_method)
+                                n_hid_units=1024, K=K, num_C=C, context_method=context_method, inputdata_folder=inputdata_folder)
     elif model_type==ModelType.SELFATT:
         model = SA.ScoresLM(graph_dataobj, grapharea_size, grapharea_matrix, vocabulary_df, embeddings_matrix,
              use_gold_lm, include_globalnode_input, batch_size=32, n_layers=3, n_hid_units=1024, K=K,
@@ -93,8 +95,8 @@ def setup_model(model_type, include_globalnode_input, use_gold_lm, K,
                 dim_qkv, grapharea_size, batch_size, vocab_sources_ls, random_seed=1):
 
     # -------------------- 1: Setting up the graph, grapharea_matrix and vocabulary --------------------
-    graph_dataobj, grapharea_size, grapharea_matrix, vocabulary_df, embeddings_matrix = get_objects(vocab_sources_ls, sp_method, grapharea_size)
-    objects = graph_dataobj, grapharea_size, grapharea_matrix, vocabulary_df, embeddings_matrix
+    objects = graph_dataobj, grapharea_size, grapharea_matrix, vocabulary_df, embeddings_matrix, inputadata_folder = \
+        get_objects(vocab_sources_ls, sp_method, grapharea_size)
 
     # -------------------- 2: Loading / creating the model --------------------
     if random_seed != 0:
@@ -128,7 +130,7 @@ def setup_model(model_type, include_globalnode_input, use_gold_lm, K,
 # ---------- Step 3: Creating the DataLoaders for training, validation and test datasets ----------
 # Auxiliary function: get dataset and dataloader on a corpus, specifying filepath and type (slc vs. text)
 def setup_corpus(objects, corpus_location, slc_or_text, gr_in_voc_folders, batch_size, seq_len, model_forDataLoading):
-    graph_dataobj, grapharea_size, grapharea_matrix, vocabulary_df, embeddings_matrix = objects
+    graph_dataobj, grapharea_size, grapharea_matrix, vocabulary_df, embeddings_matrix, inputdata_folder = objects
     graph_folder, inputdata_folder, vocabulary_folder = gr_in_voc_folders
 
     bptt_collator = DL.BPTTBatchCollator(grapharea_size, seq_len)

@@ -1,4 +1,6 @@
 import logging
+from math import exp
+
 import numpy as np
 import torch
 from torch.nn import functional as tfunc
@@ -6,6 +8,8 @@ from Models import ExplorePredictions as EP
 from Utils import DEVICE, get_timestamp_month_to_sec
 import VocabularyAndEmbeddings.ComputeEmbeddings as CE
 import Filesystem as F
+
+##### For logging #####
 
 def write_doc_logging(model, model_forParameters):
     hyperparams_str = 'Model_' + model_forParameters.__class__.__name__ + '_date_' + get_timestamp_month_to_sec()
@@ -21,6 +25,28 @@ def write_doc_logging(model, model_forParameters):
     logging.info("Number of trainable parameters=" + str(params))
     return hyperparams_str
 
+def record_statistics(epoch_sumlosses_tpl, epoch_numsteps_tpl, correct_predictions_dict):
+    sum_epoch_loss_global,sum_epoch_loss_sense = epoch_sumlosses_tpl
+    epoch_step, num_steps_withsense = epoch_numsteps_tpl
+    if num_steps_withsense==0: num_steps_withsense=1  # adjusting for when we do only standard LM
+    # loss
+    epoch_loss_globals = sum_epoch_loss_global / epoch_step
+    epoch_loss_senses = sum_epoch_loss_sense / num_steps_withsense
+    # accuracy, on globals, all senses and senses of polysemous words
+    globals_acc = round(correct_predictions_dict["correct_g"] / correct_predictions_dict["tot_g"],3)
+    senses_acc = round(correct_predictions_dict["correct_all_s"] / correct_predictions_dict["tot_all_s"],3)
+    senses_polysemouswords_acc = round( sum(list(correct_predictions_dict["correct_poly_s"].values())) / \
+        sum(list(correct_predictions_dict["tot_poly_s"].values())) , 3)
+
+    logging.info("Perplexity: " + " Globals perplexity=" + str(round(exp(epoch_loss_globals),2)) +
+                 " \tPerplexity on all senses=" + str(round(exp(epoch_loss_senses),2)))
+    logging.info("Accuracy: " + " ; Globals accuracy=" + str(globals_acc) + " ; Senses accuracy=" + str(senses_acc)
+                 + " ; Senses accuracy, polysemous words=" + str(senses_polysemouswords_acc))
+    # it returns the accuracy measure that we use for early stop
+    return senses_acc
+
+
+##### The dictionary keeping track of the accuracy, on globals and senses #####
 
 def update_predictions_history_dict(predictions_history_dict, predictions_globals, predictions_senses,
                                     batch_labels_globals, batch_labels_all_senses, batch_labels_polysenses_dict):
@@ -72,6 +98,9 @@ def organize_polysense_labels(batch_labels_globals, batch_labels_senses, polysen
         batch_labels_polysenses_dict[threshold_key] = torch.tensor(labels_ls).to(DEVICE)
 
     return batch_labels_polysenses_dict
+
+
+##### Core function: invoke the model, get and organize loss #####
 
 def compute_model_loss(model, batch_input, batch_labels, correct_preds_dict, polysense_globals_dict,
                        vocab_sources_ls=[F.WT2, F.SEMCOR], sp_method=CE.Method.FASTTEXT, verbose=False):
