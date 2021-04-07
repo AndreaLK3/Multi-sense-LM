@@ -1,15 +1,12 @@
 from enum import Enum
-
 import torch
 from torch.nn import functional as tfunc
 from torch.nn.parameter import Parameter
-
 from Graph.Adjacencies import lemmatize_node
 from Utils import DEVICE
 import Utils
 from torch_geometric.nn import GATConv
 from Models.Variants.RNNSteps import rnn_loop
-
 
 #########################
 ##### 1: Model steps ####

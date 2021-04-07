@@ -1,9 +1,11 @@
 import argparse
-import Models.TrainingSetup as T
+import Models.TrainingSetup as TS
+import Models.TrainingAndEvaluation as TE
 import torch
 from time import time
 import Utils
 import VocabularyAndEmbeddings.ComputeEmbeddings as CE
+import Filesystem as F
 
 def parse_arguments():
     parser = argparse.ArgumentParser(description='Creating a model, training it on the sense-labeled corpus.')
@@ -21,6 +23,8 @@ def parse_arguments():
                         choices=['no', 'concat', 'replace'],
                         help='Whether to use the GNN input from the dictionary graph alongside the pre-trained word'
                              ' embeddings.')
+    parser.add_argument('--sp_method', type=str, default='fasttext', choices=['fasttext', 'transformer'],
+                        help="Which method is used to create the single-prototype embeddings: FastText or Transformer")
 
     # Optional parameters that are method-specific
     parser.add_argument('--K', type=int, default=1,
@@ -41,15 +45,15 @@ def parse_arguments():
 def convert_arguments_into_parameters(arguments):
     parameters = dict()
     if arguments.model_type == 'rnn':
-        parameters["model_type"] = T.ModelType.RNN
+        parameters["model_type"] = TS.ModelType.RNN
     elif arguments.model_type == 'selectk':
-        parameters["model_type"] = T.ModelType.SELECTK
+        parameters["model_type"] = TS.ModelType.SELECTK
     elif arguments.model_type == 'mfs':
-        parameters["model_type"] = T.ModelType.MFS
+        parameters["model_type"] = TS.ModelType.MFS
     elif arguments.model_type == 'sensecontext':
-        parameters["model_type"] = T.ModelType.SC
+        parameters["model_type"] = TS.ModelType.SC
     elif arguments.model_type == 'selfatt':
-        parameters["model_type"] = T.ModelType.SELFATT
+        parameters["model_type"] = TS.ModelType.SELFATT
 
     if arguments.use_graph_input == 'no':
         parameters["include_globalnode_input"] = 0
@@ -59,9 +63,9 @@ def convert_arguments_into_parameters(arguments):
         parameters["include_globalnode_input"] = 2
 
     if arguments.context_method == 0:
-        parameters["context_method"] = T.ContextMethod.AVERAGE
+        parameters["context_method"] = TS.ContextMethod.AVERAGE
     elif arguments.context_method == 1:
-        parameters["context_method"] = T.ContextMethod.GRU
+        parameters["context_method"] = TS.ContextMethod.GRU
 
     return parameters
 
@@ -71,17 +75,25 @@ parameters = convert_arguments_into_parameters(args)
 
 t0 = time()
 
-model, datasets, dataloaders = T.setup_train(
-        slc_or_text_corpus=True,
-        model_type = parameters["model_type"],
-        K=args.K,
-        C=args.C,
-        context_method=parameters["context_method"],
-        dim_qkv=args.dim_qkv,
-        include_globalnode_input=parameters["include_globalnode_input"],
-        load_saved_model=False,
-        batch_size=32, sequence_length=35,
-        sp_method=CE.Method.FASTTEXT,
-        grapharea_size=32, random_seed=0)
-T.run_train(model, dataloaders, learning_rate=args.learning_rate, num_epochs=args.num_epochs)
+model, train_dataloader, valid_dataloader = TS.setup_training_on_corpus(F.WT2,
+  premade_model=None, model_type=parameters["model_type"],
+  include_globalnode_input=parameters["include_globalnode_input"], use_gold_lm=False, K=args.K,
+  sp_method=CE.Method.FASTTEXT, context_method=parameters["context_method"], C=args.C,
+  dim_qkv=args.dim_qkv, grapharea_size=32, batch_size=32, seq_len=35,
+  vocab_sources_ls=(F.WT2, F.SEMCOR), random_seed=1)
+
+pretrained_model = TE.run_train(model, train_dataloader, valid_dataloader,
+  learning_rate=args.learning_rate, num_epochs=args.num_epochs, predict_senses=False, # pre-training on WT2
+  vocab_sources_ls=(F.WT2, F.SEMCOR), sp_method=CE.Method.FASTTEXT)
+
+_, train_dataloader, valid_dataloader = TS.setup_training_on_corpus(F.SEMCOR,
+  premade_model=pretrained_model)
+
+final_model = TE.run_train(model, train_dataloader, valid_dataloader,
+  learning_rate=args.learning_rate, num_epochs=args.num_epochs, predict_senses=True, # on SemCor
+  vocab_sources_ls=(F.WT2, F.SEMCOR), sp_method=CE.Method.FASTTEXT)
+
+# We also need to evaluate the model in question on SemCor's test set and on Raganato's SensEval benchmark,
+# but if the model has been saved that can be done later
+
 t1 = time() ; Utils.time_measurement_with_msg(t0, t1, "Trained model")

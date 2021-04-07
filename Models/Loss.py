@@ -12,7 +12,7 @@ import Filesystem as F
 ##### For logging #####
 
 def write_doc_logging(model, model_forParameters):
-    hyperparams_str = 'Model_' + model_forParameters.__class__.__name__ + '_date_' + get_timestamp_month_to_sec()
+    hyperparams_str = model_forParameters.__class__.__name__ + '_date_' + get_timestamp_month_to_sec()
     logging.info("Hyperparameters: " + hyperparams_str)
     logging.info("Model:")
     logging.info(str(model))
@@ -34,9 +34,9 @@ def record_statistics(epoch_sumlosses_tpl, epoch_numsteps_tpl, correct_predictio
     epoch_loss_senses = sum_epoch_loss_sense / num_steps_withsense
     # accuracy, on globals, all senses and senses of polysemous words
     globals_acc = round(correct_predictions_dict["correct_g"] / correct_predictions_dict["tot_g"],3)
-    senses_acc = round(correct_predictions_dict["correct_all_s"] / correct_predictions_dict["tot_all_s"],3)
+    senses_acc = round(correct_predictions_dict["correct_all_s"] / max(correct_predictions_dict["tot_all_s"], 1), 3)
     senses_polysemouswords_acc = round( sum(list(correct_predictions_dict["correct_poly_s"].values())) / \
-        sum(list(correct_predictions_dict["tot_poly_s"].values())) , 3)
+        max(sum(list(correct_predictions_dict["tot_poly_s"].values())), 1) , 3)
 
     logging.info("Perplexity: " + " Globals perplexity=" + str(round(exp(epoch_loss_globals),2)) +
                  " \tPerplexity on all senses=" + str(round(exp(epoch_loss_senses),2)))

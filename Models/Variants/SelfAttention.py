@@ -63,7 +63,7 @@ class ScoresLM(torch.nn.Module):
 
     def __init__(self, graph_dataobj, grapharea_size, grapharea_matrix, vocabulary_df, embeddings_matrix,
                  use_gold_lm, include_globalnode_input, batch_size, n_layers, n_hid_units, K, num_C, context_method,
-                 dim_qkv):
+                 dim_qkv, inputdata_folder):
 
         # -------------------- Initialization in common: parameters & globals --------------------
         super(ScoresLM, self).__init__()
@@ -79,8 +79,7 @@ class ScoresLM(torch.nn.Module):
         self.grapharea_matrix_neighbours_section = self.grapharea_matrix[:, 0:self.grapharea_size]
         self.num_C = num_C
 
-        precomputed_SC_filepath = os.path.join(F.FOLDER_INPUT, F.FOLDER_SENSELABELED,
-                                               str(num_C) + F.MATRIX_SENSE_CONTEXTS_FILEEND)
+        precomputed_SC_filepath = os.path.join(inputdata_folder, str(num_C) + F.MATRIX_SENSE_CONTEXTS_FILEEND)
         senses_average_context_SC = np.load(precomputed_SC_filepath)
         self.SC = Parameter(torch.tensor(senses_average_context_SC, dtype=torch.float32), requires_grad=False)
         self.prev_word_embeddings = Parameter(torch.zeros((200, batch_size, self.SC.shape[1])), requires_grad=False)
@@ -147,7 +146,7 @@ class ScoresLM(torch.nn.Module):
         if self.predict_senses:
 
             # --------- Select the senses of the k most likely globals ---------
-            k_globals_indices = logits_globals.sort(descending=True).indices[:, 0:self.K]
+            k_globals_indices = predictions_globals.sort(descending=True).indices[:, 0:self.K]
             sample_k_indices_in_vocab_lls = k_globals_indices.tolist()
 
             all_sense_neighbours_ls = []

@@ -79,7 +79,7 @@ def create_model(model_type, objects, use_gold_lm, include_globalnode_input, K, 
     elif model_type==ModelType.SELFATT:
         model = SA.ScoresLM(graph_dataobj, grapharea_size, grapharea_matrix, vocabulary_df, embeddings_matrix,
              use_gold_lm, include_globalnode_input, batch_size=32, n_layers=3, n_hid_units=1024, K=K,
-                            num_C=C, context_method=context_method, dim_qkv=dim_qkv)
+                            num_C=C, context_method=context_method, dim_qkv=dim_qkv, inputdata_folder=inputdata_folder)
     elif model_type==ModelType.MFS:
         mfs_df = pd.read_hdf(F.MFS_H5_FPATH)
         model = MFS.MFS(graph_dataobj, grapharea_size, grapharea_matrix, vocabulary_df, embeddings_matrix,
@@ -91,8 +91,8 @@ def create_model(model_type, objects, use_gold_lm, include_globalnode_input, K, 
 
 # ---------- Step 2: locating the necessary folders, creating the model, moving it on GPU if needed
 def setup_model(model_type, include_globalnode_input, use_gold_lm, K,
-                load_saved_model, sp_method, context_method, C,
-                dim_qkv, grapharea_size, batch_size, vocab_sources_ls, random_seed=1):
+                vocab_sources_ls, sp_method, context_method, C,dim_qkv, grapharea_size, batch_size,
+                premade_model=None, random_seed=1):
 
     # -------------------- 1: Setting up the graph, grapharea_matrix and vocabulary --------------------
     objects = graph_dataobj, grapharea_size, grapharea_matrix, vocabulary_df, embeddings_matrix, inputadata_folder = \
@@ -103,25 +103,27 @@ def setup_model(model_type, include_globalnode_input, use_gold_lm, K,
         torch.manual_seed(random_seed) # for reproducibility while conducting experiments
         if torch.cuda.is_available():
             torch.cuda.manual_seed_all(random_seed)
-    if load_saved_model: # allows to load a model pre-trained on another dataset. Was not used for the paper results.
-        model = load_model_from_file(model_type)
-    else:
-
+    if premade_model is None:
         model = create_model(model_type, objects, use_gold_lm, include_globalnode_input, K, context_method, C, dim_qkv)
+    else:
+        model = premade_model
 
     # -------------------- 3: Moving objects on GPU --------------------
     logging.info("Graph-data object loaded, model initialized. Moving them to GPU device(s) if present.")
 
-    n_gpu = torch.cuda.device_count()
-    if n_gpu > 1:
-        logging.info("Using " + str(n_gpu) + " GPUs")
-        model = torch.nn.DataParallel(model, dim=0)
+    if model.__class__.__name__ == "DataParallel": # when operating on the previous corpus, we already used 2 GPUs
         model_forDataLoading = model.module
-        batch_size = n_gpu if batch_size is None else (batch_size + batch_size % n_gpu)
-        # if not specified, default batch_size = n. GPUs. use_gold_lm needs batch_size % n_gpu == 0 to work correctly
-    else:
-        model_forDataLoading = model
-        batch_size = 1 if batch_size is None else batch_size
+        batch_size = model_forDataLoading.batch_size
+    else: # new model, or not DataParallel
+        n_gpu = torch.cuda.device_count()
+        if n_gpu > 1:
+            logging.info("Using " + str(n_gpu) + " GPUs")
+            model = torch.nn.DataParallel(model, dim=0)
+            model_forDataLoading = model.module
+            batch_size = n_gpu if batch_size is None else batch_size  # if not specified, default batch_size = n. GPUs
+        else: # not Dataparallel, e.g. when creating a new model on 1 GPU
+            model_forDataLoading = model
+            batch_size = 1 if batch_size is None else batch_size
     model.to(DEVICE)
 
     return model, model_forDataLoading, batch_size
@@ -142,26 +144,30 @@ def setup_corpus(objects, corpus_location, slc_or_text, gr_in_voc_folders, batch
     return dataset, dataloader
 
 ################
+# Entry function: get model, dataset and dataloader, from one of the corpora: SemCor (SLC) or WT-2 (text)
 
-def setup_training_on_semcor(model_type, include_globalnode_input, use_gold_lm, K,
-                load_saved_model=False, sp_method=CE.Method.FASTTEXT, context_method=ContextMethod.AVERAGE, C=0,
+def setup_training_on_corpus(corpus_name, premade_model=None, model_type=None, include_globalnode_input=0, use_gold_lm=False, K=1,
+                sp_method=CE.Method.FASTTEXT, context_method=ContextMethod.AVERAGE, C=20,
                 dim_qkv=300, grapharea_size=32, batch_size=32, seq_len=35, vocab_sources_ls=(F.WT2, F.SEMCOR), random_seed=1):
-    gr_in_voc_folders = F.get_folders_graph_input_vocabulary(vocab_sources_ls, sp_method)
 
+    gr_in_voc_folders = F.get_folders_graph_input_vocabulary(vocab_sources_ls, sp_method)
     objects = get_objects(vocab_sources_ls, sp_method, grapharea_size)
-    # objects == graph_dataobj, grapharea_size, grapharea_matrix, vocabulary_df, embeddings_matrix
 
     model, model_forDataLoading, batch_size = setup_model(model_type, include_globalnode_input, use_gold_lm, K,
-                                                                load_saved_model, sp_method, context_method, C,
-                                            dim_qkv, grapharea_size, batch_size, vocab_sources_ls, random_seed)
+        vocab_sources_ls, sp_method, context_method, C, dim_qkv, grapharea_size, batch_size, premade_model, random_seed)
 
-    semcor_train_fpath = os.path.join(F.CORPORA_LOCATIONS[F.SEMCOR], F.FOLDER_TRAIN)
-    semcor_valid_fpath = os.path.join(F.CORPORA_LOCATIONS[F.SEMCOR], F.FOLDER_VALIDATION)
+    if corpus_name == F.WT2:
+        corpus_train_fpath = os.path.join(F.CORPORA_LOCATIONS[F.WT2], F.WT_TRAIN_FILE)
+        corpus_valid_fpath = os.path.join(F.CORPORA_LOCATIONS[F.WT2], F.WT_VALID_FILE)
+        slc_or_text=False
+    elif corpus_name == F.SEMCOR:
+        corpus_train_fpath = os.path.join(F.CORPORA_LOCATIONS[F.SEMCOR], F.FOLDER_TRAIN)
+        corpus_valid_fpath = os.path.join(F.CORPORA_LOCATIONS[F.SEMCOR], F.FOLDER_VALIDATION)
+        slc_or_text = True
 
-    train_dataset, train_dataloader = setup_corpus(objects, semcor_train_fpath, True, gr_in_voc_folders,
+    train_dataset, train_dataloader = setup_corpus(objects, corpus_train_fpath, slc_or_text, gr_in_voc_folders,
                                                    batch_size, seq_len, model_forDataLoading)
-    valid_dataset, valid_dataloader = setup_corpus(objects, semcor_valid_fpath, True, gr_in_voc_folders,
+    valid_dataset, valid_dataloader = setup_corpus(objects, corpus_valid_fpath, slc_or_text, gr_in_voc_folders,
                                                    batch_size, seq_len, model_forDataLoading)
+
     return model, train_dataloader, valid_dataloader
-
-

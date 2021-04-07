@@ -39,16 +39,16 @@ def run_train(model, train_dataloader, valid_dataloader, learning_rate, num_epoc
 
     model_forParameters = model.module if torch.cuda.device_count() > 1 and model.__class__.__name__=="DataParallel" else model
     model_forParameters.predict_senses = predict_senses
-    hyperparams_str = Loss.write_doc_logging(model, model_forParameters)
+
+    Utils.init_logging('Exp_' + str(model_forParameters.__class__.__name__) + "_" + Utils.get_timestamp_month_to_sec() + '.log',
+                       loglevel=logging.INFO)
     try:
         logging.info("Using K=" + str(model_forParameters.K))
         logging.info("C=" + str(model_forParameters.num_C))
         logging.info("context_method=" + str(model_forParameters.context_method))
     except Exception:
         pass # no further hyperparameters were specified
-
-    Utils.init_logging('RunTrain_' + str(model_forParameters.__class__.__name__) + "_" + Utils.get_timestamp_month_to_sec() + '.log',
-                       loglevel=logging.INFO)
+    hyperparams_str = Loss.write_doc_logging(model, model_forParameters)
 
     # -------------------- Step 2: Setup flags --------------------
     steps_logging = 500
@@ -150,6 +150,8 @@ def run_train(model, train_dataloader, valid_dataloader, learning_rate, num_epoc
     # --------------------- 4) Saving model --------------------
     logging.info("Proceeding to save the model: " + model_forParameters.__class__.__name__ + ", timestamp: " + Utils.get_timestamp_month_to_sec())
     torch.save(model, os.path.join(F.FOLDER_MODELS, F.FOLDER_SAVEDMODELS, hyperparams_str + '.model'))
+
+    return model
 
 
 # ##########

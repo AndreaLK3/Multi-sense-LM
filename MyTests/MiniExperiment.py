@@ -44,15 +44,14 @@ def log_input(batch_input, last_idx_senses, vocab_sources_ls, sp_method=CE.Metho
 ###### Setup model and corpora ######
 def setup_training(model_type, include_globalnode_input, use_gold_lm, K=1,
                 load_saved_model=False, sp_method=CE.Method.FASTTEXT, context_method=ContextMethod.AVERAGE, C=20,
-                dim_qkv=300, grapharea_size=32, batch_size=4, seq_len=3, vocab_sources_ls=(F.WT2, F.SEMCOR), random_seed=1):
+                dim_qkv=300, grapharea_size=32, batch_size=4, seq_len=3, vocab_sources_ls=[F.WT2, F.SEMCOR], random_seed=1):
     gr_in_voc_folders = F.get_folders_graph_input_vocabulary(vocab_sources_ls, sp_method)
 
     objects = get_objects(vocab_sources_ls, sp_method, grapharea_size)
     # objects == graph_dataobj, grapharea_size, grapharea_matrix, vocabulary_df, embeddings_matrix
 
     model, model_forDataLoading, batch_size = setup_model(model_type, include_globalnode_input, use_gold_lm, K,
-                                                                load_saved_model, sp_method, context_method, C,
-                                            dim_qkv, grapharea_size, batch_size, vocab_sources_ls, random_seed)
+                vocab_sources_ls, sp_method, context_method, C,dim_qkv, grapharea_size, batch_size, premade_model=None, random_seed=1)
 
     semcor_train_fpath = os.path.join(F.FOLDER_MINICORPORA, F.FOLDER_SENSELABELED, F.FOLDER_TRAIN)
     semcor_valid_fpath = os.path.join(F.FOLDER_MINICORPORA, F.FOLDER_SENSELABELED, F.FOLDER_VALIDATION)
