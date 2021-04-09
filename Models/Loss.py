@@ -12,8 +12,6 @@ import Filesystem as F
 ##### For logging #####
 
 def write_doc_logging(model, model_forParameters):
-    hyperparams_str = model_forParameters.__class__.__name__ + '_date_' + get_timestamp_month_to_sec()
-    logging.info("Hyperparameters: " + hyperparams_str)
     logging.info("Model:")
     logging.info(str(model))
     logging.info("Parameters:")
@@ -23,6 +21,24 @@ def write_doc_logging(model, model_forParameters):
     model_parameters = filter(lambda p: p.requires_grad, model.parameters())
     params = sum([np.prod(p.size()) for p in model_parameters])
     logging.info("Number of trainable parameters=" + str(params))
+
+    hyperparams_str = model_forParameters.__class__.__name__.upper()
+    try:
+        if model_forParameters.use_gold_lm:
+            hyperparams_str = hyperparams_str + "_GoldLM"
+        if not (model_forParameters.predict_senses):
+            hyperparams_str = hyperparams_str + "_noSenses"
+        if model_forParameters.include_globalnode_input > 0:
+            hyperparams_str = hyperparams_str + "_withGraph"
+        if model_forParameters.__class__.__name__ not in ["RNN", "MFS"]:
+            hyperparams_str = hyperparams_str + "_K" + str(model_forParameters.K)
+        if model_forParameters.__class__.__name__ in ["SenseContext", "SelfAtt"]:
+            hyperparams_str = hyperparams_str + "_C" + str(model_forParameters.C)
+            hyperparams_str = hyperparams_str + "_ctx" + str(model_forParameters.context_method.name)
+    except Exception:
+        pass # no further hyperparameters were specified
+
+    logging.info("Hyperparameters: " + hyperparams_str)
     return hyperparams_str
 
 def record_statistics(epoch_sumlosses_tpl, epoch_numsteps_tpl, correct_predictions_dict):

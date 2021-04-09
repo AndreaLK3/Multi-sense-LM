@@ -40,7 +40,7 @@ def run_train(model, train_dataloader, valid_dataloader, learning_rate, num_epoc
     model_forParameters = model.module if torch.cuda.device_count() > 1 and model.__class__.__name__=="DataParallel" else model
     model_forParameters.predict_senses = predict_senses
 
-    Utils.init_logging('Exp_' + str(model_forParameters.__class__.__name__) + "_" + Utils.get_timestamp_month_to_sec() + '.log',
+    Utils.init_logging('Training_' + str(model_forParameters.__class__.__name__) + "_" + Utils.get_timestamp_month_to_sec() + '.log',
                        loglevel=logging.INFO)
     try:
         logging.info("Using K=" + str(model_forParameters.K))
@@ -82,12 +82,16 @@ def run_train(model, train_dataloader, valid_dataloader, learning_rate, num_epoc
             if epoch>1:
                 logging.info("After training " + str(epoch-1) + " epochs, validation:")
                 valid_loss_globals, valid_loss_senses, valid_accuracy_senses = \
-                    evaluation(valid_dataloader, valid_dataiter, model, slc_or_text, verbose)
+                    evaluation(valid_dataloader, valid_dataiter, model, verbose)
 
                 # -------------- 3c) Check the validation accuracy & the need for early stopping --------------
-                if valid_accuracy_senses <= best_valid_accuracy_senses and (epoch > 2):
-                    logging.info("Early stopping on senses.")
+                if valid_accuracy_senses <= best_valid_accuracy_senses and (epoch > 2) and (valid_accuracy_senses>0):
+                    logging.info("Early stopping on senses' accuracy.")
                     flag_earlystop = True
+                if valid_accuracy_senses == 0: # we are operating on globals only, i.e. WT-2
+                    if valid_loss_globals > best_valid_loss_globals:
+                        logging.info("Early stopping on globals' PPL")
+                        flag_earlystop = True
 
                 best_valid_loss_globals = min(best_valid_loss_globals, valid_loss_globals)
                 best_valid_loss_senses = min(best_valid_loss_senses, valid_loss_senses)
@@ -148,7 +152,7 @@ def run_train(model, train_dataloader, valid_dataloader, learning_rate, num_epoc
         logging.info("Models loop interrupted manually by keyboard")
 
     # --------------------- 4) Saving model --------------------
-    logging.info("Proceeding to save the model: " + model_forParameters.__class__.__name__ + ", timestamp: " + Utils.get_timestamp_month_to_sec())
+    logging.info("Proceeding to save the model: " + hyperparams_str + '.model' + ", timestamp: " + Utils.get_timestamp_month_to_sec())
     torch.save(model, os.path.join(F.FOLDER_MODELS, F.FOLDER_SAVEDMODELS, hyperparams_str + '.model'))
 
     return model
@@ -156,8 +160,8 @@ def run_train(model, train_dataloader, valid_dataloader, learning_rate, num_epoc
 
 # ##########
 # Auxiliary function: Evaluation on a given dataset, e.g. validation or test set
-def evaluation(evaluation_dataloader, evaluation_dataiter, model, slc_or_text, verbose,
-               vocab_sources_ls=(F.WT2, F.SEMCOR), sp_method=CE.Method.FASTTEXT):
+def evaluation(evaluation_dataloader, evaluation_dataiter, model, verbose, vocab_sources_ls=(F.WT2, F.SEMCOR),
+               sp_method=CE.Method.FASTTEXT):
     model_forParameters = model.module if torch.cuda.device_count() > 1 and model.__class__.__name__=="DataParallel" else model
     including_senses = model_forParameters.predict_senses
 

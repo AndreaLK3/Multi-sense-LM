@@ -59,14 +59,14 @@ class ComputeLogits(torch.nn.Module):
 # key vectors: the average context a sense appears in
 # => we compute (q_c∙k_(s_i ))/√(d_k ) to get the self-attention logits, and the softmax to have a probability distribution over the senses of the selected K globals.
 # We assign it, while keeping the other senses’ softmax at 10-8=~0, as usual
-class ScoresLM(torch.nn.Module):
+class SelfAtt(torch.nn.Module):
 
     def __init__(self, graph_dataobj, grapharea_size, grapharea_matrix, vocabulary_df, embeddings_matrix,
                  use_gold_lm, include_globalnode_input, batch_size, n_layers, n_hid_units, K, num_C, context_method,
                  dim_qkv, inputdata_folder):
 
         # -------------------- Initialization in common: parameters & globals --------------------
-        super(ScoresLM, self).__init__()
+        super(SelfAtt, self).__init__()
 
         init_model_parameters(self, graph_dataobj, grapharea_size, grapharea_matrix, vocabulary_df,
                                     include_globalnode_input, use_gold_lm,

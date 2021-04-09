@@ -14,6 +14,7 @@ FOLDER_MINICORPORA = 'MiniCorpora'
 FOLDER_WT103 = 'wikitext-103'
 FOLDER_WT2 = 'wikitext-2'
 FOLDER_SEMCOR = 'semcor'
+FOLDER_SENSEVAL = 'senseval'
 
 WT_TRAIN_FILE = 'wiki.train.tokens'
 WT_VALID_FILE = 'wiki.valid.tokens'
@@ -27,9 +28,11 @@ FOLDER_TEST= 'Test'
 WT2 = "WT2"
 WT103 = "WT103"
 SEMCOR = "SemCor"
+SENSEVAL = "SensEval"
 CORPORA_LOCATIONS = {WT2: os.path.join(FOLDER_TEXT_CORPORA, FOLDER_STANDARDTEXT, FOLDER_WT2),
                      WT103: os.path.join(FOLDER_TEXT_CORPORA, FOLDER_STANDARDTEXT, FOLDER_WT103),
-                     SEMCOR: os.path.join(FOLDER_TEXT_CORPORA, FOLDER_SENSELABELED, FOLDER_SEMCOR)
+                     SEMCOR: os.path.join(FOLDER_TEXT_CORPORA, FOLDER_SENSELABELED, FOLDER_SEMCOR),
+                     SENSEVAL: os.path.join(FOLDER_TEXT_CORPORA, FOLDER_SENSELABELED, FOLDER_SENSEVAL)
                      }
 
 FOLDER_GRAPH = "Graph"

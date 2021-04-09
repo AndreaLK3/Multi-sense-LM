@@ -77,9 +77,9 @@ def create_model(model_type, objects, use_gold_lm, include_globalnode_input, K, 
                                 embeddings_matrix, use_gold_lm, include_globalnode_input, batch_size=32, n_layers=3,
                                 n_hid_units=1024, K=K, num_C=C, context_method=context_method, inputdata_folder=inputdata_folder)
     elif model_type==ModelType.SELFATT:
-        model = SA.ScoresLM(graph_dataobj, grapharea_size, grapharea_matrix, vocabulary_df, embeddings_matrix,
-             use_gold_lm, include_globalnode_input, batch_size=32, n_layers=3, n_hid_units=1024, K=K,
-                            num_C=C, context_method=context_method, dim_qkv=dim_qkv, inputdata_folder=inputdata_folder)
+        model = SA.SelfAtt(graph_dataobj, grapharea_size, grapharea_matrix, vocabulary_df, embeddings_matrix,
+                           use_gold_lm, include_globalnode_input, batch_size=32, n_layers=3, n_hid_units=1024, K=K,
+                           num_C=C, context_method=context_method, dim_qkv=dim_qkv, inputdata_folder=inputdata_folder)
     elif model_type==ModelType.MFS:
         mfs_df = pd.read_hdf(F.MFS_H5_FPATH)
         model = MFS.MFS(graph_dataobj, grapharea_size, grapharea_matrix, vocabulary_df, embeddings_matrix,
@@ -90,9 +90,8 @@ def create_model(model_type, objects, use_gold_lm, include_globalnode_input, K, 
 
 
 # ---------- Step 2: locating the necessary folders, creating the model, moving it on GPU if needed
-def setup_model(model_type, include_globalnode_input, use_gold_lm, K,
-                vocab_sources_ls, sp_method, context_method, C,dim_qkv, grapharea_size, batch_size,
-                premade_model=None, random_seed=1):
+def setup_model(premade_model, model_type, include_globalnode_input, use_gold_lm, K, vocab_sources_ls, sp_method,
+                context_method, C, dim_qkv, grapharea_size, batch_size, random_seed=1):
 
     # -------------------- 1: Setting up the graph, grapharea_matrix and vocabulary --------------------
     objects = graph_dataobj, grapharea_size, grapharea_matrix, vocabulary_df, embeddings_matrix, inputadata_folder = \
@@ -153,8 +152,9 @@ def setup_training_on_corpus(corpus_name, premade_model=None, model_type=None, i
     gr_in_voc_folders = F.get_folders_graph_input_vocabulary(vocab_sources_ls, sp_method)
     objects = get_objects(vocab_sources_ls, sp_method, grapharea_size)
 
-    model, model_forDataLoading, batch_size = setup_model(model_type, include_globalnode_input, use_gold_lm, K,
-        vocab_sources_ls, sp_method, context_method, C, dim_qkv, grapharea_size, batch_size, premade_model, random_seed)
+    model, model_forDataLoading, batch_size = setup_model(premade_model, model_type, include_globalnode_input,
+                                                          use_gold_lm, K, vocab_sources_ls, sp_method, context_method,
+                                                          C, dim_qkv, grapharea_size, batch_size, random_seed)
 
     if corpus_name == F.WT2:
         corpus_train_fpath = os.path.join(F.CORPORA_LOCATIONS[F.WT2], F.WT_TRAIN_FILE)

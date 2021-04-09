@@ -16,7 +16,7 @@ def parse_arguments():
     # Optional parameters
     parser.add_argument('--learning_rate', type=float, default=0.00005,
                         help='learning rate for training the model (it is a parameter of the Adam optimizer)')
-    parser.add_argument('--num_epochs', type=int, default=24,
+    parser.add_argument('--num_epochs', type=int, default=30,
                         help='maximum number of epochs for model training. It generally stops earlier because it uses '
                              'early-stopping on the validation set')
     parser.add_argument('--use_graph_input', type=str, default='no',
@@ -83,7 +83,7 @@ model, train_dataloader, valid_dataloader = TS.setup_training_on_corpus(F.WT2,
   vocab_sources_ls=(F.WT2, F.SEMCOR), random_seed=1)
 
 pretrained_model = TE.run_train(model, train_dataloader, valid_dataloader,
-  learning_rate=args.learning_rate, num_epochs=args.num_epochs, predict_senses=False, # pre-training on WT2
+  learning_rate=args.learning_rate*2, num_epochs=args.num_epochs, predict_senses=False, # pre-training on WT2, lr=1e-4
   vocab_sources_ls=(F.WT2, F.SEMCOR), sp_method=CE.Method.FASTTEXT)
 
 _, train_dataloader, valid_dataloader = TS.setup_training_on_corpus(F.SEMCOR,
