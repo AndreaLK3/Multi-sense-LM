@@ -43,7 +43,8 @@ def run_train(model, train_dataloader, valid_dataloader, learning_rate, num_epoc
     Utils.init_logging('Training_' + str(model_forParameters.__class__.__name__) + "_" + Utils.get_timestamp_month_to_sec() + '.log',
                        loglevel=logging.INFO)
     try:
-        logging.info("Using K=" + str(model_forParameters.K))
+        logging.info("Using learning_rate=" + str(learning_rate))
+        logging.info("K=" + str(model_forParameters.K))
         logging.info("C=" + str(model_forParameters.num_C))
         logging.info("context_method=" + str(model_forParameters.context_method))
     except Exception:

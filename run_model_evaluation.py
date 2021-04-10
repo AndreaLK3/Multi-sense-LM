@@ -7,7 +7,7 @@ import VocabularyAndEmbeddings.ComputeEmbeddings as CE
 from Models.TrainingSetup import get_objects, setup_corpus, setup_model
 from Models.TrainingAndEvaluation import evaluation
 import itertools
-
+import Utils
 
 def parse_arguments():
     parser = argparse.ArgumentParser(description='Creating a model, training it on the sense-labeled corpus.')
@@ -50,7 +50,7 @@ def create_modelname_from_args(args):
     if args.use_graph_input != "no":
         model_name = model_name + "_withGraph"
     if model_type not in ["RNN", "MFS"]:
-        model_name = model_name + args.K
+        model_name = model_name + "_K" + str(args.K)
     if model_type in ["SenseContext".upper(), "SelfAtt".upper()]:
         model_name = model_name + "_C" + str(args.C)
         model_name = model_name + "_ctx" + str(args.context_method)
@@ -65,10 +65,18 @@ args = parse_arguments()
 
 # ----- Defining the name, and loading the model object -----
 model_name = create_modelname_from_args(args)
+Utils.init_logging("Evaluation_" + model_name.replace(".model", "") + ".log")
 
 saved_model_fpath = os.path.join(F.FOLDER_MODELS, F.FOLDER_SAVEDMODELS, model_name)
-model = torch.load(saved_model_fpath).module if torch.cuda.is_available() \
-        else torch.load(saved_model_fpath, map_location=torch.device('cpu')).module # unwrapping DataParallel
+if torch.cuda.is_available():
+    model_obj = torch.load(saved_model_fpath)
+    if model_obj.__class__.__name__ == "DataParallel":
+        model = model_obj.module # unwrap DataParallel
+    else:
+        model = model_obj
+else:
+    model = torch.load(saved_model_fpath, map_location=torch.device('cpu')).module  # in case one wishes to use the CPU
+
 logging.info("Loading the model found at: " + str(saved_model_fpath))
 
 # ----- Load objects: graph, etc.. Currently using default vocabulary sources and sp_method -----
@@ -80,8 +88,8 @@ objects = get_objects(vocab_sources_ls, sp_method, grapharea_size=32)
 # ----- Setup model: We pass the saved model, so most parameters are unused -----
 model, model_forDataLoading, batch_size = setup_model(premade_model=model, model_type=None,
                                                       include_globalnode_input=None, use_gold_lm=None,
-                                                      K=None, vocab_sources_ls=None, sp_method=None, context_method=None,
-                                                      C=None, dim_qkv=None, grapharea_size=None, batch_size=32)
+                                                      K=None, vocab_sources_ls=vocab_sources_ls, sp_method=sp_method, context_method=None,
+                                                      C=None, dim_qkv=None, grapharea_size=32, batch_size=32)
 
 # ----- Setup corpus and evaluate, on SemCor's test split -----
 corpus_test_fpath = os.path.join(F.CORPORA_LOCATIONS[F.SEMCOR], F.FOLDER_TEST)
