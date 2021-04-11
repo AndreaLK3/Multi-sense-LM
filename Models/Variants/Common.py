@@ -66,7 +66,7 @@ def init_common_architecture(model, embeddings_matrix, graph_dataobj):
         model.gat_globals = GATConv(in_channels=Utils.GRAPH_EMBEDDINGS_DIM, out_channels=Utils.GRAPH_EMBEDDINGS_DIM,
                                     heads=2)
 
-    # -------------------- The networks --------------------½
+    # -------------------- The networks --------------------
     if not model.use_gold_lm:
         model.main_rnn_ls = torch.nn.ModuleList(
             [torch.nn.GRU(input_size=model.concatenated_input_dim if i == 0 else model.hidden_size,
@@ -164,6 +164,9 @@ def predict_globals_withGRU(model, batch_input_signals, seq_len, distributed_bat
     predictions_globals = tfunc.log_softmax(logits_global, dim=1)
 
     return predictions_globals, logits_global
+
+
+###### 1.5b: alternative: standardLM prediction, with a Transformer-XL architecture
 
 ##### 1.6: Choose the method to compute the location context / Self-attention query
 class ContextMethod(Enum):
