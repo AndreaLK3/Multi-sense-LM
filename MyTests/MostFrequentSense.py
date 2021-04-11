@@ -19,7 +19,7 @@ import numpy as np
 from time import time
 
 # not updated for version 2
-def compute_MFS_for_corpus(vocabulary_sources_ls=[F.WT2, F.SEMCOR], sp_method=CE.Method.FASTTEXT):
+def compute_MFS_for_corpus(vocabulary_sources_ls=[F.WT2, F.SEMCOR], sp_method=Utils.SpMethod.FASTTEXT):
     t0 = time()
     Utils.init_logging("Tests-compute_MFS_for_corpus.log")
     # Init

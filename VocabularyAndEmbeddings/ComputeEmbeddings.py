@@ -8,22 +8,13 @@ import numpy as np
 import transformers
 import logging
 import Utils
-from enum import Enum
-
-from VocabularyAndEmbeddings.EmbedWithDBERT import compute_sentence_dBert_vector
-
-
-class Method(Enum):
-    DISTILBERT = Utils.DISTILBERT # to be removed
-    FASTTEXT = Utils.FASTTEXT
-    TXL = Utils.TXL
-
+from Utils import SpMethod
 
 # The main function of the module: iterate over the vocabulary that we previously did build from the training corpus,
 # and use either DistilBERT or FastText to compute d=768 or d=300 single-prototype word embeddings.
 def compute_single_prototype_embeddings(vocabulary_df, spvs_out_fpath, method):
 
-    if method == Method.DISTILBERT: # currently not in use
+    if method == SpMethod.DISTILBERT: # currently not in use
         distilBERT_model = transformers.DistilBertModel.from_pretrained('distilbert-base-uncased',
                                                                     output_hidden_states=True)
         distilBERT_tokenizer = transformers.DistilBertTokenizer.from_pretrained('distilbert-base-uncased')
@@ -35,7 +26,7 @@ def compute_single_prototype_embeddings(vocabulary_df, spvs_out_fpath, method):
     for idx_word_freq_tpl in vocabulary_df.itertuples():
         word = idx_word_freq_tpl[1]
 
-        if method == Method.DISTILBERT:
+        if method == SpMethod.DISTILBERT:
             word_vector = EDB.compute_sentence_dBert_vector(distilBERT_model, distilBERT_tokenizer, word).squeeze().numpy()
         else: # i.e. elif method == Method_for_SPV.FASTTEXT:
             word_vector = fasttext_vectors[word]
@@ -52,10 +43,10 @@ def compute_single_prototype_embeddings(vocabulary_df, spvs_out_fpath, method):
 # It is necessary to write the embeddings in the .npy file with the correct ordering.
 def compute_elements_embeddings(elements_name, method, inputdata_folder):
 
-    if method == Method.TXL: # stub
+    if method == SpMethod.TXL: # stub
         TXL_model = None # load one of the pre-trained models, whether miniTXL on WT2 or main TXL from WT-103
         TXL_tokenizer = None
-    elif method == Method.FASTTEXT:
+    elif method == SpMethod.FASTTEXT:
         fasttext_vectors = EFT.load_fasttext_vectors()
 
     input_filepath = os.path.join(inputdata_folder, Utils.PROCESSED + '_' + elements_name + ".h5")
@@ -84,9 +75,9 @@ def compute_elements_embeddings(elements_name, method, inputdata_folder):
             logging.debug("ComputeEmbeddings.compute_elements_embeddings(elements_name, method) > " +
                          " wn_id=row[0]=" + str(row[0]) + " ;  elements_name=" + str(elements_name) +
                          " ; element_text=" + str(element_text))
-            if method == Method.TXL:
+            if method == SpMethod.TXL:
                 vector = None # stub. Must extract the last-layer representation of the sentence
-            elif method == Method.FASTTEXT:
+            elif method == SpMethod.FASTTEXT:
                 vector = EFT.get_sentence_avg_vector(element_text, fasttext_vectors)
             matrix_of_sentence_embeddings.append(vector)
 

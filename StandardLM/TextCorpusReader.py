@@ -8,6 +8,7 @@ import logging
 import torch
 import numpy as np
 
+
 # Auxiliary function:
 # Input: corpus and split
 # Outcome: get the filepaths of the text file and the numerical pre-encoding
@@ -27,7 +28,12 @@ def get_corpus_fpaths(corpus_name, split, vocabulary_sources_ls):
         txt_corpus_fpath = os.path.join(F.CORPORA_LOCATIONS[F.WT103], split_fname)
         numIDs_outfile_fpath = os.path.join(F.CORPORA_LOCATIONS[F.WT103], split_fname + F.CORPUS_NUMERICAL_EXTENSION
                                             + "withVocabFrom_" + "_".join(vocabulary_sources_ls) + ".npy")
+    if corpus_name.lower() == F.SEMCOR.lower():
+        txt_corpus_fpath = os.path.join(F.CORPORA_LOCATIONS[F.SEMCOR], split_fname)
+        numIDs_outfile_fpath = os.path.join(F.CORPORA_LOCATIONS[F.SEMCOR], split_fname + F.CORPUS_NUMERICAL_EXTENSION
+                                            + "withVocabFrom_" + "_".join(vocabulary_sources_ls) + ".npy")
     return txt_corpus_fpath, numIDs_outfile_fpath
+
 
 # Top-level function:
 # Read a corpus from a text file, convert the tokens into their numerical IDs, save the result
@@ -66,29 +72,28 @@ def load_corpus_IDs(corpus_name, split, vocabulary_sources_ls):
     logging.info("Loaded the encoded corpus at " + str(numIDs_outfile_fpath))
     return numerical_IDs_t
 
+
+
 # Another top-level function:
 # Input: None. It operates on the sources we wish to use (WT2 corpus, vocabulary from WT2 + SemCor)
-# Outcome: It eliminates all old versions of vocabulary and encoded splits, and creates them
-def reset_vocab_and_splits_wt2plus():
-    vocab_corpora_names = [F.WT2, F.SEMCOR]
-    vocab_h5_filename = "vocabulary_" + "_".join(vocab_corpora_names) + ".h5"
-    vocab_txt_filename = "vocabulary_" + "_".join(vocab_corpora_names) + ".txt"
-    vocab_h5_filepath = os.path.join(F.FOLDER_VOCABULARY, vocab_h5_filename)
-    vocab_txt_filepath = os.path.join(F.FOLDER_VOCABULARY, vocab_txt_filename)
+# Outcome: It eliminates all old versions the encoded splits, and creates them
+def reset_vocab_and_splits_wt2plus(sp_method=Utils.SpMethod.FASTTEXT):
+    vocab_sources_ls = [F.WT2, F.SEMCOR]
+    _, _, vocab_folder = F.get_folders_graph_input_vocabulary(vocab_sources_ls, sp_method)
 
     _, encoded_train_split_fpath = get_corpus_fpaths(corpus_name=F.WT2, split=Utils.TRAINING,
-                                                     vocabulary_sources_ls=vocab_corpora_names)
+                                                     vocabulary_sources_ls=vocab_sources_ls)
     _, encoded_valid_split_fpath = get_corpus_fpaths(corpus_name=F.WT2, split=Utils.VALIDATION,
-                                                     vocabulary_sources_ls=vocab_corpora_names)
+                                                     vocabulary_sources_ls=vocab_sources_ls)
     _, encoded_test_split_fpath = get_corpus_fpaths(corpus_name=F.WT2, split=Utils.TEST,
-                                                     vocabulary_sources_ls=vocab_corpora_names)
-    all_fpaths = [vocab_h5_filepath, vocab_txt_filepath, encoded_train_split_fpath, encoded_valid_split_fpath, encoded_test_split_fpath]
+                                                     vocabulary_sources_ls=vocab_sources_ls)
+    all_fpaths = [encoded_train_split_fpath, encoded_valid_split_fpath, encoded_test_split_fpath]
 
     for fpath in all_fpaths:
         if os.path.exists(fpath):
             os.remove(fpath)
 
-    V.get_vocabulary_df(corpora_names=vocab_corpora_names, lowercase=False)
-    read_txt_corpus(corpus_name=F.WT2, split=Utils.TRAINING, vocabulary_sources_ls=vocab_corpora_names, lowercase=False)
-    read_txt_corpus(corpus_name=F.WT2, split=Utils.VALIDATION, vocabulary_sources_ls=vocab_corpora_names, lowercase=False)
-    read_txt_corpus(corpus_name=F.WT2, split=Utils.TEST, vocabulary_sources_ls=vocab_corpora_names, lowercase=False)
+    V.get_vocabulary_df(corpora_names=vocab_sources_ls, lowercase=False)
+    read_txt_corpus(corpus_name=F.WT2, split=Utils.TRAINING, vocabulary_sources_ls=vocab_sources_ls, lowercase=False)
+    read_txt_corpus(corpus_name=F.WT2, split=Utils.VALIDATION, vocabulary_sources_ls=vocab_sources_ls, lowercase=False)
+    read_txt_corpus(corpus_name=F.WT2, split=Utils.TEST, vocabulary_sources_ls=vocab_sources_ls, lowercase=False)

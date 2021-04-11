@@ -42,7 +42,7 @@ def load_model_from_file(modeltype):
 
 
 # ---------- Step 1: setting up the graph, grapharea_matrix (used for speed) and the vocabulary  ----------
-def get_objects(vocab_sources_ls, sp_method=CE.Method.FASTTEXT, grapharea_size=32):
+def get_objects(vocab_sources_ls, sp_method=Utils.SpMethod.FASTTEXT, grapharea_size=32):
 
     graph_folder, inputdata_folder, vocabulary_folder = F.get_folders_graph_input_vocabulary(vocab_sources_ls, sp_method)
     graph_dataobj = DG.get_graph_dataobject(False, vocab_sources_ls, sp_method).to(DEVICE)
@@ -146,8 +146,8 @@ def setup_corpus(objects, corpus_location, slc_or_text, gr_in_voc_folders, batch
 # Entry function: get model, dataset and dataloader, from one of the corpora: SemCor (SLC) or WT-2 (text)
 
 def setup_training_on_corpus(corpus_name, premade_model=None, model_type=None, include_globalnode_input=0, use_gold_lm=False, K=1,
-                sp_method=CE.Method.FASTTEXT, context_method=ContextMethod.AVERAGE, C=20,
-                dim_qkv=300, grapharea_size=32, batch_size=32, seq_len=35, vocab_sources_ls=(F.WT2, F.SEMCOR), random_seed=1):
+                             sp_method=Utils.SpMethod.FASTTEXT, context_method=ContextMethod.AVERAGE, C=20,
+                             dim_qkv=300, grapharea_size=32, batch_size=32, seq_len=35, vocab_sources_ls=(F.WT2, F.SEMCOR), random_seed=1):
 
     gr_in_voc_folders = F.get_folders_graph_input_vocabulary(vocab_sources_ls, sp_method)
     objects = get_objects(vocab_sources_ls, sp_method, grapharea_size)

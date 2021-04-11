@@ -81,7 +81,7 @@ logging.info("Loading the model found at: " + str(saved_model_fpath))
 
 # ----- Load objects: graph, etc.. Currently using default vocabulary sources and sp_method -----
 vocab_sources_ls = [F.WT2, F.SEMCOR]
-sp_method = CE.Method.FASTTEXT
+sp_method = Utils.SpMethod.FASTTEXT
 gr_in_voc_folders = F.get_folders_graph_input_vocabulary(vocab_sources_ls, sp_method)
 objects = get_objects(vocab_sources_ls, sp_method, grapharea_size=32)
 

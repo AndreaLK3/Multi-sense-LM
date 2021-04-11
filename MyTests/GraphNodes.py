@@ -39,7 +39,7 @@ def initialize_archives(vocab_sources_ls, sp_method):
     return inputdata_folder, vocabulary_folder, definitions_df, examples_df, graph_folder
 
 
-def graph_nodes(vocab_sources_ls=(F.WT2, F.SEMCOR), sp_method=CE.Method.FASTTEXT):
+def graph_nodes(vocab_sources_ls=(F.WT2, F.SEMCOR), sp_method=Utils.SpMethod.FASTTEXT):
     Utils.init_logging("Test-GraphNodes.log")
 
     logging.info("Graph test. On: SenseLabeled corpus")
@@ -72,7 +72,7 @@ def graph_nodes(vocab_sources_ls=(F.WT2, F.SEMCOR), sp_method=CE.Method.FASTTEXT
             log_node(n_t.item(), last_indices_tpl, inputdata_folder, vocabulary_folder, definitions_df, examples_df)
 
 
-def get_missing_sense(vocab_sources_ls=(F.WT2, F.SEMCOR), sp_method=CE.Method.FASTTEXT):
+def get_missing_sense(vocab_sources_ls=(F.WT2, F.SEMCOR), sp_method=Utils.SpMethod.FASTTEXT):
     Utils.init_logging("Test-GraphNodes.log")
 
     graph_folder, inputdata_folder, vocabulary_folder = F.get_folders_graph_input_vocabulary(vocab_sources_ls,

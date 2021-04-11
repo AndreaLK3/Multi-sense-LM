@@ -4,6 +4,8 @@ from math import exp
 import numpy as np
 import torch
 from torch.nn import functional as tfunc
+
+import Utils
 from Models import ExplorePredictions as EP
 from Utils import DEVICE, get_timestamp_month_to_sec
 import VocabularyAndEmbeddings.ComputeEmbeddings as CE
@@ -119,7 +121,7 @@ def organize_polysense_labels(batch_labels_globals, batch_labels_senses, polysen
 ##### Core function: invoke the model, get and organize loss #####
 
 def compute_model_loss(model, batch_input, batch_labels, correct_preds_dict, polysense_globals_dict,
-                       vocab_sources_ls=[F.WT2, F.SEMCOR], sp_method=CE.Method.FASTTEXT, verbose=False):
+                       vocab_sources_ls=[F.WT2, F.SEMCOR], sp_method=Utils.SpMethod.FASTTEXT, verbose=False):
 
     predictions_globals, predictions_senses = model(batch_input, batch_labels)
 

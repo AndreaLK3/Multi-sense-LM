@@ -76,22 +76,22 @@ parameters = convert_arguments_into_parameters(args)
 t0 = time()
 
 model, train_dataloader, valid_dataloader = TS.setup_training_on_corpus(F.WT2,
-  premade_model=None, model_type=parameters["model_type"],
-  include_globalnode_input=parameters["include_globalnode_input"], use_gold_lm=False, K=args.K,
-  sp_method=CE.Method.FASTTEXT, context_method=parameters["context_method"], C=args.C,
-  dim_qkv=args.dim_qkv, grapharea_size=32, batch_size=32, seq_len=35,
-  vocab_sources_ls=(F.WT2, F.SEMCOR), random_seed=1)
+                                                                        premade_model=None, model_type=parameters["model_type"],
+                                                                        include_globalnode_input=parameters["include_globalnode_input"], use_gold_lm=False, K=args.K,
+                                                                        sp_method=Utils.SpMethod.FASTTEXT, context_method=parameters["context_method"], C=args.C,
+                                                                        dim_qkv=args.dim_qkv, grapharea_size=32, batch_size=32, seq_len=35,
+                                                                        vocab_sources_ls=(F.WT2, F.SEMCOR), random_seed=1)
 
 pretrained_model = TE.run_train(model, train_dataloader, valid_dataloader,
-  learning_rate=args.learning_rate*2, num_epochs=args.num_epochs, predict_senses=False, # pre-training on WT2, lr=1e-4
-  vocab_sources_ls=(F.WT2, F.SEMCOR), sp_method=CE.Method.FASTTEXT)
+                                learning_rate=0.0001, num_epochs=args.num_epochs, predict_senses=False,  # pre-training on WT2, lr=1e-4
+                                vocab_sources_ls=(F.WT2, F.SEMCOR), sp_method=Utils.SpMethod.FASTTEXT)
 
 _, train_dataloader, valid_dataloader = TS.setup_training_on_corpus(F.SEMCOR,
   premade_model=pretrained_model)
 
 final_model = TE.run_train(model, train_dataloader, valid_dataloader,
-  learning_rate=args.learning_rate, num_epochs=args.num_epochs, predict_senses=True, # on SemCor
-  vocab_sources_ls=(F.WT2, F.SEMCOR), sp_method=CE.Method.FASTTEXT)
+                           learning_rate=args.learning_rate, num_epochs=args.num_epochs, predict_senses=True,  # on SemCor
+                           vocab_sources_ls=(F.WT2, F.SEMCOR), sp_method=Utils.SpMethod.FASTTEXT)
 
 # We also need to evaluate the model in question on SemCor's test set and on Raganato's SensEval benchmark,
 # but if the model has been saved that can be done later

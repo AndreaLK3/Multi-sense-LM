@@ -42,7 +42,7 @@ def get_sense_with_max_frequency(senses_freq_dict):
     return most_frequent_sense, max_freq
 
 
-def compute_MFS_for_corpus(vocab_sources_ls=[F.WT2, F.SEMCOR], sp_method=CE.Method.FASTTEXT):
+def compute_MFS_for_corpus(vocab_sources_ls=[F.WT2, F.SEMCOR], sp_method=Utils.SpMethod.FASTTEXT):
     t0 = time()
 
     # ----- Initialization -----

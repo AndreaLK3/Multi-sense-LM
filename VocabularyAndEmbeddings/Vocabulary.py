@@ -96,7 +96,7 @@ def reunite_vocab_dicts(vocab_dict_1, vocab_dict_2):
 
 # Entry function: specify which corpora we wish to create the vocabulary from, and load it or create it as needed
 def get_vocabulary_df(corpora_names, lowercase, slc_min_count=2, txt_min_count=1, new=False):
-    Utils.init_logging("Vocabulary_creation.log")
+
     # 1) preparation: selecting the corpora that are to be included
     standardtext_corpus_fpaths = []
     senselabeled_dir_fpaths = []
@@ -120,6 +120,7 @@ def get_vocabulary_df(corpora_names, lowercase, slc_min_count=2, txt_min_count=1
         return vocab_df
     else:
         # 4) If the vocabulary did not already exist, it is necessary to create it. Read each corpus one after the other
+        Utils.init_logging("Vocabulary_creation.log")
         logging.info("*** Creating vocabulary at " + vocab_filepath)
 
         slc_vocab_dict = {}

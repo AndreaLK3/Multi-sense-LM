@@ -26,7 +26,7 @@ def init_accuracy_dict(polysense_thresholds):
 
 ################
 def run_train(model, train_dataloader, valid_dataloader, learning_rate, num_epochs, predict_senses=True,
-              vocab_sources_ls=(F.WT2, F.SEMCOR), sp_method=CE.Method.FASTTEXT):
+              vocab_sources_ls=(F.WT2, F.SEMCOR), sp_method=Utils.SpMethod.FASTTEXT):
 
     # -------------------- Step 1: Setup model --------------------
     slc_or_text = train_dataloader.dataset.sensecorpus_or_text
@@ -76,7 +76,7 @@ def run_train(model, train_dataloader, valid_dataloader, learning_rate, num_epoc
             epoch_senselabeled_tokens = 0
 
             predictions_history_dict = init_accuracy_dict(polysense_thresholds)
-            verbose = True if (epoch==num_epochs) or (epoch% 200==0) else False # deciding: log prediction output
+            verbose = False # True if (epoch==num_epochs) or (epoch% 200==0) else False # deciding: log prediction output
             flag_earlystop = False
 
             # -------------------- Step 3b) Evaluation on the validation set --------------------
@@ -162,7 +162,7 @@ def run_train(model, train_dataloader, valid_dataloader, learning_rate, num_epoc
 # ##########
 # Auxiliary function: Evaluation on a given dataset, e.g. validation or test set
 def evaluation(evaluation_dataloader, evaluation_dataiter, model, verbose, vocab_sources_ls=(F.WT2, F.SEMCOR),
-               sp_method=CE.Method.FASTTEXT):
+               sp_method=Utils.SpMethod.FASTTEXT):
     model_forParameters = model.module if torch.cuda.device_count() > 1 and model.__class__.__name__=="DataParallel" else model
     including_senses = model_forParameters.predict_senses
 

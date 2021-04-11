@@ -13,7 +13,7 @@ import SenseLabeledCorpus as SLC
 from time import time
 
 # Before starting: clean all storage files; reset vocabulary index to 0
-def reset(vocabulary_sources_ls, sp_method=CE.Method.FASTTEXT):
+def reset(vocabulary_sources_ls, sp_method=Utils.SpMethod.FASTTEXT):
 
     graph_folder, inputdata_folder, vocab_folder = F.get_folders_graph_input_vocabulary(vocabulary_sources_ls, sp_method)
 
@@ -44,7 +44,7 @@ def reset(vocabulary_sources_ls, sp_method=CE.Method.FASTTEXT):
         vi_file.close()
 
 
-def reset_embeddings(vocabulary_sources_ls, sp_method=CE.Method.FASTTEXT):
+def reset_embeddings(vocabulary_sources_ls, sp_method=Utils.SpMethod.FASTTEXT):
     inputdata_folder = Filesystem.set_directory(os.path.join(F.FOLDER_INPUT, "_".join(vocabulary_sources_ls), sp_method.value))
     # reset the embeddings, both those for dictionary elements and those for single-prototype vectors
     vectorized_inputs_filenames = list(filter(lambda fname: '.npy' in fname, os.listdir(inputdata_folder)))
@@ -56,7 +56,7 @@ def reset_embeddings(vocabulary_sources_ls, sp_method=CE.Method.FASTTEXT):
 
 
 
-def exe_from_input_to_vectors(do_reset, compute_single_prototype, vocabulary_sources_ls, sp_method=CE.Method.FASTTEXT):
+def exe_from_input_to_vectors(do_reset, compute_single_prototype, vocabulary_sources_ls, sp_method=Utils.SpMethod.FASTTEXT):
     Utils.init_logging("CGI-pipelineStart.log")
 
     t0 = time()

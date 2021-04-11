@@ -1,5 +1,7 @@
 import logging
 import sys
+from enum import Enum
+
 import langid
 import nltk
 import string
@@ -12,7 +14,7 @@ import sqlite3
 ########## Constants ##########
 
 HDF5_BASE_SIZE_512 = 512
-DEVICE = torch.device('cuda' if torch.cuda.is_available() else 'cpu') # torch.device('cpu')#
+DEVICE = torch.device('cuda' if torch.cuda.is_available() else 'cpu')  # torch.device('cpu')#
 
 # Lexicon
 
@@ -23,7 +25,7 @@ DEFINITIONS = 'definitions'
 EXAMPLES = 'examples'
 SYNONYMS = 'synonyms'
 ANTONYMS = 'antonyms'
-CATEGORIES = [DEFINITIONS, EXAMPLES, SYNONYMS, ANTONYMS] # , Utils.ENCYCLOPEDIA_DEF
+CATEGORIES = [DEFINITIONS, EXAMPLES, SYNONYMS, ANTONYMS]  # , Utils.ENCYCLOPEDIA_DEF
 
 SENSE_WN_ID = 'sense_wn_id'
 
@@ -185,3 +187,7 @@ def compute_startpoint_dummySenses(graph_dataobj):
     return startpoint_dummySenses
 
 
+class SpMethod(Enum):
+    DISTILBERT = DISTILBERT # to be removed
+    FASTTEXT = FASTTEXT
+    TXL = TXL

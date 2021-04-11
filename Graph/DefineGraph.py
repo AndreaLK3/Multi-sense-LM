@@ -5,7 +5,7 @@ import Filesystem
 import Filesystem as F
 import Utils
 import Graph.DefineGraphEdges as DGE
-from VocabularyAndEmbeddings.ComputeEmbeddings import Method
+from Utils import SpMethod
 import os
 import numpy as np
 import sqlite3
@@ -16,7 +16,7 @@ from sklearn.decomposition import PCA
 
 
 
-def load_word_embeddings(inputdata_folder, method=Method.FASTTEXT):
+def load_word_embeddings(inputdata_folder, method=SpMethod.FASTTEXT):
 
     single_prototypes_file = os.path.join(inputdata_folder, F.SPVs_FILENAME)
     E_embeddings = torch.tensor(np.load(single_prototypes_file)).to(torch.float32)
@@ -197,7 +197,7 @@ def create_graph(vocabulary_sources, sp_method):
     return graph
 
 # Entry point function: try to load the graph, else create it if it does not exist
-def get_graph_dataobject(new, vocabulary_sources_ls, sp_method=Method.FASTTEXT):
+def get_graph_dataobject(new, vocabulary_sources_ls, sp_method=SpMethod.FASTTEXT):
     graph_folder, _, _ = F.get_folders_graph_input_vocabulary(vocabulary_sources_ls, sp_method)
     graph_fpath = os.path.join(graph_folder, F.KBGRAPH_FILE)
     if os.path.exists(graph_fpath) and not new:
