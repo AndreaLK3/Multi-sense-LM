@@ -46,7 +46,7 @@ def get_mini_txl_modelobj(vocab_sources_ls=[F.WT2, F.SEMCOR]):
 
 
 # Auxiliary function: training loop during 1 epoch
-def epoch_on_corpus(corpus_ids_chunks_ls, model, optimizer, epoch_starting_lr, lr_delta, training_or_test):
+def epoch_on_corpus(corpus_ids_chunks_ls, model, optimizer, training_or_test):
     if training_or_test: model.train()
     else: model.eval()
 
@@ -54,9 +54,11 @@ def epoch_on_corpus(corpus_ids_chunks_ls, model, optimizer, epoch_starting_lr, l
     num_chunks = len(corpus_ids_chunks_ls)
     mems = None
 
-    lr = epoch_starting_lr
 
     for i in range(num_chunks):
+        # starting operations on one batch
+        optimizer.zero_grad()
+
         input_ids = torch.tensor(corpus_ids_chunks_ls[i])
         enc_input = transformers.BatchEncoding()
         enc_input.data = {"input_ids":input_ids.unsqueeze(0)}
@@ -71,19 +73,19 @@ def epoch_on_corpus(corpus_ids_chunks_ls, model, optimizer, epoch_starting_lr, l
         if training_or_test:
             loss.backward()
             optimizer.step()
-            lr = lr + lr_delta
-            optimizer.lr = lr
-        if i% (num_chunks//(min(100,num_chunks))) == 0:
+            # lr = lr + lr_delta
+            # optimizer.lr = lr
+        if i% (num_chunks//(min(10,num_chunks))) == 0:
             logging.info("Progress: " + str(round(i / (num_chunks),2) *100) + "% ...")
 
     epoch_loss = total_loss / num_chunks
 
-    return epoch_loss, lr
+    return epoch_loss #, lr
 
 
 # Aims: - create a Transformer-XL model, smaller than the version applied on WT-103
 #       - train the TXL model on the WikiText-2 dataset. Using: training split. Early stopping on validation, etc.
-def txl_on_wt2(learning_rate=0.00001, max_num_epochs=500):
+def txl_on_wt2(learning_rate=5e-5, max_num_epochs=100):
     Utils.init_logging("MiniTransformerXL-txl_on_wt2.log")
     vocab_sources_ls = [F.WT2, F.SEMCOR]
     # vocab_filepath = os.path.join(F.FOLDER_VOCABULARY, "_".join(vocab_sources_ls), "vocabulary.h5")
@@ -98,40 +100,35 @@ def txl_on_wt2(learning_rate=0.00001, max_num_epochs=500):
     wt2_valid_chunks_ls = get_numerical_corpus(corpus_name=F.WT2, split_name=Utils.VALIDATION,
                                                vocabulary_sources_ls=vocab_sources_ls, chunk_size=512)  # chunk_size=1000
     # for testing purposes, works as using mini-corpora
-    wt2_train_chunks_ls = wt2_train_chunks_ls[0:30]
-    wt2_valid_chunks_ls = wt2_valid_chunks_ls[0:30]
+    wt2_train_chunks_ls = wt2_train_chunks_ls
+    wt2_valid_chunks_ls = wt2_valid_chunks_ls
 
     # learning rate schedule, extremes:
-    starting_lr = 1e-7
-    max_lr = 1e-5
-    end_lr = 1e-6
-    warmup_lr_delta = (max_lr - starting_lr) * (1 / len(wt2_train_chunks_ls))
-    decrease_lr_delta = (end_lr - max_lr) * (1 / len(wt2_train_chunks_ls)) / 10
+    # max_lr = 1e-4
+    # end_lr = 1e-6
+    # decrease_lr_delta = (end_lr - max_lr) * (1 / len(wt2_train_chunks_ls)) / 10
 
     epoch = 1
     best_valid_loss = inf
     while epoch <= max_num_epochs:
         logging.info("Training: epoch n." + str(epoch) + "...")
         # Learning rate scheduling, i.e. linear with warmup
-        if epoch == 1:
-            epoch_start_lr = starting_lr
-            lr_delta = warmup_lr_delta
-        elif epoch <= 11:
-            lr_delta = decrease_lr_delta
-        else:
-            lr_delta = 0
+        # if epoch == 1:
+        #     epoch_start_lr = max_lr
+        #     lr_delta = decrease_lr_delta
+        # if epoch_start_lr <= end_lr:
+        #     lr_delta = 0
 
         # Training epoch
-        logging.info("Debug: start of epoch=" + str(epoch) + " , current learning rate=" + str(epoch_start_lr))
-        train_loss, epoch_start_lr = epoch_on_corpus(wt2_train_chunks_ls, model, optimizer, epoch_start_lr, lr_delta, training_or_test=True)
-        logging.info("Debug: end of epoch=" + str(epoch) + " , current learning rate=" + str(epoch_start_lr))
+        train_loss = epoch_on_corpus(wt2_train_chunks_ls, model, optimizer, training_or_test=True)
+        # logging.info("Debug: end of epoch=" + str(epoch) + " , current learning rate=" + str(epoch_start_lr))
         train_ppl = exp(train_loss)
         logging.info("Epoch n." + str(epoch) + " completed. Training PPL=" + str(round(train_ppl, 2)))
 
         # Validation and early stopping
-        valid_loss, _ = epoch_on_corpus(wt2_valid_chunks_ls, model, optimizer, epoch_start_lr, lr_delta, training_or_test=False)
+        valid_loss = epoch_on_corpus(wt2_valid_chunks_ls, model, optimizer, training_or_test=False)
         logging.info("After epoch n." + str(epoch) + ", validation PPL=" + str(round(exp(valid_loss),2)))
-        if (exp(valid_loss) > exp(best_valid_loss) + 0.1) and (epoch > 100):
+        if (exp(valid_loss) > exp(best_valid_loss) + 0.1):
             logging.info("Latest validation PPL of " + str(round(exp(valid_loss), 2))
                           + " > previous best validation PPL of " + str(round(exp(best_valid_loss), 2)))
             logging.info("Early stopping")

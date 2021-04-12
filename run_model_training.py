@@ -1,7 +1,7 @@
 import argparse
 import Models.TrainingSetup as TS
 import Models.TrainingAndEvaluation as TE
-import torch
+import logging
 from time import time
 import Utils
 import VocabularyAndEmbeddings.ComputeEmbeddings as CE
@@ -74,7 +74,6 @@ args = parse_arguments()
 parameters = convert_arguments_into_parameters(args)
 
 t0 = time()
-
 model, train_dataloader, valid_dataloader = TS.setup_training_on_corpus(F.WT2,
                                                                         premade_model=None, model_type=parameters["model_type"],
                                                                         include_globalnode_input=parameters["include_globalnode_input"], use_gold_lm=False, K=args.K,
@@ -83,8 +82,8 @@ model, train_dataloader, valid_dataloader = TS.setup_training_on_corpus(F.WT2,
                                                                         vocab_sources_ls=(F.WT2, F.SEMCOR), random_seed=1)
 
 pretrained_model = TE.run_train(model, train_dataloader, valid_dataloader,
-                                learning_rate=0.0001, num_epochs=args.num_epochs, predict_senses=False,  # pre-training on WT2, lr=1e-4
-                                vocab_sources_ls=(F.WT2, F.SEMCOR), sp_method=Utils.SpMethod.FASTTEXT)
+                                    learning_rate=0.0001, num_epochs=args.num_epochs, predict_senses=False,  # pre-training on WT2, lr=1e-4
+                                    vocab_sources_ls=(F.WT2, F.SEMCOR), sp_method=Utils.SpMethod.FASTTEXT)
 
 _, train_dataloader, valid_dataloader = TS.setup_training_on_corpus(F.SEMCOR,
   premade_model=pretrained_model)

@@ -71,7 +71,7 @@ def create_model(model_type, objects, use_gold_lm, include_globalnode_input, K, 
                            batch_size=32, n_layers=3, n_hid_units=1024)
     elif model_type==ModelType.SELECTK:
         model = SelectK.SelectK(graph_dataobj, grapharea_size, grapharea_matrix, vocabulary_df, embeddings_matrix,
-                                    use_gold_lm, include_globalnode_input, batch_size=32, n_layers=3, n_hid_units=1024, K=1)
+                                    use_gold_lm, include_globalnode_input, batch_size=32, n_layers=3, n_hid_units=1024, K=K)
     elif model_type==ModelType.SC:
         model = SC.SenseContext(graph_dataobj, grapharea_size, grapharea_matrix, vocabulary_df,
                                 embeddings_matrix, use_gold_lm, include_globalnode_input, batch_size=32, n_layers=3,
@@ -155,6 +155,7 @@ def setup_training_on_corpus(corpus_name, premade_model=None, model_type=None, i
     model, model_forDataLoading, batch_size = setup_model(premade_model, model_type, include_globalnode_input,
                                                           use_gold_lm, K, vocab_sources_ls, sp_method, context_method,
                                                           C, dim_qkv, grapharea_size, batch_size, random_seed)
+    print("model.K=" + str(model.K))
 
     if corpus_name == F.WT2:
         corpus_train_fpath = os.path.join(F.CORPORA_LOCATIONS[F.WT2], F.WT_TRAIN_FILE)

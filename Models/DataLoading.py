@@ -111,7 +111,7 @@ class TextDataset(torch.utils.data.Dataset):
         global_idx, sense_idx = self.current_token_tpl
         #logging.info("self.current_token_tpl="+ str(self.current_token_tpl))
         #logging.info("TextDataset > global_idx, sense_idx =" + str((global_idx, sense_idx)))
-        relative_global_idx = global_idx + self.nn_model.last_idx_senses
+        relative_global_idx = global_idx + self.last_sense_idx
         (global_forwardinput_triple, sense_forwardinput_triple)= \
             get_forwardinput_forelement(relative_global_idx, sense_idx, self.grapharea_matrix, self.area_size)
         #logging.info("self.next_token_tpl=" + str(self.next_token_tpl))
