@@ -3,8 +3,7 @@ import Filesystem as F
 import transformers
 import Utils
 import logging
-import StandardLM.TextCorpusReader as TCR
-import StandardLM.MiniTransformerXL as TXL
+import Models.StandardLM.MiniTransformerXL as TXL
 
 def reading_in_wt2(splitname):
     Utils.init_logging("MyTests-StandardLM-reading_in_wt2.log")

@@ -8,74 +8,30 @@ import Utils
 from torch_geometric.nn import GATConv
 from Models.Variants.RNNSteps import rnn_loop
 
-#########################
-##### 1: Model steps ####
-#########################
-
-##### 1.1: Initialization of: graph_dataobj, grapharea_matrix, vocabulary_lists & more
-def init_model_parameters(model, graph_dataobj, grapharea_size, grapharea_matrix, vocabulary_df,
-                          include_globalnode_input, use_gold_lm,
-                          batch_size, n_layers, n_hid_units):
+##### Initialization of: graph_dataobj, grapharea_matrix, vocabulary_lists & more
+def init_model_parameters(model, graph_dataobj, grapharea_size, grapharea_matrix, vocabulary_df, batch_size, hidden_layers, hidden_units):
     model.grapharea_matrix = grapharea_matrix
+    model.grapharea_size = grapharea_size
 
     model.vocabulary_df = vocabulary_df
     model.vocabulary_wordList = vocabulary_df['word'].to_list().copy()
     model.vocabulary_lemmatizedList = vocabulary_df['lemmatized_form'].to_list().copy()
 
-    model.include_globalnode_input = include_globalnode_input
     model.predict_senses = False # it can be set to True when starting a training loop
-    model.use_gold_lm = use_gold_lm
 
     model.first_idx_dummySenses = Utils.compute_startpoint_dummySenses(graph_dataobj) # used to lemmatizeNode in GNNs
     model.last_idx_senses = graph_dataobj.node_types.tolist().index(1)
     model.last_idx_globals = graph_dataobj.node_types.tolist().index(2)
 
-    model.grapharea_size = grapharea_size
-
+    # These are used for the Senses' GRU
     model.batch_size = batch_size
-    model.n_layers = n_layers
-    model.hidden_size = n_hid_units
+    model.hidden_layers = hidden_layers
+    model.hidden_units = hidden_units
 
     return
 
-##### 1.2: Initialization of: E, X, globals' (i.e. main) RNN
-def init_common_architecture(model, embeddings_matrix, graph_dataobj):
-    if model.include_globalnode_input < 2:
-        model.E = Parameter(embeddings_matrix.clone().detach(), requires_grad=True) # The matrix of embeddings
-        model.dim_embs = model.E.shape[1]
-    if model.include_globalnode_input > 0:
-        model.X = Parameter(graph_dataobj.x.clone().detach(), requires_grad=True)  # The graph matrix
 
-    # -------------------- Utilities --------------------
-    # utility tensors, used in index_select etc.G
-    model.select_first_indices = Parameter(torch.tensor(list(range(2*model.hidden_size))).to(torch.float32),requires_grad=False)
-
-    # Memories of the hidden states; overwritten at the 1st forward, when we know the distributed batch size
-    model.memory_hn = Parameter(torch.zeros(size=(model.n_layers, model.batch_size, model.hidden_size)), requires_grad=False)
-    model.hidden_state_bsize_adjusted = False
-
-    # -------------------- Input signals --------------------
-    model.concatenated_input_dim = model.dim_embs + Utils.GRAPH_EMBEDDINGS_DIM if model.include_globalnode_input==1 \
-        else 2*Utils.GRAPH_EMBEDDINGS_DIM if model.include_globalnode_input==2 \
-        else model.dim_embs # i.e. if 0 (no graph)
-    # GAT for the node-states from the dictionary graph
-    if model.include_globalnode_input ==1:
-        model.gat_globals = GATConv(in_channels=Utils.GRAPH_EMBEDDINGS_DIM , out_channels=int(Utils.GRAPH_EMBEDDINGS_DIM / 2),
-                                   heads=2)  # , node_dim=1)
-    elif model.include_globalnode_input==2:
-        model.gat_globals = GATConv(in_channels=Utils.GRAPH_EMBEDDINGS_DIM, out_channels=Utils.GRAPH_EMBEDDINGS_DIM,
-                                    heads=2)
-
-    # -------------------- The networks --------------------
-    if not model.use_gold_lm:
-        model.main_rnn_ls = torch.nn.ModuleList(
-            [torch.nn.GRU(input_size=model.concatenated_input_dim if i == 0 else model.hidden_size,
-                                                hidden_size=model.hidden_size // 2 if i == model.n_layers - 1 else model.hidden_size, num_layers=1)  # 512
-             for i in range(model.n_layers)])
-    model.linear2global = torch.nn.Linear(in_features=model.hidden_size // 2,  # 512
-                                         out_features=model.last_idx_globals - model.last_idx_senses, bias=True)
-
-##### 1.3: Extracting the input elements (x_indices, edge_index, edge_type) from the padded tensor in the batch
+##### Extracting the input elements (x_indices, edge_index, edge_type) from the padded tensor in the batch
 def unpack_to_input_tpl(in_tensor, grapharea_size, max_edges):
     x_indices = in_tensor[(in_tensor[0:grapharea_size] != -1).nonzero().flatten()]
         # shortcut for the case when there is no sense
@@ -110,28 +66,7 @@ def unpack_input_tensor(in_tensor, grapharea_size):
     (x_indices_s, edge_index_s, edge_type_s) = unpack_to_input_tpl(in_tensor_senses, grapharea_size, max_edges)
     return ((x_indices_g, edge_index_g, edge_type_g), (x_indices_s, edge_index_s, edge_type_s))
 
-##### 1.4: forward() loop to create the input signal(s), over batch elements
-def get_input_signals(model, batch_elements_at_t, word_embeddings_ls, currentglobal_nodestates_ls):
-    batch_elems_at_t = batch_elements_at_t.squeeze(dim=1)
-    elems_at_t_ls = batch_elements_at_t.chunk(chunks=batch_elems_at_t.shape[0], dim=0)
-
-    t_input_lts = [unpack_input_tensor(sample_tensor, model.grapharea_size) for sample_tensor in elems_at_t_ls]
-    t_globals_indices_ls = [t_input_lts[b][0][0] for b in range(len(t_input_lts))]
-
-    # -------------------- Input --------------------
-    # Input signal n.1: the embedding of the current word
-    if model.include_globalnode_input < 2:
-        t_current_globals_indices_ls = [x_indices[0] - model.last_idx_senses for x_indices in t_globals_indices_ls]
-        t_current_globals_indices = torch.stack(t_current_globals_indices_ls, dim=0)
-        t_word_embeddings = model.E.index_select(dim=0, index=t_current_globals_indices)
-        word_embeddings_ls.append(t_word_embeddings)
-    # Input signal n.2: the node-state of the current word (i.e. its global node) - now with graph batching
-    if model.include_globalnode_input > 0:
-        t_g_nodestates = run_graphnet(t_input_lts, batch_elems_at_t, t_globals_indices_ls, model)
-        currentglobal_nodestates_ls.append(t_g_nodestates)
-
-
-#### 1.4b: Graph Neural Networks for globals
+#### 1.3: Graph Neural Networks for globals
 def run_graphnet(t_input_lts, batch_elems_at_t, t_globals_indices_ls, model):
 
     currentglobal_nodestates_ls = []
@@ -151,36 +86,33 @@ def run_graphnet(t_input_lts, batch_elems_at_t, t_globals_indices_ls, model):
         t_currentglobal_node_states = torch.stack(currentglobal_nodestates_ls, dim=0).squeeze(dim=1)
         return t_currentglobal_node_states
 
-##### 1.5: standard LM prediction with globals, using a GRU
-def predict_globals_withGRU(model, batch_input_signals, seq_len, distributed_batch_size):
-    # ------------------- Globals -------------------
-    # - input of shape(seq_len, batch_size, input_size): tensor containing the features of the input sequence.
-    task_1_out = rnn_loop(batch_input_signals, model, model.main_rnn_ls, model.memory_hn)  # self.network_1_L1(input)
-    task_1_out = task_1_out.permute(1, 0, 2)  # going to: (batch_size, seq_len, n_units)
+# Starting from the batch, collect the input signals: word embeddings, and possibly graph node embeddings
+def get_input_signals(model, batch_elements_at_t, word_embeddings_ls, currentglobal_nodestates_ls):
+    batch_elems_at_t = batch_elements_at_t.squeeze(dim=1)
+    elems_at_t_ls = batch_elements_at_t.chunk(chunks=batch_elems_at_t.shape[0], dim=0)
 
-    task_1_out = task_1_out.reshape(distributed_batch_size * seq_len, task_1_out.shape[2])
+    t_input_lts = [unpack_input_tensor(sample_tensor, model.grapharea_size) for sample_tensor in elems_at_t_ls]
+    t_globals_indices_ls = [t_input_lts[b][0][0] for b in range(len(t_input_lts))]
 
-    logits_global = model.linear2global(task_1_out)  # shape=torch.Size([5])
-    predictions_globals = tfunc.log_softmax(logits_global, dim=1)
+    # -------------------- Input --------------------
+    # Input signal n.1: the embedding of the current word
+    if model.include_globalnode_input < 2:
+        t_current_globals_indices_ls = [x_indices[0] - model.last_idx_senses for x_indices in t_globals_indices_ls]
+        t_current_globals_indices = torch.stack(t_current_globals_indices_ls, dim=0)
+        t_word_embeddings = model.E.index_select(dim=0, index=t_current_globals_indices)
+        word_embeddings_ls.append(t_word_embeddings)
+    # Input signal n.2: the node-state of the current word (i.e. its global node) - now with graph batching
+    if model.include_globalnode_input > 0:
+        t_g_nodestates = run_graphnet(t_input_lts, batch_elems_at_t, t_globals_indices_ls, model)
+        currentglobal_nodestates_ls.append(t_g_nodestates)
 
-    return predictions_globals, logits_global
-
-
-###### 1.5b: alternative: standardLM prediction, with a Transformer-XL architecture
-
-##### 1.6: Choose the method to compute the location context / Self-attention query
+##### Choose the method to compute the location context / Self-attention query
 class ContextMethod(Enum):
     AVERAGE = "The context at location t is the average of the last [t-C,...,t] tokens"
     GRU = "The context at location t is the output of a 2-layer GRU"
 
 
-################################
-### 2: Lemmatize global node ###
-################################
-# lemmatize_node() moved to Graph.Adjacencies.py, as lemmatization is also used in graph creation
-
-# ---------------
-# 3: assign =1 to a specific global or sense in the probability distribution
+##### Assign =1 to a specific global or sense in the probability distribution #####
 # ---------------
 def assign_one(target_elements, seq_len, distributed_batch_size, len_output_distr, current_device):
 

@@ -1,13 +1,10 @@
 from Models.ContextAverages import get_archives
-import Utils
 import Filesystem as F
 import os
-import sqlite3
 import Utils
-import pandas as pd
 import logging
 import SenseLabeledCorpus as SLC
-import Models.NumericalIndices as NI
+import Models.DataLoading.NumericalIndices as NI
 import numpy as np
 from collections import deque
 

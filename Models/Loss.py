@@ -13,7 +13,7 @@ import Filesystem as F
 
 ##### For logging #####
 
-def write_doc_logging(model, model_forParameters):
+def write_doc_logging(model):
     logging.info("Model:")
     logging.info(str(model))
     logging.info("Parameters:")
@@ -24,24 +24,11 @@ def write_doc_logging(model, model_forParameters):
     params = sum([np.prod(p.size()) for p in model_parameters])
     logging.info("Number of trainable parameters=" + str(params))
 
-    hyperparams_str = model_forParameters.__class__.__name__.upper()
-    try:
-        if model_forParameters.use_gold_lm:
-            hyperparams_str = hyperparams_str + "_GoldLM"
-        if not (model_forParameters.predict_senses):
-            hyperparams_str = hyperparams_str + "_noSenses"
-        if model_forParameters.include_globalnode_input > 0:
-            hyperparams_str = hyperparams_str + "_withGraph"
-        if model_forParameters.__class__.__name__ not in ["RNN", "MFS"]:
-            hyperparams_str = hyperparams_str + "_K" + str(model_forParameters.K)
-        if model_forParameters.__class__.__name__ in ["SenseContext", "SelfAtt"]:
-            hyperparams_str = hyperparams_str + "_C" + str(model_forParameters.C)
-            hyperparams_str = hyperparams_str + "_ctx" + str(model_forParameters.context_method.name)
-    except Exception:
-        pass # no further hyperparameters were specified
+    model_fname = F.get_model_name(model, args=None)
 
-    logging.info("Hyperparameters: " + hyperparams_str)
-    return hyperparams_str
+    logging.info("Model name and hyperparameters: " + model_fname)
+    return model_fname
+
 
 def record_statistics(epoch_sumlosses_tpl, epoch_numsteps_tpl, correct_predictions_dict):
     sum_epoch_loss_global,sum_epoch_loss_sense = epoch_sumlosses_tpl
@@ -132,8 +119,7 @@ def compute_model_loss(model, batch_input, batch_labels, correct_preds_dict, pol
     # compute the loss for the batch
     loss_global = tfunc.nll_loss(predictions_globals, batch_labels_globals)
 
-    model_forParameters = model.module if torch.cuda.device_count() > 1 and model.__class__.__name__== "DataParallel" else model
-    if model_forParameters.predict_senses:
+    if model.predict_senses:
         loss_all_senses = tfunc.nll_loss(predictions_senses, batch_labels_all_senses, ignore_index=-1)
     else:
         loss_all_senses = torch.tensor(0)

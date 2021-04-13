@@ -1,12 +1,10 @@
 import torch
 import SenseLabeledCorpus as SLC
-import Models.NumericalIndices as NI
+import Models.DataLoading.NumericalIndices as NI
 import logging
 from Utils import DEVICE
 import Graph.Adjacencies as AD
-import VocabularyAndEmbeddings.Vocabulary_Utilities as VU
 import os
-import Filesystem as F
 import Utils
 import io
 import VocabularyAndEmbeddings.Vocabulary_Utilities as VocabUtils
@@ -82,13 +80,11 @@ def standardtextcorpus_generator(txt_corpus_fpath):
 
 ##### The Dataset
 class TextDataset(torch.utils.data.Dataset):
-    def __init__(self, corpus_fpath, corpus_type, inputdata_folder, vocab_df, model,
-                       grapharea_matrix, area_size, graph_dataobj):
+    def __init__(self, corpus_fpath, corpus_type, inputdata_folder, vocab_df, grapharea_matrix, area_size, graph_dataobj):
         self.textcorpus_path = corpus_fpath
         self.sensecorpus_or_text = corpus_type
         self.generator = SLC.read_split(corpus_fpath) if self.sensecorpus_or_text else standardtextcorpus_generator(corpus_fpath)
         self.vocab_df = vocab_df
-        self.nn_model = model
         self.counter = 0
         self.globals_unk_counter = 0
         db_filepath = os.path.join(inputdata_folder, Utils.INDICES_TABLE_DB)

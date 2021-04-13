@@ -61,17 +61,14 @@ class ComputeLogits(torch.nn.Module):
 # We assign it, while keeping the other senses’ softmax at 10-8=~0, as usual
 class SelfAtt(torch.nn.Module):
 
-    def __init__(self, graph_dataobj, grapharea_size, grapharea_matrix, vocabulary_df, embeddings_matrix,
-                 use_gold_lm, include_globalnode_input, batch_size, n_layers, n_hid_units, K, num_C, context_method,
-                 dim_qkv, inputdata_folder):
+    def __init__(self, StandardLM, graph_dataobj, grapharea_size, grapharea_matrix,
+                 vocabulary_df, batch_size, n_layers, n_hid_units, K, context_method, num_C, inputdata_folder, dim_qkv):
 
-        # -------------------- Initialization in common: parameters & globals --------------------
         super(SelfAtt, self).__init__()
 
+        self.StandardLM = StandardLM
         init_model_parameters(self, graph_dataobj, grapharea_size, grapharea_matrix, vocabulary_df,
-                                    include_globalnode_input, use_gold_lm,
-                                    batch_size, n_layers, n_hid_units)
-        init_common_architecture(self, embeddings_matrix, graph_dataobj)
+                                     batch_size, n_layers, n_hid_units)
 
         # -------------------- Senses' architecture --------------------
 
@@ -136,7 +133,7 @@ class SelfAtt(torch.nn.Module):
         # ------------------- Globals ------------------
         seq_len = batch_input_signals.shape[0]
         if not self.use_gold_lm:
-            predictions_globals, logits_globals = predict_globals_withGRU(self, batch_input_signals, seq_len,
+            predictions_globals, _logits_globals = predict_globals_withGRU(self, batch_input_signals, seq_len,
                                                                           distributed_batch_size)
         else:
             predictions_globals = assign_one(batch_labels[:, 0], seq_len, distributed_batch_size,

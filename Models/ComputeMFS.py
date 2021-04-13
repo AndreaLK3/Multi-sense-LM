@@ -3,18 +3,15 @@ import Utils
 import pandas as pd
 import os
 import Models.ExplorePredictions as EP
-import VocabularyAndEmbeddings.ComputeEmbeddings as CE
 import VocabularyAndEmbeddings.Vocabulary as V
 import tables
 import Graph.DefineGraph as DG
 import Graph.Adjacencies as AD
-import Models.NumericalIndices as NI
-from itertools import cycle
+import Models.DataLoading.NumericalIndices as NI
 import sqlite3
-import logging
 import SenseLabeledCorpus as SLC
 from time import time
-import numpy as np
+
 
 # Auxiliary function
 def get_sense_from_idx(senseindices_db_c, sense_index):

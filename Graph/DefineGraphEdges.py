@@ -9,7 +9,7 @@ import Filesystem as F
 import SenseLabeledCorpus as SLC
 import Utils
 from GetKBInputData.LemmatizeNyms import lemmatize_term
-from Models.NumericalIndices import try_to_get_wordnet_sense
+from Models.DataLoading.NumericalIndices import try_to_get_wordnet_sense
 from VocabularyAndEmbeddings import Vocabulary_Utilities as VocabUtils
 
 

@@ -30,26 +30,22 @@ def run_train(model, train_dataloader, valid_dataloader, learning_rate, num_epoc
 
     # -------------------- Step 1: Setup model --------------------
     slc_or_text = train_dataloader.dataset.sensecorpus_or_text
-
     optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
     model.train()
 
     polysense_thresholds = (2,3,5,10,30)
     polysense_globals_dict= Graph.PolysemousWords.get_polysenseglobals_dict(vocab_sources_ls, sp_method, thresholds=polysense_thresholds)
 
-    model_forParameters = model.module if torch.cuda.device_count() > 1 and model.__class__.__name__=="DataParallel" else model
-    model_forParameters.predict_senses = predict_senses
+    model.predict_senses = predict_senses
 
-    Utils.init_logging('Training_' + str(model_forParameters.__class__.__name__) + "_" + Utils.get_timestamp_month_to_sec() + '.log',
-                       loglevel=logging.INFO)
     try:
         logging.info("Using learning_rate=" + str(learning_rate))
-        logging.info("K=" + str(model_forParameters.K))
-        logging.info("C=" + str(model_forParameters.num_C))
-        logging.info("context_method=" + str(model_forParameters.context_method))
+        logging.info("K=" + str(model.K))
+        logging.info("C=" + str(model.num_C))
+        logging.info("context_method=" + str(model.context_method))
     except Exception:
         pass # no further hyperparameters were specified
-    hyperparams_str = Loss.write_doc_logging(model, model_forParameters)
+    model_fname = Loss.write_doc_logging(model)
 
     # -------------------- Step 2: Setup flags --------------------
     steps_logging = 500
@@ -121,7 +117,7 @@ def run_train(model, train_dataloader, valid_dataloader, learning_rate, num_epoc
 
                 # running sum of the training loss
                 sum_epoch_loss_global = sum_epoch_loss_global + loss_global.item()
-                if model_forParameters.predict_senses:
+                if model.predict_senses:
                     sum_epoch_loss_senses = sum_epoch_loss_senses + loss_sense.item() * num_batch_sense_tokens
                     epoch_senselabeled_tokens = epoch_senselabeled_tokens + num_batch_sense_tokens
                     loss = loss_global + loss_sense
@@ -153,8 +149,8 @@ def run_train(model, train_dataloader, valid_dataloader, learning_rate, num_epoc
         logging.info("Models loop interrupted manually by keyboard")
 
     # --------------------- 4) Saving model --------------------
-    logging.info("Proceeding to save the model: " + hyperparams_str + '.model' + ", timestamp: " + Utils.get_timestamp_month_to_sec())
-    torch.save(model, os.path.join(F.FOLDER_MODELS, F.FOLDER_SAVEDMODELS, hyperparams_str + '.model'))
+    logging.info("Proceeding to save the model: " + model_fname + ", timestamp: " + Utils.get_timestamp_month_to_sec())
+    torch.save(model, os.path.join(F.FOLDER_SAVEDMODELS, model_fname))
 
     return model
 
@@ -163,8 +159,7 @@ def run_train(model, train_dataloader, valid_dataloader, learning_rate, num_epoc
 # Auxiliary function: Evaluation on a given dataset, e.g. validation or test set
 def evaluation(evaluation_dataloader, evaluation_dataiter, model, verbose, vocab_sources_ls=(F.WT2, F.SEMCOR),
                sp_method=Utils.SpMethod.FASTTEXT):
-    model_forParameters = model.module if torch.cuda.device_count() > 1 and model.__class__.__name__=="DataParallel" else model
-    including_senses = model_forParameters.predict_senses
+    including_senses = model.predict_senses
 
     polysense_thresholds = (2, 3, 5, 10, 30)
     polysense_globals_dict = Graph.PolysemousWords.get_polysenseglobals_dict(vocab_sources_ls, sp_method)

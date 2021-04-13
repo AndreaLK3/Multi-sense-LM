@@ -1,9 +1,8 @@
 import transformers
-import os
 import Filesystem as F
 import torch
 import Utils
-import StandardLM.TextCorpusReader as TCR
+import Models.StandardLM.TextCorpusReader as TCR
 from math import ceil, inf, exp
 import logging
 import VocabularyAndEmbeddings.Vocabulary as V
@@ -100,24 +99,13 @@ def txl_on_wt2(learning_rate=5e-5, max_num_epochs=100):
     wt2_valid_chunks_ls = get_numerical_corpus(corpus_name=F.WT2, split_name=Utils.VALIDATION,
                                                vocabulary_sources_ls=vocab_sources_ls, chunk_size=512)  # chunk_size=1000
     # for testing purposes, works as using mini-corpora
-    wt2_train_chunks_ls = wt2_train_chunks_ls
-    wt2_valid_chunks_ls = wt2_valid_chunks_ls
-
-    # learning rate schedule, extremes:
-    # max_lr = 1e-4
-    # end_lr = 1e-6
-    # decrease_lr_delta = (end_lr - max_lr) * (1 / len(wt2_train_chunks_ls)) / 10
+    wt2_train_chunks_ls = wt2_train_chunks_ls [0:10]
+    wt2_valid_chunks_ls = wt2_valid_chunks_ls [0:10]
 
     epoch = 1
     best_valid_loss = inf
     while epoch <= max_num_epochs:
         logging.info("Training: epoch n." + str(epoch) + "...")
-        # Learning rate scheduling, i.e. linear with warmup
-        # if epoch == 1:
-        #     epoch_start_lr = max_lr
-        #     lr_delta = decrease_lr_delta
-        # if epoch_start_lr <= end_lr:
-        #     lr_delta = 0
 
         # Training epoch
         train_loss = epoch_on_corpus(wt2_train_chunks_ls, model, optimizer, training_or_test=True)

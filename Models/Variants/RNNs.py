@@ -1,7 +1,7 @@
 import torch
 from torch_geometric.nn import GATConv
 import torch.nn.functional as tfunc
-from Models.Variants.Common import init_model_parameters, init_common_architecture, predict_globals_withGRU, get_input_signals
+from Models.Variants.Common import init_model_parameters, get_input_signals
 from Models.Variants.RNNSteps import rnn_loop
 from torch.nn.parameter import Parameter
 import Utils
@@ -10,15 +10,14 @@ from Models.Variants.RNNSteps import reshape_memories
 
 class RNN(torch.nn.Module):
 
-    def __init__(self, graph_dataobj, grapharea_size, grapharea_matrix, vocabulary_df, embeddings_matrix,
-                 include_globalnode_input, use_gold_lm, batch_size, n_layers, n_hid_units):
+    def __init__(self, StandardLM, graph_dataobj, grapharea_size, grapharea_matrix,
+                 vocabulary_df, batch_size, n_layers, n_hid_units):
 
-        # -------------------- Initialization in common: parameters & globals --------------------
         super(RNN, self).__init__()
 
+        self.StandardLM = StandardLM
         init_model_parameters(self, graph_dataobj, grapharea_size, grapharea_matrix, vocabulary_df,
-                              include_globalnode_input, use_gold_lm, batch_size, n_layers, n_hid_units)
-        init_common_architecture(self, embeddings_matrix, graph_dataobj)
+                                     batch_size, n_layers, n_hid_units)
 
         # -------------------- Senses' architecture --------------------
         self.memory_hn_senses = Parameter(torch.zeros(size=(n_layers, batch_size, int(n_hid_units))),

@@ -68,6 +68,32 @@ def get_folders_graph_input_vocabulary(vocab_sources_ls, sp_method):
     vocabulary_folder = set_directory(os.path.join(FOLDER_VOCABULARY, "_".join(vocab_sources_ls)))
     return graph_folder, inputdata_folder, vocabulary_folder
 
+# Uses either a pre-existing model (accessing its attributes) or CLI arguments
+def get_model_name(model, args):
+    if args is None:
+        model_type = model.__class__.__name__.lower() # selectk
+        args = model
+    else:
+        model_type = args.model_type
+    try:
+        model_fname = model_type
+        if args.use_gold_lm:
+            model_fname = model_fname + "_GoldLM"
+        if args.use_transformer_lm:
+            model_fname = model_fname + "_Transformer"
+        if not (args.predict_senses):
+            model_fname = model_fname + "_noSenses"
+        if args.include_globalnode_input > 0:
+            model_fname = model_fname + "_withGraph"
+        if model_type not in ["rnn", "mfs"]:
+            model_fname = model_fname + "_K" + str(model.K)
+        if model_type in ["sensecontext", "selfatt"]:
+            model_fname = model_fname + "_C" + str(model.C)
+            model_fname = model_fname + "_ctx" + str(model.context_method.name)
+    except Exception:
+        pass # no further hyperparameters were specified
+    return model_fname+".pt"
+
 ### Create the folder at a specified filepath, if it does not exist
 def set_directory(dir_path):
     if os.path.exists(dir_path):

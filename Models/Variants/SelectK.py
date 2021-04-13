@@ -2,8 +2,7 @@ import torch
 from torch_geometric.nn import GATConv
 import torch.nn.functional as tfunc
 import Graph.Adjacencies as AD
-from Models.Variants.Common import predict_globals_withGRU, init_model_parameters, \
-    init_common_architecture, get_input_signals, assign_one
+import Models.Variants.Common as Common
 from Models.Variants.RNNSteps import rnn_loop, reshape_memories
 from Utils import DEVICE
 from torch.nn.parameter import Parameter
@@ -43,19 +42,16 @@ def subtract_probability_mass_from_selected(softmax_selected_senses, delta_to_su
 
 class SelectK(torch.nn.Module):
 
-    def __init__(self, graph_dataobj, grapharea_size, grapharea_matrix, vocabulary_df, embeddings_matrix,
-                 use_gold_lm, include_globalnode_input, batch_size, n_layers, n_hid_units, K):
+    def __init__(self, StandardLM, graph_dataobj, grapharea_size, grapharea_matrix,
+                 vocabulary_df, batch_size, n_layers, n_hid_units, K):
 
-        # -------------------- Initialization in common: parameters & globals --------------------
         super(SelectK, self).__init__()
 
-        init_model_parameters(self, graph_dataobj, grapharea_size, grapharea_matrix, vocabulary_df,
-                              include_globalnode_input, use_gold_lm,
-                              batch_size, n_layers, n_hid_units)
-        init_common_architecture(self, embeddings_matrix, graph_dataobj)
+        self.StandardLM = StandardLM
+        Common.init_model_parameters(self, graph_dataobj, grapharea_size, grapharea_matrix, vocabulary_df,
+                                     batch_size, n_layers, n_hid_units)
 
         # -------------------- Senses' architecture --------------------
-
         self.K = K
         self.grapharea_matrix_neighbours_section = self.grapharea_matrix[:, 0:self.grapharea_size]
 
@@ -76,13 +72,7 @@ class SelectK(torch.nn.Module):
         CURRENT_DEVICE = 'cpu' if not (torch.cuda.is_available()) else 'cuda:' + str(torch.cuda.current_device())
 
         # -------------------- Init --------------------
-        distributed_batch_size = batchinput_tensor.shape[0]
-        if not (distributed_batch_size == self.batch_size) and not self.hidden_state_bsize_adjusted:
-            reshape_memories(distributed_batch_size, self)
-            # hidden_state_bsize_adjusted is set to True in reshape_memories
-
         # T-BPTT: at the start of each batch, we detach_() the hidden state from the graph&history that created it
-        self.memory_hn.detach_()
         self.memory_hn_senses.detach_()
 
         if batchinput_tensor.shape[1] > 1:
@@ -93,11 +83,10 @@ class SelectK(torch.nn.Module):
         word_embeddings_ls = []
         currentglobal_nodestates_ls = []
 
-        # -------------------- Compute input signals -------------------
+        # -------------------- Compute and collect input signals -------------------
         for batch_elements_at_t in time_instants:
-            get_input_signals(self, batch_elements_at_t, word_embeddings_ls, currentglobal_nodestates_ls)
+            Common.get_input_signals(self, batch_elements_at_t, word_embeddings_ls, currentglobal_nodestates_ls)
 
-        # -------------------- Collect input signals
         word_embeddings = torch.stack(word_embeddings_ls, dim=0) if self.include_globalnode_input < 2 else None
         global_nodestates = torch.stack(currentglobal_nodestates_ls,
                                         dim=0) if self.include_globalnode_input > 0 else None
@@ -105,32 +94,27 @@ class SelectK(torch.nn.Module):
                                              [word_embeddings, global_nodestates]))
         batch_input_signals = torch.cat(batch_input_signals_ls, dim=2)
 
-        # ------------------- Globals ------------------
-        seq_len = batch_input_signals.shape[0]
-        if not self.use_gold_lm:
-            predictions_globals, logits_globals = predict_globals_withGRU(self, batch_input_signals, seq_len, distributed_batch_size)
-        else:
-            predictions_globals = assign_one(batch_labels[:,0], seq_len, distributed_batch_size,
-                                            self.last_idx_globals - self.last_idx_senses, CURRENT_DEVICE)
+        predictions_globals = self.StandardLM(batch_input_signals, batch_labels)
 
         # ------------------- Senses -------------------
         # line 1: GRU for senses + linear FF-Models to logits.
+        seq_len = batch_input_signals.shape[0]
         if self.predict_senses:
             task_2_out = rnn_loop(batch_input_signals, model=self, rnn_ls=self.senses_rnn_ls, memory=self.memory_hn_senses)
-            task2_out = task_2_out.reshape(distributed_batch_size * seq_len, task_2_out.shape[2])
+            task2_out = task_2_out.reshape(self.batch_size * seq_len, task_2_out.shape[2])
             logits_senses = self.linear2senses(task2_out)
 
             # line 2: select senses of the k most likely globals
             k_globals_indices = predictions_globals.sort(descending=True).indices[:, 0:self.K]
 
-            senses_softmax = torch.ones((distributed_batch_size * seq_len, self.last_idx_senses)).to(CURRENT_DEVICE)
+            senses_softmax = torch.ones((self.batch_size * seq_len, self.last_idx_senses)).to(CURRENT_DEVICE)
             epsilon = 10 ** (-8)
             senses_softmax = epsilon * senses_softmax  # base probability value for non-selected senses
-            i_senseneighbours_mask = torch.zeros(size=(distributed_batch_size * seq_len, self.last_idx_senses)).to(torch.bool).to(CURRENT_DEVICE)
+            i_senseneighbours_mask = torch.zeros(size=(self.batch_size * seq_len, self.last_idx_senses)).to(torch.bool).to(CURRENT_DEVICE)
 
             sample_k_indices_in_vocab_lls = k_globals_indices.tolist()
 
-            for s in range(distributed_batch_size * seq_len):
+            for s in range(self.batch_size * seq_len):
 
                 k_globals_vocab_indices = sample_k_indices_in_vocab_lls[s]
                 k_globals_lemmatized = [self.vocabulary_lemmatizedList[idx] for idx in k_globals_vocab_indices]

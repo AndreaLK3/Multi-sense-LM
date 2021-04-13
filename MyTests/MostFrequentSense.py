@@ -2,19 +2,13 @@ import Filesystem as F
 import Utils
 import pandas as pd
 import os
-import Models.DataLoading as DL
 import Models.TrainingSetup as T
-import VocabularyAndEmbeddings.ComputeEmbeddings as CE
 import Models.Variants.RNNs as RNNs
 import tables
-import Models.ExplorePredictions as EP
-import Models.NumericalIndices as NI
-from itertools import cycle
-import sqlite3
+import Models.DataLoading.NumericalIndices as NI
 import logging
 import Models.ComputeMFS as MFS
 import SenseLabeledCorpus as SLC
-from scipy import sparse
 import numpy as np
 from time import time
 

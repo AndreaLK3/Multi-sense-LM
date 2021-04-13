@@ -8,15 +8,14 @@ import numpy as np
 
 class MFS(torch.nn.Module):
 
-    def __init__(self, graph_dataobj, grapharea_size, grapharea_matrix, vocabulary_df, embeddings_matrix,
-                 use_gold_lm, include_globalnode_input, batch_size, n_layers, n_hid_units, K, mfs_df):
+    def __init__(self, StandardLM, graph_dataobj, grapharea_size, grapharea_matrix,
+                 vocabulary_df, batch_size, n_layers, n_hid_units, K, mfs_df):
 
-        # -------------------- Initialization in common: parameters & globals --------------------
         super(MFS, self).__init__()
+
+        self.StandardLM = StandardLM
         Common.init_model_parameters(self, graph_dataobj, grapharea_size, grapharea_matrix, vocabulary_df,
-                              include_globalnode_input, use_gold_lm,
-                              batch_size, n_layers, n_hid_units)
-        Common.init_common_architecture(self, embeddings_matrix, graph_dataobj)
+                                     batch_size, n_layers, n_hid_units)
 
         # -------------------- Senses' architecture --------------------
         self.K = K
@@ -48,7 +47,7 @@ class MFS(torch.nn.Module):
         for batch_elements_at_t in time_instants:
             Common.get_input_signals(self, batch_elements_at_t, word_embeddings_ls, currentglobal_nodestates_ls)
 
-        # -------------------- Collect input signals
+        # -------------------- Collect input signals -------------------
         word_embeddings = torch.stack(word_embeddings_ls, dim=0) if self.include_globalnode_input < 2 else None
         global_nodestates = torch.stack(currentglobal_nodestates_ls,
                                         dim=0) if self.include_globalnode_input > 0 else None
@@ -59,7 +58,7 @@ class MFS(torch.nn.Module):
         # ------------------- Globals ------------------
         seq_len = batch_input_signals.shape[0]
         if not self.use_gold_lm:
-            predictions_globals, logits_globals = Common.predict_globals_withGRU(self, batch_input_signals, seq_len, distributed_batch_size)
+            predictions_globals, _logits_globals = Common.predict_globals_withGRU(self, batch_input_signals, seq_len, distributed_batch_size)
         else:
             predictions_globals = Common.assign_one(batch_labels[:,0], seq_len, distributed_batch_size,
                                             self.last_idx_globals - self.last_idx_senses, CURRENT_DEVICE)

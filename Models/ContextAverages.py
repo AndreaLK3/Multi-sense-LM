@@ -1,18 +1,15 @@
 import Graph.Adjacencies as AD
 import Graph.DefineGraph as DG
-import Models.DataLoading as DL
 import Filesystem as F
 import os
 import sqlite3
 import Utils
 import pandas as pd
-import VocabularyAndEmbeddings.ComputeEmbeddings as CE
 import SenseLabeledCorpus as SLC
-import Models.NumericalIndices as NI
+import Models.DataLoading.NumericalIndices as NI
 import numpy as np
 from collections import deque
-import logging
-import warnings
+
 
 def get_archives(vocab_sources_ls, sp_method):
 

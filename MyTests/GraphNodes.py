@@ -1,9 +1,7 @@
 import Graph.DefineGraph as DG
 import Graph.Adjacencies as AD
-import Models.NumericalIndices as NI
-import VocabularyAndEmbeddings.ComputeEmbeddings as CE
+import Models.DataLoading.NumericalIndices as NI
 import Utils
-import random
 import logging
 import os
 import Filesystem as F
