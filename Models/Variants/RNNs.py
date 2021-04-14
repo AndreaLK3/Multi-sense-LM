@@ -23,7 +23,7 @@ class RNN(torch.nn.Module):
         self.memory_hn_senses = Parameter(torch.zeros(size=(n_layers, batch_size, int(n_hid_units))),
                                           requires_grad=False)
         self.senses_rnn_ls = torch.nn.ModuleList(
-            [torch.nn.GRU(input_size=self.concatenated_input_dim if i == 0 else n_hid_units,
+            [torch.nn.GRU(input_size=self.StandardLM.concatenated_input_dim if i == 0 else n_hid_units,
                                                 hidden_size=n_hid_units // 2 if i == n_layers - 1 else n_hid_units, num_layers=1)  # 512
              for i in range(n_layers)])
 

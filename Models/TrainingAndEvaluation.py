@@ -38,6 +38,8 @@ def run_train(model, train_dataloader, valid_dataloader, learning_rate, num_epoc
 
     model.predict_senses = predict_senses
 
+    model_fname = F.get_model_name(model, args=None)
+    Utils.init_logging("Training_" + model_fname.replace(".pt", "") + ".log")
     try:
         logging.info("Using learning_rate=" + str(learning_rate))
         logging.info("K=" + str(model.K))
@@ -45,7 +47,7 @@ def run_train(model, train_dataloader, valid_dataloader, learning_rate, num_epoc
         logging.info("context_method=" + str(model.context_method))
     except Exception:
         pass # no further hyperparameters were specified
-    model_fname = Loss.write_doc_logging(model)
+    Loss.write_doc_logging(model)
 
     # -------------------- Step 2: Setup flags --------------------
     steps_logging = 500
@@ -68,7 +70,7 @@ def run_train(model, train_dataloader, valid_dataloader, learning_rate, num_epoc
             sum_epoch_loss_global = 0
             sum_epoch_loss_senses = 0
 
-            epoch_step = 0
+            epoch_step = 1
             epoch_senselabeled_tokens = 0
 
             predictions_history_dict = init_accuracy_dict(polysense_thresholds)
@@ -168,7 +170,7 @@ def evaluation(evaluation_dataloader, evaluation_dataiter, model, verbose, vocab
     sum_eval_loss_globals = 0
     sum_eval_loss_senses = 0
     eval_correct_predictions_dict = init_accuracy_dict(polysense_thresholds)
-    evaluation_step = 0
+    evaluation_step = 1
     evaluation_senselabeled_tokens = 0
     logging_step = 500
 

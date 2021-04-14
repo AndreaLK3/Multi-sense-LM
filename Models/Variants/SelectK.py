@@ -58,12 +58,14 @@ class SelectK(torch.nn.Module):
         self.memory_hn_senses = Parameter(torch.zeros(size=(n_layers, batch_size, int(n_hid_units))),
                                           requires_grad=False)
         self.senses_rnn_ls = torch.nn.ModuleList(
-            [torch.nn.GRU(input_size=self.concatenated_input_dim if i == 0 else n_hid_units,
+            [torch.nn.GRU(input_size=self.StandardLM.concatenated_input_dim if i == 0 else n_hid_units,
                           hidden_size=n_hid_units // 2 if i == n_layers - 1 else n_hid_units, num_layers=1)  # 512
              for i in range(n_layers)])
 
         self.linear2senses = torch.nn.Linear(in_features=n_hid_units // 2,  # 512
                                              out_features=self.last_idx_senses, bias=True)
+        self.select_first_indices = Parameter(torch.tensor(list(range(2 * n_hid_units))).to(torch.float32),
+                                               requires_grad=False)
 
 
     # ---------------------------------------- Forward call ----------------------------------------
@@ -74,7 +76,6 @@ class SelectK(torch.nn.Module):
         # -------------------- Init --------------------
         # T-BPTT: at the start of each batch, we detach_() the hidden state from the graph&history that created it
         self.memory_hn_senses.detach_()
-
         if batchinput_tensor.shape[1] > 1:
             time_instants = torch.chunk(batchinput_tensor, chunks=batchinput_tensor.shape[1], dim=1)
         else:
@@ -87,14 +88,13 @@ class SelectK(torch.nn.Module):
         for batch_elements_at_t in time_instants:
             Common.get_input_signals(self, batch_elements_at_t, word_embeddings_ls, currentglobal_nodestates_ls)
 
-        word_embeddings = torch.stack(word_embeddings_ls, dim=0) if self.include_globalnode_input < 2 else None
+        word_embeddings = torch.stack(word_embeddings_ls, dim=0)
         global_nodestates = torch.stack(currentglobal_nodestates_ls,
-                                        dim=0) if self.include_globalnode_input > 0 else None
+                                        dim=0) if self.StandardLM.include_globalnode_input > 0 else None
         batch_input_signals_ls = list(filter(lambda signal: signal is not None,
                                              [word_embeddings, global_nodestates]))
         batch_input_signals = torch.cat(batch_input_signals_ls, dim=2)
-
-        predictions_globals = self.StandardLM(batch_input_signals, batch_labels)
+        predictions_globals, _ = self.StandardLM(batchinput_tensor, batch_labels)
 
         # ------------------- Senses -------------------
         # line 1: GRU for senses + linear FF-Models to logits.

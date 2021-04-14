@@ -1,7 +1,6 @@
 from enum import Enum
 import torch
-from torch.nn import functional as tfunc
-from torch.nn.parameter import Parameter
+import logging
 from Graph.Adjacencies import lemmatize_node
 from Utils import DEVICE
 import Utils
@@ -9,7 +8,8 @@ from torch_geometric.nn import GATConv
 from Models.Variants.RNNSteps import rnn_loop
 
 ##### Initialization of: graph_dataobj, grapharea_matrix, vocabulary_lists & more
-def init_model_parameters(model, graph_dataobj, grapharea_size, grapharea_matrix, vocabulary_df, batch_size, hidden_layers, hidden_units):
+def init_model_parameters(model, graph_dataobj, grapharea_size, grapharea_matrix,
+                          vocabulary_df, batch_size, hidden_layers, hidden_units):
     model.grapharea_matrix = grapharea_matrix
     model.grapharea_size = grapharea_size
 
@@ -49,7 +49,6 @@ def unpack_to_input_tpl(in_tensor, grapharea_size, max_edges):
     edge_type_indices = list(map(lambda idx: idx + grapharea_size + 2 * max_edges,
                                  [(in_tensor[grapharea_size + 2 * max_edges:] != -1).nonzero().flatten()]))
     edge_type = in_tensor[edge_type_indices]
-
     edge_index = torch.stack([edge_sources, edge_destinations], dim=0)
 
     return (x_indices, edge_index, edge_type)
@@ -88,6 +87,9 @@ def run_graphnet(t_input_lts, batch_elems_at_t, t_globals_indices_ls, model):
 
 # Starting from the batch, collect the input signals: word embeddings, and possibly graph node embeddings
 def get_input_signals(model, batch_elements_at_t, word_embeddings_ls, currentglobal_nodestates_ls):
+    if model.__class__.__name__.lower() != "standardlm":
+        model = model.StandardLM
+
     batch_elems_at_t = batch_elements_at_t.squeeze(dim=1)
     elems_at_t_ls = batch_elements_at_t.chunk(chunks=batch_elems_at_t.shape[0], dim=0)
 

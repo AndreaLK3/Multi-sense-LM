@@ -1,8 +1,8 @@
 import torch.nn.functional as tfunc
 from math import sqrt
 import torch
-from Models.Variants.Common import predict_globals_withGRU, init_model_parameters, init_common_architecture, get_input_signals, ContextMethod, assign_one
-from Models.Variants.RNNSteps import reshape_memories, reshape_tensor, rnn_loop
+from Models.Variants.Common import init_model_parameters, get_input_signals, ContextMethod, assign_one
+from Models.Variants.RNNSteps import reshape_tensor, rnn_loop
 from torch.nn.parameter import Parameter
 import Utils
 from Models.Variants.SelectK import get_senseneighbours_of_k_globals
@@ -132,12 +132,7 @@ class SelfAtt(torch.nn.Module):
 
         # ------------------- Globals ------------------
         seq_len = batch_input_signals.shape[0]
-        if not self.use_gold_lm:
-            predictions_globals, _logits_globals = predict_globals_withGRU(self, batch_input_signals, seq_len,
-                                                                          distributed_batch_size)
-        else:
-            predictions_globals = assign_one(batch_labels[:, 0], seq_len, distributed_batch_size,
-                                             self.last_idx_globals - self.last_idx_senses, CURRENT_DEVICE)
+        predictions_globals = self.StandardLM(batch_input_signals, batch_labels)
 
         # ------------------- Senses -------------------
         if self.predict_senses:

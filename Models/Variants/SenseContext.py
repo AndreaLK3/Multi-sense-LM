@@ -30,7 +30,7 @@ def init_context_handling(model, context_method):
         # location_context will be reshaped
     elif model.context_method == Common.ContextMethod.GRU:
         model.context_rnn_ls = torch.nn.ModuleList(
-            [torch.nn.GRU(input_size=model.concatenated_input_dim if i == 0 else model.hidden_size,
+            [torch.nn.GRU(input_size=model.StandardLM.concatenated_input_dim if i == 0 else model.hidden_size,
                           hidden_size=model.hidden_size if i < model.n_layers - 1 else model.E.shape[1], num_layers=1)
              for i in range(model.n_layers)])
         model.location_context = Parameter(torch.zeros(size=(200, model.batch_size, model.E.shape[1])), requires_grad=True)  # grad
@@ -107,12 +107,7 @@ class SenseContext(torch.nn.Module):
 
         # ------------------- Globals ------------------
         seq_len = batch_input_signals.shape[0]
-        if not self.use_gold_lm:
-            predictions_globals, _logits_globals = Common.predict_globals_withGRU(self, batch_input_signals, seq_len,
-                                                                          distributed_batch_size)
-        else:
-            predictions_globals = Common.assign_one(batch_labels[:, 0], seq_len, distributed_batch_size,
-                                             self.last_idx_globals - self.last_idx_senses, CURRENT_DEVICE)
+        predictions_globals = self.StandardLM(batch_input_signals, batch_labels)
 
         # ------------------- Senses -------------------
         if self.predict_senses:

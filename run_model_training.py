@@ -1,18 +1,18 @@
 import argparse
 import Models.TrainingSetup as TS
 import Models.TrainingAndEvaluation as TE
-import logging
 from time import time
 import Utils
-from run_model_pretraining import get_standardLM_filename
-import Filesystem as F
+from Filesystem import get_model_name
+import copy
 
-def parse_arguments():
+def parse_training_arguments():
+
     parser = argparse.ArgumentParser(description='Creating a model, training it on the sense-labeled corpus.')
     # Necessary parameters
     parser.add_argument('--model_type', type=str, choices=['rnn', 'selectk', 'mfs', 'sensecontext', 'selfatt'],
                         help='model to use for Multi-sense Language Modeling')
-    parser.add_argument('--pretrained_lm_type', type=str, choices=['gru', 'transformer', 'gold_lm'],
+    parser.add_argument('--standard_lm', type=str, choices=['gru', 'transformer', 'gold_lm'],
                         help='Which pre-trained instrument to load for standard Language Modeling subtask: '
                              'GRU, Transformer-XL, or reading ahead the correct next word')
 
@@ -43,17 +43,19 @@ def parse_arguments():
     return args
 
 
-args = parse_arguments()
+args = parse_training_arguments()
+Utils.init_logging("starting_run_model_training.log")
 
-args_to_load_standardlm = args
-args_to_load_standardlm.model_type = args.pretrained_lm_type
-standardLM_model_fname = get_standardLM_filename(args_to_load_standardlm)
+args_to_load_standardlm = copy.deepcopy(args)
+args_to_load_standardlm.model_type = "standardlm"
+standardLM_model_fname = get_model_name(model=None, args=args_to_load_standardlm)
 standardLM_model = TS.load_model_from_file(standardLM_model_fname)
 
 t0 = time()
+
 model, train_dataloader, valid_dataloader = TS.setup_training_on_SemCor(standardLM_model, model_type=args.model_type,
                              K=args.K, context_method_id=args.context_method, C=args.C,
-                             dim_qkv=300, grapharea_size=32, batch_size=32, seq_len=35)
+                             dim_qkv=300, grapharea_size=32, batch_size=1, seq_len=4)
 
 final_model = TE.run_train(model, train_dataloader, valid_dataloader,
                            learning_rate=args.learning_rate, num_epochs=args.num_epochs, predict_senses=True)

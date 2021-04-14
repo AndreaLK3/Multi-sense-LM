@@ -2,13 +2,13 @@ import argparse
 import os
 import Filesystem as F
 import torch
-import logging
-from Models.TrainingSetup import get_objects, setup_corpus, setup_pretraining_on_WT2
+
+from Filesystem import get_standardLM_filename
+from Models.TrainingSetup import get_objects, setup_pretraining_on_WT2
 from Models.TrainingAndEvaluation import run_train
-import itertools
 import Utils
 
-def parse_arguments():
+def parse_pretraining_arguments():
     parser = argparse.ArgumentParser(description='Creating a StandardLM model, training it on WikiText-2.')
 
     parser.add_argument('--model_type', type=str, choices=['gru', 'transformer', 'gold_lm'],
@@ -29,25 +29,15 @@ def parse_arguments():
     args = parser.parse_args()
     return args
 
-def get_standardLM_filename(args):
-    model_type = "StandardLM_" + args.model_type.lower()
-    model_name = model_type
-    if args.use_graph_input:
-        model_name = model_name + "_withGraph"
-
-    return model_name + ".pt"
-
-
-args = parse_arguments()
+args = parse_pretraining_arguments()
 
 if args.random_seed != 0:
-    torch.manual_seed(args.random_seed )
+    torch.manual_seed(args.random_seed)
     if torch.cuda.is_available():
         torch.cuda.manual_seed_all(args.random_seed)
 
 # ----- Defining the name, and loading the model object -----
 model_name = get_standardLM_filename(args)
-Utils.init_logging("Pretraining_" + model_name.replace(".pt", "") + ".log")
 saved_model_fpath = os.path.join(F.FOLDER_SAVEDMODELS, model_name)
 
 # ----- Load objects: graph, etc.. Currently using default vocabulary sources and sp_method -----
@@ -64,7 +54,7 @@ else: # GRU and gold_lm
     seq_len = 35
 
 standardLM_model, train_dataloader, valid_dataloader = \
-    setup_pretraining_on_WT2(args.use_graph_input, args.use_gold_lm, args.use_transformer_lm,
+    setup_pretraining_on_WT2(args.model_type, args.use_graph_input,
                         batch_size, seq_len,
                         vocab_sources_ls, sp_method, grapharea_size=32)
 

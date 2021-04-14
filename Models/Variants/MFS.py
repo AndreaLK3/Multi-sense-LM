@@ -57,11 +57,7 @@ class MFS(torch.nn.Module):
 
         # ------------------- Globals ------------------
         seq_len = batch_input_signals.shape[0]
-        if not self.use_gold_lm:
-            predictions_globals, _logits_globals = Common.predict_globals_withGRU(self, batch_input_signals, seq_len, distributed_batch_size)
-        else:
-            predictions_globals = Common.assign_one(batch_labels[:,0], seq_len, distributed_batch_size,
-                                            self.last_idx_globals - self.last_idx_senses, CURRENT_DEVICE)
+        predictions_globals = self.StandardLM(batch_input_signals, batch_labels)
 
         # ------------------- Senses : pick MFS of the K=1 candidate -------------------
         if self.predict_senses:

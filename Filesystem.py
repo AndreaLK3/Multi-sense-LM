@@ -79,19 +79,33 @@ def get_model_name(model, args):
         model_fname = model_type
         if args.use_gold_lm:
             model_fname = model_fname + "_GoldLM"
+    except Exception: pass
+    try:
         if args.use_transformer_lm:
             model_fname = model_fname + "_Transformer"
-        if not (args.predict_senses):
+    except Exception:
+        pass
+    try:
+        if not (args.predict_senses) and model_type != "standardlm":
             model_fname = model_fname + "_noSenses"
-        if args.include_globalnode_input > 0:
-            model_fname = model_fname + "_withGraph"
+    except Exception:
+        pass
+    try:
         if model_type not in ["rnn", "mfs"]:
             model_fname = model_fname + "_K" + str(model.K)
+    except Exception:
+        pass
+    try:
         if model_type in ["sensecontext", "selfatt"]:
             model_fname = model_fname + "_C" + str(model.C)
             model_fname = model_fname + "_ctx" + str(model.context_method.name)
     except Exception:
-        pass # no further hyperparameters were specified
+        pass
+    try:
+        if args.include_globalnode_input > 0:
+            model_fname = model_fname + "_withGraph"
+    except Exception:
+        pass
     return model_fname+".pt"
 
 ### Create the folder at a specified filepath, if it does not exist
@@ -101,3 +115,12 @@ def set_directory(dir_path):
     else:
         os.makedirs(dir_path)
     return dir_path
+
+
+def get_standardLM_filename(args):
+    model_type = "StandardLM_" + args.model_type.lower()
+    model_name = model_type
+    if args.use_graph_input:
+        model_name = model_name + "_withGraph"
+
+    return model_name + ".pt"
