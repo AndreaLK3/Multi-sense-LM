@@ -75,11 +75,13 @@ def get_model_name(model, args):
         args = model
     else:
         model_type = args.model_type
+        model = args
+    model_fname = model_type
     try:
-        model_fname = model_type
         if args.use_gold_lm:
             model_fname = model_fname + "_GoldLM"
-    except Exception: pass
+    except Exception:
+        pass
     try:
         if args.use_transformer_lm:
             model_fname = model_fname + "_Transformer"

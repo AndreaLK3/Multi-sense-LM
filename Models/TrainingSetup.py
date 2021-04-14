@@ -64,7 +64,7 @@ def get_objects(vocab_sources_ls, sp_method=Utils.SpMethod.FASTTEXT, grapharea_s
 def create_standardLM_model(objects, model_type, include_graph_input, batch_size):
     graph_dataobj, grapharea_size, grapharea_matrix, vocabulary_df, embeddings_matrix, inputdata_folder = objects
     standardLM_model = StandardLM.StandardLM(graph_dataobj, grapharea_size, embeddings_matrix,
-                 model_type, include_graph_input, batch_size)
+                 model_type, include_graph_input, vocabulary_df, batch_size)
     return standardLM_model
 
 
@@ -119,11 +119,11 @@ def setup_pretraining_on_WT2(model_type, include_graph_input, batch_size, seq_le
     standardLM_model = create_standardLM_model(objects, model_type, include_graph_input, batch_size)
     standardLM_model.to(DEVICE)
 
-    # corpus_train_fpath = os.path.join(F.CORPORA_LOCATIONS[F.WT2], F.WT_TRAIN_FILE)
-    # corpus_valid_fpath = os.path.join(F.CORPORA_LOCATIONS[F.WT2], F.WT_VALID_FILE)
+    corpus_train_fpath = os.path.join(F.CORPORA_LOCATIONS[F.WT2], F.WT_TRAIN_FILE)
+    corpus_valid_fpath = os.path.join(F.CORPORA_LOCATIONS[F.WT2], F.WT_VALID_FILE)
     # For mini-experiments:
-    corpus_train_fpath = os.path.join(F.FOLDER_MYTESTS, F.FOLDER_MINICORPORA, F.FOLDER_STANDARDTEXT, F.WT_TRAIN_FILE)
-    corpus_valid_fpath = os.path.join(F.FOLDER_MYTESTS, F.FOLDER_MINICORPORA, F.FOLDER_STANDARDTEXT, F.WT_VALID_FILE)
+    # corpus_train_fpath = os.path.join(F.FOLDER_MYTESTS, F.FOLDER_MINICORPORA, F.FOLDER_STANDARDTEXT, F.WT_TRAIN_FILE)
+    # corpus_valid_fpath = os.path.join(F.FOLDER_MYTESTS, F.FOLDER_MINICORPORA, F.FOLDER_STANDARDTEXT, F.WT_VALID_FILE)
 
     slc_or_text = False
     train_dataset, train_dataloader = setup_corpus(objects, corpus_train_fpath, slc_or_text, gr_in_voc_folders,
@@ -145,11 +145,11 @@ def setup_training_on_SemCor(standardLM_model, model_type=None, K=1, context_met
     model.to(DEVICE)
     standardLM_model.to(DEVICE)
 
-    # corpus_train_fpath = os.path.join(F.CORPORA_LOCATIONS[F.SEMCOR], F.FOLDER_TRAIN)
-    # corpus_valid_fpath = os.path.join(F.CORPORA_LOCATIONS[F.SEMCOR], F.FOLDER_VALIDATION)
+    corpus_train_fpath = os.path.join(F.CORPORA_LOCATIONS[F.SEMCOR], F.FOLDER_TRAIN)
+    corpus_valid_fpath = os.path.join(F.CORPORA_LOCATIONS[F.SEMCOR], F.FOLDER_VALIDATION)
     # For mini-experiments:
-    corpus_train_fpath = os.path.join(F.FOLDER_MYTESTS, F.FOLDER_MINICORPORA, F.FOLDER_SENSELABELED, F.FOLDER_TRAIN)
-    corpus_valid_fpath = os.path.join(F.FOLDER_MYTESTS, F.FOLDER_MINICORPORA, F.FOLDER_SENSELABELED, F.FOLDER_VALIDATION)
+    # corpus_train_fpath = os.path.join(F.FOLDER_MYTESTS, F.FOLDER_MINICORPORA, F.FOLDER_SENSELABELED, F.FOLDER_TRAIN)
+    # corpus_valid_fpath = os.path.join(F.FOLDER_MYTESTS, F.FOLDER_MINICORPORA, F.FOLDER_SENSELABELED, F.FOLDER_VALIDATION)
     slc_or_text = True
 
     train_dataset, train_dataloader = setup_corpus(objects, corpus_train_fpath, slc_or_text, gr_in_voc_folders,

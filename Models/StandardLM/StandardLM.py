@@ -12,11 +12,16 @@ import Models.StandardLM.MiniTransformerXL as TXL
 ##### This constitutes the class StandardLM: a component of the model variants (wrappers) that also address the senses
 
 ##### 1.1: Initializing parameters
-def init_standardLM_model_parameters(model, graph_dataobj, grapharea_size, model_type, include_globalnode_input, batch_size):
+def init_standardLM_model_parameters(model, graph_dataobj, grapharea_size, model_type, include_globalnode_input,
+                                     vocabulary_df, batch_size):
     model.grapharea_size = grapharea_size
     model.include_globalnode_input = include_globalnode_input
+    model.vocabulary_df = vocabulary_df
+    model.vocabulary_wordList = vocabulary_df['word'].to_list().copy()
+    model.vocabulary_lemmatizedList = vocabulary_df['lemmatized_form'].to_list().copy()
 
     model.graph_dataobj = graph_dataobj
+    model.first_idx_dummySenses = Utils.compute_startpoint_dummySenses(graph_dataobj) # used to lemmatizeNode in GNNs
     model.last_idx_senses = graph_dataobj.node_types.tolist().index(1)
     model.last_idx_globals = graph_dataobj.node_types.tolist().index(2)
 
@@ -94,12 +99,14 @@ def predict_globals_withTXL(model, batch_input_signals, seq_len, batch_size):
 #####
 class StandardLM(torch.nn.Module):
 
-    def __init__(self, graph_dataobj, grapharea_size, embeddings_matrix, model_type, include_graph_input, batch_size):
+    def __init__(self, graph_dataobj, grapharea_size, embeddings_matrix, model_type, include_graph_input,
+                 vocabulary_df, batch_size):
 
         # -------------------- Initialization in common: parameters & globals --------------------
         super(StandardLM, self).__init__()
 
-        init_standardLM_model_parameters(self, graph_dataobj, grapharea_size, model_type, include_graph_input, batch_size)
+        init_standardLM_model_parameters(self, graph_dataobj, grapharea_size, model_type, include_graph_input, vocabulary_df,
+                                         batch_size)
         init_common_architecture(self, embeddings_matrix, graph_dataobj)
 
 

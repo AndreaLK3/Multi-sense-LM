@@ -18,12 +18,12 @@ def parse_pretraining_arguments():
                         help='Whether to use the GNN input from the dictionary graph alongside the pre-trained word'
                              ' embeddings.')
 
-    parser.add_argument('--learning_rate', type=float, default=5e-5,
+    parser.add_argument('--learning_rate', type=float, default=1e-4,
                         help='learning rate for training the model; it is a parameter of the Adam optimizer')
     parser.add_argument('--sp_method', type=str, default='fasttext', choices=['fasttext', 'transformer'],
                         help="Which method is used to create the single-prototype embeddings: FastText or Transformer")
     parser.add_argument('--random_seed', type=int, default=1,
-                        help="We can specify a randomization seed !=0, for reproducibility of experiments")
+                        help="We can specify a randomization seed !=0, for reproducibility of experiments. Default 1")
 
 
     args = parser.parse_args()

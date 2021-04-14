@@ -36,8 +36,8 @@ def parse_training_arguments():
                              ' 0=average of the last C tokens; 1=GRU with 3 layers')
     parser.add_argument('--C', type=int, default=20,
                         help='number of previous tokens to average to get the context representation (if used)')
-    parser.add_argument('--random_seed', type=int, default=0,
-                        help='We can specify a random seed != 0 for reproducibility')
+    parser.add_argument('--random_seed', type=int, default=1,
+                        help='We can specify a random seed != 0 for reproducibility. Default 1')
 
     args = parser.parse_args()
     return args
@@ -55,7 +55,7 @@ t0 = time()
 
 model, train_dataloader, valid_dataloader = TS.setup_training_on_SemCor(standardLM_model, model_type=args.model_type,
                              K=args.K, context_method_id=args.context_method, C=args.C,
-                             dim_qkv=300, grapharea_size=32, batch_size=1, seq_len=4)
+                             dim_qkv=300, grapharea_size=32, batch_size=32, seq_len=35)
 
 final_model = TE.run_train(model, train_dataloader, valid_dataloader,
                            learning_rate=args.learning_rate, num_epochs=args.num_epochs, predict_senses=True)

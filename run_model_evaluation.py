@@ -73,8 +73,8 @@ if model.StandardLM.use_transformer_lm:
     batch_size = 1
     seq_len = 512
 else: # GRU and gold_lm
-    batch_size = 1
-    seq_len = 4
+    batch_size = 32
+    seq_len = 35
 
 # ----- Load objects: graph, etc.. Currently using default vocabulary sources and sp_method -----
 vocab_sources_ls = [F.WT2, F.SEMCOR]
