@@ -84,7 +84,7 @@ class SelectK(torch.nn.Module):
         word_embeddings_ls = []
         currentglobal_nodestates_ls = []
 
-        # -------------------- Compute and collect input signals -------------------
+        # -------------------- Compute and collect input signals; predict globals -------------------
         for batch_elements_at_t in time_instants:
             Common.get_input_signals(self, batch_elements_at_t, word_embeddings_ls, currentglobal_nodestates_ls)
 

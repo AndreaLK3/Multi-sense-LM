@@ -80,11 +80,11 @@ def create_model(model_type, standardLM_model, objects, K, context_method, C, di
     elif model_type.lower() == 'sensecontext':
         model = SC.SenseContext(standardLM_model, graph_dataobj, grapharea_size, grapharea_matrix,
                  vocabulary_df, batch_size=batch_size, n_layers=3, n_hid_units=1024,
-                 context_method=context_method, num_C=C, inputdata_folder=inputdata_folder, K=K)
+                 context_method=context_method, C=C, inputdata_folder=inputdata_folder, K=K)
     elif model_type.lower() == 'selfatt':
         model = SA.SelfAtt(standardLM_model, graph_dataobj, grapharea_size, grapharea_matrix,
                  vocabulary_df, batch_size=batch_size, n_layers=3, n_hid_units=1024,
-                 context_method=context_method, num_C=C, inputdata_folder=inputdata_folder, dim_qkv=dim_qkv, K=K)
+                 context_method=context_method, C=C, inputdata_folder=inputdata_folder, dim_qkv=dim_qkv, K=K)
     elif model_type.lower() == 'mfs':
         mfs_df = pd.read_hdf(F.MFS_H5_FPATH)
         model = MFS.MFS(StandardLM, graph_dataobj, grapharea_size, grapharea_matrix,

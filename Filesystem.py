@@ -68,46 +68,52 @@ def get_folders_graph_input_vocabulary(vocab_sources_ls, sp_method):
     vocabulary_folder = set_directory(os.path.join(FOLDER_VOCABULARY, "_".join(vocab_sources_ls)))
     return graph_folder, inputdata_folder, vocabulary_folder
 
-# Uses either a pre-existing model (accessing its attributes) or CLI arguments
+# Get the name of a model for loading/saving, using either a pre-existing model (accessing its attributes) or CLI arguments
+def get_model_name_from_arguments(args):
+    model_fname = args.model_type
+    if args.standard_lm == "transformer":
+        model_fname = model_fname + "_TransformerLM"
+    elif args.standard_lm == "gold_lm":
+        model_fname = model_fname + "_GoldLM"
+    if args.use_graph_input is True:
+        model_fname = model_fname + "_withGraph"
+
+    if args.model_type not in ["rnn", "mfs", "standardlm"]:
+        model_fname = model_fname + "_K" + str(args.K)
+    if args.model_type  in ["sensecontext", "selfatt"]:
+        model_fname = model_fname + "_C" + str(args.C)
+        if args.context_method_id <= 0:
+            context_method_name = "AVERAGE"
+        else:
+            context_method_name = "GRU"
+        model_fname = model_fname + "_ctx" + str(context_method_name)
+    return model_fname
+
+
 def get_model_name(model, args):
-    if args is None:
-        model_type = model.__class__.__name__.lower() # selectk
-        args = model
-    else:
-        model_type = args.model_type
-        model = args
+    if model is None:
+        return get_model_name_from_arguments(args)+".pt"
+    model_type = model.__class__.__name__.lower()  # e.g. selectk
     model_fname = model_type
-    try:
-        if args.use_gold_lm:
+
+    if model.StandardLM.use_gold_lm:  # problem: this is in the StandardLM sub-object
             model_fname = model_fname + "_GoldLM"
-    except Exception:
-        pass
-    try:
-        if args.use_transformer_lm:
+    if model.StandardLM.use_transformer_lm:
             model_fname = model_fname + "_Transformer"
-    except Exception:
-        pass
-    try:
-        if not (args.predict_senses) and model_type != "standardlm":
-            model_fname = model_fname + "_noSenses"
-    except Exception:
-        pass
-    try:
-        if model_type not in ["rnn", "mfs"]:
-            model_fname = model_fname + "_K" + str(model.K)
-    except Exception:
-        pass
-    try:
-        if model_type in ["sensecontext", "selfatt"]:
+
+    if model.StandardLM.include_globalnode_input > 0:
+            model_fname = model_fname + "_withGraph"
+
+    if not (model.predict_senses) and model_type != "standardlm":
+        model_fname = model_fname + "_noSenses"
+
+    if model_type not in ["rnn", "mfs", "standardlm"]:
+        model_fname = model_fname + "_K" + str(model.K)
+
+    if model_type in ["sensecontext", "selfatt"]:
             model_fname = model_fname + "_C" + str(model.C)
             model_fname = model_fname + "_ctx" + str(model.context_method.name)
-    except Exception:
-        pass
-    try:
-        if args.include_globalnode_input > 0:
-            model_fname = model_fname + "_withGraph"
-    except Exception:
-        pass
+
     return model_fname+".pt"
 
 ### Create the folder at a specified filepath, if it does not exist

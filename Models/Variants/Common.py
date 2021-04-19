@@ -9,7 +9,7 @@ from Models.Variants.RNNSteps import rnn_loop
 
 ##### Initialization of: graph_dataobj, grapharea_matrix, vocabulary_lists & more
 def init_model_parameters(model, graph_dataobj, grapharea_size, grapharea_matrix,
-                          vocabulary_df, batch_size, hidden_layers, hidden_units):
+                          vocabulary_df, batch_size, n_layers, hidden_units):
     model.grapharea_matrix = grapharea_matrix
     model.grapharea_size = grapharea_size
 
@@ -25,8 +25,8 @@ def init_model_parameters(model, graph_dataobj, grapharea_size, grapharea_matrix
 
     # These are used for the Senses' GRU
     model.batch_size = batch_size
-    model.hidden_layers = hidden_layers
-    model.hidden_units = hidden_units
+    model.n_layers = n_layers
+    model.hidden_size = hidden_units
 
     return
 

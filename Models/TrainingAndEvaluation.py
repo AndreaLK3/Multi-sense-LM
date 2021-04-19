@@ -43,7 +43,7 @@ def run_train(model, train_dataloader, valid_dataloader, learning_rate, num_epoc
     try:
         logging.info("Using learning_rate=" + str(learning_rate))
         logging.info("K=" + str(model.K))
-        logging.info("C=" + str(model.num_C))
+        logging.info("C=" + str(model.C))
         logging.info("context_method=" + str(model.context_method))
     except Exception:
         pass # no further hyperparameters were specified
