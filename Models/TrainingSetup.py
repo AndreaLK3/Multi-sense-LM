@@ -119,11 +119,11 @@ def setup_pretraining_on_WT2(model_type, include_graph_input, batch_size, seq_le
     standardLM_model = create_standardLM_model(objects, model_type, include_graph_input, batch_size)
     standardLM_model.to(DEVICE)
 
-    corpus_train_fpath = os.path.join(F.CORPORA_LOCATIONS[F.WT2], F.WT_TRAIN_FILE)
-    corpus_valid_fpath = os.path.join(F.CORPORA_LOCATIONS[F.WT2], F.WT_VALID_FILE)
+    # corpus_train_fpath = os.path.join(F.CORPORA_LOCATIONS[F.WT2], F.WT_TRAIN_FILE)
+    # corpus_valid_fpath = os.path.join(F.CORPORA_LOCATIONS[F.WT2], F.WT_VALID_FILE)
     # For mini-experiments:
-    # corpus_train_fpath = os.path.join(F.FOLDER_MYTESTS, F.FOLDER_MINICORPORA, F.FOLDER_STANDARDTEXT, F.WT_TRAIN_FILE)
-    # corpus_valid_fpath = os.path.join(F.FOLDER_MYTESTS, F.FOLDER_MINICORPORA, F.FOLDER_STANDARDTEXT, F.WT_VALID_FILE)
+    corpus_train_fpath = os.path.join(F.FOLDER_MYTESTS, F.FOLDER_MINICORPORA, F.FOLDER_STANDARDTEXT, F.WT_TRAIN_FILE)
+    corpus_valid_fpath = os.path.join(F.FOLDER_MYTESTS, F.FOLDER_MINICORPORA, F.FOLDER_STANDARDTEXT, F.WT_VALID_FILE)
 
     slc_or_text = False
     train_dataset, train_dataloader = setup_corpus(objects, corpus_train_fpath, slc_or_text, gr_in_voc_folders,

@@ -56,7 +56,8 @@ def init_common_architecture(model, embeddings_matrix, graph_dataobj):
     # -------------------- The networks --------------------
     if not model.use_gold_lm:
         if model.use_transformer_lm:
-            model.standard_lm_transformer = TXL.get_mini_txl_modelobj() # pre-defined model parameters: 12 layers, etc.
+            model.standard_lm_transformer = TXL.get_mini_txl_modelobj(use_graph_input=model.include_globalnode_input) # pre-defined model parameters: 12 layers, etc.
+            model.memory_hn = Parameter(torch.zeros(size=(1,1,1)), requires_grad=False) # here just a dummy
         else:
             model.hidden_size = 1024
             model.n_layers = 3
@@ -69,7 +70,7 @@ def init_common_architecture(model, embeddings_matrix, graph_dataobj):
 
             model.memory_hn = Parameter(torch.zeros(size=(model.n_layers, model.batch_size, model.hidden_size)),
                                     requires_grad=False)
-            model.select_first_indices = Parameter(torch.tensor(list(range(2 * model.hidden_size))).to(torch.float32),
+        model.select_first_indices = Parameter(torch.tensor(list(range(2048))).to(torch.float32),
                                                    requires_grad=False)
 
 
@@ -93,7 +94,11 @@ def predict_globals_withGRU(model, batch_input_signals, seq_len, batch_size):
 
 # --- 1.5b: alternative: standardLM with a Transformer-XL architecture
 def predict_globals_withTXL(model, batch_input_signals, seq_len, batch_size):
-    return model.standard_lm_transformer(batch_input_signals)
+    output_obj = model.standard_lm_transformer(inputs_embeds=batch_input_signals)
+    probabilities = output_obj.prediction_scores
+    predictions_globals = torch.reshape(probabilities,
+                                shape=(probabilities.shape[0] * probabilities.shape[1], probabilities.shape[2]))  # 48, 1, 44041
+    return predictions_globals
 
 
 #####

@@ -15,7 +15,10 @@ import Filesystem as F
 
 def write_doc_logging(model):
     logging.info("Model:")
-    logging.info(str(model))
+    try:
+        logging.info(str(model))
+    except AttributeError: # when dealing with a transformer
+        logging.info(str(model.standard_lm_transformer.transformer))
     logging.info("Parameters:")
     parameters_list = [(name, param.shape, param.dtype, param.requires_grad) for (name, param) in model.named_parameters()]
     logging.info('\n'.join([str(p) for p in parameters_list]))
@@ -117,8 +120,11 @@ def compute_model_loss(model, batch_input, batch_labels, correct_preds_dict, pol
     batch_labels_all_senses = batch_labels_t[1]
 
     # compute the loss for the batch
+    # logging.info(predictions_globals.shape)
+    # logging.info(predictions_globals)
+    # logging.info(batch_labels_globals.shape)
+    # logging.info(batch_labels_globals)
     loss_global = tfunc.nll_loss(predictions_globals, batch_labels_globals)
-
     if model.predict_senses:
         loss_all_senses = tfunc.nll_loss(predictions_senses, batch_labels_all_senses, ignore_index=-1)
     else:

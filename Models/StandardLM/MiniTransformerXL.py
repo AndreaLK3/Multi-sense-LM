@@ -19,24 +19,26 @@ def get_numerical_corpus(corpus_name, split_name, vocabulary_sources_ls, chunk_s
 
 
 # Auxiliary function: get the mini TXL model, with modified configuration
-def get_mini_txl_modelobj(vocab_sources_ls=[F.WT2, F.SEMCOR]):
+def get_mini_txl_modelobj(vocab_sources_ls=[F.WT2, F.SEMCOR], use_graph_input=False):
 
     vocab_df = V.get_vocabulary_df(corpora_names=vocab_sources_ls, lowercase=False)
     vocab_len = len(list(vocab_df["word"]))
+    if not use_graph_input:
+        d_embed = Utils.GRAPH_EMBEDDINGS_DIM    # 300, from 1024; to match Fasttext embeddings
+    else:
+        d_embed = 2 * Utils.GRAPH_EMBEDDINGS_DIM    # 600, from 1024; to match Fasttext ++ GAT output
 
-    config = transformers.TransfoXLConfig()
-    # apply the necessary modifications
-    config.n_head = 8       # from: 16
-    config.n_layer = 12     # from: 18
-    config.mem_len = 800    # from: 1600
-    config.d_embed = 512    # from: 1024
-    config.d_head = 64      # unchanged
-    config.d_inner = 2048   # from: 4096
-    config.d_model = 512    # from: 1024
-    config.vocab_size = vocab_len # from: 267735
-    config.adaptive = False # from: True ; whether to use Adaptive Softmax
-    config.cutoffs = []
-    config.div_val = 1
+    config = transformers.TransfoXLConfig(vocab_size=vocab_len, cutoffs=[],
+        d_model=d_embed,
+        d_embed=d_embed,
+        n_head=8,
+        d_head=64,
+        d_inner=1024,
+        div_val=1,
+        n_layer=12,
+        mem_len=800,
+        clamp_len=1000,
+        adaptive=False)
 
     model = transformers.TransfoXLLMHeadModel(config)
     model.to(Utils.DEVICE)

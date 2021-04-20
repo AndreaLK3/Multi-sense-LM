@@ -96,12 +96,17 @@ def get_model_name(model, args):
     model_type = model.__class__.__name__.lower()  # e.g. selectk
     model_fname = model_type
 
-    if model.StandardLM.use_gold_lm:  # problem: this is in the StandardLM sub-object
+    if "standard" in model_fname:
+        model_with_params = model
+    else:
+        model_with_params = model.StandardLM
+
+    if model_with_params.use_gold_lm:  # problem: this is in the StandardLM sub-object
             model_fname = model_fname + "_GoldLM"
-    if model.StandardLM.use_transformer_lm:
+    if model_with_params.use_transformer_lm:
             model_fname = model_fname + "_Transformer"
 
-    if model.StandardLM.include_globalnode_input > 0:
+    if model_with_params.include_globalnode_input > 0:
             model_fname = model_fname + "_withGraph"
 
     if not (model.predict_senses) and model_type != "standardlm":
