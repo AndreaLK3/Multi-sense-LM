@@ -79,7 +79,8 @@ class SelfAtt(torch.nn.Module):
         # prev_word_embeddings will be reshaped when we know the seq_len and self.batch_size
 
         init_context_handling(model=self, context_method=context_method)
-
+        self.select_first_indices = Parameter(torch.tensor(list(range(2 * n_hid_units))).to(torch.float32),
+                                              requires_grad=False)
         self.SelfAttLogits = ComputeLogits(dim_input_context=self.SC.shape[1], dim_input_elems=self.SC.shape[1],
                                            dim_qkv=dim_qkv, k=self.K, grapharea_size=self.grapharea_size)
 
