@@ -74,6 +74,7 @@ def get_model_name_from_arguments(args):
     model_fname = args.model_type
     if args.standard_lm == "transformer":
         model_fname = model_fname + "_transformer"
+        args.use_graph_input = False
     elif args.standard_lm == "gold_lm":
         model_fname = model_fname + "_gold_lm"
     if args.use_graph_input is True:
@@ -103,8 +104,6 @@ def get_model_name(model, args):
     else:
         model_with_params = model.StandardLM
 
-    logging.info("Model = " + str(model))
-    logging.info("model_with_params="+ str(model_with_params))
     if model_with_params.use_gold_lm:  # problem: this is in the StandardLM sub-object
             model_fname = model_fname + "_gold_lm"
     if model_with_params.use_transformer_lm:

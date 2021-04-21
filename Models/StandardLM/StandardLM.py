@@ -103,8 +103,8 @@ def predict_globals_withTXL(model, input_indices, batch_input_signals):
     # if model.include_globalnode_input is True:
     #     output_obj = model.standard_lm_transformer(inputs_embeds=global_nodestates)
     # else:
-    #     output_obj = model.standard_lm_transformer(input_indices)
-    output_obj = model.standard_lm_transformer(inputs_embeds=batch_input_signals)
+    output_obj = model.standard_lm_transformer(input_indices)
+    # output_obj = model.standard_lm_transformer(inputs_embeds=batch_input_signals)
     probabilities = output_obj.prediction_scores
     predictions_globals = torch.reshape(probabilities,
                                 shape=(probabilities.shape[0] * probabilities.shape[1], probabilities.shape[2]))  # 48, 1, 44041

@@ -37,7 +37,7 @@ def parse_training_arguments():
     # Optional parameters that are method-specific
     parser.add_argument('--K', type=int, default=1,
                         help='we choose the correct senses among those of the first top-K predicted words')
-    parser.add_argument('--context_method', type=int, default=0,
+    parser.add_argument('--context_method_id', type=int, default=0,
                         help='Which context representation to use, in the methods: SenseContext, Self-Attention scores.'
                              ' 0=average of the last C tokens; 1=GRU with 3 layers')
     parser.add_argument('--C', type=int, default=20,
@@ -69,9 +69,9 @@ if torch.cuda.is_available():
 else:
     model = torch.load(saved_model_fpath, map_location=torch.device('cpu'))  # in case one wishes to use the CPU
 logging.info("Loading the model found at: " + str(saved_model_fpath))
-if model.LM.use_transformer_lm:
-    batch_size = 1
-    seq_len = 512
+if model.StandardLM.use_transformer_lm:
+    batch_size = 4
+    seq_len = 256
 else: # GRU and gold_lm
     batch_size = 32
     seq_len = 35
@@ -84,8 +84,7 @@ objects = get_objects(vocab_sources_ls, sp_method, grapharea_size=32)
 
 
 # ----- Setup corpus and evaluate, on SemCor's test split -----
-# corpus_test_fpath = os.path.join(F.CORPORA_LOCATIONS[F.SEMCOR], F.FOLDER_TEST)
-corpus_test_fpath = os.path.join(F.FOLDER_MYTESTS, F.FOLDER_MINICORPORA, F.FOLDER_SENSELABELED, F.FOLDER_TEST)
+corpus_test_fpath = os.path.join(F.CORPORA_LOCATIONS[F.SEMCOR], F.FOLDER_TEST)
 slc_or_text = True
 _, test_dataloader =  setup_corpus(objects, corpus_test_fpath, slc_or_text, gr_in_voc_folders, batch_size, seq_len)
 test_dataiter = iter(itertools.cycle(test_dataloader))

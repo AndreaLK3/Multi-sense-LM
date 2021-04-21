@@ -52,10 +52,17 @@ args_to_load_standardlm.model_type = "standardlm"
 standardLM_model_fname = get_model_name(model=None, args=args_to_load_standardlm)
 standardLM_model = TS.load_model_from_file(standardLM_model_fname)
 t0 = time()
-# modified
+
+if args.standard_lm == "transformer":
+    batch_size = 4
+    seq_len = 256
+else: # GRU and gold_lm
+    batch_size = 32
+    seq_len = 35
+
 model, train_dataloader, valid_dataloader = TS.setup_training_on_SemCor(standardLM_model, model_type=args.model_type,
                              K=args.K, context_method_id=args.context_method_id, C=args.C,
-                             dim_qkv=300, grapharea_size=32, batch_size=32, seq_len=35)
+                             dim_qkv=300, grapharea_size=32, batch_size=batch_size, seq_len=seq_len)
 
 final_model = TE.run_train(model, train_dataloader, valid_dataloader,
                            learning_rate=args.learning_rate, num_epochs=args.num_epochs, predict_senses=True)

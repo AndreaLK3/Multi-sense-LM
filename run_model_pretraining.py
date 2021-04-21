@@ -48,7 +48,7 @@ objects = get_objects(vocab_sources_ls, sp_method, grapharea_size=32)
 
 if args.model_type == "transformer":
     args.learning_rate = 5e-5  # down from 1e-4
-    batch_size = 8
+    batch_size = 4
     seq_len = 256
 else: # GRU and gold_lm
     batch_size = 32

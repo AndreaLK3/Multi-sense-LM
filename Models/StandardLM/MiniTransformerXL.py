@@ -29,7 +29,7 @@ def get_mini_txl_modelobj(vocab_sources_ls=[F.WT2, F.SEMCOR], use_graph_input=Fa
         d_embed=300,
         n_head=8,
         d_head=64,
-        d_inner=1024,
+        d_inner=512,
         div_val=1,
         n_layer=8,
         mem_len=800,
