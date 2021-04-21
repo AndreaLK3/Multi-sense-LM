@@ -30,7 +30,6 @@ def run_train(model, train_dataloader, valid_dataloader, learning_rate, num_epoc
 
     # -------------------- Step 1: Setup model --------------------
     slc_or_text = train_dataloader.dataset.sensecorpus_or_text
-    optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
     model.train()
 
     polysense_thresholds = (2,3,5,10,30)
@@ -40,13 +39,7 @@ def run_train(model, train_dataloader, valid_dataloader, learning_rate, num_epoc
 
     model_fname = F.get_model_name(model, args=None)
     Utils.init_logging("Training_" + model_fname.replace(".pt", "") + ".log")
-    try:
-        logging.info("Using learning_rate=" + str(learning_rate))
-        logging.info("K=" + str(model.K))
-        logging.info("C=" + str(model.C))
-        logging.info("context_method=" + str(model.context_method))
-    except Exception:
-        pass # no further hyperparameters were specified
+    logging.info("Using learning_rate=" + str(learning_rate))
     Loss.write_doc_logging(model)
 
     # -------------------- Step 2: Setup flags --------------------
@@ -63,6 +56,7 @@ def run_train(model, train_dataloader, valid_dataloader, learning_rate, num_epoc
 
     # -------------------- Step 3) The training loop, for each epoch --------------------
     try: # to catch KeyboardInterrupt-s and still save the model
+        optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
 
         for epoch in range(1,num_epochs+1):
 
@@ -88,7 +82,7 @@ def run_train(model, train_dataloader, valid_dataloader, learning_rate, num_epoc
                     logging.info("Early stopping on senses' accuracy.")
                     flag_earlystop = True
                 if valid_accuracy_senses == 0: # we are operating on globals only, i.e. WT-2
-                    if valid_loss_globals > best_valid_loss_globals:
+                    if valid_loss_globals > best_valid_loss_globals or "gold_lm" in model_fname:
                         logging.info("Early stopping on globals' PPL")
                         flag_earlystop = True
 
@@ -149,6 +143,8 @@ def run_train(model, train_dataloader, valid_dataloader, learning_rate, num_epoc
 
     except KeyboardInterrupt:
         logging.info("Models loop interrupted manually by keyboard")
+    except ValueError:  # optimizer got an empty parameter list
+        logging.info("The model specified has no parameters to train.")
 
     # --------------------- 4) Saving model --------------------
     logging.info("Proceeding to save the model: " + model_fname + ", timestamp: " + Utils.get_timestamp_month_to_sec())

@@ -69,7 +69,7 @@ if torch.cuda.is_available():
 else:
     model = torch.load(saved_model_fpath, map_location=torch.device('cpu'))  # in case one wishes to use the CPU
 logging.info("Loading the model found at: " + str(saved_model_fpath))
-if model.StandardLM.use_transformer_lm:
+if model.LM.use_transformer_lm:
     batch_size = 1
     seq_len = 512
 else: # GRU and gold_lm

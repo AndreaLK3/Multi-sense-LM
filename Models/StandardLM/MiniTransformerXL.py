@@ -23,19 +23,15 @@ def get_mini_txl_modelobj(vocab_sources_ls=[F.WT2, F.SEMCOR], use_graph_input=Fa
 
     vocab_df = V.get_vocabulary_df(corpora_names=vocab_sources_ls, lowercase=False)
     vocab_len = len(list(vocab_df["word"]))
-    if not use_graph_input:
-        d_embed = Utils.GRAPH_EMBEDDINGS_DIM    # 300, from 1024; to match Fasttext embeddings
-    else:
-        d_embed = 2 * Utils.GRAPH_EMBEDDINGS_DIM    # 600, from 1024; to match Fasttext ++ GAT output
 
     config = transformers.TransfoXLConfig(vocab_size=vocab_len, cutoffs=[],
-        d_model=d_embed,
-        d_embed=d_embed,
+        d_model=300,  # IF passing pre-trained vectors, then necessarily d_model==d_embed or it throws an error for mems
+        d_embed=300,
         n_head=8,
         d_head=64,
         d_inner=1024,
         div_val=1,
-        n_layer=12,
+        n_layer=8,
         mem_len=800,
         clamp_len=1000,
         adaptive=False)

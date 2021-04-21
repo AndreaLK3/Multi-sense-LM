@@ -10,8 +10,8 @@ def test():
     Utils.init_logging("Test_run_model_training.log")
 
     args = argparse.Namespace()
-    args.model_type = "selfatt"
-    args.standard_lm = "gru"
+    args.model_type = "mfs"
+    args.standard_lm = "gold_lm"
     args.use_graph_input = False,
     args.learning_rate = 5e-5
     args.num_epochs = 30

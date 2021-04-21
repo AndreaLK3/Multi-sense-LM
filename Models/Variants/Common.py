@@ -86,7 +86,8 @@ def run_graphnet(t_input_lts, batch_elems_at_t, t_globals_indices_ls, model):
         return t_currentglobal_node_states
 
 # Starting from the batch, collect the input signals: word embeddings, and possibly graph node embeddings
-def get_input_signals(model, batch_elements_at_t, word_embeddings_ls, currentglobal_nodestates_ls):
+def get_input_signals(model, batch_elements_at_t, word_embeddings_ls, currentglobal_nodestates_ls,
+                      input_indices_ls=None):
     if model.__class__.__name__.lower() != "standardlm":
         model = model.StandardLM
 
@@ -101,6 +102,8 @@ def get_input_signals(model, batch_elements_at_t, word_embeddings_ls, currentglo
     if model.include_globalnode_input < 2:
         t_current_globals_indices_ls = [x_indices[0] - model.last_idx_senses for x_indices in t_globals_indices_ls]
         t_current_globals_indices = torch.stack(t_current_globals_indices_ls, dim=0)
+        if input_indices_ls is not None:
+            input_indices_ls.append(t_current_globals_indices)
         t_word_embeddings = model.E.index_select(dim=0, index=t_current_globals_indices)
         word_embeddings_ls.append(t_word_embeddings)
     # Input signal n.2: the node-state of the current word (i.e. its global node) - now with graph batching

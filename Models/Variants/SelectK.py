@@ -42,12 +42,12 @@ def subtract_probability_mass_from_selected(softmax_selected_senses, delta_to_su
 
 class SelectK(torch.nn.Module):
 
-    def __init__(self, StandardLM, graph_dataobj, grapharea_size, grapharea_matrix,
+    def __init__(self, standardLM, graph_dataobj, grapharea_size, grapharea_matrix,
                  vocabulary_df, batch_size, n_layers, n_hid_units, K):
 
         super(SelectK, self).__init__()
 
-        self.StandardLM = StandardLM
+        self.StandardLM = standardLM
         Common.init_model_parameters(self, graph_dataobj, grapharea_size, grapharea_matrix, vocabulary_df,
                                      batch_size, n_layers, n_hid_units)
 

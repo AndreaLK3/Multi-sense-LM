@@ -1,5 +1,5 @@
 import torch
-import Models.StandardLM.StandardLM as StandardLM
+import Models.StandardLM.StandardLM as LM
 import Graph.PolysemousWords
 import Utils
 import Filesystem as F
@@ -63,8 +63,8 @@ def get_objects(vocab_sources_ls, sp_method=Utils.SpMethod.FASTTEXT, grapharea_s
 # ---------- Step 2, auxiliary function: create the model for the StandardLM sub-task, whether GRU or T-XL ----------
 def create_standardLM_model(objects, model_type, include_graph_input, batch_size):
     graph_dataobj, grapharea_size, grapharea_matrix, vocabulary_df, embeddings_matrix, inputdata_folder = objects
-    standardLM_model = StandardLM.StandardLM(graph_dataobj, grapharea_size, embeddings_matrix,
-                 model_type, include_graph_input, vocabulary_df, batch_size)
+    standardLM_model = LM.StandardLM(graph_dataobj, grapharea_size, embeddings_matrix,
+                                     model_type, include_graph_input, vocabulary_df, batch_size)
     return standardLM_model
 
 
@@ -87,8 +87,8 @@ def create_model(model_type, standardLM_model, objects, K, context_method, C, di
                  context_method=context_method, C=C, inputdata_folder=inputdata_folder, dim_qkv=dim_qkv, K=K)
     elif model_type.lower() == 'mfs':
         mfs_df = pd.read_hdf(F.MFS_H5_FPATH)
-        model = MFS.MFS(StandardLM, graph_dataobj, grapharea_size, grapharea_matrix,
-                 vocabulary_df, batch_size=batch_size, n_layers=3, n_hid_units=1024, K=1, mfs_df=mfs_df)
+        model = MFS.MFS(standardLM_model, graph_dataobj, grapharea_size, grapharea_matrix,
+                        vocabulary_df, batch_size=batch_size, n_layers=3, n_hid_units=1024, K=1, mfs_df=mfs_df)
     else:
         raise Exception ("Model type specification incorrect")
     return model

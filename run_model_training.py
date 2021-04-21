@@ -1,4 +1,6 @@
 import argparse
+import logging
+
 import Models.TrainingSetup as TS
 import Models.TrainingAndEvaluation as TE
 from time import time
@@ -49,7 +51,6 @@ args_to_load_standardlm = copy.deepcopy(args)
 args_to_load_standardlm.model_type = "standardlm"
 standardLM_model_fname = get_model_name(model=None, args=args_to_load_standardlm)
 standardLM_model = TS.load_model_from_file(standardLM_model_fname)
-
 t0 = time()
 # modified
 model, train_dataloader, valid_dataloader = TS.setup_training_on_SemCor(standardLM_model, model_type=args.model_type,

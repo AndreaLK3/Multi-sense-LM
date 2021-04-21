@@ -26,14 +26,14 @@ def update_context_average(location_context, word_embeddings, prev_word_embeddin
 def init_context_handling(model, context_method):
     model.context_method = context_method
     if model.context_method == Common.ContextMethod.AVERAGE:
-        model.location_context = Parameter(torch.zeros(size=(200, model.batch_size, model.StandardLM.E.shape[1])), requires_grad=False)
+        model.location_context = Parameter(torch.zeros(size=(200, model.batch_size, model.LM.E.shape[1])), requires_grad=False)
         # location_context will be reshaped
     elif model.context_method == Common.ContextMethod.GRU:
         model.context_rnn_ls = torch.nn.ModuleList(
-            [torch.nn.GRU(input_size=model.StandardLM.concatenated_input_dim if i == 0 else model.hidden_size,
-                          hidden_size=model.hidden_size if i < model.n_layers - 1 else model.StandardLM.E.shape[1], num_layers=1)
+            [torch.nn.GRU(input_size=model.LM.concatenated_input_dim if i == 0 else model.hidden_size,
+                          hidden_size=model.hidden_size if i < model.n_layers - 1 else model.LM.E.shape[1], num_layers=1)
              for i in range(model.n_layers)])
-        model.location_context = Parameter(torch.zeros(size=(200, model.batch_size, model.StandardLM.E.shape[1])), requires_grad=True)  # grad
+        model.location_context = Parameter(torch.zeros(size=(200, model.batch_size, model.LM.E.shape[1])), requires_grad=True)  # grad
     model.memory_hn_context = Parameter(torch.zeros(size=(model.n_layers, model.batch_size, model.hidden_size)),
                                         requires_grad=False)
     model.ctx_tensors_adjusted = False
