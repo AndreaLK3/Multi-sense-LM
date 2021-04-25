@@ -1,36 +1,39 @@
-import Filesystem
 import Utils
 import Filesystem as F
 import VocabularyAndEmbeddings.Vocabulary as V
 import VocabularyAndEmbeddings.Vocabulary_Utilities as VocabUtils
 import os
 import logging
-import torch
 import numpy as np
-
+import SenseLabeledCorpus as SLC
+from Models.TrainingSetup import get_objects, setup_corpus
+from VocabularyAndEmbeddings.ComputeEmbeddings import SpMethod
 
 # Auxiliary function:
 # Input: corpus and split
 # Outcome: get the filepaths of the text file and the numerical pre-encoding
 def get_corpus_fpaths(corpus_name, split, vocabulary_sources_ls):
-    if split == Utils.TRAINING:
-        split_fname = F.WT_TRAIN_FILE
-    elif split == Utils.VALIDATION:
-        split_fname = F.WT_VALID_FILE
-    elif split == Utils.TEST:
-        split_fname = F.WT_TEST_FILE
 
     if corpus_name.lower() == F.WT2.lower():
+        if split == Utils.TRAINING:
+            split_fname = F.WT_TRAIN_FILE
+        elif split == Utils.VALIDATION:
+            split_fname = F.WT_VALID_FILE
+        elif split == Utils.TEST:
+            split_fname = F.WT_TEST_FILE
         txt_corpus_fpath = os.path.join(F.CORPORA_LOCATIONS[F.WT2], split_fname)
         numIDs_outfile_fpath = os.path.join(F.CORPORA_LOCATIONS[F.WT2], split_fname + F.CORPUS_NUMERICAL_EXTENSION
                                             + "withVocabFrom_" + "_".join(vocabulary_sources_ls) + ".npy")
-    if corpus_name.lower() == F.WT103.lower():
-        txt_corpus_fpath = os.path.join(F.CORPORA_LOCATIONS[F.WT103], split_fname)
-        numIDs_outfile_fpath = os.path.join(F.CORPORA_LOCATIONS[F.WT103], split_fname + F.CORPUS_NUMERICAL_EXTENSION
-                                            + "withVocabFrom_" + "_".join(vocabulary_sources_ls) + ".npy")
+
     if corpus_name.lower() == F.SEMCOR.lower():
-        txt_corpus_fpath = os.path.join(F.CORPORA_LOCATIONS[F.SEMCOR], split_fname)
-        numIDs_outfile_fpath = os.path.join(F.CORPORA_LOCATIONS[F.SEMCOR], split_fname + F.CORPUS_NUMERICAL_EXTENSION
+        if split == Utils.TRAINING:
+            split_dirname = F.FOLDER_TRAIN
+        elif split == Utils.VALIDATION:
+            split_dirname = F.FOLDER_VALIDATION
+        elif split == Utils.TEST:
+            split_dirname = F.FOLDER_TEST
+        txt_corpus_fpath = os.path.join(F.CORPORA_LOCATIONS[F.SEMCOR], split_dirname)
+        numIDs_outfile_fpath = os.path.join(F.CORPORA_LOCATIONS[F.SEMCOR], split_dirname + F.CORPUS_NUMERICAL_EXTENSION
                                             + "withVocabFrom_" + "_".join(vocabulary_sources_ls) + ".npy")
     return txt_corpus_fpath, numIDs_outfile_fpath
 
@@ -38,7 +41,7 @@ def get_corpus_fpaths(corpus_name, split, vocabulary_sources_ls):
 # Top-level function:
 # Read a corpus from a text file, convert the tokens into their numerical IDs, save the result
 # The conversion relies on a vocabulary made from the specified sources, with default min_count values
-def read_txt_corpus(corpus_name, split, vocabulary_sources_ls, lowercase):
+def encode_txt_corpus(corpus_name, split, vocabulary_sources_ls, lowercase=False):
     Utils.init_logging("TextCorpusReader-read_txt_corpus.log")
 
     txt_corpus_fpath, numIDs_outfile_fpath = get_corpus_fpaths(corpus_name, split, vocabulary_sources_ls)
@@ -63,6 +66,22 @@ def read_txt_corpus(corpus_name, split, vocabulary_sources_ls, lowercase):
     numerical_IDs_arr = np.array(numerical_IDs_ls)
     np.save(numIDs_outfile_fpath, numerical_IDs_arr)
 
+# Top-level function:
+# Read a sense-labeled corpus in UFSAC format, convert the tokens into their numerical IDs, save the result
+def encode_slc_corpus(corpus_name, split, vocabulary_sources_ls=[F.WT2, F.SEMCOR]):
+    slc_dir_fpath, numIDs_outfile_fpath = get_corpus_fpaths(corpus_name, split, vocabulary_sources_ls)
+    sp_method = SpMethod.FASTTEXT
+    gr_in_voc_folders = F.get_folders_graph_input_vocabulary(vocabulary_sources_ls)
+
+    objects = get_objects(vocabulary_sources_ls, sp_method=SpMethod.FASTTEXT, grapharea_size=32)
+    dataset, dataloader = setup_corpus(objects, slc_dir_fpath, slc_or_text=True, gr_in_voc_folders= gr_in_voc_folders,
+                                       batch_size=1, seq_len=1)
+    dataiter = iter(dataloader)
+    while True:
+        ((global_forwardinput_triple, sense_forwardinput_triple), next_token_tpl) = dataiter.__next__()
+        logging.info(global_forwardinput_triple)
+
+
 # Auxiliary function:
 # Input: Corpus name, split, sources used to create the vocabulary that we wish to use
 # Outcome: load the numpy pre-encoded data
@@ -71,29 +90,3 @@ def load_corpus_IDs(corpus_name, split, vocabulary_sources_ls):
     numerical_IDs_t = np.load(numIDs_outfile_fpath)
     logging.info("Loaded the encoded corpus at " + str(numIDs_outfile_fpath))
     return numerical_IDs_t
-
-
-
-# Another top-level function:
-# Input: None. It operates on the sources we wish to use (WT2 corpus, vocabulary from WT2 + SemCor)
-# Outcome: It eliminates all old versions the encoded splits, and creates them
-def reset_vocab_and_splits_wt2plus(sp_method=Utils.SpMethod.FASTTEXT):
-    vocab_sources_ls = [F.WT2, F.SEMCOR]
-    _, _, vocab_folder = F.get_folders_graph_input_vocabulary(vocab_sources_ls, sp_method)
-
-    _, encoded_train_split_fpath = get_corpus_fpaths(corpus_name=F.WT2, split=Utils.TRAINING,
-                                                     vocabulary_sources_ls=vocab_sources_ls)
-    _, encoded_valid_split_fpath = get_corpus_fpaths(corpus_name=F.WT2, split=Utils.VALIDATION,
-                                                     vocabulary_sources_ls=vocab_sources_ls)
-    _, encoded_test_split_fpath = get_corpus_fpaths(corpus_name=F.WT2, split=Utils.TEST,
-                                                     vocabulary_sources_ls=vocab_sources_ls)
-    all_fpaths = [encoded_train_split_fpath, encoded_valid_split_fpath, encoded_test_split_fpath]
-
-    for fpath in all_fpaths:
-        if os.path.exists(fpath):
-            os.remove(fpath)
-
-    V.get_vocabulary_df(corpora_names=vocab_sources_ls, lowercase=False)
-    read_txt_corpus(corpus_name=F.WT2, split=Utils.TRAINING, vocabulary_sources_ls=vocab_sources_ls, lowercase=False)
-    read_txt_corpus(corpus_name=F.WT2, split=Utils.VALIDATION, vocabulary_sources_ls=vocab_sources_ls, lowercase=False)
-    read_txt_corpus(corpus_name=F.WT2, split=Utils.TEST, vocabulary_sources_ls=vocab_sources_ls, lowercase=False)
