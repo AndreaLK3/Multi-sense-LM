@@ -60,7 +60,7 @@ PERPLEXITY_FILEEND = 'perplexity.npy'
 GRAPHAREA_FILE = 'graphArea_matrix.npz'
 
 MFS_H5_FPATH = os.path.join(FOLDER_TEXT_CORPORA, FOLDER_SENSELABELED, FOLDER_SEMCOR, FOLDER_TRAIN, "MostFrequentSense.h5")
-
+TXL_COMPONENT_FILE = "MiniTXL_onWT2.pt"
 MATRIX_SENSE_CONTEXTS_FILEEND = '_SenseContext.npy'
 
 def get_folders_graph_input_vocabulary(vocab_sources_ls, sp_method):

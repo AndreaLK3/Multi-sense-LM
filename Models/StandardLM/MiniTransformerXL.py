@@ -19,31 +19,32 @@ def get_numerical_corpus(corpus_name, split_name, vocabulary_sources_ls, chunk_s
 
 
 # Auxiliary function: get the mini TXL model, with modified configuration
-def get_mini_txl_modelobj(vocab_sources_ls=[F.WT2, F.SEMCOR], use_graph_input=False):
+def get_mini_txl_modelobj(vocab_sources_ls=[F.WT2, F.SEMCOR]):
 
     vocab_df = V.get_vocabulary_df(corpora_names=vocab_sources_ls, lowercase=False)
     vocab_len = len(list(vocab_df["word"]))
 
     config = transformers.TransfoXLConfig(vocab_size=vocab_len, cutoffs=[],
-        d_model=300,  # IF passing pre-trained vectors, then necessarily d_model==d_embed or it throws an error for mems
+        d_model=512,  # IF passing pre-trained vectors, then necessarily d_model==d_embed or it throws an error for mems
         d_embed=300,
         n_head=8,
         d_head=64,
-        d_inner=512,
+        d_inner=1024,
         div_val=1,
-        n_layer=8,
+        n_layer=12,
         mem_len=800,
         clamp_len=1000,
         adaptive=False)
 
     model = transformers.TransfoXLLMHeadModel(config)
-    model.to(Utils.DEVICE)
+    CURRENT_DEVICE = 'cpu' if not (torch.cuda.is_available()) else 'cuda:' + str(torch.cuda.current_device())
+    model.to(CURRENT_DEVICE)
 
     return model
 
 
 # Auxiliary function: training loop during 1 epoch
-def epoch_on_corpus(corpus_ids_chunks_ls, model, optimizer, training_or_test):
+def epoch_on_corpus(corpus_ids_chunks_ls, model, optimizer, batch_size, input_len, training_or_test):
     if training_or_test: model.train()
     else: model.eval()
 
@@ -57,8 +58,13 @@ def epoch_on_corpus(corpus_ids_chunks_ls, model, optimizer, training_or_test):
         optimizer.zero_grad()
 
         input_ids = torch.tensor(corpus_ids_chunks_ls[i])
+        if len(input_ids) != input_len:
+            logging.debug("Warning: len(input_ids)=" + str(len(input_ids)) + " != input_len=" + str(input_len))
+        input_ids_padded = torch.nn.functional.pad(input=input_ids, pad=[0, input_len - len(input_ids)], mode="constant", value=0)
         enc_input = transformers.BatchEncoding()
-        enc_input.data = {"input_ids":input_ids.unsqueeze(0)}
+
+        seq_len = len(input_ids_padded) // batch_size
+        enc_input.data = {"input_ids":input_ids_padded.reshape((batch_size, seq_len))}
         enc_input = enc_input.to(Utils.DEVICE)
 
         lm_output_obj = model(input_ids=enc_input["input_ids"], mems=mems, labels=enc_input["input_ids"])
@@ -82,23 +88,20 @@ def epoch_on_corpus(corpus_ids_chunks_ls, model, optimizer, training_or_test):
 
 # Aims: - create a Transformer-XL model, smaller than the version applied on WT-103
 #       - train the TXL model on the WikiText-2 dataset. Using: training split. Early stopping on validation, etc.
-def txl_on_wt2(learning_rate=5e-5, max_num_epochs=100):
-    Utils.init_logging("MiniTransformerXL-txl_on_wt2.log")
+def txl_on_wt2(learning_rate=5e-5, max_num_epochs=50, batch_size=4, chunk_size=1024):
+    Utils.init_logging("PretrainingComponent_txl_on_wt2.log")
     vocab_sources_ls = [F.WT2, F.SEMCOR]
-    # vocab_filepath = os.path.join(F.FOLDER_VOCABULARY, "_".join(vocab_sources_ls), "vocabulary.h5")
-    # tokenizer = transformers.TransfoXLTokenizer(vocab_file=vocab_filepath)
-    # if I read the pre-encoded corpus, I don't need the tokenizer
 
     model = get_mini_txl_modelobj(vocab_sources_ls)
     optimizer = transformers.AdamW(model.parameters(), lr=learning_rate)
 
     wt2_train_chunks_ls = get_numerical_corpus(corpus_name=F.WT2, split_name=Utils.TRAINING,
-                                                vocabulary_sources_ls=vocab_sources_ls, chunk_size=512)  # chunk_size=1000
+                                                vocabulary_sources_ls=vocab_sources_ls, chunk_size=chunk_size)
     wt2_valid_chunks_ls = get_numerical_corpus(corpus_name=F.WT2, split_name=Utils.VALIDATION,
-                                               vocabulary_sources_ls=vocab_sources_ls, chunk_size=512)  # chunk_size=1000
+                                               vocabulary_sources_ls=vocab_sources_ls, chunk_size=chunk_size)
     # for testing purposes, works as using mini-corpora
-    wt2_train_chunks_ls = wt2_train_chunks_ls [0:10]
-    wt2_valid_chunks_ls = wt2_valid_chunks_ls [0:10]
+    # wt2_train_chunks_ls = wt2_train_chunks_ls[-10:]
+    # wt2_valid_chunks_ls = wt2_valid_chunks_ls[-10:]
 
     epoch = 1
     best_valid_loss = inf
@@ -106,13 +109,12 @@ def txl_on_wt2(learning_rate=5e-5, max_num_epochs=100):
         logging.info("Training: epoch n." + str(epoch) + "...")
 
         # Training epoch
-        train_loss = epoch_on_corpus(wt2_train_chunks_ls, model, optimizer, training_or_test=True)
-        # logging.info("Debug: end of epoch=" + str(epoch) + " , current learning rate=" + str(epoch_start_lr))
+        train_loss = epoch_on_corpus(wt2_train_chunks_ls, model, optimizer, batch_size, chunk_size, training_or_test=True)
         train_ppl = exp(train_loss)
         logging.info("Epoch n." + str(epoch) + " completed. Training PPL=" + str(round(train_ppl, 2)))
 
         # Validation and early stopping
-        valid_loss = epoch_on_corpus(wt2_valid_chunks_ls, model, optimizer, training_or_test=False)
+        valid_loss = epoch_on_corpus(wt2_valid_chunks_ls, model, optimizer, batch_size, chunk_size, training_or_test=False)
         logging.info("After epoch n." + str(epoch) + ", validation PPL=" + str(round(exp(valid_loss),2)))
         if (exp(valid_loss) > exp(best_valid_loss) + 0.1):
             logging.info("Latest validation PPL of " + str(round(exp(valid_loss), 2))
@@ -123,5 +125,6 @@ def txl_on_wt2(learning_rate=5e-5, max_num_epochs=100):
             best_valid_loss = valid_loss
         epoch = epoch + 1
 
-    torch.save(model, "MiniTXL_onWT2.pt")
+    torch.save(model, F.TXL_COMPONENT_FILE + Utils.get_timestamp_month_to_sec())
+    return model
 

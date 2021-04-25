@@ -18,6 +18,7 @@ import Models.Variants.SenseContext as SC
 import Models.Variants.SelfAttention as SA
 import Models.Variants.MFS as MFS
 from Models.Variants.Common import ContextMethod
+import Models.StandardLM.MiniTransformerXL as TXL
 
 # ########## Auxiliary functions ##########
 
@@ -65,6 +66,13 @@ def create_standardLM_model(objects, model_type, include_graph_input, batch_size
     graph_dataobj, grapharea_size, grapharea_matrix, vocabulary_df, embeddings_matrix, inputdata_folder = objects
     standardLM_model = LM.StandardLM(graph_dataobj, grapharea_size, embeddings_matrix,
                                      model_type, include_graph_input, vocabulary_df, batch_size)
+    # replaces the non-trained Transformer-XL with the one pre-trained on WT2
+    if model_type == "transformer":
+        try:
+            txl_subcomponent = load_model_from_file(os.path.join(F.TXL_COMPONENT_FILE))
+        except FileNotFoundError:
+            txl_subcomponent = TXL.txl_on_wt2(batch_size=batch_size)
+        standardLM_model.standard_lm_transformer = txl_subcomponent
     return standardLM_model
 
 
@@ -90,7 +98,7 @@ def create_model(model_type, standardLM_model, objects, K, context_method, C, di
         model = MFS.MFS(standardLM_model, graph_dataobj, grapharea_size, grapharea_matrix,
                         vocabulary_df, batch_size=batch_size, n_layers=3, n_hid_units=1024, K=1, mfs_df=mfs_df)
     else:
-        raise Exception ("Model type specification incorrect")
+        raise Exception("Model type specification incorrect")
     return model
 
 

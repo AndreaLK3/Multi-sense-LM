@@ -28,7 +28,7 @@ def test(model_type="transformer"):
     objects = get_objects(vocab_sources_ls, sp_method, grapharea_size=32)
 
     batch_size = 4
-    seq_len = 128
+    seq_len = 256
 
     standardLM_model, train_dataloader, valid_dataloader = \
         setup_pretraining_on_WT2(args.model_type, args.use_graph_input,

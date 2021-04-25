@@ -63,7 +63,8 @@ def init_common_architecture(model, embeddings_matrix, graph_dataobj):
                                            requires_grad=False) # used for select_index
     if not model.use_gold_lm:
         if model.use_transformer_lm:
-            model.standard_lm_transformer = TXL.get_mini_txl_modelobj(use_graph_input=model.include_globalnode_input) # pre-defined model parameters: 12 layers, etc.
+            model.standard_lm_transformer = TXL.get_mini_txl_modelobj() # pre-defined model parameters: 12 layers, etc.
+            model.mems = None # slot for the transformer's memories
         else:
             model.hidden_size = 1024
             model.n_layers = 3
@@ -103,8 +104,9 @@ def predict_globals_withTXL(model, input_indices, batch_input_signals):
     # if model.include_globalnode_input is True:
     #     output_obj = model.standard_lm_transformer(inputs_embeds=global_nodestates)
     # else:
-    output_obj = model.standard_lm_transformer(input_indices)
+    output_obj = model.standard_lm_transformer(input_ids=input_indices, mems=model.mems)
     # output_obj = model.standard_lm_transformer(inputs_embeds=batch_input_signals)
+    model.mems = output_obj.mems
     probabilities = output_obj.prediction_scores
     predictions_globals = torch.reshape(probabilities,
                                 shape=(probabilities.shape[0] * probabilities.shape[1], probabilities.shape[2]))  # 48, 1, 44041
@@ -157,7 +159,9 @@ class StandardLM(torch.nn.Module):
         batch_input_signals_ls = list(filter(lambda signal: signal is not None,
                                              [word_embeddings, global_nodestates]))
         batch_input_signals = torch.cat(batch_input_signals_ls, dim=2)
-        input_indices = torch.cat(globals_input_ids_ls, dim=0).reshape((self.batch_size, seq_len))
+        input_indices = torch.cat(globals_input_ids_ls, dim=0).reshape((seq_len, self.batch_size)).permute(1, 0)
+        logging.info("input_indices=" + str(input_indices))
+        raise Exception
 
 
         # ---------- Predicting the next word ----------

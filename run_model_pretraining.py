@@ -2,7 +2,7 @@ import argparse
 import os
 import Filesystem as F
 import torch
-
+import Models.StandardLM.MiniTransformerXL as TXL
 from Filesystem import get_standardLM_filename
 from Models.TrainingSetup import get_objects, setup_pretraining_on_WT2
 from Models.TrainingAndEvaluation import run_train
@@ -47,10 +47,11 @@ gr_in_voc_folders = F.get_folders_graph_input_vocabulary(vocab_sources_ls, sp_me
 objects = get_objects(vocab_sources_ls, sp_method, grapharea_size=32)
 
 if args.model_type == "transformer":
-    args.learning_rate = 5e-5  # down from 1e-4
-    batch_size = 4
-    seq_len = 256
-else: # GRU and gold_lm
+    args.learning_rate = 1e-5  # down from 5e-5
+    batch_size = 8
+    seq_len = 128
+
+else:  # GRU and gold_lm
     batch_size = 32
     seq_len = 35
 
