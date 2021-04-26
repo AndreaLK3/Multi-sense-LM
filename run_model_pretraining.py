@@ -4,7 +4,8 @@ import Filesystem as F
 import torch
 import Models.StandardLM.MiniTransformerXL as TXL
 from Filesystem import get_standardLM_filename
-from Models.TrainingSetup import get_objects, setup_pretraining_on_WT2
+from Models.TrainingSetup import setup_pretraining_on_WT2
+from Models.TextCorpusReader import get_objects
 from Models.TrainingAndEvaluation import run_train
 import Utils
 
@@ -48,9 +49,8 @@ objects = get_objects(vocab_sources_ls, sp_method, grapharea_size=32)
 
 if args.model_type == "transformer":
     args.learning_rate = 1e-5  # down from 5e-5
-    batch_size = 8
-    seq_len = 128
-
+    batch_size = 4
+    seq_len = 256
 else:  # GRU and gold_lm
     batch_size = 32
     seq_len = 35

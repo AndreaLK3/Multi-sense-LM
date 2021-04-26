@@ -7,7 +7,8 @@ import logging
 import os
 
 import Utils
-from Models.TrainingSetup import get_objects, setup_corpus, setup_model, ContextMethod, ModelType
+from Models.TrainingSetup import setup_model, ContextMethod, ModelType
+from Models.TextCorpusReader import get_objects, setup_corpus
 from Models.TrainingAndEvaluation import run_train
 import VocabularyAndEmbeddings.ComputeEmbeddings as CE
 import Models.ExplorePredictions as EP

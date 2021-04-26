@@ -10,8 +10,8 @@ def test():
     Utils.init_logging("Test_run_model_training.log")
 
     args = argparse.Namespace()
-    args.model_type = "mfs"
-    args.standard_lm = "gold_lm"
+    args.model_type = "selectk"
+    args.standard_lm = "gru"
     args.use_graph_input = False,
     args.learning_rate = 5e-5
     args.num_epochs = 30
@@ -29,9 +29,9 @@ def test():
     t0 = time()
     model, train_dataloader, valid_dataloader = TS.setup_training_on_SemCor(standardLM_model, model_type=args.model_type,
                                  K=args.K, context_method_id=args.context_method, C=args.C,
-                                 dim_qkv=300, grapharea_size=32, batch_size=1, seq_len=4)
+                                 dim_qkv=300, grapharea_size=32, batch_size=3, seq_len=5)
 
-    final_model = TE.run_train(model, train_dataloader, valid_dataloader,
+    TE.run_train(model, train_dataloader, valid_dataloader,
                                learning_rate=args.learning_rate, num_epochs=args.num_epochs, predict_senses=True)
 
     # We also need to evaluate the model in question on SemCor's test set and on Raganato's SensEval benchmark,

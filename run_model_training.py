@@ -68,6 +68,6 @@ final_model = TE.run_train(model, train_dataloader, valid_dataloader,
                            learning_rate=args.learning_rate, num_epochs=args.num_epochs, predict_senses=True)
 
 # We also need to evaluate the model in question on SemCor's test set and on Raganato's SensEval benchmark,
-# but if the model has been saved that can be done later
+# but if the model has been saved that can be done later, in run_model_evaluation.py
 
 t1 = time() ; Utils.time_measurement_with_msg(t0, t1, "Trained model")

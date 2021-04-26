@@ -63,7 +63,6 @@ def run_train(model, train_dataloader, valid_dataloader, learning_rate, num_epoc
             # -------------------- Step 3a) Initialization --------------------
             sum_epoch_loss_global = 0
             sum_epoch_loss_senses = 0
-
             epoch_step = 1
             epoch_senselabeled_tokens = 0
 
@@ -72,7 +71,7 @@ def run_train(model, train_dataloader, valid_dataloader, learning_rate, num_epoc
             flag_earlystop = False
 
             # -------------------- Step 3b) Evaluation on the validation set --------------------
-            if epoch>1:
+            if epoch > 1:
                 logging.info("After training " + str(epoch-1) + " epochs, validation:")
                 valid_loss_globals, valid_loss_senses, valid_accuracy_senses = \
                     evaluation(valid_dataloader, valid_dataiter, model, verbose)
@@ -82,7 +81,8 @@ def run_train(model, train_dataloader, valid_dataloader, learning_rate, num_epoc
                     logging.info("Early stopping on senses' accuracy.")
                     flag_earlystop = True
                 if valid_accuracy_senses == 0: # we are operating on globals only, i.e. WT-2
-                    if valid_loss_globals > best_valid_loss_globals or "gold_lm" in model_fname:
+                    logging.info("model_fname =" + str(model_fname))
+                    if valid_loss_globals > best_valid_loss_globals or "gold_lm" in model_fname or "transformer" in model_fname:
                         logging.info("Early stopping on globals' PPL")
                         flag_earlystop = True
 

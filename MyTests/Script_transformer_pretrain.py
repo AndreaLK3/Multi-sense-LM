@@ -3,7 +3,8 @@ import os
 import Filesystem as F
 import torch
 from Filesystem import get_standardLM_filename
-from Models.TrainingSetup import get_objects, setup_pretraining_on_WT2
+from Models.TrainingSetup import setup_pretraining_on_WT2
+from Models.TextCorpusReader import get_objects
 from Models.TrainingAndEvaluation import run_train
 import Utils
 

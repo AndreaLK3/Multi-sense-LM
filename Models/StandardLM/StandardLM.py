@@ -61,13 +61,14 @@ def init_common_architecture(model, embeddings_matrix, graph_dataobj):
                                 requires_grad=False)  # a dummy for the transformer and gold_lm cases
     model.select_first_indices = Parameter(torch.tensor(list(range(2048))).to(torch.float32),
                                            requires_grad=False) # used for select_index
+    model.hidden_size = 1024
+    model.n_layers = 3
+
     if not model.use_gold_lm:
         if model.use_transformer_lm:
             model.standard_lm_transformer = TXL.get_mini_txl_modelobj() # pre-defined model parameters: 12 layers, etc.
             model.mems = None # slot for the transformer's memories
         else:
-            model.hidden_size = 1024
-            model.n_layers = 3
             model.standard_rnn_ls = torch.nn.ModuleList(
                 [torch.nn.GRU(input_size=model.concatenated_input_dim if i == 0 else model.hidden_size,
                                                     hidden_size=model.hidden_size // 2 if i == model.n_layers - 1 else model.hidden_size, num_layers=1)  # 512
@@ -160,9 +161,6 @@ class StandardLM(torch.nn.Module):
                                              [word_embeddings, global_nodestates]))
         batch_input_signals = torch.cat(batch_input_signals_ls, dim=2)
         input_indices = torch.cat(globals_input_ids_ls, dim=0).reshape((seq_len, self.batch_size)).permute(1, 0)
-        logging.info("input_indices=" + str(input_indices))
-        raise Exception
-
 
         # ---------- Predicting the next word ----------
         # placeholder for the senses, to be able to use the same training facilities as the model variants

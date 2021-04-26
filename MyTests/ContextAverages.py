@@ -1,4 +1,4 @@
-from Models.ContextAverages import get_archives
+from Models.Auxiliary.ComputeContextAverages import get_archives
 import Filesystem as F
 import os
 import Utils

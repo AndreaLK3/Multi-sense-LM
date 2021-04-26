@@ -3,7 +3,7 @@ import os
 import Filesystem as F
 import torch
 import logging
-from Models.TrainingSetup import get_objects, setup_corpus
+from Models.TextCorpusReader import get_objects, setup_corpus
 from Models.TrainingAndEvaluation import evaluation
 import itertools
 import Utils
@@ -54,10 +54,9 @@ Utils.init_logging("starting_run_model_evaluation.log")
 
 # ----- Random seed, for reproducibility -----
 if args.random_seed != 0:
-    torch.manual_seed(args.random_seed )
+    torch.manual_seed(args.random_seed)
     if torch.cuda.is_available():
         torch.cuda.manual_seed_all(args.random_seed)
-
 
 # ----- Defining the name, and loading the model object -----
 model_name = F.get_model_name(model=None, args=args)
@@ -66,6 +65,8 @@ Utils.init_logging("Evaluation_" + model_name.replace(".pt", "") + ".log")
 saved_model_fpath = os.path.join(F.FOLDER_SAVEDMODELS, model_name)
 if torch.cuda.is_available():
     model = torch.load(saved_model_fpath)
+    CURRENT_DEVICE = 'cpu' if not (torch.cuda.is_available()) else 'cuda:' + str(torch.cuda.current_device())
+    model.to(CURRENT_DEVICE)
 else:
     model = torch.load(saved_model_fpath, map_location=torch.device('cpu'))  # in case one wishes to use the CPU
 logging.info("Loading the model found at: " + str(saved_model_fpath))

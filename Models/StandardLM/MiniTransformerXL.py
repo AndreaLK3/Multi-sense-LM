@@ -2,7 +2,7 @@ import transformers
 import Filesystem as F
 import torch
 import Utils
-import Models.StandardLM.TextCorpusReader as TCR
+import Models.TextCorpusReader as TCR
 from math import ceil, inf, exp
 import logging
 import VocabularyAndEmbeddings.Vocabulary as V
@@ -76,8 +76,6 @@ def epoch_on_corpus(corpus_ids_chunks_ls, model, optimizer, batch_size, input_le
         if training_or_test:
             loss.backward()
             optimizer.step()
-            # lr = lr + lr_delta
-            # optimizer.lr = lr
         if i% (num_chunks//(min(10,num_chunks))) == 0:
             logging.info("Progress: " + str(round(i / (num_chunks),2) *100) + "% ...")
 
@@ -88,7 +86,7 @@ def epoch_on_corpus(corpus_ids_chunks_ls, model, optimizer, batch_size, input_le
 
 # Aims: - create a Transformer-XL model, smaller than the version applied on WT-103
 #       - train the TXL model on the WikiText-2 dataset. Using: training split. Early stopping on validation, etc.
-def txl_on_wt2(learning_rate=5e-5, max_num_epochs=50, batch_size=4, chunk_size=1024):
+def txl_on_wt2(learning_rate=2e-5, max_num_epochs=50, batch_size=4, chunk_size=1024):
     Utils.init_logging("PretrainingComponent_txl_on_wt2.log")
     vocab_sources_ls = [F.WT2, F.SEMCOR]
 
@@ -100,8 +98,8 @@ def txl_on_wt2(learning_rate=5e-5, max_num_epochs=50, batch_size=4, chunk_size=1
     wt2_valid_chunks_ls = get_numerical_corpus(corpus_name=F.WT2, split_name=Utils.VALIDATION,
                                                vocabulary_sources_ls=vocab_sources_ls, chunk_size=chunk_size)
     # for testing purposes, works as using mini-corpora
-    # wt2_train_chunks_ls = wt2_train_chunks_ls[-10:]
-    # wt2_valid_chunks_ls = wt2_valid_chunks_ls[-10:]
+    # wt2_train_chunks_ls = wt2_train_chunks_ls[-5:]
+    # wt2_valid_chunks_ls = wt2_valid_chunks_ls[-5:]
 
     epoch = 1
     best_valid_loss = inf
@@ -115,13 +113,14 @@ def txl_on_wt2(learning_rate=5e-5, max_num_epochs=50, batch_size=4, chunk_size=1
 
         # Validation and early stopping
         valid_loss = epoch_on_corpus(wt2_valid_chunks_ls, model, optimizer, batch_size, chunk_size, training_or_test=False)
-        logging.info("After epoch n." + str(epoch) + ", validation PPL=" + str(round(exp(valid_loss),2)))
-        if (exp(valid_loss) > exp(best_valid_loss) + 0.1):
+        logging.info("After epoch n." + str(epoch) + ", validation PPL=" + str(round(exp(valid_loss),2)) +
+                     ", best validation PPL so far=" + str(round(exp(best_valid_loss),2)) )
+        if (valid_loss > best_valid_loss):
             logging.info("Latest validation PPL of " + str(round(exp(valid_loss), 2))
                           + " > previous best validation PPL of " + str(round(exp(best_valid_loss), 2)))
             logging.info("Early stopping")
             break
-        if exp(valid_loss) < (best_valid_loss):
+        if valid_loss < best_valid_loss:
             best_valid_loss = valid_loss
         epoch = epoch + 1
 

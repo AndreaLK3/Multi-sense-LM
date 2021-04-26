@@ -1,11 +1,10 @@
+import logging
 from enum import Enum
 import torch
-import logging
 from Graph.Adjacencies import lemmatize_node
 from Utils import DEVICE
 import Utils
-from torch_geometric.nn import GATConv
-from Models.Variants.RNNSteps import rnn_loop
+
 
 ##### Initialization of: graph_dataobj, grapharea_matrix, vocabulary_lists & more
 def init_model_parameters(model, graph_dataobj, grapharea_size, grapharea_matrix,
@@ -99,13 +98,12 @@ def get_input_signals(model, batch_elements_at_t, word_embeddings_ls, currentglo
 
     # -------------------- Input --------------------
     # Input signal n.1: the embedding of the current word
-    if model.include_globalnode_input < 2:
-        t_current_globals_indices_ls = [x_indices[0] - model.last_idx_senses for x_indices in t_globals_indices_ls]
-        t_current_globals_indices = torch.stack(t_current_globals_indices_ls, dim=0)
-        if input_indices_ls is not None:
-            input_indices_ls.append(t_current_globals_indices)
-        t_word_embeddings = model.E.index_select(dim=0, index=t_current_globals_indices)
-        word_embeddings_ls.append(t_word_embeddings)
+    t_current_globals_indices_ls = [x_indices[0] - model.last_idx_senses for x_indices in t_globals_indices_ls]
+    t_current_globals_indices = torch.stack(t_current_globals_indices_ls, dim=0)
+    if input_indices_ls is not None:
+        input_indices_ls.append(t_current_globals_indices)
+    t_word_embeddings = model.E.index_select(dim=0, index=t_current_globals_indices)
+    word_embeddings_ls.append(t_word_embeddings)
     # Input signal n.2: the node-state of the current word (i.e. its global node) - now with graph batching
     if model.include_globalnode_input > 0:
         t_g_nodestates = run_graphnet(t_input_lts, batch_elems_at_t, t_globals_indices_ls, model)

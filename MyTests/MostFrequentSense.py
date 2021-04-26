@@ -1,4 +1,5 @@
 import Filesystem as F
+import Models.TextCorpusReader
 import Utils
 import pandas as pd
 import os
@@ -7,7 +8,7 @@ import Models.Variants.RNNs as RNNs
 import tables
 import Models.DataLoading.NumericalIndices as NI
 import logging
-import Models.ComputeMFS as MFS
+import Models.Auxiliary.ComputeMFS as MFS
 import SenseLabeledCorpus as SLC
 import numpy as np
 from time import time
@@ -23,7 +24,7 @@ def compute_MFS_for_corpus(vocabulary_sources_ls=[F.WT2, F.SEMCOR], sp_method=Ut
     # More init, necessary objects
     generator = SLC.read_split(os.path.join(corpus_folder, F.FOLDER_TRAIN))
 
-    objects = T.get_objects(vocabulary_sources_ls, sp_method)
+    objects = Models.TextCorpusReader.get_objects(vocabulary_sources_ls, sp_method)
     graph_dataobj, grapharea_size, grapharea_matrix, vocabulary_df, embeddings_matrix, inputdata_folder = objects
     _model_forDataLoading = RNNs.RNN(graph_dataobj, grapharea_size, grapharea_matrix, vocabulary_df,
                            embeddings_matrix, include_globalnode_input=False,
