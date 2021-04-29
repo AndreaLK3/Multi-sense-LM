@@ -1,7 +1,8 @@
 import torch.nn.functional as tfunc
 from math import sqrt
 import torch
-from Models.Variants.Common import init_model_parameters, get_input_signals, ContextMethod, assign_one
+from Models.Variants.Common import init_model_parameters, ContextMethod, assign_one
+from Models.Variants.InputSignals import get_input_signals
 from Models.Variants.RNNSteps import reshape_tensor, rnn_loop
 from torch.nn.parameter import Parameter
 import Utils
@@ -79,8 +80,6 @@ class SelfAtt(torch.nn.Module):
         # prev_word_embeddings will be reshaped when we know the seq_len and self.batch_size
 
         init_context_handling(model=self, context_method=context_method)
-        self.select_first_indices = Parameter(torch.tensor(list(range(2 * n_hid_units))).to(torch.float32),
-                                              requires_grad=False)
         self.SelfAttLogits = ComputeLogits(dim_input_context=self.SC.shape[1], dim_input_elems=self.SC.shape[1],
                                            dim_qkv=dim_qkv, k=self.K, grapharea_size=self.grapharea_size)
 

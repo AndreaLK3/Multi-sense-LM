@@ -48,9 +48,9 @@ gr_in_voc_folders = F.get_folders_graph_input_vocabulary(vocab_sources_ls, sp_me
 objects = get_objects(vocab_sources_ls, sp_method, grapharea_size=32)
 
 if args.model_type == "transformer":
-    args.learning_rate = 1e-5  # down from 5e-5
     batch_size = 4
     seq_len = 256
+    args.learning_rate=1e-5
 else:  # GRU and gold_lm
     batch_size = 32
     seq_len = 35

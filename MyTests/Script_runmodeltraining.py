@@ -11,8 +11,8 @@ def test():
 
     args = argparse.Namespace()
     args.model_type = "selectk"
-    args.standard_lm = "gru"
-    args.use_graph_input = False,
+    args.standard_lm = "transformer"
+    args.use_graph_input = True,
     args.learning_rate = 5e-5
     args.num_epochs = 30
     args.sp_method = "fasttext"

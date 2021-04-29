@@ -3,6 +3,7 @@ from torch_geometric.nn import GATConv
 import torch.nn.functional as tfunc
 import Graph.Adjacencies as AD
 import Models.Variants.Common as Common
+import Models.Variants.InputSignals
 from Models.Variants.RNNSteps import rnn_loop, reshape_memories
 from Utils import DEVICE
 from torch.nn.parameter import Parameter
@@ -57,6 +58,7 @@ class SelectK(torch.nn.Module):
 
         self.memory_hn_senses = Parameter(torch.zeros(size=(n_layers, batch_size, int(n_hid_units))),
                                           requires_grad=False)
+        print("self.StandardLM.concatenated_input_dim=" + str(self.StandardLM.concatenated_input_dim))
         self.senses_rnn_ls = torch.nn.ModuleList(
             [torch.nn.GRU(input_size=self.StandardLM.concatenated_input_dim if i == 0 else n_hid_units,
                           hidden_size=n_hid_units // 2 if i == n_layers - 1 else n_hid_units, num_layers=1)  # 512
@@ -64,8 +66,6 @@ class SelectK(torch.nn.Module):
 
         self.linear2senses = torch.nn.Linear(in_features=n_hid_units // 2,  # 512
                                              out_features=self.last_idx_senses, bias=True)
-        self.select_first_indices = Parameter(torch.tensor(list(range(2 * n_hid_units))).to(torch.float32),
-                                               requires_grad=False)
 
 
     # ---------------------------------------- Forward call ----------------------------------------
@@ -86,7 +86,7 @@ class SelectK(torch.nn.Module):
 
         # -------------------- Compute and collect input signals; predict globals -------------------
         for batch_elements_at_t in time_instants:
-            Common.get_input_signals(self, batch_elements_at_t, word_embeddings_ls, currentglobal_nodestates_ls)
+            Models.Variants.InputSignals.get_input_signals(self, batch_elements_at_t, word_embeddings_ls, currentglobal_nodestates_ls)
 
         word_embeddings = torch.stack(word_embeddings_ls, dim=0)
         global_nodestates = torch.stack(currentglobal_nodestates_ls,
@@ -132,15 +132,12 @@ class SelectK(torch.nn.Module):
                 logits_selected_senses = sample_logits_senses.index_select(dim=0, index=sense_neighbours_t)
                 softmax_selected_senses = tfunc.softmax(input=logits_selected_senses, dim=0)
 
-                # for i in range(len(sense_neighbours_t)):
-                #     i_senseneighbours_mask[s,sense_neighbours_t[i]]=True
                 i_senseneighbours_mask[s, sense_neighbours_t] = True
 
                 quantity_to_subtract_from_selected = epsilon * (self.last_idx_senses - len(sense_neighbours_t))
                 softmax_selected_senses = subtract_probability_mass_from_selected(softmax_selected_senses, quantity_to_subtract_from_selected)
                 senses_softmax[s].masked_scatter_(mask=i_senseneighbours_mask[s].data.clone(), source=softmax_selected_senses)
 
-                # Utils.log_chronometer([t0, t1, t2, t3, t4, t5, t6, t7])
             predictions_senses = torch.log(senses_softmax)
 
         else:

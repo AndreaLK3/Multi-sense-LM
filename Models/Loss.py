@@ -18,7 +18,7 @@ def write_doc_logging(model):
     try:
         logging.info(str(model))
     except AttributeError: # when dealing with a transformer
-        logging.info(str(model.standard_lm_transformer.transformer))
+        pass
     logging.info("Parameters:")
     parameters_list = [(name, param.shape, param.dtype, param.requires_grad) for (name, param) in model.named_parameters()]
     logging.info('\n'.join([str(p) for p in parameters_list]))
@@ -43,8 +43,8 @@ def record_statistics(epoch_sumlosses_tpl, epoch_numsteps_tpl, correct_predictio
     # accuracy, on globals, all senses and senses of polysemous words
     globals_acc = round(correct_predictions_dict["correct_g"] / correct_predictions_dict["tot_g"],3)
     senses_acc = round(correct_predictions_dict["correct_all_s"] / max(correct_predictions_dict["tot_all_s"], 1), 3)
-    senses_polysemouswords_acc = round( sum(list(correct_predictions_dict["correct_poly_s"].values())) / \
-        max(sum(list(correct_predictions_dict["tot_poly_s"].values())), 1) , 3)
+    senses_polysemouswords_acc = round(correct_predictions_dict["correct_poly_s"][2]
+                                       / correct_predictions_dict["tot_poly_s"][2], 3)
 
     logging.info("Perplexity: " + " Globals perplexity=" + str(round(exp(epoch_loss_globals),2)) +
                  " \tPerplexity on all senses=" + str(round(exp(epoch_loss_senses),2)))
@@ -120,10 +120,6 @@ def compute_model_loss(model, batch_input, batch_labels, correct_preds_dict, pol
     batch_labels_all_senses = batch_labels_t[1]
 
     # compute the loss for the batch
-    # logging.info(predictions_globals.shape)
-    # logging.info(predictions_globals)
-    # logging.info(batch_labels_globals.shape)
-    # logging.info(batch_labels_globals)
     loss_global = tfunc.nll_loss(predictions_globals, batch_labels_globals)
     if model.predict_senses:
         loss_all_senses = tfunc.nll_loss(predictions_senses, batch_labels_all_senses, ignore_index=-1)

@@ -32,7 +32,7 @@ def run_train(model, train_dataloader, valid_dataloader, learning_rate, num_epoc
     slc_or_text = train_dataloader.dataset.sensecorpus_or_text
     model.train()
 
-    polysense_thresholds = (2,3,5,10,30)
+    polysense_thresholds = (2, 3, 5, 10, 30)
     polysense_globals_dict= Graph.PolysemousWords.get_polysenseglobals_dict(vocab_sources_ls, sp_method, thresholds=polysense_thresholds)
 
     model.predict_senses = predict_senses
@@ -59,7 +59,9 @@ def run_train(model, train_dataloader, valid_dataloader, learning_rate, num_epoc
         optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
 
         for epoch in range(1,num_epochs+1):
-
+            # -------------------- A pre-trained Transformer should not be adjusted further ----------------
+            if model.__class__.__name__.lower()=="standardlm" and "transformer" in model_fname:
+                break
             # -------------------- Step 3a) Initialization --------------------
             sum_epoch_loss_global = 0
             sum_epoch_loss_senses = 0
@@ -82,7 +84,7 @@ def run_train(model, train_dataloader, valid_dataloader, learning_rate, num_epoc
                     flag_earlystop = True
                 if valid_accuracy_senses == 0: # we are operating on globals only, i.e. WT-2
                     logging.info("model_fname =" + str(model_fname))
-                    if valid_loss_globals > best_valid_loss_globals or "gold_lm" in model_fname or "transformer" in model_fname:
+                    if valid_loss_globals > best_valid_loss_globals or "gold_lm" in model_fname:
                         logging.info("Early stopping on globals' PPL")
                         flag_earlystop = True
 

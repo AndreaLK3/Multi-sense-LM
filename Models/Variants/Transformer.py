@@ -1,34 +1,30 @@
 import torch
 from torch_geometric.nn import GATConv
 import torch.nn.functional as tfunc
+
+import Models.Variants.Common
 import Models.Variants.Common as Common
-import Models.Variants.InputSignals
+import Models.Variants.InputSignals as InputSignals
 from Models.Variants.RNNSteps import rnn_loop
 import Utils
 from torch.nn.parameter import Parameter
+import Models.StandardLM.MiniTransformerXL as TXL
 
 
-class RNN(torch.nn.Module):
+class Transformer(torch.nn.Module):
 
     def __init__(self, StandardLM, graph_dataobj, grapharea_size, grapharea_matrix,
                  vocabulary_df, batch_size, n_layers, n_hid_units):
 
-        super(RNN, self).__init__()
+        super(Transformer, self).__init__()
 
         self.StandardLM = StandardLM
         Common.init_model_parameters(self, graph_dataobj, grapharea_size, grapharea_matrix, vocabulary_df,
                                      batch_size, n_layers, n_hid_units)
 
         # -------------------- Senses' architecture --------------------
-        self.memory_hn_senses = Parameter(torch.zeros(size=(n_layers, batch_size, int(n_hid_units))),
-                                          requires_grad=False)
-        self.senses_rnn_ls = torch.nn.ModuleList(
-            [torch.nn.GRU(input_size=self.StandardLM.concatenated_input_dim if i == 0 else n_hid_units,
-                                                hidden_size=n_hid_units // 2 if i == n_layers - 1 else n_hid_units, num_layers=1)  # 512
-             for i in range(n_layers)])
-
-        self.linear2senses = torch.nn.Linear(in_features=n_hid_units // 2,  # 512
-                                                 out_features=self.last_idx_senses, bias=True)
+        self.TransformerForSenses = TXL.get_mini_txl_modelobj(self.last_idx_senses)
+        self.memsForSenses = None
 
     # ---------------------------------------- Forward call ----------------------------------------
 
@@ -37,7 +33,7 @@ class RNN(torch.nn.Module):
 
         # -------------------- Init --------------------
         # T-BPTT: at the start of each batch, we detach_() the hidden state from the graph&history that created it
-        self.memory_hn_senses.detach_()
+        # self.memory_hn_senses.detach_()
         if batchinput_tensor.shape[1] > 1:
             time_instants = torch.chunk(batchinput_tensor, chunks=batchinput_tensor.shape[1], dim=1)
         else:
@@ -45,10 +41,12 @@ class RNN(torch.nn.Module):
 
         word_embeddings_ls = []
         currentglobal_nodestates_ls = []
+        globals_input_ids_ls = []  # for the transformer
 
         # -------------------- Compute and collect input signals; predict globals -------------------
         for batch_elements_at_t in time_instants:
-            Models.Variants.InputSignals.get_input_signals(self, batch_elements_at_t, word_embeddings_ls, currentglobal_nodestates_ls)
+            InputSignals.get_input_signals(self, batch_elements_at_t, word_embeddings_ls, currentglobal_nodestates_ls,
+                      globals_input_ids_ls)
 
         word_embeddings = torch.stack(word_embeddings_ls, dim=0)
         global_nodestates = torch.stack(currentglobal_nodestates_ls,
@@ -62,11 +60,9 @@ class RNN(torch.nn.Module):
         # ------------------- Senses -------------------
         seq_len = batch_input_signals.shape[0]
         if self.predict_senses:
-            task_2_out = rnn_loop(batch_input_signals, model=self, rnn_ls=self.senses_rnn_ls, memory=self.memory_hn_senses)
-            task2_out = task_2_out.reshape(self.batch_size * seq_len, task_2_out.shape[2])
-
-            logits_sense = self.linear2senses(task2_out)
-            predictions_senses = tfunc.log_softmax(logits_sense, dim=1)
+            input_indices = torch.cat(globals_input_ids_ls, dim=0).reshape((seq_len, self.batch_size)).permute(1, 0)
+            predictions_senses, mems = Common.predict_withTXL(self.TransformerForSenses, self.memsForSenses, input_indices)
+            self.memsForSenses = mems
         else:
             predictions_senses = torch.tensor([0] * self.batch_size * seq_len).to(CURRENT_DEVICE)
 

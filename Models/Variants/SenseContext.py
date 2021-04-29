@@ -1,5 +1,6 @@
 import torch
 import Models.Variants.Common as Common
+import Models.Variants.InputSignals
 from Models.Variants.RNNSteps import reshape_memories, reshape_tensor, rnn_loop
 from torch.nn.parameter import Parameter
 import Utils
@@ -13,9 +14,7 @@ import logging
 def update_context_average(location_context, word_embeddings, prev_word_embeddings, C, CURRENT_DEVICE):
 
     current_and_prev_word_embeddings = torch.cat([prev_word_embeddings, word_embeddings], dim=0)
-    # logging.info("current_and_prev_word_embeddings.shape=" + str(current_and_prev_word_embeddings.shape))
     loc_ctx_toadd = torch.zeros(size=location_context.shape).to(CURRENT_DEVICE)
-    # logging.info("loc_ctx_toadd.shape=" + str(loc_ctx_toadd.shape))
     # for every time instant t, we update the location context:
     T = word_embeddings.shape[0]
     for t in (range(0, T)):
@@ -86,7 +85,7 @@ class SenseContext(torch.nn.Module):
 
         # -------------------- Compute and collect input signals; predict globals -------------------
         for batch_elements_at_t in time_instants:
-            Common.get_input_signals(self, batch_elements_at_t, word_embeddings_ls, currentglobal_nodestates_ls)
+            Models.Variants.InputSignals.get_input_signals(self, batch_elements_at_t, word_embeddings_ls, currentglobal_nodestates_ls)
 
         word_embeddings = torch.stack(word_embeddings_ls, dim=0)
         global_nodestates = torch.stack(currentglobal_nodestates_ls,

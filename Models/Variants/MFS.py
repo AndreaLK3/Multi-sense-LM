@@ -1,5 +1,6 @@
 import torch
 import Models.Variants.Common as Common
+import Models.Variants.InputSignals
 from Models.Variants.RNNSteps import rnn_loop, reshape_tensor
 import logging
 import Utils
@@ -38,7 +39,7 @@ class MFS(torch.nn.Module):
 
         # -------------------- Compute and collect input signals; predict globals -------------------
         for batch_elements_at_t in time_instants:
-            Common.get_input_signals(self, batch_elements_at_t, word_embeddings_ls, currentglobal_nodestates_ls)
+            Models.Variants.InputSignals.get_input_signals(self, batch_elements_at_t, word_embeddings_ls, currentglobal_nodestates_ls)
 
         word_embeddings = torch.stack(word_embeddings_ls, dim=0)
         global_nodestates = torch.stack(currentglobal_nodestates_ls,

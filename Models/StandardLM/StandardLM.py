@@ -1,12 +1,14 @@
+import logging
+
 import torch
 from torch_geometric.nn import GATConv
 import torch.nn.functional as tfunc
 import Models.Variants.Common as Common
+import Models.Variants.InputSignals
 from Models.Variants.RNNSteps import rnn_loop
 from torch.nn.parameter import Parameter
 import Utils
-import logging
-import Models.StandardLM.MiniTransformerXL as TXL
+
 
 ##### Everything related to the standard language model on words, identical across model variants, is collected here
 ##### This constitutes the class StandardLM: a component of the model variants (wrappers) that also address the senses
@@ -38,42 +40,41 @@ def init_standardLM_model_parameters(model, graph_dataobj, grapharea_size, model
         model.use_transformer_lm = False
 
 ##### 1.2: Initialization of: E, X, globals' (i.e. main) RNN / transformer
-def init_common_architecture(model, embeddings_matrix, graph_dataobj):
+def init_common_architecture(model, embeddings_matrix, graph_dataobj, pretrained_txl):
     model.E = Parameter(embeddings_matrix.clone().detach(), requires_grad=True) # The matrix of embeddings
-    model.dim_embs = model.E.shape[1]
+    dim_embs = model.E.shape[1]
     if model.include_globalnode_input > 0:
         model.X = Parameter(graph_dataobj.x.clone().detach(), requires_grad=True)  # The graph matrix
 
-    # -------------------- Input signals --------------------
-    model.concatenated_input_dim = model.dim_embs + Utils.GRAPH_EMBEDDINGS_DIM if model.include_globalnode_input==1 \
-        else model.dim_embs  # i.e. if 0 (no graph)
+    # -------------------- More parameters --------------------
+    # concatenated_input_dim is only useful to the GRUs, not to the Transformer that operates independently with indices
+    model.concatenated_input_dim = dim_embs + Utils.GRAPH_EMBEDDINGS_DIM if model.include_globalnode_input==1 \
+        else dim_embs  # i.e. if 0 (no graph)
 
-    # GAT for the node-states from the dictionary graph
-    if model.include_globalnode_input ==1:
-        if model.use_transformer_lm: # to be in line with the embeddings size of the independent transformer, 512:
-            model.gat_globals = GATConv(in_channels=Utils.GRAPH_EMBEDDINGS_DIM, out_channels=256, heads=2)
-        else:
-            model.gat_globals = GATConv(in_channels=Utils.GRAPH_EMBEDDINGS_DIM , out_channels=int(Utils.GRAPH_EMBEDDINGS_DIM / 2),
-                                   heads=2)
-
-    # -------------------- The networks --------------------
     model.memory_hn = Parameter(torch.zeros(size=(1, 1, 1)),
                                 requires_grad=False)  # a dummy for the transformer and gold_lm cases
     model.select_first_indices = Parameter(torch.tensor(list(range(2048))).to(torch.float32),
-                                           requires_grad=False) # used for select_index
+                                           requires_grad=False)  # used for select_index
     model.hidden_size = 1024
     model.n_layers = 3
 
+    # -------------------- GAT for the node-states from the dictionary graph --------------------
+    if model.include_globalnode_input == 1:
+        model.gat_globals = GATConv(in_channels=Utils.GRAPH_EMBEDDINGS_DIM , out_channels=int(Utils.GRAPH_EMBEDDINGS_DIM / 2),
+                                   heads=2)
+
+    # -------------------- The networks --------------------
+
     if not model.use_gold_lm:
         if model.use_transformer_lm:
-            model.standard_lm_transformer = TXL.get_mini_txl_modelobj() # pre-defined model parameters: 12 layers, etc.
+            model.standard_lm_transformer = pretrained_txl
             model.mems = None # slot for the transformer's memories
         else:
             model.standard_rnn_ls = torch.nn.ModuleList(
                 [torch.nn.GRU(input_size=model.concatenated_input_dim if i == 0 else model.hidden_size,
                                                     hidden_size=model.hidden_size // 2 if i == model.n_layers - 1 else model.hidden_size, num_layers=1)  # 512
                  for i in range(model.n_layers)])
-            model.linear2global = torch.nn.Linear(in_features=model.hidden_size // 2,  # 512
+            model.linear2global = torch.nn.Linear(in_features=model.hidden_size // 2,  # i.e. 512
                                          out_features=model.last_idx_globals - model.last_idx_senses, bias=True)
 
             model.memory_hn = Parameter(torch.zeros(size=(model.n_layers, model.batch_size, model.hidden_size)),
@@ -99,33 +100,18 @@ def predict_globals_withGRU(model, batch_input_signals, seq_len, batch_size):
     return predictions_globals, logits_global
 
 
-# --- 1.5b: alternative: StandardLM with a Transformer-XL architecture
-def predict_globals_withTXL(model, input_indices, batch_input_signals):
-    # The other version is commented out
-    # if model.include_globalnode_input is True:
-    #     output_obj = model.standard_lm_transformer(inputs_embeds=global_nodestates)
-    # else:
-    output_obj = model.standard_lm_transformer(input_ids=input_indices, mems=model.mems)
-    # output_obj = model.standard_lm_transformer(inputs_embeds=batch_input_signals)
-    model.mems = output_obj.mems
-    probabilities = output_obj.prediction_scores
-    predictions_globals = torch.reshape(probabilities,
-                                shape=(probabilities.shape[0] * probabilities.shape[1], probabilities.shape[2]))  # 48, 1, 44041
-    return predictions_globals
-
-
 #####
 class StandardLM(torch.nn.Module):
 
     def __init__(self, graph_dataobj, grapharea_size, embeddings_matrix, model_type, include_graph_input,
-                 vocabulary_df, batch_size):
+                 vocabulary_df, batch_size, pretrained_txl_component=None):
 
         # -------------------- Initialization in common: parameters & globals --------------------
         super(StandardLM, self).__init__()
 
         init_standardLM_model_parameters(self, graph_dataobj, grapharea_size, model_type, include_graph_input, vocabulary_df,
                                          batch_size)
-        init_common_architecture(self, embeddings_matrix, graph_dataobj)
+        init_common_architecture(self, embeddings_matrix, graph_dataobj, pretrained_txl_component)
 
 
     def forward(self, batch_input_tensor, batch_labels):
@@ -151,8 +137,8 @@ class StandardLM(torch.nn.Module):
         globals_input_ids_ls = []  # for the transformer alternative
 
         for batch_elements_at_t in time_instants:
-            Common.get_input_signals(self, batch_elements_at_t, word_embeddings_ls, currentglobal_nodestates_ls,
-                                     globals_input_ids_ls)
+            Models.Variants.InputSignals.get_input_signals(self, batch_elements_at_t, word_embeddings_ls, currentglobal_nodestates_ls,
+                                                           globals_input_ids_ls)
 
         # -------------------- Collecting input signals --------------------
         word_embeddings = torch.stack(word_embeddings_ls, dim=0) if self.include_globalnode_input<2 else None
@@ -172,7 +158,8 @@ class StandardLM(torch.nn.Module):
             return predictions_globals, predictions_senses
 
         if self.use_transformer_lm:
-             predictions_globals = predict_globals_withTXL(self, input_indices, batch_input_signals)
+             predictions_globals, mems = Common.predict_withTXL(self.standard_lm_transformer, self.mems, input_indices)
+             self.mems = mems
         else:
             predictions_globals, _logits_globals = predict_globals_withGRU(self, batch_input_signals, seq_len,
                                                                                self.batch_size)

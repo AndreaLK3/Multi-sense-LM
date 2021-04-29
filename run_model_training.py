@@ -12,7 +12,7 @@ def parse_training_arguments():
 
     parser = argparse.ArgumentParser(description='Creating a model, training it on the sense-labeled corpus.')
     # Necessary parameters
-    parser.add_argument('--model_type', type=str, choices=['rnn', 'selectk', 'mfs', 'sensecontext', 'selfatt'],
+    parser.add_argument('--model_type', type=str, choices=['rnn', 'transformer', 'selectk', 'mfs', 'sensecontext', 'selfatt'],
                         help='model to use for Multi-sense Language Modeling')
     parser.add_argument('--standard_lm', type=str, choices=['gru', 'transformer', 'gold_lm'],
                         help='Which pre-trained instrument to load for standard Language Modeling subtask: '
@@ -22,7 +22,7 @@ def parse_training_arguments():
     parser.add_argument('--use_graph_input', type=bool, default=False,
                         help='Whether to use the GNN input from the dictionary graph alongside the pre-trained word'
                              ' embeddings.')
-    parser.add_argument('--learning_rate', type=float, default=0.00005,
+    parser.add_argument('--learning_rate', type=float, default=5e-5,
                         help='learning rate for training the model (it is a parameter of the Adam optimizer)')
     parser.add_argument('--num_epochs', type=int, default=30,
                         help='maximum number of epochs for model training. It generally stops earlier because it uses '
@@ -54,9 +54,9 @@ standardLM_model = TS.load_model_from_file(standardLM_model_fname)
 t0 = time()
 
 if args.standard_lm == "transformer":
-    batch_size = 4
+    batch_size = 2
     seq_len = 256
-else: # GRU and gold_lm
+else:  # GRU and gold_lm
     batch_size = 32
     seq_len = 35
 

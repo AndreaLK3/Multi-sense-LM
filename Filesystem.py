@@ -74,7 +74,6 @@ def get_model_name_from_arguments(args):
     model_fname = args.model_type
     if args.standard_lm == "transformer":
         model_fname = model_fname + "_transformer"
-        args.use_graph_input = False
     elif args.standard_lm == "gold_lm":
         model_fname = model_fname + "_gold_lm"
     if args.use_graph_input is True:
@@ -115,7 +114,7 @@ def get_model_name(model, args):
     if not (model.predict_senses) and model_type != "standardlm":
         model_fname = model_fname + "_noSenses"
 
-    if model_type not in ["rnn", "mfs", "standardlm"]:
+    if model_type not in ["rnn", "transformer", "mfs", "standardlm"]:
         model_fname = model_fname + "_K" + str(model.K)
 
     if model_type in ["sensecontext", "selfatt"]:

@@ -7,7 +7,7 @@ from math import ceil, inf, exp
 import logging
 import VocabularyAndEmbeddings.Vocabulary as V
 import numpy as np
-
+import os
 
 # Auxiliary function: locate the file with the encoded corpus, and load it in chunks.
 def get_numerical_corpus(corpus_name, split_name, vocabulary_sources_ls, chunk_size=1000):
@@ -19,23 +19,23 @@ def get_numerical_corpus(corpus_name, split_name, vocabulary_sources_ls, chunk_s
 
 
 # Auxiliary function: get the mini TXL model, with modified configuration
-def get_mini_txl_modelobj(vocab_sources_ls=[F.WT2, F.SEMCOR]):
-
-    vocab_df = V.get_vocabulary_df(corpora_names=vocab_sources_ls, lowercase=False)
-    vocab_len = len(list(vocab_df["word"]))
+def get_mini_txl_modelobj(vocab_len, d_embed=400, n_layers=8):
 
     config = transformers.TransfoXLConfig(vocab_size=vocab_len, cutoffs=[],
         d_model=512,  # IF passing pre-trained vectors, then necessarily d_model==d_embed or it throws an error for mems
-        d_embed=300,
+        d_embed=d_embed,
         n_head=8,
-        d_head=64,
-        d_inner=1024,
+        d_head=96,
+        d_inner=768,
         div_val=1,
-        n_layer=12,
-        mem_len=800,
-        clamp_len=1000,
+        n_layer=n_layers,
+        mem_len=512,
+        clamp_len=512,
         adaptive=False)
-
+    logging.info("Transformer-XL configuration:")
+    logging.info("d_model=" + str(config.d_model) + "; d_embed=" + str(config.d_embed) + "; n_head=" + str(config.n_head)
+                 + "; d_head=" + str(config.d_head) + "; d_inner=" + str(config.d_inner)
+                 + "; mem_len=" + str(config.clamp_len) + "; clamp_len=" + str(config.clamp_len))
     model = transformers.TransfoXLLMHeadModel(config)
     CURRENT_DEVICE = 'cpu' if not (torch.cuda.is_available()) else 'cuda:' + str(torch.cuda.current_device())
     model.to(CURRENT_DEVICE)
@@ -51,7 +51,6 @@ def epoch_on_corpus(corpus_ids_chunks_ls, model, optimizer, batch_size, input_le
     total_loss = 0
     num_chunks = len(corpus_ids_chunks_ls)
     mems = None
-
 
     for i in range(num_chunks):
         # starting operations on one batch
@@ -86,11 +85,12 @@ def epoch_on_corpus(corpus_ids_chunks_ls, model, optimizer, batch_size, input_le
 
 # Aims: - create a Transformer-XL model, smaller than the version applied on WT-103
 #       - train the TXL model on the WikiText-2 dataset. Using: training split. Early stopping on validation, etc.
-def txl_on_wt2(learning_rate=2e-5, max_num_epochs=50, batch_size=4, chunk_size=1024):
+def txl_on_wt2(learning_rate=2e-5, max_num_epochs=50, batch_size=2, chunk_size=512):
     Utils.init_logging("PretrainingComponent_txl_on_wt2.log")
     vocab_sources_ls = [F.WT2, F.SEMCOR]
-
-    model = get_mini_txl_modelobj(vocab_sources_ls)
+    vocab_df = V.get_vocabulary_df(corpora_names=vocab_sources_ls, lowercase=False)
+    vocab_len = len(vocab_df['word'].to_list().copy())
+    model = get_mini_txl_modelobj(vocab_len)
     optimizer = transformers.AdamW(model.parameters(), lr=learning_rate)
 
     wt2_train_chunks_ls = get_numerical_corpus(corpus_name=F.WT2, split_name=Utils.TRAINING,
@@ -124,6 +124,6 @@ def txl_on_wt2(learning_rate=2e-5, max_num_epochs=50, batch_size=4, chunk_size=1
             best_valid_loss = valid_loss
         epoch = epoch + 1
 
-    torch.save(model, F.TXL_COMPONENT_FILE + Utils.get_timestamp_month_to_sec())
+    torch.save(model, os.path.join(F.FOLDER_SAVEDMODELS, F.TXL_COMPONENT_FILE + Utils.get_timestamp_month_to_sec()))
     return model
 
