@@ -1,6 +1,7 @@
+import Lexicon
 import Utils
 import logging
-import GetKBInputData.WordNet as WordNet
+import GetKBData.WordNet as WordNet
 import pandas as pd
 
 
@@ -17,9 +18,9 @@ def unpack_ls_in_tpls(lts):
 ############### Append to HDF5 tables on disk
 def store_data_to_hdf5(data_df, h5_outfiles, h5_itemsizes, check_language=False, lang_id='en'):
 
-    for i in range(len(Utils.CATEGORIES)):
-        category = Utils.CATEGORIES[i]
-        category_elements_df = data_df.loc[:,[Utils.SENSE_WN_ID, category]]
+    for i in range(len(Lexicon.CATEGORIES)):
+        category = Lexicon.CATEGORIES[i]
+        category_elements_df = data_df.loc[:,[Lexicon.SENSE_WN_ID, category]]
 
         sensenames_elements_lts = [tuple(r) for r in category_elements_df.values]
         if len(sensenames_elements_lts) == 0:
@@ -33,7 +34,7 @@ def store_data_to_hdf5(data_df, h5_outfiles, h5_itemsizes, check_language=False,
         if check_language:
             sensenames_elements_lts_01 = list(filter(lambda tpl: Utils.check_language(tpl[1], lang_id), sensenames_elements_lts_01))
 
-        df_columns = [Utils.SENSE_WN_ID, category]
+        df_columns = [Lexicon.SENSE_WN_ID, category]
         df = pd.DataFrame(data=sensenames_elements_lts_01, columns=df_columns)
         logging.debug(str(len(sensenames_elements_lts_01)))
         try:
@@ -47,10 +48,10 @@ def store_data_to_hdf5(data_df, h5_outfiles, h5_itemsizes, check_language=False,
 def getAndSave_multisense_data(word, open_storage_files, lang_id='en'):
 
     # prepare storage facilities
-    hdf5_min_itemsizes_dict = {Utils.SENSE_WN_ID: Utils.HDF5_BASE_SIZE_512 / 4,
-                               Utils.DEFINITIONS: Utils.HDF5_BASE_SIZE_512, Utils.EXAMPLES: Utils.HDF5_BASE_SIZE_512,
-                               Utils.SYNONYMS: Utils.HDF5_BASE_SIZE_512 / 4,
-                               Utils.ANTONYMS: Utils.HDF5_BASE_SIZE_512 / 4}
+    hdf5_min_itemsizes_dict = {Lexicon.SENSE_WN_ID: Utils.HDF5_BASE_SIZE_512 / 4,
+                               Lexicon.DEFINITIONS: Utils.HDF5_BASE_SIZE_512, Lexicon.EXAMPLES: Utils.HDF5_BASE_SIZE_512,
+                               Lexicon.SYNONYMS: Utils.HDF5_BASE_SIZE_512 / 4,
+                               Lexicon.ANTONYMS: Utils.HDF5_BASE_SIZE_512 / 4}
                                #Utils.ENCYCLOPEDIA_DEF: 4 * Utils.HDF5_BASE_CHARSIZE}
 
     word_multisense_data_df = WordNet.retrieve_senses_desa(word)

@@ -1,3 +1,4 @@
+import Lexicon
 import Utils
 import os
 import pandas as pd
@@ -55,11 +56,11 @@ def eliminate_secondary_senses(word_element_df, bnids_denoms_dict):
 def assign_senses_to_word(word, input_dbs, output_dbs):
 
     hdf5_min_itemsizes = {'word': Utils.HDF5_BASE_SIZE_512 / 4, 'sense': Utils.HDF5_BASE_SIZE_512 / 8,
-                          Utils.DEFINITIONS: Utils.HDF5_BASE_SIZE_512, Utils.EXAMPLES: Utils.HDF5_BASE_SIZE_512,
-                          Utils.SYNONYMS: Utils.HDF5_BASE_SIZE_512 / 4, Utils.ANTONYMS: Utils.HDF5_BASE_SIZE_512 / 4}
+                          Lexicon.DEFINITIONS: Utils.HDF5_BASE_SIZE_512, Lexicon.EXAMPLES: Utils.HDF5_BASE_SIZE_512,
+                          Lexicon.SYNONYMS: Utils.HDF5_BASE_SIZE_512 / 4, Lexicon.ANTONYMS: Utils.HDF5_BASE_SIZE_512 / 4}
 
-    word_dfs = [Utils.select_from_hdf5(input_dbs[i], Utils.CATEGORIES[i], ["word"],[word])
-                for i in range(len(Utils.CATEGORIES))]
+    word_dfs = [Utils.select_from_hdf5(input_dbs[i], Lexicon.CATEGORIES[i], ["word"], [word])
+                for i in range(len(Lexicon.CATEGORIES))]
     # word_dfs = list(filter( lambda word_df: not(word_df.empty), word_dfs))
     bn_ids = set(word_dfs[0]['bn_id'])
 
@@ -67,7 +68,7 @@ def assign_senses_to_word(word, input_dbs, output_dbs):
 
     for bn_id in bn_ids:
         senses_df = [word_dfs[i].loc[word_dfs[i]['bn_id']== str(bn_id)]
-                    for i in range(len(Utils.CATEGORIES))]
+                     for i in range(len(Lexicon.CATEGORIES))]
 
         senses_resources_lts.append((bn_id,
                                      compute_importance_score(
@@ -92,7 +93,7 @@ def assign_senses_to_word(word, input_dbs, output_dbs):
             word_dfs_named = eliminate_secondary_senses(word_dfs[i], bnids_denoms_dict)
             logging.info(word_dfs_named)
             logging.info(output_dbs[i])
-            logging.info(Utils.CATEGORIES[i])
-            output_dbs[i].append(key=Utils.CATEGORIES[i], value=word_dfs_named,
-                         min_itemsize={key:hdf5_min_itemsizes[key]
-                                       for key in hdf5_min_itemsizes.keys() if key in ['word', 'sense', Utils.CATEGORIES[i]]})
+            logging.info(Lexicon.CATEGORIES[i])
+            output_dbs[i].append(key=Lexicon.CATEGORIES[i], value=word_dfs_named,
+                                 min_itemsize={key:hdf5_min_itemsizes[key]
+                                               for key in hdf5_min_itemsizes.keys() if key in ['word', 'sense', Lexicon.CATEGORIES[i]]})

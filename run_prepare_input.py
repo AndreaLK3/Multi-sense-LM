@@ -1,10 +1,8 @@
-import VocabularyAndEmbeddings.ComputeEmbeddings as CE;import CreateGraphInput as CGI;import Graph.DefineGraph as DG
-import Models.TrainingSetup as T
+from InputPipeline import CreateGraphInput as CGI
+import Graph.DefineGraph as DG
 import Graph.Adjacencies as AD
 from time import time
 import Utils
-import logging
-import os
 import Filesystem as F
 import argparse
 

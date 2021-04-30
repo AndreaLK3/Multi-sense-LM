@@ -1,4 +1,6 @@
+import Filesystem
 import Filesystem as F
+import Lexicon
 import Utils
 import pandas as pd
 import os
@@ -9,7 +11,7 @@ import Graph.DefineGraph as DG
 import Graph.Adjacencies as AD
 import Models.DataLoading.NumericalIndices as NI
 import sqlite3
-import SenseLabeledCorpus as SLC
+from InputPipeline import SenseLabeledCorpus as SLC
 from time import time
 
 
@@ -52,7 +54,7 @@ def compute_MFS_for_corpus(vocab_sources_ls=[F.WT2, F.SEMCOR], sp_method=Utils.S
     # Reader
     generator = SLC.read_split(corpus_trainsplit_folder)
     # Senseindices_db
-    senseindices_db_filepath = os.path.join(inputdata_folder, Utils.INDICES_TABLE_DB)
+    senseindices_db_filepath = os.path.join(inputdata_folder, Filesystem.INDICES_TABLE_DB)
     senseindices_db = sqlite3.connect(senseindices_db_filepath)
     senseindices_db_c = senseindices_db.cursor()
     # Grapharea_matrix
@@ -97,18 +99,18 @@ def compute_MFS_for_corpus(vocab_sources_ls=[F.WT2, F.SEMCOR], sp_method=Utils.S
     # ----- Insert in Dataframe, and save in HDF5 archive -----
 
     # create Pandas dataframe
-    mfs_df_columns = [Utils.WORD + Utils.INDEX, Utils.MOST_FREQUENT_SENSE + Utils.INDEX,
-                  Utils.WORD, Utils.MOST_FREQUENT_SENSE]
+    mfs_df_columns = [Lexicon.WORD + Lexicon.INDEX, Lexicon.MOST_FREQUENT_SENSE + Lexicon.INDEX,
+                      Lexicon.WORD, Lexicon.MOST_FREQUENT_SENSE]
     mfs_df = pd.DataFrame(data=wIdx_mfsIdx_w_mfs_lts, columns=mfs_df_columns)
 
     # create HDF5, store in HDF5
-    hdf5_min_itemsizes = {Utils.WORD + Utils.INDEX: Utils.HDF5_BASE_SIZE_512 / 4,
-                      Utils.MOST_FREQUENT_SENSE + Utils.INDEX: Utils.HDF5_BASE_SIZE_512 / 4,
-                      Utils.WORD: Utils.HDF5_BASE_SIZE_512 / 4,
-                      Utils.MOST_FREQUENT_SENSE: Utils.HDF5_BASE_SIZE_512 / 4}
+    hdf5_min_itemsizes = {Lexicon.WORD + Lexicon.INDEX: Utils.HDF5_BASE_SIZE_512 / 4,
+                          Lexicon.MOST_FREQUENT_SENSE + Lexicon.INDEX: Utils.HDF5_BASE_SIZE_512 / 4,
+                          Lexicon.WORD: Utils.HDF5_BASE_SIZE_512 / 4,
+                          Lexicon.MOST_FREQUENT_SENSE: Utils.HDF5_BASE_SIZE_512 / 4}
     mfs_archive_fpath = os.path.join(F.MFS_H5_FPATH)
     mfs_archive = pd.HDFStore(mfs_archive_fpath, mode='w')
-    mfs_archive.append(key=Utils.MOST_FREQUENT_SENSE, value=mfs_df, min_itemsize=hdf5_min_itemsizes)
+    mfs_archive.append(key=Lexicon.MOST_FREQUENT_SENSE, value=mfs_df, min_itemsize=hdf5_min_itemsizes)
 
     t1 = time()
     Utils.log_chronometer([t0,t1])

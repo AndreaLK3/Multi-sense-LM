@@ -1,4 +1,6 @@
 from nltk.corpus import wordnet as wn
+
+import Lexicon
 import Utils
 import logging
 import os
@@ -52,7 +54,7 @@ def retrieve_senses_desa(target_word):
                      str(len(a)) + " antonyms")
         data_lts.append((synset.name(),d,e,s,a))
 
-    data_df = pd.DataFrame(data=data_lts, columns=[Utils.SENSE_WN_ID, Utils.DEFINITIONS, Utils.EXAMPLES,
-                                    Utils.SYNONYMS, Utils.ANTONYMS])
+    data_df = pd.DataFrame(data=data_lts, columns=[Lexicon.SENSE_WN_ID, Lexicon.DEFINITIONS, Lexicon.EXAMPLES,
+                                                   Lexicon.SYNONYMS, Lexicon.ANTONYMS])
 
     return data_df

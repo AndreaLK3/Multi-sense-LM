@@ -31,31 +31,8 @@ class Transformer(torch.nn.Module):
     def forward(self, batchinput_tensor, batch_labels):  # given the batches, the current node is at index 0
         CURRENT_DEVICE = 'cpu' if not (torch.cuda.is_available()) else 'cuda:' + str(torch.cuda.current_device())
 
-        # -------------------- Init --------------------
-        # T-BPTT: at the start of each batch, we detach_() the hidden state from the graph&history that created it
-        # self.memory_hn_senses.detach_()
-        if batchinput_tensor.shape[1] > 1:
-            time_instants = torch.chunk(batchinput_tensor, chunks=batchinput_tensor.shape[1], dim=1)
-        else:
-            time_instants = [batchinput_tensor]
-
-        word_embeddings_ls = []
-        currentglobal_nodestates_ls = []
-        globals_input_ids_ls = []  # for the transformer
-
-        # -------------------- Compute and collect input signals; predict globals -------------------
-        for batch_elements_at_t in time_instants:
-            InputSignals.get_input_signals(self, batch_elements_at_t, word_embeddings_ls, currentglobal_nodestates_ls,
-                      globals_input_ids_ls)
-
-        word_embeddings = torch.stack(word_embeddings_ls, dim=0)
-        global_nodestates = torch.stack(currentglobal_nodestates_ls,
-                                        dim=0) if self.StandardLM.include_globalnode_input > 0 else None
-        batch_input_signals_ls = list(filter(lambda signal: signal is not None,
-                                             [word_embeddings, global_nodestates]))
-        batch_input_signals = torch.cat(batch_input_signals_ls, dim=2)
-
-        predictions_globals, _ = self.StandardLM(batchinput_tensor, batch_labels)
+        batch_input_signals, globals_input_ids_ls, word_embeddings, predictions_globals = \
+            Common.get_input_and_predict_globals(self, batchinput_tensor, batch_labels)
 
         # ------------------- Senses -------------------
         seq_len = batch_input_signals.shape[0]

@@ -36,5 +36,5 @@ def test(model_type="transformer"):
                         batch_size, seq_len,
                         vocab_sources_ls, sp_method, grapharea_size=32)
 
-    run_train(standardLM_model, train_dataloader, valid_dataloader, learning_rate=args.learning_rate, num_epochs=30, predict_senses=False,
-              vocab_sources_ls=vocab_sources_ls, sp_method=sp_method)
+    run_train(standardLM_model, train_dataloader, valid_dataloader, learning_rate=args.learning_rate, num_epochs=30,
+              predict_senses=False, vocab_sources_ls=vocab_sources_ls, sp_method=sp_method)

@@ -117,11 +117,8 @@ def setup_training_on_SemCor(standardLM_model, model_type=None, K=1, context_met
 
     corpus_train_fpath = os.path.join(F.CORPORA_LOCATIONS[F.SEMCOR], F.FOLDER_TRAIN)
     corpus_valid_fpath = os.path.join(F.CORPORA_LOCATIONS[F.SEMCOR], F.FOLDER_VALIDATION)
-    # For mini-experiments:
-    # corpus_train_fpath = os.path.join(F.FOLDER_MYTESTS, F.FOLDER_MINICORPORA, F.FOLDER_SENSELABELED, F.FOLDER_TRAIN)
-    # corpus_valid_fpath = os.path.join(F.FOLDER_MYTESTS, F.FOLDER_MINICORPORA, F.FOLDER_SENSELABELED, F.FOLDER_VALIDATION)
-    slc_or_text = True
 
+    slc_or_text = True
     train_dataset, train_dataloader = setup_corpus(objects, corpus_train_fpath, slc_or_text, gr_in_voc_folders,
                                                    batch_size, seq_len)
     valid_dataset, valid_dataloader = setup_corpus(objects, corpus_valid_fpath, slc_or_text, gr_in_voc_folders,

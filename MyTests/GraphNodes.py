@@ -1,5 +1,7 @@
+import Filesystem
 import Graph.DefineGraph as DG
 import Graph.Adjacencies as AD
+import Lexicon
 import Models.DataLoading.NumericalIndices as NI
 import Utils
 import logging
@@ -29,10 +31,10 @@ def log_node(n, last_indices_tpl, inputdata_folder, vocabulary_folder, definitio
 def initialize_archives(vocab_sources_ls, sp_method):
     graph_folder, inputdata_folder, vocabulary_folder = F.get_folders_graph_input_vocabulary(vocab_sources_ls, sp_method)
 
-    definitions_h5 = os.path.join(inputdata_folder, Utils.PROCESSED + '_' + Utils.DEFINITIONS + ".h5")
-    definitions_df = pd.read_hdf(definitions_h5, key=Utils.DEFINITIONS, mode="r")
-    examples_h5 = os.path.join(inputdata_folder, Utils.PROCESSED + '_' + Utils.EXAMPLES + ".h5")
-    examples_df = pd.read_hdf(examples_h5, key=Utils.EXAMPLES, mode="r")
+    definitions_h5 = os.path.join(inputdata_folder, Lexicon.PROCESSED + '_' + Lexicon.DEFINITIONS + ".h5")
+    definitions_df = pd.read_hdf(definitions_h5, key=Lexicon.DEFINITIONS, mode="r")
+    examples_h5 = os.path.join(inputdata_folder, Lexicon.PROCESSED + '_' + Lexicon.EXAMPLES + ".h5")
+    examples_df = pd.read_hdf(examples_h5, key=Lexicon.EXAMPLES, mode="r")
 
     return inputdata_folder, vocabulary_folder, definitions_df, examples_df, graph_folder
 
@@ -71,7 +73,7 @@ def get_missing_sense(vocab_sources_ls=(F.WT2, F.SEMCOR), sp_method=Utils.SpMeth
 
     graph_folder, inputdata_folder, vocabulary_folder = F.get_folders_graph_input_vocabulary(vocab_sources_ls,
                                                                                              sp_method)
-    senseindices_db = sqlite3.connect(os.path.join(inputdata_folder, Utils.INDICES_TABLE_DB))
+    senseindices_db = sqlite3.connect(os.path.join(inputdata_folder, Filesystem.INDICES_TABLE_DB))
     senseindices_db_c = senseindices_db.cursor()
     last_sense_idx = senseindices_db_c.execute("SELECT COUNT(*) from indices_table").fetchone()[0]
     #logging.info("last_sense_idx from db=" + str(last_sense_idx))

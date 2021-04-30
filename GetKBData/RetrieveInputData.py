@@ -1,10 +1,11 @@
 import pandas as pd
 import string
 import Filesystem
+import Lexicon
 import Utils
 import logging
-import GetKBInputData.GetWordData as GWD
-# import GetKBInputData.BabelNet as BabelNet
+import GetKBData.GetWordData as GWD
+# import GetKBData.BabelNet as BabelNet
 import os
 
 def is_only_punctuation(word_token):
@@ -25,7 +26,7 @@ def retrieve_data_WordNet(vocabulary_df, inputdata_folder, vocabulary_folder):
     requests_counter = 0
 
     # define and open (in 'append') the output archives for the KB data
-    storage_filenames = [categ + ".h5" for categ in Utils.CATEGORIES]
+    storage_filenames = [categ + ".h5" for categ in Lexicon.CATEGORIES]
     storage_filepaths = list(map(lambda fn: os.path.join(inputdata_folder, fn), storage_filenames))
     open_storage_files = [pd.HDFStore(fname, mode='a') for fname in storage_filepaths]
 

@@ -1,5 +1,7 @@
 import os
 import pandas as pd
+
+import Filesystem
 import Filesystem as F
 import Utils
 import sqlite3
@@ -26,7 +28,7 @@ def get_globalword_fromindex_df(global_index, vocabulary_folder):
 ### Given the numerical index of a sense, return the corresponding sense definition
 def get_sense_fromindex(sense_index, inputdata_folder):
 
-    senseindices_db = sqlite3.connect(os.path.join(inputdata_folder, Utils.INDICES_TABLE_DB))
+    senseindices_db = sqlite3.connect(os.path.join(inputdata_folder, Filesystem.INDICES_TABLE_DB))
     senseindices_db_c = senseindices_db.cursor()
 
     senseindices_db_c.execute("SELECT word_sense FROM indices_table WHERE vocab_index="+ str(sense_index))

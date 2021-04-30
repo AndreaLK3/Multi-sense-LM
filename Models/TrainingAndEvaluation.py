@@ -1,9 +1,9 @@
 import Graph.PolysemousWords
+import Lexicon
 import Models.Loss
 import Utils
 import logging
 import torch
-import Graph.Adjacencies as AD
 import Models.Loss as Loss
 from time import time
 from math import inf, exp
@@ -12,7 +12,6 @@ import os
 import Filesystem as F
 from Utils import DEVICE
 import gc
-import VocabularyAndEmbeddings.ComputeEmbeddings as CE
 
 # Auxiliary function: initialize a dictionary that registers the accuracy
 def init_accuracy_dict(polysense_thresholds):
@@ -22,10 +21,12 @@ def init_accuracy_dict(polysense_thresholds):
      'tot_all_s': 0,
      'correct_poly_s': {}.fromkeys(polysense_thresholds, 0),
      'tot_poly_s': {}.fromkeys(polysense_thresholds, 0)
+
      }
 
+
 ################
-def run_train(model, train_dataloader, valid_dataloader, learning_rate, num_epochs, predict_senses=True,
+def run_train(model, train_dataloader, valid_dataloader, learning_rate, num_epochs=30, predict_senses=True,
               vocab_sources_ls=(F.WT2, F.SEMCOR), sp_method=Utils.SpMethod.FASTTEXT):
 
     # -------------------- Step 1: Setup model --------------------
@@ -59,7 +60,7 @@ def run_train(model, train_dataloader, valid_dataloader, learning_rate, num_epoc
         optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
 
         for epoch in range(1,num_epochs+1):
-            # -------------------- A pre-trained Transformer should not be adjusted further ----------------
+            # A pre-trained Transformer should not be adjusted further
             if model.__class__.__name__.lower()=="standardlm" and "transformer" in model_fname:
                 break
             # -------------------- Step 3a) Initialization --------------------
@@ -122,7 +123,7 @@ def run_train(model, train_dataloader, valid_dataloader, learning_rate, num_epoc
                 else:
                     loss = loss_global
 
-                if loss.requires_grad: # to cover the gold_lm + MFS case, that has no gradient
+                if loss.requires_grad:  # this "if" covers the gold_lm + MFS case, that has no gradient
                     loss.backward()
 
                 optimizer.step()

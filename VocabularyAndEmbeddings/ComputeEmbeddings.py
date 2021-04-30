@@ -1,6 +1,8 @@
 import sqlite3
 import re
-import VocabularyAndEmbeddings.EmbedWithDBERT as EDB
+
+import Filesystem
+import Lexicon
 import VocabularyAndEmbeddings.EmbedWithFastText as EFT
 import pandas as pd
 import os
@@ -14,23 +16,14 @@ from Utils import SpMethod
 # and use either DistilBERT or FastText to compute d=768 or d=300 single-prototype word embeddings.
 def compute_single_prototype_embeddings(vocabulary_df, spvs_out_fpath, method):
 
-    if method == SpMethod.DISTILBERT: # currently not in use
-        distilBERT_model = transformers.DistilBertModel.from_pretrained('distilbert-base-uncased',
-                                                                    output_hidden_states=True)
-        distilBERT_tokenizer = transformers.DistilBertTokenizer.from_pretrained('distilbert-base-uncased')
-    else:  # i.e. elif method == Method_for_SPV.FASTTEXT:
-        fasttext_vectors = EFT.load_fasttext_vectors()
+    # if method == SpMethod.DISTILBERT: # currently not in use
+    fasttext_vectors = EFT.load_fasttext_vectors()
 
     word_vectors_lls = []
 
     for idx_word_freq_tpl in vocabulary_df.itertuples():
         word = idx_word_freq_tpl[1]
-
-        if method == SpMethod.DISTILBERT:
-            word_vector = EDB.compute_sentence_dBert_vector(distilBERT_model, distilBERT_tokenizer, word).squeeze().numpy()
-        else: # i.e. elif method == Method_for_SPV.FASTTEXT:
-            word_vector = fasttext_vectors[word]
-
+        word_vector = fasttext_vectors[word]
         word_vectors_lls.append(word_vector)
 
     embds_nparray = np.array(word_vectors_lls)
@@ -49,11 +42,11 @@ def compute_elements_embeddings(elements_name, method, inputdata_folder):
     elif method == SpMethod.FASTTEXT:
         fasttext_vectors = EFT.load_fasttext_vectors()
 
-    input_filepath = os.path.join(inputdata_folder, Utils.PROCESSED + '_' + elements_name + ".h5")
-    output_filepath = os.path.join(inputdata_folder, Utils.VECTORIZED + '_' + str(method.value) + '_'
+    input_filepath = os.path.join(inputdata_folder, Lexicon.PROCESSED + '_' + elements_name + ".h5")
+    output_filepath = os.path.join(inputdata_folder, Lexicon.VECTORIZED + '_' + str(method.value) + '_'
                                    + elements_name) # + ".npy"
 
-    indicesTable_db_filepath = os.path.join(inputdata_folder, Utils.INDICES_TABLE_DB)
+    indicesTable_db_filepath = os.path.join(inputdata_folder, Filesystem.INDICES_TABLE_DB)
     input_db = pd.HDFStore(input_filepath, mode='r')
     indices_table = sqlite3.connect(indicesTable_db_filepath)
     indicesTable_db_c = indices_table.cursor()
@@ -69,7 +62,7 @@ def compute_elements_embeddings(elements_name, method, inputdata_folder):
         if pos == "dummySense":
             break
 
-        sense_df = Utils.select_from_hdf5(input_db, elements_name, [Utils.SENSE_WN_ID], [row[0]])
+        sense_df = Utils.select_from_hdf5(input_db, elements_name, [Lexicon.SENSE_WN_ID], [row[0]])
         element_text_series = sense_df[elements_name]
         for element_text in element_text_series:
             logging.debug("ComputeEmbeddings.compute_elements_embeddings(elements_name, method) > " +

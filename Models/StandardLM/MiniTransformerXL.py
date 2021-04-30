@@ -1,6 +1,8 @@
 import transformers
 import Filesystem as F
 import torch
+
+import Lexicon
 import Utils
 import Models.TextCorpusReader as TCR
 from math import ceil, inf, exp
@@ -93,9 +95,9 @@ def txl_on_wt2(learning_rate=2e-5, max_num_epochs=50, batch_size=2, chunk_size=5
     model = get_mini_txl_modelobj(vocab_len)
     optimizer = transformers.AdamW(model.parameters(), lr=learning_rate)
 
-    wt2_train_chunks_ls = get_numerical_corpus(corpus_name=F.WT2, split_name=Utils.TRAINING,
-                                                vocabulary_sources_ls=vocab_sources_ls, chunk_size=chunk_size)
-    wt2_valid_chunks_ls = get_numerical_corpus(corpus_name=F.WT2, split_name=Utils.VALIDATION,
+    wt2_train_chunks_ls = get_numerical_corpus(corpus_name=F.WT2, split_name=Lexicon.TRAINING,
+                                               vocabulary_sources_ls=vocab_sources_ls, chunk_size=chunk_size)
+    wt2_valid_chunks_ls = get_numerical_corpus(corpus_name=F.WT2, split_name=Lexicon.VALIDATION,
                                                vocabulary_sources_ls=vocab_sources_ls, chunk_size=chunk_size)
     # for testing purposes, works as using mini-corpora
     # wt2_train_chunks_ls = wt2_train_chunks_ls[-5:]

@@ -12,46 +12,15 @@ import os
 import sqlite3
 
 ########## Constants ##########
+from Filesystem import INDICES_TABLE_DB
+from Lexicon import DISTILBERT, FASTTEXT, TXL
 
 HDF5_BASE_SIZE_512 = 512
 DEVICE = torch.device('cuda' if torch.cuda.is_available() else 'cpu')  # torch.device('cpu')#
 
-# Lexicon
-
-STANDARDTEXT = 'StandardText'
-SENSELABELED = 'SenseLabeled'
-
-DEFINITIONS = 'definitions'
-EXAMPLES = 'examples'
-SYNONYMS = 'synonyms'
-ANTONYMS = 'antonyms'
-CATEGORIES = [DEFINITIONS, EXAMPLES, SYNONYMS, ANTONYMS]  # , Utils.ENCYCLOPEDIA_DEF
-
-SENSE_WN_ID = 'sense_wn_id'
-
-DENOMINATED = 'denominated'
-PROCESSED = 'processed' # for defs and examples, it means: 'no duplicates'; for synonyms and antonyms: 'lemmatized'
-VECTORIZED = 'vectorized'
-DISTILBERT = "DistilBERT"
-FASTTEXT = "FastText"
-TXL = "TXL"
-
-TRAINING = 'Training'
-VALIDATION = 'Validation'
-TEST = 'Test'
-
-INDICES_TABLE_DB = 'indices_table.sql'
-
 UNK_TOKEN = '<unk>'
 NUM_TOKEN = '<num>'
 EOS_TOKEN = '<eos>'
-
-EMPTY = 'EMPTY'
-MOST_FREQUENT_SENSE = "MostFrequentSense"
-WORD = 'word'
-INDEX = 'index'
-
-CORRECT_PREDICTIONS = 'correct_predictions'
 
 GRAPH_EMBEDDINGS_DIM = 300
 
@@ -188,6 +157,6 @@ def compute_startpoint_dummySenses(graph_dataobj):
 
 
 class SpMethod(Enum):
-    DISTILBERT = DISTILBERT # to be removed
+    DISTILBERT = DISTILBERT  # to be removed
     FASTTEXT = FASTTEXT
     TXL = TXL

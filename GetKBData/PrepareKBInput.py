@@ -1,6 +1,7 @@
 import Filesystem
-import GetKBInputData.RemoveQuasiDuplicates as RQD
-import GetKBInputData.LemmatizeNyms as LN
+import GetKBData.RemoveQuasiDuplicates as RQD
+import GetKBData.LemmatizeNyms as LN
+import Lexicon
 import VocabularyAndEmbeddings.ComputeEmbeddings as CE
 import os
 import Utils
@@ -16,21 +17,21 @@ import nltk
 def preprocess(vocabulary_ls, inputdata_folder):
 
     # categories= [d., e., s., a.]
-    hdf5_input_filepaths = [os.path.join(inputdata_folder, categ + ".h5") for categ in Utils.CATEGORIES]
-    hdf5_output_filepaths = [os.path.join(inputdata_folder, Utils.PROCESSED + '_' + categ + ".h5")
-                             for categ in Utils.CATEGORIES]
+    hdf5_input_filepaths = [os.path.join(inputdata_folder, categ + ".h5") for categ in Lexicon.CATEGORIES]
+    hdf5_output_filepaths = [os.path.join(inputdata_folder, Lexicon.PROCESSED + '_' + categ + ".h5")
+                             for categ in Lexicon.CATEGORIES]
 
     input_dbs = [pd.HDFStore(input_filepath, mode='r') for input_filepath in hdf5_input_filepaths]
     processed_dbs = [pd.HDFStore(output_filepath, mode='a') for output_filepath in hdf5_output_filepaths]
 
     logging.info("Eliminating quasi-duplicate definitions for the current vocabulary subset.")
-    RQD.eliminate_duplicates_in_table(vocabulary_ls, Utils.DEFINITIONS, input_dbs[0], processed_dbs[0])
+    RQD.eliminate_duplicates_in_table(vocabulary_ls, Lexicon.DEFINITIONS, input_dbs[0], processed_dbs[0])
     logging.info("Eliminating quasi-duplicate examples for the current vocabulary subset.")
-    RQD.eliminate_duplicates_in_table(vocabulary_ls, Utils.EXAMPLES, input_dbs[1], processed_dbs[1])
+    RQD.eliminate_duplicates_in_table(vocabulary_ls, Lexicon.EXAMPLES, input_dbs[1], processed_dbs[1])
     logging.info("Lemmatizing synonyms for the current vocabulary subset.")
-    LN.lemmatize_nyms_in_word(vocabulary_ls, Utils.SYNONYMS, input_dbs[2], processed_dbs[2])
+    LN.lemmatize_nyms_in_word(vocabulary_ls, Lexicon.SYNONYMS, input_dbs[2], processed_dbs[2])
     logging.info("Lemmatizing antonyms for the current vocabulary subset.")
-    LN.lemmatize_nyms_in_word(vocabulary_ls, Utils.ANTONYMS, input_dbs[3], processed_dbs[3])
+    LN.lemmatize_nyms_in_word(vocabulary_ls, Lexicon.ANTONYMS, input_dbs[3], processed_dbs[3])
 
     Utils.close_list_of_files(input_dbs + processed_dbs)
 
@@ -46,13 +47,13 @@ def create_senses_indices_table(input_folder_fpath, vocabulary_folder):
     vocabulary_words_ls = vocabulary_df['word'].to_list().copy()
     vocabulary_lemmatizedforms_ls = vocabulary_df['lemmatized_form'].to_list().copy()
 
-    defs_input_filepath = os.path.join(input_folder_fpath, Utils.PROCESSED + '_' + Utils.DEFINITIONS + ".h5")
-    examples_input_filepath = os.path.join(input_folder_fpath, Utils.PROCESSED + '_' + Utils.EXAMPLES + ".h5")
+    defs_input_filepath = os.path.join(input_folder_fpath, Lexicon.PROCESSED + '_' + Lexicon.DEFINITIONS + ".h5")
+    examples_input_filepath = os.path.join(input_folder_fpath, Lexicon.PROCESSED + '_' + Lexicon.EXAMPLES + ".h5")
     defs_input_db = pd.HDFStore(defs_input_filepath, mode='r')
     examples_input_db = pd.HDFStore(examples_input_filepath, mode='r')
 
     # ------- Creating the table --------
-    output_filepath = os.path.join(input_folder_fpath, Utils.INDICES_TABLE_DB)
+    output_filepath = os.path.join(input_folder_fpath, Filesystem.INDICES_TABLE_DB)
     out_indicesTable_db = sqlite3.connect(output_filepath)
     out_indicesTable_db_c = out_indicesTable_db.cursor()
     out_indicesTable_db_c.execute('''CREATE TABLE IF NOT EXISTS
@@ -70,15 +71,15 @@ def create_senses_indices_table(input_folder_fpath, vocabulary_folder):
     logging.debug("vocabulary_words_ls=" + str(vocabulary_words_ls))
 
     # ------- Inserting the words from the vocabulary that have sense/WordNet data, in the standard way --------
-    word_senses_series_from_defs = defs_input_db[Utils.DEFINITIONS][Utils.SENSE_WN_ID]
+    word_senses_series_from_defs = defs_input_db[Lexicon.DEFINITIONS][Lexicon.SENSE_WN_ID]
     word_senses_ls = [sense_str for sense_str in word_senses_series_from_defs if
                              Utils.get_word_from_sense(sense_str) in vocabulary_words_ls]
     words_with_senses_set = set()
     for wn_id in word_senses_ls:
-        logging.debug('GetKBInputData.create_senses_vocabulary_table(vocabulary_words_ls) > word_senses_toprocess > '
+        logging.debug('GetKBData.create_senses_vocabulary_table(vocabulary_words_ls) > word_senses_toprocess > '
                      + ' current wn_id=' + wn_id)
-        sense_defs_df = Utils.select_from_hdf5(defs_input_db, Utils.DEFINITIONS, [Utils.SENSE_WN_ID], [wn_id])
-        sense_examples_df = Utils.select_from_hdf5(examples_input_db, Utils.EXAMPLES, [Utils.SENSE_WN_ID], [wn_id])
+        sense_defs_df = Utils.select_from_hdf5(defs_input_db, Lexicon.DEFINITIONS, [Lexicon.SENSE_WN_ID], [wn_id])
+        sense_examples_df = Utils.select_from_hdf5(examples_input_db, Lexicon.EXAMPLES, [Lexicon.SENSE_WN_ID], [wn_id])
 
 
         end_defs_count = start_defs_count + len(sense_defs_df.index)
@@ -140,9 +141,9 @@ def create_senses_indices_table(input_folder_fpath, vocabulary_folder):
 # PCA: Linear dimensionality reduction, using Singular Value Decomposition of the data to project
 # it to a lower dimensional space. The input data is centered but not scaled for each feature before applying SVD.
 def apply_PCA_to_defs_examples(embeddings_method, inputdata_folder):
-    elements_ls = [Utils.DEFINITIONS, Utils.EXAMPLES]
+    elements_ls = [Lexicon.DEFINITIONS, Lexicon.EXAMPLES]
     for elements_name in elements_ls:
-        elems_fname = Utils.VECTORIZED + '_' + str(embeddings_method.value) + '_' + elements_name + '.npy'
+        elems_fname = Lexicon.VECTORIZED + '_' + str(embeddings_method.value) + '_' + elements_name + '.npy'
         elems_fpath = os.path.join(inputdata_folder, elems_fname)
         elems_E1 = np.load(elems_fpath)
 
@@ -164,8 +165,8 @@ def prepare(vocabulary_ls, inputdata_folder, vocabulary_folder, embeddings_metho
     create_senses_indices_table(inputdata_folder, vocabulary_folder)
 
     # Phase 3 - get the sentence embeddings for definitions and examples, using BERT or FasText, and store them
-    CE.compute_elements_embeddings(Utils.DEFINITIONS, embeddings_method, inputdata_folder)
-    CE.compute_elements_embeddings(Utils.EXAMPLES, embeddings_method, inputdata_folder)
+    CE.compute_elements_embeddings(Lexicon.DEFINITIONS, embeddings_method, inputdata_folder)
+    CE.compute_elements_embeddings(Lexicon.EXAMPLES, embeddings_method, inputdata_folder)
 
     # Phase 4 - use PCA dimensionality reduction for definitions and examples, for future graph processing
     apply_PCA_to_defs_examples(embeddings_method, inputdata_folder)

@@ -1,4 +1,6 @@
 import torch
+
+import Lexicon
 import Models.Variants.Common as Common
 import Models.Variants.InputSignals
 from Models.Variants.RNNSteps import rnn_loop, reshape_tensor
@@ -28,26 +30,8 @@ class MFS(torch.nn.Module):
     def forward(self, batchinput_tensor, batch_labels):  # given the batches, the current node is at index 0
         CURRENT_DEVICE = 'cpu' if not (torch.cuda.is_available()) else 'cuda:' + str(torch.cuda.current_device())
 
-        # -------------------- Init --------------------
-        if batchinput_tensor.shape[1] > 1:
-            time_instants = torch.chunk(batchinput_tensor, chunks=batchinput_tensor.shape[1], dim=1)
-        else:
-            time_instants = [batchinput_tensor]
-
-        word_embeddings_ls = []
-        currentglobal_nodestates_ls = []
-
-        # -------------------- Compute and collect input signals; predict globals -------------------
-        for batch_elements_at_t in time_instants:
-            Models.Variants.InputSignals.get_input_signals(self, batch_elements_at_t, word_embeddings_ls, currentglobal_nodestates_ls)
-
-        word_embeddings = torch.stack(word_embeddings_ls, dim=0)
-        global_nodestates = torch.stack(currentglobal_nodestates_ls,
-                                        dim=0) if self.StandardLM.include_globalnode_input > 0 else None
-        batch_input_signals_ls = list(filter(lambda signal: signal is not None,
-                                             [word_embeddings, global_nodestates]))
-        batch_input_signals = torch.cat(batch_input_signals_ls, dim=2)
-        predictions_globals, _ = self.StandardLM(batchinput_tensor, batch_labels)
+        batch_input_signals, globals_input_ids_ls, word_embeddings, predictions_globals = \
+            Common.get_input_and_predict_globals(self, batchinput_tensor, batch_labels)
 
         # ------------------- Senses : pick MFS of the K=1 candidate -------------------
         seq_len = batch_input_signals.shape[0]
@@ -61,7 +45,7 @@ class MFS(torch.nn.Module):
                 k_globals_vocab_indices = sample_k_indices_in_vocab_lls[s]
                 k_globals_lemmatized = [self.vocabulary_lemmatizedList[idx] for idx in k_globals_vocab_indices] # 1 element
                 lemmatized_word = k_globals_lemmatized[0]
-                mfs_word_row = self.mfs_df.loc[self.mfs_df[Utils.WORD] == lemmatized_word]
+                mfs_word_row = self.mfs_df.loc[self.mfs_df[Lexicon.WORD] == lemmatized_word]
                 try:
                     word_mfs_idx = mfs_word_row["MostFrequentSenseindex"].values[0]
                 except IndexError: # dummySenses do not appear in the MFS table, and must be retrieved separately

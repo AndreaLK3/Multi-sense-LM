@@ -1,3 +1,4 @@
+import Filesystem
 import Graph.Adjacencies as AD
 import Graph.DefineGraph as DG
 import Filesystem as F
@@ -5,7 +6,7 @@ import os
 import sqlite3
 import Utils
 import pandas as pd
-import SenseLabeledCorpus as SLC
+from InputPipeline import SenseLabeledCorpus as SLC
 import Models.DataLoading.NumericalIndices as NI
 import numpy as np
 from collections import deque
@@ -18,7 +19,7 @@ def get_archives(vocab_sources_ls, sp_method):
     globals_vocabulary_fpath = os.path.join(vocab_folder, "vocabulary.h5")
     vocab_df = pd.read_hdf(globals_vocabulary_fpath)
 
-    senseindices_db_filepath = os.path.join(inputdata_folder, Utils.INDICES_TABLE_DB)
+    senseindices_db_filepath = os.path.join(inputdata_folder, Filesystem.INDICES_TABLE_DB)
     senseindices_db = sqlite3.connect(senseindices_db_filepath)
     senseindices_db_c = senseindices_db.cursor()
 

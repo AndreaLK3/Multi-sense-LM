@@ -1,3 +1,4 @@
+import Lexicon
 import Utils
 import Filesystem as F
 import os
@@ -12,16 +13,16 @@ import logging
 # retrieved from WordNet, in raw and processed form both
 def count_glosses_length(glosses_id=0):
     if glosses_id==0:
-        elems_name=Utils.DEFINITIONS
+        elems_name= Lexicon.DEFINITIONS
     elif glosses_id==1:
-        elems_name=Utils.EXAMPLES
+        elems_name= Lexicon.EXAMPLES
     else:
         raise Exception("glosses_id must be either 0 (definitions) or 1 (examples)")
 
     Utils.init_logging("GlossesStatistics_"+elems_name+".log")
     input_folder_fpath = os.path.join(F.FOLDER_INPUT, F.FOLDER_SENSELABELED)
     # process== eliminating duplicate defs & examples. Did not modify the sentences
-    processed_elems_fpath = os.path.join(input_folder_fpath, Utils.PROCESSED + '_' + elems_name + ".h5")
+    processed_elems_fpath = os.path.join(input_folder_fpath, Lexicon.PROCESSED + '_' + elems_name + ".h5")
     # example of processed_definition:  report.n.01 | a written document describing the findings of some individual or group
 
     elems_df = pd.read_hdf(processed_elems_fpath)

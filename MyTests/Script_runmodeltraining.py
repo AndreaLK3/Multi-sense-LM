@@ -31,8 +31,8 @@ def test():
                                  K=args.K, context_method_id=args.context_method, C=args.C,
                                  dim_qkv=300, grapharea_size=32, batch_size=3, seq_len=5)
 
-    TE.run_train(model, train_dataloader, valid_dataloader,
-                               learning_rate=args.learning_rate, num_epochs=args.num_epochs, predict_senses=True)
+    TE.run_train(model, train_dataloader, valid_dataloader, learning_rate=args.learning_rate,
+                 num_epochs=args.num_epochs, predict_senses=True)
 
     # We also need to evaluate the model in question on SemCor's test set and on Raganato's SensEval benchmark,
     # but if the model has been saved that can be done later

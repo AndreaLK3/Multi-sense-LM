@@ -2,10 +2,10 @@ import Filesystem
 import Utils
 import os
 import pandas as pd
-import SenseLabeledCorpus as SLC
+from InputPipeline import SenseLabeledCorpus as SLC
 import logging
 import VocabularyAndEmbeddings.Vocabulary_Utilities as VocabUtils
-import GetKBInputData.LemmatizeNyms as LN
+import GetKBData.LemmatizeNyms as LN
 import nltk
 import Filesystem as F
 

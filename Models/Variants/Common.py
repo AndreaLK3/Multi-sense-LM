@@ -1,6 +1,6 @@
 from enum import Enum
 import torch
-from Graph.Adjacencies import lemmatize_node
+import Models.Variants.InputSignals as InputSignals
 import Utils
 from torch.nn.parameter import Parameter
 
@@ -28,29 +28,7 @@ def init_model_parameters(model, graph_dataobj, grapharea_size, grapharea_matrix
     # utility for select_index
     model.select_first_indices = Parameter(torch.tensor(list(range(2 * hidden_units))).to(torch.float32),
                                           requires_grad=False)
-
     return
-
-#### 1.3: Graph Neural Networks for globals
-def run_graphnet(t_input_lts, batch_elems_at_t, t_globals_indices_ls, model):
-
-    currentglobal_nodestates_ls = []
-    if model.include_globalnode_input > 0:
-        t_edgeindex_g_ls = [t_input_lts[b][0][1] for b in range(len(t_input_lts))]
-        t_edgetype_g_ls = [t_input_lts[b][0][2] for b in range(len(t_input_lts))]
-        for i_sample in range(batch_elems_at_t.shape[0]):
-            sample_edge_index = t_edgeindex_g_ls[i_sample]
-            sample_edge_type = t_edgetype_g_ls[i_sample]
-            x_indices, edge_index, edge_type = lemmatize_node(t_globals_indices_ls[i_sample], sample_edge_index, sample_edge_type, model=model)
-            sample_x = model.X.index_select(dim=0, index=x_indices.squeeze())
-            x_attention_states = model.gat_globals(sample_x, edge_index)
-            currentglobal_node_state = x_attention_states.index_select(dim=0, index=model.select_first_indices[0].to(
-                torch.int64))
-            currentglobal_nodestates_ls.append(currentglobal_node_state)
-
-        t_currentglobal_node_states = torch.stack(currentglobal_nodestates_ls, dim=0).squeeze(dim=1)
-        return t_currentglobal_node_states
-
 
 ##### Choose the method to compute the location context / Self-attention query
 class ContextMethod(Enum):
@@ -82,7 +60,7 @@ def assign_one(target_elements, seq_len, distributed_batch_size, len_output_dist
     return predictions
 
 
-# --- 1.5b: alternative to GRUs: a Transformer-XL architecture
+# Alternative to GRUs: a Transformer-XL architecture
 def predict_withTXL(transformer, mems, input_indices):
 
     output_obj = transformer(input_ids=input_indices, mems=mems)
@@ -91,3 +69,30 @@ def predict_withTXL(transformer, mems, input_indices):
     predictions = torch.reshape(probabilities,
                                 shape=(probabilities.shape[0] * probabilities.shape[1], probabilities.shape[2]))  # 48, 1, 44041
     return predictions, mems
+
+# The first part of the forward() call common to all model variants. Extracts the input signals from the batchinput_tensor,
+# which can also be used in the senses' architecture, and predict the next word
+def get_input_and_predict_globals(model, batchinput_tensor, batch_labels):
+    # -------------------- Init --------------------
+    if batchinput_tensor.shape[1] > 1:
+        time_instants = torch.chunk(batchinput_tensor, chunks=batchinput_tensor.shape[1], dim=1)
+    else:
+        time_instants = [batchinput_tensor]
+
+    word_embeddings_ls = []
+    currentglobal_nodestates_ls = []
+    globals_input_ids_ls = []  # for the transformer
+
+    # -------------------- Compute and collect input signals; predict globals -------------------
+    for batch_elements_at_t in time_instants:
+        InputSignals.get_input_signals(model, batch_elements_at_t, word_embeddings_ls, currentglobal_nodestates_ls)
+
+    word_embeddings = torch.stack(word_embeddings_ls, dim=0)
+    global_nodestates = torch.stack(currentglobal_nodestates_ls,
+                                    dim=0) if model.StandardLM.include_globalnode_input > 0 else None
+    batch_input_signals_ls = list(filter(lambda signal: signal is not None,
+                                         [word_embeddings, global_nodestates]))
+    batch_input_signals = torch.cat(batch_input_signals_ls, dim=2)
+    predictions_globals, _ = model.StandardLM(batchinput_tensor, batch_labels)
+
+    return batch_input_signals, globals_input_ids_ls, word_embeddings, predictions_globals

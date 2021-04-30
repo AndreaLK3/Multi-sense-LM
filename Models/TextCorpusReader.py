@@ -2,6 +2,7 @@ import pandas as pd
 import torch
 
 import Graph.PolysemousWords
+import Lexicon
 import Utils
 import Filesystem as F
 import VocabularyAndEmbeddings.Vocabulary as V
@@ -9,11 +10,10 @@ import VocabularyAndEmbeddings.Vocabulary_Utilities as VocabUtils
 import os
 import logging
 import numpy as np
-import SenseLabeledCorpus as SLC
 from Graph import DefineGraph as DG, Adjacencies as AD
 from Models.DataLoading import DataLoading as DL
 from Utils import DEVICE
-from VocabularyAndEmbeddings.ComputeEmbeddings import SpMethod
+
 
 # Auxiliary function:
 # Input: corpus and split
@@ -21,22 +21,22 @@ from VocabularyAndEmbeddings.ComputeEmbeddings import SpMethod
 def get_corpus_fpaths(corpus_name, split, vocabulary_sources_ls):
 
     if corpus_name.lower() == F.WT2.lower():
-        if split == Utils.TRAINING:
+        if split == Lexicon.TRAINING:
             split_fname = F.WT_TRAIN_FILE
-        elif split == Utils.VALIDATION:
+        elif split == Lexicon.VALIDATION:
             split_fname = F.WT_VALID_FILE
-        elif split == Utils.TEST:
+        elif split == Lexicon.TEST:
             split_fname = F.WT_TEST_FILE
         txt_corpus_fpath = os.path.join(F.CORPORA_LOCATIONS[F.WT2], split_fname)
         numIDs_outfile_fpath = os.path.join(F.CORPORA_LOCATIONS[F.WT2], split_fname + F.CORPUS_NUMERICAL_EXTENSION
                                             + "withVocabFrom_" + "_".join(vocabulary_sources_ls) + ".npy")
 
     if corpus_name.lower() == F.SEMCOR.lower():
-        if split == Utils.TRAINING:
+        if split == Lexicon.TRAINING:
             split_dirname = F.FOLDER_TRAIN
-        elif split == Utils.VALIDATION:
+        elif split == Lexicon.VALIDATION:
             split_dirname = F.FOLDER_VALIDATION
-        elif split == Utils.TEST:
+        elif split == Lexicon.TEST:
             split_dirname = F.FOLDER_TEST
         txt_corpus_fpath = os.path.join(F.CORPORA_LOCATIONS[F.SEMCOR], split_dirname)
         numIDs_outfile_fpath = os.path.join(F.CORPORA_LOCATIONS[F.SEMCOR], split_dirname + F.CORPUS_NUMERICAL_EXTENSION

@@ -21,8 +21,6 @@ def parse_pretraining_arguments():
 
     parser.add_argument('--learning_rate', type=float, default=1e-4,
                         help='learning rate for training the model; it is a parameter of the Adam optimizer')
-    parser.add_argument('--sp_method', type=str, default='fasttext', choices=['fasttext', 'transformer'],
-                        help="Which method is used to create the single-prototype embeddings: FastText or Transformer")
     parser.add_argument('--random_seed', type=int, default=1,
                         help="We can specify a randomization seed !=0, for reproducibility of experiments. Default 1")
 
@@ -60,5 +58,5 @@ standardLM_model, train_dataloader, valid_dataloader = \
                         batch_size, seq_len,
                         vocab_sources_ls, sp_method, grapharea_size=32)
 
-run_train(standardLM_model, train_dataloader, valid_dataloader, learning_rate=args.learning_rate, num_epochs=30, predict_senses=False,
-              vocab_sources_ls=vocab_sources_ls, sp_method=sp_method)
+run_train(standardLM_model, train_dataloader, valid_dataloader, learning_rate=args.learning_rate, num_epochs=30,
+          predict_senses=False, vocab_sources_ls=vocab_sources_ls, sp_method=sp_method)

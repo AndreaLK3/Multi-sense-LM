@@ -1,4 +1,5 @@
 import Filesystem as F
+import Lexicon
 import Models.TextCorpusReader
 import Utils
 import pandas as pd
@@ -9,7 +10,7 @@ import tables
 import Models.DataLoading.NumericalIndices as NI
 import logging
 import Models.Auxiliary.ComputeMFS as MFS
-import SenseLabeledCorpus as SLC
+from InputPipeline import SenseLabeledCorpus as SLC
 import numpy as np
 from time import time
 
@@ -61,18 +62,18 @@ def compute_MFS_for_corpus(vocabulary_sources_ls=[F.WT2, F.SEMCOR], sp_method=Ut
             wIdx_mfsIdx_w_mfs_lts.append((row_i, mfs_idx, lemmatized_word, mfs))
 
     # create Pandas dataframe
-    mfs_df_columns = [Utils.WORD + Utils.INDEX, Utils.MOST_FREQUENT_SENSE + Utils.INDEX,
-                  Utils.WORD, Utils.MOST_FREQUENT_SENSE]
+    mfs_df_columns = [Lexicon.WORD + Lexicon.INDEX, Lexicon.MOST_FREQUENT_SENSE + Lexicon.INDEX,
+                      Lexicon.WORD, Lexicon.MOST_FREQUENT_SENSE]
     mfs_df = pd.DataFrame(data=wIdx_mfsIdx_w_mfs_lts, columns=mfs_df_columns)
 
     # create HDF5, store in HDF5
-    hdf5_min_itemsizes = {Utils.WORD + Utils.INDEX: Utils.HDF5_BASE_SIZE_512 / 4,
-                      Utils.MOST_FREQUENT_SENSE + Utils.INDEX: Utils.HDF5_BASE_SIZE_512 / 4,
-                      Utils.WORD: Utils.HDF5_BASE_SIZE_512 / 4,
-                      Utils.MOST_FREQUENT_SENSE: Utils.HDF5_BASE_SIZE_512 / 4}
+    hdf5_min_itemsizes = {Lexicon.WORD + Lexicon.INDEX: Utils.HDF5_BASE_SIZE_512 / 4,
+                          Lexicon.MOST_FREQUENT_SENSE + Lexicon.INDEX: Utils.HDF5_BASE_SIZE_512 / 4,
+                          Lexicon.WORD: Utils.HDF5_BASE_SIZE_512 / 4,
+                          Lexicon.MOST_FREQUENT_SENSE: Utils.HDF5_BASE_SIZE_512 / 4}
     mfs_archive_fpath = os.path.join(corpus_folder, 'bis_'+F.MOST_FREQ_SENSE_FILE)
     mfs_archive = pd.HDFStore(mfs_archive_fpath, mode='w')
-    mfs_archive.append(key=Utils.MOST_FREQUENT_SENSE, value=mfs_df, min_itemsize=hdf5_min_itemsizes)
+    mfs_archive.append(key=Lexicon.MOST_FREQUENT_SENSE, value=mfs_df, min_itemsize=hdf5_min_itemsizes)
 
     t1 = time()
     Utils.log_chronometer([t0,t1])

@@ -1,5 +1,7 @@
 import logging
 import pandas as pd
+
+import Lexicon
 import Utils
 import os
 import nltk
@@ -34,17 +36,17 @@ def lemmatize_nyms_in_word(vocabulary_ls, elements_name, input_db, output_db):
 
     lemmatizer = nltk.stem.WordNetLemmatizer()
 
-    hdf5_min_itemsizes = {Utils.SENSE_WN_ID: Utils.HDF5_BASE_SIZE_512 / 4,
-                          Utils.SYNONYMS: Utils.HDF5_BASE_SIZE_512 / 4, Utils.ANTONYMS: Utils.HDF5_BASE_SIZE_512 / 4}
-    min_itemsize_dict = {key: hdf5_min_itemsizes[key] for key in [Utils.SENSE_WN_ID, elements_name]}
+    hdf5_min_itemsizes = {Lexicon.SENSE_WN_ID: Utils.HDF5_BASE_SIZE_512 / 4,
+                          Lexicon.SYNONYMS: Utils.HDF5_BASE_SIZE_512 / 4, Lexicon.ANTONYMS: Utils.HDF5_BASE_SIZE_512 / 4}
+    min_itemsize_dict = {key: hdf5_min_itemsizes[key] for key in [Lexicon.SENSE_WN_ID, elements_name]}
 
-    all_word_senses = list(set(input_db[elements_name][Utils.SENSE_WN_ID]))
+    all_word_senses = list(set(input_db[elements_name][Lexicon.SENSE_WN_ID]))
     word_senses_toprocess = sorted([sense_str for sense_str in all_word_senses if
                              Utils.get_word_from_sense(sense_str) in vocabulary_ls])
     data_to_add = []
 
     for wn_id in word_senses_toprocess:
-        sense_df = Utils.select_from_hdf5(input_db, elements_name, [Utils.SENSE_WN_ID], [wn_id])
+        sense_df = Utils.select_from_hdf5(input_db, elements_name, [Lexicon.SENSE_WN_ID], [wn_id])
         sense_lts = list(zip(cycle([wn_id]), sense_df[elements_name]))
 
         sense_lts_lemmatized = list(map(
@@ -54,6 +56,6 @@ def lemmatize_nyms_in_word(vocabulary_ls, elements_name, input_db, output_db):
 
         data_to_add.extend(list(map(lambda tpl: (tpl[0], tpl[1]) , sense_lts_lemmatized_noduplicates)))
 
-    new_df = pd.DataFrame(data=data_to_add, columns=[Utils.SENSE_WN_ID, elements_name])
+    new_df = pd.DataFrame(data=data_to_add, columns=[Lexicon.SENSE_WN_ID, elements_name])
     output_db.append(key=elements_name, value=new_df, min_itemsize=min_itemsize_dict)
 

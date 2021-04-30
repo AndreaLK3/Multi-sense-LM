@@ -31,8 +31,6 @@ def parse_training_arguments():
     parser.add_argument('--num_epochs', type=int, default=30,
                         help='maximum number of epochs for model training. It generally stops earlier because it uses '
                              'early-stopping on the validation set')
-    parser.add_argument('--sp_method', type=str, default='fasttext', choices=['fasttext', 'transformer'],
-                        help="Which method is used to create the single-prototype embeddings: FastText or Transformer")
 
     # Optional parameters that are method-specific
     parser.add_argument('--K', type=int, default=1,

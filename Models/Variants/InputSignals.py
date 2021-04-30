@@ -1,7 +1,6 @@
 import torch
-
-from Models.Variants.Common import run_graphnet
 from Utils import DEVICE
+import Graph.Adjacencies as AD
 
 ##### Extracting the input elements (x_indices, edge_index, edge_type) from the padded tensor in the batch
 def unpack_to_input_tpl(in_tensor, grapharea_size, max_edges):
@@ -38,6 +37,25 @@ def unpack_input_tensor(in_tensor, grapharea_size):
     (x_indices_s, edge_index_s, edge_type_s) = unpack_to_input_tpl(in_tensor_senses, grapharea_size, max_edges)
     return ((x_indices_g, edge_index_g, edge_type_g), (x_indices_s, edge_index_s, edge_type_s))
 
+#### Graph Neural Networks on global nodes (input signal n.2)
+def run_graphnet(t_input_lts, batch_elems_at_t, t_globals_indices_ls, model):
+
+    currentglobal_nodestates_ls = []
+    if model.include_globalnode_input > 0:
+        t_edgeindex_g_ls = [t_input_lts[b][0][1] for b in range(len(t_input_lts))]
+        t_edgetype_g_ls = [t_input_lts[b][0][2] for b in range(len(t_input_lts))]
+        for i_sample in range(batch_elems_at_t.shape[0]):
+            sample_edge_index = t_edgeindex_g_ls[i_sample]
+            sample_edge_type = t_edgetype_g_ls[i_sample]
+            x_indices, edge_index, edge_type = AD.lemmatize_node(t_globals_indices_ls[i_sample], sample_edge_index, sample_edge_type, model=model)
+            sample_x = model.X.index_select(dim=0, index=x_indices.squeeze())
+            x_attention_states = model.gat_globals(sample_x, edge_index)
+            currentglobal_node_state = x_attention_states.index_select(dim=0, index=model.select_first_indices[0].to(
+                torch.int64))
+            currentglobal_nodestates_ls.append(currentglobal_node_state)
+
+        t_currentglobal_node_states = torch.stack(currentglobal_nodestates_ls, dim=0).squeeze(dim=1)
+        return t_currentglobal_node_states
 
 # Starting from the batch, collect the input signals: word embeddings, and possibly graph node embeddings
 def get_input_signals(model, batch_elements_at_t, word_embeddings_ls, currentglobal_nodestates_ls,

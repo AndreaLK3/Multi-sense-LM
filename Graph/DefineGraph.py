@@ -3,6 +3,7 @@ import torch
 
 import Filesystem
 import Filesystem as F
+import Lexicon
 import Utils
 import Graph.DefineGraphEdges as DGE
 from Utils import SpMethod
@@ -32,7 +33,7 @@ def load_senses_elements(elements_name, embeddings_method, use_PCA, inputdata_fo
                                           elements_name + '_' + str(embeddings_method.value) + '.npy')
 
     else:
-        senses_elems_fname = Utils.VECTORIZED + '_' + str(embeddings_method.value) + '_' + elements_name + '.npy'
+        senses_elems_fname = Lexicon.VECTORIZED + '_' + str(embeddings_method.value) + '_' + elements_name + '.npy'
         senses_elems_fpath = os.path.join(inputdata_folder, senses_elems_fname)
 
     senses_elems_X = np.load(senses_elems_fpath)
@@ -61,7 +62,7 @@ def initialize_globals(E_embeddings, globals_vocabulary_ls, use_pca):
 
 def initialize_senses(X_defs, X_examples, X_globals, vocabulary_ls, average_or_random_flag, inputdata_folder):
 
-    db_filepath = os.path.join(inputdata_folder, Utils.INDICES_TABLE_DB)
+    db_filepath = os.path.join(inputdata_folder, Filesystem.INDICES_TABLE_DB)
     indicesTable_db = sqlite3.connect(db_filepath)
     indicesTable_db_c = indicesTable_db.cursor()
 
@@ -130,8 +131,8 @@ def create_graph(vocabulary_sources, sp_method):
 
     use_PCA = Utils.GRAPH_EMBEDDINGS_DIM < embeddings_size
 
-    X_definitions = load_senses_elements(Utils.DEFINITIONS, sp_method, use_PCA, inputdata_folder)
-    X_examples = load_senses_elements(Utils.EXAMPLES, sp_method, use_PCA, inputdata_folder)
+    X_definitions = load_senses_elements(Lexicon.DEFINITIONS, sp_method, use_PCA, inputdata_folder)
+    X_examples = load_senses_elements(Lexicon.EXAMPLES, sp_method, use_PCA, inputdata_folder)
 
     X_globals = initialize_globals(E_embeddings, vocabulary_ls, use_PCA)
     X_senses, num_dummysenses = initialize_senses(X_definitions, X_examples, X_globals, vocabulary_ls,
@@ -150,9 +151,9 @@ def create_graph(vocabulary_sources, sp_method):
     # edge_index (LongTensor, optional) – Graph connectivity in COO format with shape [2, num_edges].
     # We can operate with a list of S-D tuples, adding t().contiguous()
     logging.info("Defining the edges: def, exs")
-    definition_edges = DGE.get_edges_elements(Utils.DEFINITIONS, num_senses + num_globals, inputdata_folder)
+    definition_edges = DGE.get_edges_elements(Lexicon.DEFINITIONS, num_senses + num_globals, inputdata_folder)
     logging.info("definition_edges.__len__()=" + str(definition_edges.__len__())) # definition_edges.__len__()=25986
-    example_edges = DGE.get_edges_elements(Utils.EXAMPLES, num_senses + num_globals + X_definitions.shape[0], inputdata_folder)
+    example_edges = DGE.get_edges_elements(Lexicon.EXAMPLES, num_senses + num_globals + X_definitions.shape[0], inputdata_folder)
     logging.info("example_edges.__len__()=" + str(example_edges.__len__())) # example_edges.__len__()=26003
 
     logging.info("Defining the edges: lemma")
@@ -174,9 +175,9 @@ def create_graph(vocabulary_sources, sp_method):
     logging.info("sc_edges_with_selfloops.__len__()=" + str(senseChildren_edges.__len__()))
 
     logging.info("Defining the edges: syn, ant")
-    syn_edges = DGE.get_edges_nyms(Utils.SYNONYMS, vocabulary_df, num_senses, inputdata_folder)
+    syn_edges = DGE.get_edges_nyms(Lexicon.SYNONYMS, vocabulary_df, num_senses, inputdata_folder)
     logging.info("syn_edges.__len__()=" + str(syn_edges.__len__()))
-    ant_edges = DGE.get_edges_nyms(Utils.ANTONYMS, vocabulary_df, num_senses, inputdata_folder)
+    ant_edges = DGE.get_edges_nyms(Lexicon.ANTONYMS, vocabulary_df, num_senses, inputdata_folder)
     logging.info("ant_edges.__len__()=" + str(ant_edges.__len__()))
 
     edges_lts = torch.tensor(definition_edges + example_edges + senseChildren_edges + syn_edges + ant_edges + lemma_edges)

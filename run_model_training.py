@@ -19,16 +19,13 @@ def parse_training_arguments():
                              'GRU, Transformer-XL, or reading ahead the correct next word')
 
     # Optional parameters
+    parser.add_argument('--pretrained_senses', type=bool, default=False,
+                        help="Whether to load the senses' architecture that was trained with a Gold LM.")
     parser.add_argument('--use_graph_input', type=bool, default=False,
                         help='Whether to use the GNN input from the dictionary graph alongside the pre-trained word'
                              ' embeddings.')
     parser.add_argument('--learning_rate', type=float, default=5e-5,
                         help='learning rate for training the model (it is a parameter of the Adam optimizer)')
-    parser.add_argument('--num_epochs', type=int, default=30,
-                        help='maximum number of epochs for model training. It generally stops earlier because it uses '
-                             'early-stopping on the validation set')
-    parser.add_argument('--sp_method', type=str, default='fasttext', choices=['fasttext', 'transformer'],
-                        help="Which method is used to create the single-prototype embeddings: FastText or Transformer")
 
     # Optional parameters that are method-specific
     parser.add_argument('--K', type=int, default=1,
@@ -64,8 +61,7 @@ model, train_dataloader, valid_dataloader = TS.setup_training_on_SemCor(standard
                              K=args.K, context_method_id=args.context_method_id, C=args.C,
                              dim_qkv=300, grapharea_size=32, batch_size=batch_size, seq_len=seq_len)
 
-final_model = TE.run_train(model, train_dataloader, valid_dataloader,
-                           learning_rate=args.learning_rate, num_epochs=args.num_epochs, predict_senses=True)
+final_model = TE.run_train(model, train_dataloader, valid_dataloader, learning_rate=args.learning_rate, predict_senses=True)
 
 # We also need to evaluate the model in question on SemCor's test set and on Raganato's SensEval benchmark,
 # but if the model has been saved that can be done later, in run_model_evaluation.py

@@ -53,6 +53,7 @@ SPVs_FILENAME = "SinglePrototypeVectors.npy"
 SEMCOR_DB = 'semcor_all.db'
 MASC_DB = 'masc_written.db'
 
+INDICES_TABLE_DB = 'indices_table.sql'
 KBGRAPH_FILE = 'kbGraph.dataobject'
 LOSSES_FILEEND = 'losses.npy'
 PERPLEXITY_FILEEND = 'perplexity.npy'

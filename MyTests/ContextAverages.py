@@ -3,7 +3,7 @@ import Filesystem as F
 import os
 import Utils
 import logging
-import SenseLabeledCorpus as SLC
+from InputPipeline import SenseLabeledCorpus as SLC
 import Models.DataLoading.NumericalIndices as NI
 import numpy as np
 from collections import deque
