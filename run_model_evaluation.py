@@ -16,7 +16,7 @@ def parse_training_arguments():
 
     parser = argparse.ArgumentParser(description='Creating a model, training it on the sense-labeled corpus.')
     # Necessary parameters
-    parser.add_argument('--model_type', type=str, choices=['rnn', 'selectk', 'mfs', 'sensecontext', 'selfatt'],
+    parser.add_argument('--model_type', type=str, choices=['rnn', 'transformer', 'selectk', 'mfs', 'sensecontext', 'selfatt'],
                         help='model to use for Multi-sense Language Modeling')
     parser.add_argument('--standard_lm', type=str, choices=['gru', 'transformer', 'gold_lm'],
                         help='Which pre-trained instrument to load for standard Language Modeling subtask: '
@@ -69,7 +69,7 @@ else:
     model = torch.load(saved_model_fpath, map_location=torch.device('cpu'))  # in case one wishes to use the CPU
 logging.info("Loading the model found at: " + str(saved_model_fpath))
 if model.StandardLM.use_transformer_lm:
-    batch_size = 4
+    batch_size = 2
     seq_len = 256
 else: # GRU and gold_lm
     batch_size = 32

@@ -11,12 +11,16 @@ def parse_arguments():
     parser = argparse.ArgumentParser(description='Gathering data from WordNet, creating the dictionary graph')
     parser.add_argument('--grapharea_size', type=int, default=32,
                         help='number of graph nodes included in a GNN mini-batch')
+    parser.add_argument('--txt_corpus', type=str,  choices=['wt2', 'wt103'],
+                        help='Whether to run the pipeline with a vocabulary from WT2+SemCor or from WT103')
     args = parser.parse_args()
     return args
 
 args = parse_arguments()
 
 Utils.init_logging('InputPipeline.log'); t0 = time()
+
+vocabulary_sources_ls = [F.WT2, F.SEMCOR] if args.txt_corpus=="wt2" else [F.WT103]
 
 CGI.exe_from_input_to_vectors(do_reset=True, compute_single_prototype=True, vocabulary_sources_ls=[F.WT2, F.SEMCOR], sp_method=Utils.SpMethod.FASTTEXT)
 t1 = time(); Utils.time_measurement_with_msg(t0, t1, "Created vocabulary, retrieved and preprocessed input")

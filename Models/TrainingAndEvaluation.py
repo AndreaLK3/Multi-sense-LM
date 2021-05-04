@@ -39,7 +39,6 @@ def run_train(model, train_dataloader, valid_dataloader, learning_rate, num_epoc
     model.predict_senses = predict_senses
 
     model_fname = F.get_model_name(model, args=None)
-    Utils.init_logging("Training_" + model_fname.replace(".pt", "") + ".log")
     logging.info("Using learning_rate=" + str(learning_rate))
     Loss.write_doc_logging(model)
 

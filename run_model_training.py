@@ -41,9 +41,9 @@ def parse_training_arguments():
     args = parser.parse_args()
     return args
 
-
 args = parse_training_arguments()
-Utils.init_logging("starting_run_model_training.log")
+Utils.init_logging("Training_" + get_model_name(model=None, args=args).replace(".pt", "") + ".log")
+
 args_to_load_standardlm = copy.deepcopy(args)
 args_to_load_standardlm.model_type = "standardlm"
 standardLM_model_fname = get_model_name(model=None, args=args_to_load_standardlm)
@@ -61,9 +61,19 @@ model, train_dataloader, valid_dataloader = TS.setup_training_on_SemCor(standard
                              K=args.K, context_method_id=args.context_method_id, C=args.C,
                              dim_qkv=300, grapharea_size=32, batch_size=batch_size, seq_len=seq_len)
 
-final_model = TE.run_train(model, train_dataloader, valid_dataloader, learning_rate=args.learning_rate, predict_senses=True)
+# In case we are loading the senses' architecture that was trained with the Gold_LM StandardLM:
+if args.pretrained_senses:
+    args_for_goldlm = copy.deepcopy(args)
+    args_for_goldlm.standard_lm = "gold_lm"
+    try:
+        model_with_goldlm = TS.load_model_from_file(get_model_name(model=None, args=args_for_goldlm))
+        TS.load_model_senses_architecture(args.model_type, model, model_with_goldlm)
+    except FileNotFoundError:
+        logging.info("Loading a pre-trained senses' architecture requires pre-training a version of the model " +
+                     " that uses the gold_lm as standard language model.")
+        raise Exception
+    args.learning_rate =  args.learning_rate / 2  # fine-tuning, we halve the learning rate (e.g. 5e-5 -> 2.5e-5)
 
-# We also need to evaluate the model in question on SemCor's test set and on Raganato's SensEval benchmark,
-# but if the model has been saved that can be done later, in run_model_evaluation.py
+TE.run_train(model, train_dataloader, valid_dataloader, learning_rate=args.learning_rate, predict_senses=True)
 
 t1 = time() ; Utils.time_measurement_with_msg(t0, t1, "Trained model")

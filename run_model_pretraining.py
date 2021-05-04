@@ -2,7 +2,6 @@ import argparse
 import os
 import Filesystem as F
 import torch
-import Models.StandardLM.MiniTransformerXL as TXL
 from Filesystem import get_standardLM_filename
 from Models.TrainingSetup import setup_pretraining_on_WT2
 from Models.TextCorpusReader import get_objects
@@ -29,6 +28,7 @@ def parse_pretraining_arguments():
     return args
 
 args = parse_pretraining_arguments()
+Utils.init_logging("Training" + F.get_model_name(model=None, args=args).replace(".pt", "") + ".log")
 
 if args.random_seed != 0:
     torch.manual_seed(args.random_seed)

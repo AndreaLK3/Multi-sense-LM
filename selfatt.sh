@@ -1,3 +1,11 @@
-python run_model_training.py --model_type= selfatt --standard_lm=transformer --use_graph_input=True;
-python run_model_training.py --model_type=selfatt --standard_lm=transformer --K=5 --use_graph_input=True;
-python run_model_training.py --model_type=selfatt --standard_lm=transformer --context_method_id=1 --use_graph_input=True;
+python run_model_training.py --model_type=selfatt --standard_lm=gold_lm;
+python run_model_training.py --model_type=selfatt --standard_lm=gold_lm --K=5;
+python run_model_training.py --model_type=selfatt --standard_lm=gold_lm --context_method_id=1;
+python run_model_training.py --model_type=selfatt --standard_lm=gold_lm --use_graph_input=True;
+python run_model_training.py --model_type=selfatt --standard_lm=gold_lm --K=5 --use_graph_input=True;
+python run_model_training.py --model_type=selfatt --standard_lm=gold_lm --context_method_id=1 --use_graph_input=True;
+echo proceeding to fine-tune Transformer standard language model;
+python run_model_training.py --model_type=selfatt --standard_lm=transformer --pretrained_senses=True;
+python run_model_training.py --model_type=selfatt --standard_lm=transformer --K=5 --pretrained_senses=True;
+python run_model_training.py --model_type=selfatt --standard_lm=transformer --use_graph_input=True --pretrained_senses=True;
+python run_model_training.py --model_type=selfatt --standard_lm=transformer --K=5 --use_graph_input=True --pretrained_senses=True;

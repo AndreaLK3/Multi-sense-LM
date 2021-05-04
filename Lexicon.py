@@ -12,7 +12,6 @@ DENOMINATED = 'denominated'
 PROCESSED = 'processed' # for defs and examples, it means: 'no duplicates'; for synonyms and antonyms: 'lemmatized'
 VECTORIZED = 'vectorized'
 
-DISTILBERT = "DistilBERT"
 FASTTEXT = "FastText"
 TXL = "TXL"
 
@@ -28,3 +27,10 @@ WORD = 'word'
 INDEX = 'index'
 
 CORRECT_PREDICTIONS = 'correct_predictions'
+
+RNN = 'rnn'
+SELECTK = 'selectk'
+SENSECONTEXT = 'sensecontext'
+SELFATT = 'selfatt'
+TRANSFORMER = 'transformer'
+MFS = 'mfs'

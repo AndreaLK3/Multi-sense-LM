@@ -85,7 +85,7 @@ def get_input_and_predict_globals(model, batchinput_tensor, batch_labels):
 
     # -------------------- Compute and collect input signals; predict globals -------------------
     for batch_elements_at_t in time_instants:
-        InputSignals.get_input_signals(model, batch_elements_at_t, word_embeddings_ls, currentglobal_nodestates_ls)
+        InputSignals.get_input_signals(model, batch_elements_at_t, word_embeddings_ls, currentglobal_nodestates_ls, globals_input_ids_ls)
 
     word_embeddings = torch.stack(word_embeddings_ls, dim=0)
     global_nodestates = torch.stack(currentglobal_nodestates_ls,

@@ -107,7 +107,6 @@ class SenseContext(torch.nn.Module):
                                                 pad=[0, self.K* self.grapharea_size - sense_neighbours.shape[0]], value=random_sense_idx))
 
             # ------------------- Senses: compare location context with sense average context -------------------
-
             # ----- update the location context with the latest word embeddings -----
             if self.context_method == Common.ContextMethod.AVERAGE:
                 update_context_average(self.location_context, word_embeddings, self.prev_word_embeddings,
@@ -117,7 +116,6 @@ class SenseContext(torch.nn.Module):
                 context_out = rnn_loop(batch_input_signals, model=self.StandardLM, rnn_ls=self.context_rnn_ls,
                                        memory=self.memory_hn_context)
                 self.location_context.data = context_out.clone()
-
             # ----- the context of the selected senses and the cosine similarity: -----
             senses_context = torch.zeros((self.location_context.shape[0], self.location_context.shape[1],
                                           self.grapharea_size * self.K, self.location_context.shape[2])).to(CURRENT_DEVICE)

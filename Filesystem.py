@@ -80,7 +80,7 @@ def get_model_name_from_arguments(args):
     if args.use_graph_input is True:
         model_fname = model_fname + "_withGraph"
 
-    if args.model_type not in ["rnn", "mfs", "standardlm"]:
+    if args.model_type not in ["rnn", "mfs", "transformer", "standardlm"]:
         model_fname = model_fname + "_K" + str(args.K)
     if args.model_type  in ["sensecontext", "selfatt"]:
         model_fname = model_fname + "_C" + str(args.C)
