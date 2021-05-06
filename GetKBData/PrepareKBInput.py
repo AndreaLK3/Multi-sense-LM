@@ -33,7 +33,8 @@ def preprocess(vocabulary_ls, inputdata_folder):
     logging.info("Lemmatizing antonyms for the current vocabulary subset.")
     LN.lemmatize_nyms_in_word(vocabulary_ls, Lexicon.ANTONYMS, input_dbs[3], processed_dbs[3])
 
-    Utils.close_list_of_files(input_dbs + processed_dbs)
+    for file in input_dbs + processed_dbs:
+        file.close()
 
 
 # Phase 2 - Considering the wordSenses in the vocabulary, located in the archive of processed definitions,
@@ -105,11 +106,11 @@ def create_senses_indices_table(input_folder_fpath, vocabulary_folder):
         word_index = vocabulary_words_ls.index(word)
         lemmatized_form = vocabulary_lemmatizedforms_ls[word_index]
         if lemmatized_form in words_with_senses_set:
-            logging.info("'"+word + "' does not need a dummySense, because '" + lemmatized_form + "' is its lemmatized parent"
+            logging.info("'"+ str(word) + "' does not need a dummySense, because '" + lemmatized_form + "' is its lemmatized parent"
                          + " and has senses already.")
             continue
         else:
-            logging.info(word + " needs a dummySense, the lemmatized form '" + str(lemmatized_form)+"' has none")
+            logging.info(str(word) + " needs a dummySense, the lemmatized form '" + str(lemmatized_form)+"' has none")
             words_needing_dummySense_ls.append(word)
     words_needing_dummySense_set = set(words_needing_dummySense_ls)
 
@@ -118,7 +119,7 @@ def create_senses_indices_table(input_folder_fpath, vocabulary_folder):
     # ------- Creating and inserting the dummySenses --------
     for word in words_needing_dummySense_set:
         # no definitions nor examples to add here. We will add the global vector as the vector of the dummy-sense.
-        dummy_wn_id = word + '.' + 'dummySense' + '.01'
+        dummy_wn_id = str(word) + '.' + 'dummySense' + '.01'
         logging.debug("dummy_wn_id=" + str(dummy_wn_id))
         end_defs_count = start_defs_count
         end_examples_count = start_examples_count

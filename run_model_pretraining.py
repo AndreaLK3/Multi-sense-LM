@@ -11,9 +11,9 @@ import Utils
 def parse_pretraining_arguments():
     parser = argparse.ArgumentParser(description='Creating a StandardLM model, training it on WikiText-2.')
 
-    parser.add_argument('--model_type', type=str, choices=['gru', 'transformer', 'gold_lm'],
+    parser.add_argument('--model_type', type=str, choices=['gru', 'transformer', 'gold_lm', 'pretrainedTXL'],
                         help='Which instrument to use for standard Language Modeling: GRU, Transformer-XL, '
-                             'or reading ahead the correct next word')
+                             'reading ahead the correct next word, or the Transformer-XL pre-trained on WikiText-103')
     parser.add_argument('--use_graph_input', type=bool, default=False,
                         help='Whether to use the GNN input from the dictionary graph alongside the pre-trained word'
                              ' embeddings.')
@@ -39,13 +39,13 @@ if args.random_seed != 0:
 model_name = get_standardLM_filename(args)
 saved_model_fpath = os.path.join(F.FOLDER_SAVEDMODELS, model_name)
 
-# ----- Load objects: graph, etc.. Currently using default vocabulary sources and sp_method -----
+# ----- Load objects: graph, etc. -----
 vocab_sources_ls = [F.WT2, F.SEMCOR]
 sp_method = Utils.SpMethod.FASTTEXT
 gr_in_voc_folders = F.get_folders_graph_input_vocabulary(vocab_sources_ls, sp_method)
 objects = get_objects(vocab_sources_ls, sp_method, grapharea_size=32)
 
-if args.model_type == "transformer":
+if args.model_type in ["transformer", "pretrainedTXL"]:
     batch_size = 4
     seq_len = 256
     args.learning_rate=1e-5
@@ -59,4 +59,4 @@ standardLM_model, train_dataloader, valid_dataloader = \
                         vocab_sources_ls, sp_method, grapharea_size=32)
 
 run_train(standardLM_model, train_dataloader, valid_dataloader, learning_rate=args.learning_rate, num_epochs=30,
-          predict_senses=False, vocab_sources_ls=vocab_sources_ls, sp_method=sp_method)
+              predict_senses=False, vocab_sources_ls=vocab_sources_ls, sp_method=sp_method)

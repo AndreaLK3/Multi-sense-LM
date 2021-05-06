@@ -1,4 +1,6 @@
 import torch
+import transformers
+
 import Models.StandardLM.StandardLM as LM
 import Utils
 import Filesystem as F
@@ -46,6 +48,8 @@ def create_standardLM_model(objects, model_type, include_graph_input, batch_size
             txl_subcomponent = load_model_from_file(os.path.join(F.TXL_COMPONENT_FILE))
         except FileNotFoundError:
             txl_subcomponent = TXL.txl_on_wt2(batch_size=batch_size)
+    if model_type == "pretrainedTXL":
+        txl_subcomponent = transformers.TransfoXLLMHeadModel.from_pretrained("wt-103")
 
     standardLM_model = LM.StandardLM(graph_dataobj, grapharea_size, embeddings_matrix,
                                      model_type, include_graph_input, vocabulary_df, batch_size, txl_subcomponent)

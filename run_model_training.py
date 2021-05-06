@@ -14,7 +14,7 @@ def parse_training_arguments():
     # Necessary parameters
     parser.add_argument('--model_type', type=str, choices=['rnn', 'transformer', 'selectk', 'mfs', 'sensecontext', 'selfatt'],
                         help='model to use for Multi-sense Language Modeling')
-    parser.add_argument('--standard_lm', type=str, choices=['gru', 'transformer', 'gold_lm'],
+    parser.add_argument('--standard_lm', type=str, choices=['gru', 'transformer', 'gold_lm', 'pretrainedTXL'],
                         help='Which pre-trained instrument to load for standard Language Modeling subtask: '
                              'GRU, Transformer-XL, or reading ahead the correct next word')
 

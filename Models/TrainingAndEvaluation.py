@@ -60,7 +60,7 @@ def run_train(model, train_dataloader, valid_dataloader, learning_rate, num_epoc
 
         for epoch in range(1,num_epochs+1):
             # A pre-trained Transformer should not be adjusted further
-            if model.__class__.__name__.lower()=="standardlm" and "transformer" in model_fname:
+            if model.__class__.__name__.lower()=="standardlm" and ("transformer" in model_fname or "pretrainedTXL" in model_fname):
                 break
             # -------------------- Step 3a) Initialization --------------------
             sum_epoch_loss_global = 0
