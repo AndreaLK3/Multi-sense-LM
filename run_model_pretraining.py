@@ -11,9 +11,9 @@ import Utils
 def parse_pretraining_arguments():
     parser = argparse.ArgumentParser(description='Creating a StandardLM model, training it on WikiText-2.')
 
-    parser.add_argument('--model_type', type=str, choices=['gru', 'transformer', 'gold_lm', 'pretrainedTXL'],
+    parser.add_argument('--model_type', type=str, choices=['gru', 'transformer', 'gold_lm'],
                         help='Which instrument to use for standard Language Modeling: GRU, Transformer-XL, '
-                             'reading ahead the correct next word, or the Transformer-XL pre-trained on WikiText-103')
+                             'or reading ahead the correct next word')
     parser.add_argument('--use_graph_input', type=bool, default=False,
                         help='Whether to use the GNN input from the dictionary graph alongside the pre-trained word'
                              ' embeddings.')
@@ -45,7 +45,7 @@ sp_method = Utils.SpMethod.FASTTEXT
 gr_in_voc_folders = F.get_folders_graph_input_vocabulary(vocab_sources_ls, sp_method)
 objects = get_objects(vocab_sources_ls, sp_method, grapharea_size=32)
 
-if args.model_type in ["transformer", "pretrainedTXL"]:
+if args.model_type in ["transformer"]:
     batch_size = 4
     seq_len = 256
     args.learning_rate=1e-5

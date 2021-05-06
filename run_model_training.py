@@ -14,13 +14,11 @@ def parse_training_arguments():
     # Necessary parameters
     parser.add_argument('--model_type', type=str, choices=['rnn', 'transformer', 'selectk', 'mfs', 'sensecontext', 'selfatt'],
                         help='model to use for Multi-sense Language Modeling')
-    parser.add_argument('--standard_lm', type=str, choices=['gru', 'transformer', 'gold_lm', 'pretrainedTXL'],
+    parser.add_argument('--standard_lm', type=str, choices=['gru', 'transformer', 'gold_lm'],
                         help='Which pre-trained instrument to load for standard Language Modeling subtask: '
                              'GRU, Transformer-XL, or reading ahead the correct next word')
 
     # Optional parameters
-    parser.add_argument('--pretrained_senses', type=bool, default=False,
-                        help="Whether to load the senses' architecture that was trained with a Gold LM.")
     parser.add_argument('--use_graph_input', type=bool, default=False,
                         help='Whether to use the GNN input from the dictionary graph alongside the pre-trained word'
                              ' embeddings.')
@@ -60,19 +58,6 @@ else:  # GRU and gold_lm
 model, train_dataloader, valid_dataloader = TS.setup_training_on_SemCor(standardLM_model, model_type=args.model_type,
                              K=args.K, context_method_id=args.context_method_id, C=args.C,
                              dim_qkv=300, grapharea_size=32, batch_size=batch_size, seq_len=seq_len)
-
-# In case we are loading the senses' architecture that was trained with the Gold_LM StandardLM:
-if args.pretrained_senses:
-    args_for_goldlm = copy.deepcopy(args)
-    args_for_goldlm.standard_lm = "gold_lm"
-    try:
-        model_with_goldlm = TS.load_model_from_file(get_model_name(model=None, args=args_for_goldlm))
-        TS.load_model_senses_architecture(args.model_type, model, model_with_goldlm)
-    except FileNotFoundError:
-        logging.info("Loading a pre-trained senses' architecture requires pre-training a version of the model " +
-                     " that uses the gold_lm as standard language model.")
-        raise Exception
-    args.learning_rate =  args.learning_rate / 2  # fine-tuning, we halve the learning rate (e.g. 5e-5 -> 2.5e-5)
 
 TE.run_train(model, train_dataloader, valid_dataloader, learning_rate=args.learning_rate, predict_senses=True)
 

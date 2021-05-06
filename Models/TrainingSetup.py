@@ -48,8 +48,6 @@ def create_standardLM_model(objects, model_type, include_graph_input, batch_size
             txl_subcomponent = load_model_from_file(os.path.join(F.TXL_COMPONENT_FILE))
         except FileNotFoundError:
             txl_subcomponent = TXL.txl_on_wt2(batch_size=batch_size)
-    if model_type == "pretrainedTXL":
-        txl_subcomponent = transformers.TransfoXLLMHeadModel.from_pretrained("wt-103")
 
     standardLM_model = LM.StandardLM(graph_dataobj, grapharea_size, embeddings_matrix,
                                      model_type, include_graph_input, vocabulary_df, batch_size, txl_subcomponent)
@@ -129,24 +127,3 @@ def setup_training_on_SemCor(standardLM_model, model_type=None, K=1, context_met
                                                    batch_size, seq_len)
 
     return model, train_dataloader, valid_dataloader
-
-# When we wish to use the senses' architecture that was pre-trained with the gold_lm StandardLM
-# Note: this assumes that batch_size, seq_len and num_layers are identical in the gold_lm run and in the current settings
-def load_model_senses_architecture(model_type, model, model_with_goldlm):
-    logging.info("Loading the senses' architecture that was trained using Gold LM as the standard language model")
-    if model_type.lower() == 'rnn' or model_type.lower() == 'selectk':
-        model.senses_rnn_ls = model_with_goldlm.senses_rnn_ls
-        model.linear2senses = model_with_goldlm.linear2senses
-    elif model_type.lower() == 'transformer':
-        model.TransformerForSenses = model_with_goldlm.TransformerForSenses
-    elif model_type.lower() == 'sensecontext' and model.context_method == ContextMethod.GRU:
-        model.context_rnn_ls = model_with_goldlm.context_rnn_ls
-    elif model_type.lower() == 'selfatt':
-        model.SelfAttLogits = model_with_goldlm.SelfAttLogits
-        if model.context_method == ContextMethod.GRU:
-            model.context_rnn_ls = model_with_goldlm.context_rnn_ls
-    elif model_type.lower() == 'mfs' or (model_type.lower() == 'sensecontext' and model.context_method == ContextMethod.AVERAGE):
-        pass  # Most Frequent Sense doesn't learn anything, so there is nothing to store/load
-    else:
-        raise Exception("Model type specification incorrect")
-    return model
