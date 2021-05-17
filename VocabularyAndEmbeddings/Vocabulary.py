@@ -29,7 +29,7 @@ def add_lemmatized_forms(vocab_dict):
                 vocab_dict[lemmatized_token] = (prev_freq + 1, lemma)
             except KeyError:
                 logging.info(
-                    "Adding lemmatized word '" + lemmatized_token + "' in addition to '" + token + "'")
+                    "Adding lemmatized word '" + lemmatized_token + "' from '" + token + "'")
                 vocab_dict[lemmatized_token] = (1, lemmatized_token)
                 # the lemmatized form of a lemmatized form is itself
     return vocab_dict

@@ -1,14 +1,14 @@
 ## Multi-sense Language Modeling
 
 This repository contains the code to train Multi-sense language models, that predict not only the next word but also the sense it 
-assumes in the context, using the labels found in WordNet 3.0.<br/>
+assumes in the context, using labels from WordNet 3.0.<br/>
 The part of the models that executes standard language modelling must be pre-trained on WikiText-2. 
 The sense prediction architecture is then trained on the SemCor sense-labeled corpus. 
 Optionally, it is possible to use an input signal from a dictionary graph with WordNet glosses, updated via a Graph Attention Network.
 
 #### Example
 As specified in the next section, the preliminary steps are: 1) loading FastText vectors, and 2) gathering and encoding WordNet
-glosses for the vocabulary. Once they are done, a model must be:
+glosses for the vocabulary. Once they are done, a model can be:
 - pre-trained on WikiText-2: <br/>
   `python run_model_pretraining.py --model_type=transformer`
 - trained on SemCor: <br/>

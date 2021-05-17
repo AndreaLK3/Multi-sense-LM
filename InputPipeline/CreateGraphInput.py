@@ -9,7 +9,7 @@ import VocabularyAndEmbeddings.Vocabulary as V
 import VocabularyAndEmbeddings.ComputeEmbeddings as CE
 import tables
 import logging
-import SenseLabeledCorpus as SLC
+import InputPipeline.SenseLabeledCorpus as SLC
 from time import time
 
 # Before starting: clean all storage files; reset vocabulary index to 0
