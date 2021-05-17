@@ -73,7 +73,7 @@ def get_missing_sense(vocab_sources_ls=(F.WT2, F.SEMCOR), sp_method=Utils.SpMeth
 
     graph_folder, inputdata_folder, vocabulary_folder = F.get_folders_graph_input_vocabulary(vocab_sources_ls,
                                                                                              sp_method)
-    senseindices_db = sqlite3.connect(os.path.join(inputdata_folder, Filesystem.INDICES_TABLE_DB))
+    senseindices_db = sqlite3.connect(os.path.join(inputdata_folder, Utils.INDICES_TABLE_DB))
     senseindices_db_c = senseindices_db.cursor()
     last_sense_idx = senseindices_db_c.execute("SELECT COUNT(*) from indices_table").fetchone()[0]
     #logging.info("last_sense_idx from db=" + str(last_sense_idx))

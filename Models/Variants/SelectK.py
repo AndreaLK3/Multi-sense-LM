@@ -71,6 +71,13 @@ class SelectK(torch.nn.Module):
 
     def forward(self, batchinput_tensor, batch_labels):  # given the batches, the current node is at index 0
         CURRENT_DEVICE = 'cpu' if not (torch.cuda.is_available()) else 'cuda:' + str(torch.cuda.current_device())
+        input_batch_size = batchinput_tensor.shape[0]
+        if input_batch_size != self.batch_size:  # e.g. in case of batch size mismatch between training and evaluation
+            self.batch_size = input_batch_size
+            self.memory_hn_senses = Parameter(
+                torch.rand(size=(self.n_layers, self.batch_size, self.hidden_size)).to(CURRENT_DEVICE),
+                requires_grad=False)
+
         # T-BPTT: at the start of each batch, we detach_() the hidden state from the graph&history that created it
         self.memory_hn_senses.detach_()
         batch_input_signals, globals_input_ids_ls, word_embeddings, predictions_globals = \

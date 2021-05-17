@@ -29,7 +29,7 @@ def reset(vocabulary_sources_ls, sp_method=Utils.SpMethod.FASTTEXT):
         f.close()
 
     # The SQL DB with the indices for the embedding matrices
-    db_filepaths = [os.path.join(inputdata_folder, Filesystem.INDICES_TABLE_DB)]
+    db_filepaths = [os.path.join(inputdata_folder, Utils.INDICES_TABLE_DB)]
 
     # reset the graph object file, and the area_matrices
     graph_filepaths = [os.path.join(graph_folder, F.KBGRAPH_FILE)] + \

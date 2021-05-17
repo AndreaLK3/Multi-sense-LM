@@ -5,11 +5,8 @@ import logging
 import Utils
 import nltk
 import gensim.models.fasttext
-import Filesystem as F
 
 FASTEXT_DIMENSIONS = 300
-
-
 
 def get_sentence_avg_vector(sentence_str, fasttext_vectors):
     sentence_tokens = nltk.tokenize.word_tokenize(sentence_str)

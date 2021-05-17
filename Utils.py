@@ -12,8 +12,7 @@ import os
 import sqlite3
 
 ########## Constants ##########
-from Filesystem import INDICES_TABLE_DB
-from Lexicon import DISTILBERT, FASTTEXT, TXL
+from Lexicon import FASTTEXT, TXL
 
 HDF5_BASE_SIZE_512 = 512
 DEVICE = torch.device('cuda' if torch.cuda.is_available() else 'cpu')  # torch.device('cpu')#
@@ -157,6 +156,8 @@ def compute_startpoint_dummySenses(graph_dataobj):
 
 
 class SpMethod(Enum):
-    DISTILBERT = DISTILBERT  # to be removed
     FASTTEXT = FASTTEXT
     TXL = TXL
+
+
+INDICES_TABLE_DB = 'indices_table.sql'

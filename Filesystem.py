@@ -1,5 +1,6 @@
 import logging
 import os
+import Utils
 
 FOLDER_INPUT = 'InputData'
 FOLDER_PCA = 'PCA' # subfolder of InputData
@@ -53,7 +54,6 @@ SPVs_FILENAME = "SinglePrototypeVectors.npy"
 SEMCOR_DB = 'semcor_all.db'
 MASC_DB = 'masc_written.db'
 
-INDICES_TABLE_DB = 'indices_table.sql'
 KBGRAPH_FILE = 'kbGraph.dataobject'
 LOSSES_FILEEND = 'losses.npy'
 PERPLEXITY_FILEEND = 'perplexity.npy'
@@ -64,7 +64,7 @@ MFS_H5_FPATH = os.path.join(FOLDER_TEXT_CORPORA, FOLDER_SENSELABELED, FOLDER_SEM
 TXL_COMPONENT_FILE = "MiniTXL_onWT2.pt"
 MATRIX_SENSE_CONTEXTS_FILEEND = '_SenseContext.npy'
 
-def get_folders_graph_input_vocabulary(vocab_sources_ls, sp_method):
+def get_folders_graph_input_vocabulary(vocab_sources_ls, sp_method=Utils.SpMethod.FASTTEXT):
     inputdata_folder = set_directory(os.path.join(FOLDER_INPUT, "_".join(vocab_sources_ls), sp_method.value))
     graph_folder = set_directory(os.path.join(FOLDER_GRAPH, "_".join(vocab_sources_ls), sp_method.value))
     vocabulary_folder = set_directory(os.path.join(FOLDER_VOCABULARY, "_".join(vocab_sources_ls)))

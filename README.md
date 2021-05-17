@@ -1,40 +1,24 @@
 ## Multi-sense Language Modeling
 
-This repository contains the code to train Multi-sense language models 
-on the sense-labeled SemCor corpus, optionally relying on a dictionary graph built using WordNet glosses.
+This repository contains the code to train Multi-sense language models, that predict not only the next word but also the sense it 
+assumes in the context, using the labels found in WordNet 3.0.<br/>
+The part of the models that executes standard language modelling must be pre-trained on WikiText-2. 
+The sense prediction architecture is then trained on the SemCor sense-labeled corpus. 
+Optionally, it is possible to use an input signal from a dictionary graph with WordNet glosses, updated via a Graph Attention Network.
 
-Multi-sense language modeling specifies not only the next predicted word but also the sense it 
-assumes in the context, using the labels found in WordNet 3.0.
+#### Example
+As specified in the next section, the preliminary steps are: 1) loading FastText vectors, and 2) gathering and encoding WordNet
+glosses for the vocabulary. Once they are done, a model must be:
+- pre-trained on WikiText-2: <br/>
+  `python run_model_pretraining.py --model_type=transformer`
+- trained on SemCor: <br/>
+  `python run_model_training.py --model_type=selectk --standard_lm=transformer --K=1`
+- evaluated on the SemCor test split and the SemEval-SensEval dataset: <br/>
+  `python run_model_evaluation.py --model_type=selectk --standard_lm=transformer --K=1`
 
-### Software dependencies
-The code was created and tested on Python 3.6.9, with Pytorch 1.5.0+cu101 and CUDA 10.1 
+If we wish to concatenate the input signal computed by the GNN on the dictionary graph,
+it is necessary to add `--use_graph_input=True` to the commands above
 
-Note: a GPU/CUDA is optional, and PyTorch 1.5 with CPU also works; in that case a 
-different version of some dependencies must be used, like for PyTorch-geometric 
-
-The list of the necessary modules follows, including the versions used in this repository.
-Different versions may work, but it's not guaranteed
-```
-fasttext == 0.9.2         
-gensim == 3.8.3
-h5py == 2.10.0
-langid == 1.1.6
-lxml == 4.5.0
-nltk == 3.5
-numpy == 1.18.4
-pandas == 1.0.3
-scikit-image == 0.16.2
-scikit-learn == 0.23.0
-scipy == 1.4.1   
-tables == 3.6.1
-torch == 1.5.0+cu101
-torch-cluster == 1.5.4
-torch-geometric == 1.4.3
-torch-scatter == 2.0.4
-torch-sparse == 0.6.2
-torch-spline-conv == 1.2.0
-transformers == 2.9.0
-```
 
 ### Training a multi-sense language model
 
@@ -48,32 +32,79 @@ Preliminary step: read the sense-labeled corpus, find and store the correspondin
 Command parameters:
 - `--grapharea_size` (int, default 32), to change the size of the graph mini-batch
 
-#### 3) Creating and training a model
-`python run_model_training.py --model_type rnn/selectk/mfs/sensecontext/selfatt` <br/>
-Create the specified multi-sense language model, and train it on the included SemCor corpus obtaining perplexity and accuracy scores.
+#### 3) Pre-training the Standard LM architecture
+`python run_model_pretraining.py --model_type=gru/transformer/gold_lm` <br/>
+Choose an architecture to handle the standard language modelling sub-task. The tool is pre-trained on WikiText-2.<br/>
 Command parameters:
-- mandatory: `--model_type`, type=str, choices=['rnn', 'selectk', 'mfs', 'sensecontext', 'selfatt']
-- `--learning_rate`, type=float, default=0.00005
-- `--num_epochs`, type=int, default=24 
-- `--use_graph_input`, type=str, default='no', choices=['no', 'concat', 'replace'] 
-- `--K`, type=int, default=1 
-- `--context_method`, type=int, default=0 
-- `--C`, type=int, default=20,
-- `--dim_qkv`, type=int, default=300  
-- `--random_seed`, type=int, default=0. The paper experiments were obtained with random_seed=1
+* mandatory:
+    - `--model_type`, type=string, choices=gru, transformer, gold_lm <br/>
+      Define the Standard LM tool: a 3-layer GRU, an 8-layer Transformer-XL, or a Gold LM that reads
+ahead the label to output the correct prediction
+* optional:       
+    - `--use_graph_input`, type=bool. <br/>
+    If adding `use_graph_input=True`, the Standard LM will make use of the graph input signal, computed by the Graph Attention Network on the dictionary graph
+    - `--learning_rate`, type=float, default=5e-5. <br/>
+    The learning rate used by the GRU. The Transformer-XL uses (1/2 * --learning_rate).
+    - `--random_seed`, type=int, default=0. <br/> The experiments in the paper used random_seed=1
+    
+The standard language modelling architecture is saved in the SavedModels folder. E.g. *SavedModels/standardlm_transformer_withGraph.pt*. 
+It will be loaded as needed.
 
-Once it encounters early-stopping on the validation set, a model is saved in the NN folder.
 
-#### Examples
-A SelectK model with K=1 uses 2 GRUs and picks the sense among those of the most likely K=1 word
-predicted by the standard language modeling sub-task. To create it and train it, we execute step 3) as follows: <br/>
-`python run_model_training.py --model_type selectk --K 1` <br/>
-If we wish to concatenate the input signal computed by the GNN on the dictionary graph: <br/>
-`python run_model_training.py --model_type selectk --K 1 --use_graph_input concat`
+#### 4) Creating and training a model
+`python run_model_training.py --model_type=rnn/transformer/mfs/selectk/sensecontext/selfatt --standard_lm=gru/transformer/gold_lm` <br/>
+Create the specified multi-sense language model, and train it on the SemCor corpus obtaining perplexity and accuracy scores. <br/>
+Command parameters:
+* mandatory:
+     - `--model_type`, type=str, choices=rnn, transformer, selectk, mfs, sensecontext, selfatt <br/>
+    The architecture for the sense prediction task
+     - `--standard_lm`, type=str, choices = gru, transformer, gold_lm <br/>
+    Which pre-trained architecture to use for the standard language modelling task.
+* optional:
+     - `--K`, type=int, default=1
+     - `--context_method_id`, type=int, default=0 <br/>
+       Which method to use to create the context representation for the SenseContext and Self-Attention architectures. <br/>
+       0 = average (default), 1 = GRU
+     - `--learning_rate`, type=float, default=5e-5
+     - `--C`, type=int, default=20 <br/>
+       How many tokens to average to create the context representation if context_method_id==0
+     - `--random_seed`, type=int, default=0. <br/> The experiments in the paper used random_seed=1
+    
+Once it encounters early-stopping due to the senses' accuracy on the SemCor validation set, a model is saved in the SavedModels folder. <br/>
+E.g. *SavedModels/selectk_transformer_withGraph_K1.pt*
 
-SenseContext model, choosing among the senses of the most likely K=5 words by comparing their sense context to the
-current context. The representation of the current context is obtained via a 3-layer GRU: <br/>
-`python run_model_training.py --model_type sensecontext --K 5 --context_method 1`
+#### 5) Evaluating a model on the test sets
+`python run_model_evaluation.py --model_type=rnn/transformer/mfs/selectk/sensecontext/selfatt --standard_lm=gru/transformer/gold_lm` <br/>
+Load a saved multi-sense language model, and evaluate it on the SemCor test split and the SensEval-SemEval dataset, obtaining perplexity and accuracy scores. <br/>
+Command parameters: identical to 4)
+
+
+
+### Software dependencies
+The code was created and tested on Python 3.6.13, with Pytorch 1.5.0+cu101 and CUDA 10.1 
+
+The list of the necessary modules follows, including the versions used in this repository.
+Different versions may work, but it's not guaranteed
+```    
+gensim == 4.0.1
+h5py == 3.1.0
+langid == 1.1.6
+lxml == 4.6.3
+nltk == 3.6.2
+numpy == 1.19.5
+pandas == 1.1.5
+scikit-image == 0.17.2
+scikit-learn == 0.24.2
+scipy == 1.5.4   
+tables == 3.6.1
+torch == 1.5.0+cu101
+torch-cluster == 1.5.4
+torch-geometric == 1.4.3
+torch-scatter == 2.0.4
+torch-sparse == 0.6.2
+torch-spline-conv == 1.2.0
+transformers == 4.5.1
+```
 
 ### Source code structure
 - **Top-level files** <br/>

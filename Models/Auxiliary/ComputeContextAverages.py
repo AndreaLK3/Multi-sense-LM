@@ -19,7 +19,7 @@ def get_archives(vocab_sources_ls, sp_method):
     globals_vocabulary_fpath = os.path.join(vocab_folder, "vocabulary.h5")
     vocab_df = pd.read_hdf(globals_vocabulary_fpath)
 
-    senseindices_db_filepath = os.path.join(inputdata_folder, Filesystem.INDICES_TABLE_DB)
+    senseindices_db_filepath = os.path.join(inputdata_folder, Utils.INDICES_TABLE_DB)
     senseindices_db = sqlite3.connect(senseindices_db_filepath)
     senseindices_db_c = senseindices_db.cursor()
 

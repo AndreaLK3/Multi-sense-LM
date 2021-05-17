@@ -27,7 +27,7 @@ def log_edges_minmax_nodes(edges_ls, name):
 # definitions -> senses : [se+sp, se+sp+d) -> [0,se)
 # examples --> senses : [se+sp+d, e==num_nodes) -> [0,se)
 def get_edges_elements(elements_name, elements_start_index_toadd, inputdata_folder):
-    db_filepath = os.path.join(inputdata_folder, Filesystem.INDICES_TABLE_DB)
+    db_filepath = os.path.join(inputdata_folder, Utils.INDICES_TABLE_DB)
     indicesTable_db = sqlite3.connect(db_filepath)
     indicesTable_db_c = indicesTable_db.cursor()
 
@@ -59,7 +59,7 @@ def get_edges_elements(elements_name, elements_start_index_toadd, inputdata_fold
 # global -> senses : [se,se+sp) -> [0,se)
 def get_edges_sensechildren(globals_voc_df, globals_start_index_toadd, inputdata_folder):
 
-    db_filepath = os.path.join(inputdata_folder, Filesystem.INDICES_TABLE_DB)
+    db_filepath = os.path.join(inputdata_folder, Utils.INDICES_TABLE_DB)
     indicesTable_db = sqlite3.connect(db_filepath)
     indicesTable_db_c = indicesTable_db.cursor()
     indicesTable_db_c.execute("SELECT * FROM indices_table")
@@ -90,7 +90,7 @@ def get_additional_edges_sensechildren_from_slc(globals_voc_df, globals_start_in
                  " and the senses that belong to other words.")
     train_corpus_fpath = os.path.join(F.FOLDER_TEXT_CORPORA, F.FOLDER_SENSELABELED, F.FOLDER_SEMCOR, Lexicon.TRAINING)
     slc_train_corpus_gen = SLC.read_split(train_corpus_fpath)
-    senseindices_db = sqlite3.connect(os.path.join(inputdata_folder, Filesystem.INDICES_TABLE_DB))
+    senseindices_db = sqlite3.connect(os.path.join(inputdata_folder, Utils.INDICES_TABLE_DB))
     senseindices_db_c = senseindices_db.cursor()
     lemmatizer = nltk.stem.WordNetLemmatizer()
     edges_to_add_ls = []

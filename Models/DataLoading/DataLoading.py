@@ -89,7 +89,7 @@ class TextDataset(torch.utils.data.Dataset):
         self.vocab_df = vocab_df
         self.counter = 0
         self.globals_unk_counter = 0
-        db_filepath = os.path.join(inputdata_folder, Filesystem.INDICES_TABLE_DB)
+        db_filepath = os.path.join(inputdata_folder, Utils.INDICES_TABLE_DB)
         indicesTable_db = sqlite3.connect(db_filepath)
         self.senseindices_db_c = indicesTable_db.cursor()
         self.last_sense_idx = self.senseindices_db_c.execute("SELECT COUNT(*) from indices_table").fetchone()[0]

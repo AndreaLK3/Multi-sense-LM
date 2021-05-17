@@ -54,7 +54,7 @@ def compute_MFS_for_corpus(vocab_sources_ls=[F.WT2, F.SEMCOR], sp_method=Utils.S
     # Reader
     generator = SLC.read_split(corpus_trainsplit_folder)
     # Senseindices_db
-    senseindices_db_filepath = os.path.join(inputdata_folder, Filesystem.INDICES_TABLE_DB)
+    senseindices_db_filepath = os.path.join(inputdata_folder, Utils.INDICES_TABLE_DB)
     senseindices_db = sqlite3.connect(senseindices_db_filepath)
     senseindices_db_c = senseindices_db.cursor()
     # Grapharea_matrix

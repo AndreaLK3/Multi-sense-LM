@@ -54,7 +54,7 @@ def create_senses_indices_table(input_folder_fpath, vocabulary_folder):
     examples_input_db = pd.HDFStore(examples_input_filepath, mode='r')
 
     # ------- Creating the table --------
-    output_filepath = os.path.join(input_folder_fpath, Filesystem.INDICES_TABLE_DB)
+    output_filepath = os.path.join(input_folder_fpath, Utils.INDICES_TABLE_DB)
     out_indicesTable_db = sqlite3.connect(output_filepath)
     out_indicesTable_db_c = out_indicesTable_db.cursor()
     out_indicesTable_db_c.execute('''CREATE TABLE IF NOT EXISTS

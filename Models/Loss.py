@@ -111,7 +111,7 @@ def organize_polysense_labels(batch_labels_globals, batch_labels_senses, polysen
 ##### Core function: invoke the model, get and organize loss #####
 
 def compute_model_loss(model, batch_input, batch_labels, correct_preds_dict, polysense_globals_dict,
-                       vocab_sources_ls=[F.WT2, F.SEMCOR], sp_method=Utils.SpMethod.FASTTEXT, verbose=False):
+                       vocab_sources_ls=[F.WT2, F.SEMCOR], verbose=False):
 
     predictions_globals, predictions_senses = model(batch_input, batch_labels)
 
@@ -132,8 +132,14 @@ def compute_model_loss(model, batch_input, batch_labels, correct_preds_dict, pol
 
     # debug: check the solutions and predictions. Is there anything the model is unable to predict?
     if verbose:
-        logging.info("*******\ncompute_model_loss > verbose logging of batch")
-        EP.log_batch(batch_labels, predictions_globals, predictions_senses, 5, vocab_sources_ls, sp_method)
+        logging.info("*******\t compute_model_loss > verbose logging of batch")
+        _, correct_senses_in_batch = EP.log_batch(batch_labels, predictions_globals, predictions_senses, vocab_sources_ls)
+        _, inputdata_folder, _ = F.get_folders_graph_input_vocabulary(vocab_sources_ls)
+        batch_polysenses = [EP.get_sense_fromindex(idx, inputdata_folder) for idx in
+                            set(list(batch_labels_polysenses_dict.values())[0].tolist()) if idx != -1]
+        logging.info("Senses of polysemous words belonging to the batch: " + str(batch_polysenses))
+        logging.info("In the current batch, correct senses of polysemous words=" + str(set(batch_polysenses).intersection(set(correct_senses_in_batch))))
+        logging.info("correct_preds_dict, current status = " + str(correct_preds_dict))
 
     losses_tpl = loss_global, loss_all_senses
     num_sense_instances = len(batch_labels_all_senses[batch_labels_all_senses != -1])

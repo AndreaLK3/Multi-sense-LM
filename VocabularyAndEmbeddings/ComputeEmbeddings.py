@@ -46,7 +46,7 @@ def compute_elements_embeddings(elements_name, method, inputdata_folder):
     output_filepath = os.path.join(inputdata_folder, Lexicon.VECTORIZED + '_' + str(method.value) + '_'
                                    + elements_name) # + ".npy"
 
-    indicesTable_db_filepath = os.path.join(inputdata_folder, Filesystem.INDICES_TABLE_DB)
+    indicesTable_db_filepath = os.path.join(inputdata_folder, Utils.INDICES_TABLE_DB)
     input_db = pd.HDFStore(input_filepath, mode='r')
     indices_table = sqlite3.connect(indicesTable_db_filepath)
     indicesTable_db_c = indices_table.cursor()

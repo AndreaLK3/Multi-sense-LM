@@ -33,8 +33,8 @@ def parse_training_arguments():
                              ' 0=average of the last C tokens; 1=GRU with 3 layers')
     parser.add_argument('--C', type=int, default=20,
                         help='number of previous tokens to average to get the context representation (if used)')
-    parser.add_argument('--random_seed', type=int, default=1,
-                        help='We can specify a random seed != 0 for reproducibility. Default 1')
+    parser.add_argument('--random_seed', type=int, default=0,
+                        help='We can specify a random seed != 0 for reproducibility.')
 
     args = parser.parse_args()
     return args

@@ -179,7 +179,7 @@ def evaluation(evaluation_dataloader, evaluation_dataiter, model, verbose, vocab
             batch_labels = batch_labels.to(DEVICE)
             (losses_tpl, num_sense_instances_tpl) \
                 = Loss.compute_model_loss(model, batch_input, batch_labels, eval_correct_predictions_dict,
-                                          polysense_globals_dict, vocab_sources_ls, sp_method, verbose=verbose)
+                                          polysense_globals_dict, vocab_sources_ls, verbose=verbose)
             loss_globals, loss_senses = losses_tpl
             num_batch_sense_tokens = num_sense_instances_tpl
             sum_eval_loss_globals = sum_eval_loss_globals + loss_globals.item()

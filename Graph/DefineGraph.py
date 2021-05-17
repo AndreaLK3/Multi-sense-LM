@@ -62,7 +62,7 @@ def initialize_globals(E_embeddings, globals_vocabulary_ls, use_pca):
 
 def initialize_senses(X_defs, X_examples, X_globals, vocabulary_ls, average_or_random_flag, inputdata_folder):
 
-    db_filepath = os.path.join(inputdata_folder, Filesystem.INDICES_TABLE_DB)
+    db_filepath = os.path.join(inputdata_folder, Utils.INDICES_TABLE_DB)
     indicesTable_db = sqlite3.connect(db_filepath)
     indicesTable_db_c = indicesTable_db.cursor()
 

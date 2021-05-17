@@ -18,10 +18,10 @@ def parse_pretraining_arguments():
                         help='Whether to use the GNN input from the dictionary graph alongside the pre-trained word'
                              ' embeddings.')
 
-    parser.add_argument('--learning_rate', type=float, default=1e-4,
+    parser.add_argument('--learning_rate', type=float, default=5e-5,
                         help='learning rate for training the model; it is a parameter of the Adam optimizer')
-    parser.add_argument('--random_seed', type=int, default=1,
-                        help="We can specify a randomization seed !=0, for reproducibility of experiments. Default 1")
+    parser.add_argument('--random_seed', type=int, default=0,
+                        help="We can specify a randomization seed !=0, for reproducibility of experiments.")
 
 
     args = parser.parse_args()
@@ -48,7 +48,7 @@ objects = get_objects(vocab_sources_ls, sp_method, grapharea_size=32)
 if args.model_type in ["transformer"]:
     batch_size = 4
     seq_len = 256
-    args.learning_rate=1e-5
+    args.learning_rate=args.learning_rate / 2
 else:  # GRU and gold_lm
     batch_size = 32
     seq_len = 35
