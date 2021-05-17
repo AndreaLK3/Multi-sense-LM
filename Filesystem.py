@@ -73,10 +73,13 @@ def get_folders_graph_input_vocabulary(vocab_sources_ls, sp_method=Utils.SpMetho
 # Get the name of a model for loading/saving, using either a pre-existing model (accessing its attributes) or CLI arguments
 def get_model_name_from_arguments(args):
     model_fname = args.model_type
-    if args.standard_lm == "transformer":
-        model_fname = model_fname + "_transformer"
-    elif args.standard_lm == "gold_lm":
-        model_fname = model_fname + "_gold_lm"
+    try:
+        if args.standard_lm == "transformer":
+            model_fname = model_fname + "_transformer"
+        elif args.standard_lm == "gold_lm":
+            model_fname = model_fname + "_gold_lm"
+    except AttributeError:
+        pass
     if args.use_graph_input is True:
         model_fname = model_fname + "_withGraph"
 

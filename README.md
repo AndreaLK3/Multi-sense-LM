@@ -68,7 +68,10 @@ Command parameters:
      - `--learning_rate`, type=float, default=5e-5
      - `--C`, type=int, default=20 <br/>
        How many tokens to average to create the context representation if context_method_id==0
-     - `--random_seed`, type=int, default=0. <br/> The experiments in the paper used random_seed=1
+     - `--use_graph_input`, type=bool <br/>
+       If adding use_graph_input=True, the model will use the dictionary graph input to aid sense
+       prediction and also load a Standard LM architecture that makes use of it.
+- `--random_seed`, type=int, default=0. <br/> The experiments in the paper used random_seed=1
     
 Once it encounters early-stopping due to the senses' accuracy on the SemCor validation set, a model is saved in the SavedModels folder. <br/>
 E.g. *SavedModels/selectk_transformer_withGraph_K1.pt*

@@ -48,8 +48,13 @@ def get_corpus_fpaths(corpus_name, split, vocabulary_sources_ls):
 # Input: Corpus name, split, sources used to create the vocabulary that we wish to use
 # Outcome: load the numpy pre-encoded data
 def load_corpus_IDs(corpus_name, split, vocabulary_sources_ls):
+
     txt_corpus_fpath, numIDs_outfile_fpath = get_corpus_fpaths(corpus_name, split, vocabulary_sources_ls)
-    numerical_IDs_t = np.load(numIDs_outfile_fpath)
+    try:
+        numerical_IDs_t = np.load(numIDs_outfile_fpath)
+    except FileNotFoundError:
+        encode_txt_corpus(corpus_name, split, vocabulary_sources_ls)
+        numerical_IDs_t = np.load(numIDs_outfile_fpath)
     logging.info("Loaded the encoded corpus at " + str(numIDs_outfile_fpath))
     return numerical_IDs_t
 
