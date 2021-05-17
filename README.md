@@ -108,16 +108,21 @@ transformers == 4.5.1
 
 ### Source code structure
 - **Top-level files** <br/>
-    Scripts and high-level code, general utilities, reading a sense-labeled corpus.
-- Folder: **VocabularyAndEmbeddings** <br/>
-    Given a sense-labeled corpus, create the vocabulary. Ways to access pre-trained single-prototype embeddings.
-- Folder: **GetKBInputData** <br/>
-    Given a vocabulary, find the corresponding WordNet synsets, store the glosses (definitions, examples), synonyms and antonyms
+    Scripts and general utilities
+- Folder: **GetKBData** <br/>
+    Given a vocabulary, find the corresponding WordNet synsets and retrieve the glosses (definitions, examples), synonyms and antonyms
 - Folder: **Graph** <br/>
-    Create a dictionary graph with word, sense and gloss nodes.
-- Folder: **NN** <br/>
-    Create and train the specified multi-sense language model
-- Folder: **TextCorpuses** <br/>
-    Contains the SemCor sense-labeled corpus, and its splits.
-- Folder: **MyTests** <br/>
-    Development tests for features and models.
+    Create a dictionary graph with word, sense and gloss nodes.   
+- Folder: **InputData** <br/>
+  Storage location for the glosses and their encodings
+- Folder: **InputPipeline** <br/>
+  The high-level code to read a sense-labeled corpus, create a Vocabulary, get WordNet data and encode it.
+- Folder: **Models** <br/>
+  Create, pre-train, train and evaluate a Multi-sense language model
+  - Subfolders: Auxiliary, DataLoading, StandardLM, Variants
+- Folder: **SavedModels** <br/>
+  Storage location for saved models (whether standard LM after pre-training, or full Multi-sense LM after training)
+- Folder: **TextCorpora** <br/>
+    Contains the SemCor and SensEval-SemEval sense-labeled corpora.
+- Folder: **VocabularyAndEmbeddings** <br/>
+    Given a sense-labeled corpus, create the vocabulary. Moreover, access the pre-trained single-prototype embeddings.
